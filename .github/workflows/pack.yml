@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '6.0.x'
-          source-url: https://nuget.pkg.github.com/<owner>/index.json
+          source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
@@ -41,7 +41,7 @@ jobs:
         run: dotnet pack --configuration $config ./src/Common.Utilities/Common.Utilities.csproj
 
       - name: Publish the package to GPR
-        run: dotnet nuget push ./src/Common.Utilities/bin/Release/*.nupkg
+        run: dotnet nuget push ./src/Common.Utilities/bin/Release/*.nupkg --no-symbols --skip-duplicate
 
       - name: Push the package to NuGet
-        run: dotnet nuget push ./src/Common.Utilities/bin/Release/*.nupkg --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./src/Common.Utilities/bin/Release/*.nupkg --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json --no-symbols --skip-duplicate
