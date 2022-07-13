@@ -1,0 +1,47 @@
+name: Publish NuGet package.
+on:
+  release:
+    types: [created]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    env:
+      config: 'Release'
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '6.0.x'
+          source-url: https://nuget.pkg.github.com/<owner>/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          # Look to see if there is a cache hit for the corresponding requirements file
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration $config --no-restore ./src/Common.Utilities/Common.Utilities.csproj
+
+      - name: Create the package
+        run: dotnet pack --configuration $config ./src/Common.Utilities/Common.Utilities.csproj
+
+      - name: Publish the package to GPR
+        run: dotnet nuget push ./src/Common.Utilities/Common.Utilities/bin/Release/*.nupkg
+
+      - name: Push the package to NuGet
+        run: dotnet nuget push ./src/Common.Utilities/Common.Utilities/bin/Release/*.nupkg --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json

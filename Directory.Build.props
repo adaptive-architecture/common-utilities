@@ -4,13 +4,14 @@
     <Copyright>2022 - $([System.DateTime]::Now.Year) Valentin Dide</Copyright>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
-	<RootNamespace>AdaptArch.$(MSBuildProjectName)</RootNamespace>
-	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <RootNamespace>AdaptArch.$(MSBuildProjectName)</RootNamespace>
+    <PackageId>AdaptArch.$(MSBuildProjectName)</PackageId>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>    
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
