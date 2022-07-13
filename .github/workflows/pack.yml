@@ -4,7 +4,7 @@ on:
     types: [created]
 
 jobs:
-  test:
+  package:
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -19,9 +19,6 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '6.0.x'
-          source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
-        env:
-          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - uses: actions/cache@v3
         with:
@@ -31,17 +28,37 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget
 
+      - id: branch_name
+        name: Get branch name
+        run: |
+          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
+          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
+          echo ::set-output name=SOURCE_TAG_TRIMMED::$(echo ${GITHUB_REF#refs/tags/} | sed 's/v//')
+
       - name: Install dependencies
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --configuration $config --no-restore ./src/Common.Utilities/Common.Utilities.csproj
+        run: dotnet build --configuration $config --no-restore ./src/Common.Utilities/Common.Utilities.csproj /p:CI_BUILD=true -p:Version=$SOURCE_TAG_TRIMMED
+        env:
+          SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
+          SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
+          SOURCE_TAG_TRIMMED: ${{ steps.branch_name.outputs.SOURCE_TAG_TRIMMED }}
 
       - name: Create the package
-        run: dotnet pack --configuration $config ./src/Common.Utilities/Common.Utilities.csproj
+        run: |
+          echo $SOURCE_NAME
+          echo $SOURCE_BRANCH
+          echo $SOURCE_TAG_TRIMMED
+          dotnet pack --configuration $config ./src/Common.Utilities/Common.Utilities.csproj /p:CI_BUILD=true -p:Version=$SOURCE_TAG_TRIMMED
+        env:
+          SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
+          SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
+          SOURCE_TAG_TRIMMED: ${{ steps.branch_name.outputs.SOURCE_TAG_TRIMMED }}
 
       - name: Publish the package to GPR
-        run: dotnet nuget push ./src/Common.Utilities/bin/Release/*.nupkg --no-symbols --skip-duplicate
+        run: dotnet nuget push ./src/Common.Utilities/bin/Release/*.nupkg --api-key ${{secrets.GITHUB_TOKEN}} --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --no-symbols --skip-duplicate
 
       - name: Push the package to NuGet
-        run: dotnet nuget push ./src/Common.Utilities/bin/Release/*.nupkg --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json --no-symbols --skip-duplicate
+        run: dotnet nuget push ./src/Common.Utilities/bin/Release/*.nupkg --api-key ${{secrets.NUGET_ORG_KEY}} --source https://api.nuget.org/v3/index.json --no-symbols --skip-duplicate
