@@ -41,7 +41,7 @@ jobs:
         run: dotnet pack --configuration $config ./src/Common.Utilities/Common.Utilities.csproj
 
       - name: Publish the package to GPR
-        run: dotnet nuget push ./src/Common.Utilities/Common.Utilities/bin/Release/*.nupkg
+        run: dotnet nuget push ./src/Common.Utilities/bin/Release/*.nupkg
 
       - name: Push the package to NuGet
-        run: dotnet nuget push ./src/Common.Utilities/Common.Utilities/bin/Release/*.nupkg --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./src/Common.Utilities/bin/Release/*.nupkg --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json
