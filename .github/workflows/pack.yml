@@ -40,7 +40,7 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --configuration $config --no-restore ./src/Common.Utilities/Common.Utilities.csproj /p:CI_BUILD=true -p:Version=$SOURCE_TAG_TRIMMED
+        run: dotnet build --configuration $config --no-restore ./src/Common.Utilities/Common.Utilities.csproj /p:ContinuousIntegrationBuild=true /p:CI_BUILD=true -p:Version=$SOURCE_TAG_TRIMMED
         env:
           SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
           SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}

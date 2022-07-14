@@ -1,7 +1,8 @@
 <Project>
   <!-- <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" /> -->
   <PropertyGroup>
-    <Copyright>2022 - $([System.DateTime]::Now.Year) Valentin Dide</Copyright>
+    <!-- <Copyright>2022 - $([System.DateTime]::Now.Year) Valentin Dide</Copyright> -->
+    <Authors>Adaptive Architecture Contributors</Authors>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
     <RootNamespace>AdaptArch.$(MSBuildProjectName)</RootNamespace>

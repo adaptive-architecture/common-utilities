@@ -6,6 +6,9 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageTags>Common Utilities</PackageTags>
+    <Description>A collection of common utilities.</Description>
+    <PackageLicenseExpression type="expression">MIT</PackageLicenseExpression>
     <PackageIcon>logo.png</PackageIcon>
   </PropertyGroup>
 
