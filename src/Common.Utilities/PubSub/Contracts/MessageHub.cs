@@ -4,7 +4,6 @@ namespace AdaptArch.Common.Utilities.PubSub.Contracts
 {
     internal class MessageHub
     {
-        public delegate void ErrorHandler(Exception ex, IMessage<object> message);
         private class HandlerRegistration
         {
             public string Id { get; set; }
@@ -61,7 +60,7 @@ namespace AdaptArch.Common.Utilities.PubSub.Contracts
             }
         }
 
-        public ErrorHandler? OnMessageHandlerError { get; set; }
+        public Action<Exception, IMessage<object>>? OnMessageHandlerError { get; set; }
 
         public int MaxDegreeOfParallelism { get; set; } = Environment.ProcessorCount;
 
