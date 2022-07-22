@@ -10,7 +10,7 @@ public class DateTimeProviderSpecs
         var start = DateTime.UtcNow;
         var providerDate = new DateTimeProvider().UtcNow;
         var end = DateTime.UtcNow;
-        Assert.True(providerDate > start);
-        Assert.True(providerDate < end);
+        Assert.True(providerDate >= start);
+        Assert.True(providerDate <= end);
     }
 }

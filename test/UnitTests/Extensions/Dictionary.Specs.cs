@@ -38,4 +38,31 @@ public class DictionarySpecs
         Assert.False(dictionary.TryGetValueOrDefault(1, _ => defaultValue, out var v));
         Assert.Same(defaultValue, v);
     }
+
+    [Fact]
+    public void GetValueOrDefault_Should_Return_The_Item_If_It_Exists()
+    {
+        var dictionary = new Dictionary<int, TestClass>
+        {
+            {1, new TestClass { Id = "1" }}
+        };
+
+        Assert.Same(dictionary[1], dictionary.GetValueOrDefault(1, _ => null));
+    }
+
+    [Fact]
+    public void GetValueOrDefault_Should_Return_Default_If_Missing()
+    {
+        var dictionary = new Dictionary<int, TestClass>();
+        var defaultValue = new TestClass {Id = "1"};
+        Assert.Same(defaultValue, dictionary.GetValueOrDefault(1, _ => defaultValue));
+    }
+
+    [Fact]
+    public void GetValueOrDefault_Should_Return_Default_If_Null()
+    {
+        var dictionary = new Dictionary<int, TestClass> {{1, null}};
+        var defaultValue = new TestClass { Id = "1" };
+        Assert.Same(defaultValue, dictionary.GetValueOrDefault(1, _ => defaultValue));
+    }
 }
