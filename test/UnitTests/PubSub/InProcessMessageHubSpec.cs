@@ -19,7 +19,7 @@ public class InProcessMessageHubSpec
         var reacted = 0;
         var hub = GetHub();
 
-        var subscriptionId = hub.Subscribe<object>(topic, (msg, ct) =>
+        var subscriptionId = hub.Subscribe<object>(topic, (_, _) =>
         {
             reacted++;
             return Task.CompletedTask;
@@ -46,7 +46,7 @@ public class InProcessMessageHubSpec
         var reacted = 0;
         var hub = GetHub();
 
-        var subscriptionId = await hub.SubscribeAsync<object>(topic, (msg, ct) =>
+        var subscriptionId = await hub.SubscribeAsync<object>(topic, (_, _) =>
         {
             reacted++;
             return Task.CompletedTask;
@@ -71,20 +71,20 @@ public class InProcessMessageHubSpec
         var reacted = 0;
         var hub = GetHub();
 
-        _ = hub.Subscribe<object>(topic, (msg, ct) =>
+        _ = hub.Subscribe<object>(topic, (_, _) =>
         {
             reacted++;
             return Task.CompletedTask;
         });
 
-        _ = hub.Subscribe<object>(topic, (msg, ct) =>
+        _ = hub.Subscribe<object>(topic, (_, _) =>
         {
             reacted++;
             return Task.CompletedTask;
         });
 
 
-        _ = hub.Subscribe<object>(topic, (msg, ct) =>
+        _ = hub.Subscribe<object>(topic, (_, _) =>
         {
             reacted++;
             return Task.CompletedTask;
@@ -104,7 +104,7 @@ public class InProcessMessageHubSpec
         var reacted = 0;
         var hub = GetHub();
 
-        _ = hub.Subscribe<object>(topic, (msg, ct) => throw new ApplicationException());
+        _ = hub.Subscribe<object>(topic, (_, _) => throw new ApplicationException());
 
         hub.Publish<object>(topic, null);
 
@@ -119,7 +119,7 @@ public class InProcessMessageHubSpec
         var reacted = 0;
         var hub = new InProcessMessageHub(new InProcessMessageHubOptions {OnMessageHandlerError = (_, _) => reacted++});
 
-        _ = hub.Subscribe<object>(topic, (msg, ct) => throw new ApplicationException());
+        _ = hub.Subscribe<object>(topic, (_, _) => throw new ApplicationException());
 
         hub.Publish<object>(topic, null);
 
@@ -141,7 +141,7 @@ public class InProcessMessageHubSpec
             }
         });
 
-        _ = hub.Subscribe<object>(topic, (msg, ct) => throw new ApplicationException());
+        _ = hub.Subscribe<object>(topic, (_, _) => throw new ApplicationException());
 
         hub.Publish<object>(topic, null);
 
