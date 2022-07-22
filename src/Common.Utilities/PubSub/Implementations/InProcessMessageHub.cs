@@ -4,14 +4,18 @@ using AdaptArch.Common.Utilities.PubSub.Contracts;
 
 namespace AdaptArch.Common.Utilities.PubSub.Implementations;
 
-public class InProcessMessageHub: IMessageHub, IMessageHubAsync
+/// <summary>
+/// An in-process implementation of <see cref="IMessageHub"/> and <seealso cref="IMessageHubAsync"/>.
+/// This is intended mostly for unit testing of rapid prototyping.
+/// </summary>
+public class InProcessMessageHub : IMessageHub, IMessageHubAsync
 {
     private class HandlerRegistration
     {
-        public string Id { get; set; }
-        public Delegate MessageHandler { get; set; }
+        public string Id { get; }
+        public Delegate MessageHandler { get; }
 
-        public Type MessageType { get; set; }
+        public Type MessageType { get; }
 
         public HandlerRegistration(string id, Delegate messageHandler, Type messageType)
         {
@@ -25,19 +29,24 @@ public class InProcessMessageHub: IMessageHub, IMessageHubAsync
 
     private readonly InProcessMessageHubOptions _options;
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="options">The configuration options.</param>
     public InProcessMessageHub(InProcessMessageHubOptions options)
     {
-        _options = options;
+        _options = options ?? throw new ArgumentNullException(nameof(options));
     }
 
 
-
+    /// <inheritdoc />
     public void Publish<TMessageData>(string topic, TMessageData data)
         where TMessageData : class
     {
         PublishAsync(topic, data, CancellationToken.None).Forget();
     }
 
+    /// <inheritdoc />
     public string Subscribe<TMessageData>(string topic, MessageHandler<TMessageData> handler)
         where TMessageData : class
     {
@@ -59,6 +68,7 @@ public class InProcessMessageHub: IMessageHub, IMessageHubAsync
         return registration.Id;
     }
 
+    /// <inheritdoc />
     public void Unsubscribe(string id)
     {
         foreach (var topicHandlers in _handlers.Values)
@@ -67,6 +77,7 @@ public class InProcessMessageHub: IMessageHub, IMessageHubAsync
         }
     }
 
+    /// <inheritdoc />
     public async Task PublishAsync<TMessageData>(string topic, TMessageData data, CancellationToken cancellationToken)
         where TMessageData : class
     {
@@ -78,13 +89,16 @@ public class InProcessMessageHub: IMessageHub, IMessageHubAsync
         }
     }
 
-    public Task<string> SubscribeAsync<TMessageData>(string topic, MessageHandler<TMessageData> handler, CancellationToken cancellationToken)
+    /// <inheritdoc />
+    public Task<string> SubscribeAsync<TMessageData>(string topic, MessageHandler<TMessageData> handler,
+        CancellationToken cancellationToken)
         where TMessageData : class
     {
         var subscriptionId = Subscribe(topic, handler);
         return Task.FromResult(subscriptionId);
     }
 
+    /// <inheritdoc />
     public Task UnsubscribeAsync(string id, CancellationToken cancellationToken)
     {
         Unsubscribe(id);
@@ -94,9 +108,9 @@ public class InProcessMessageHub: IMessageHub, IMessageHubAsync
     private static IEnumerable<MessageHandler<T>> GetMatchingHandlers<T>(IEnumerable<HandlerRegistration> handlerRegistrations)
         where T : class
         => handlerRegistrations
-        .Where(w => w.MessageType.IsAssignableFrom(typeof(T)))
-        .Select(s => s.MessageHandler)
-        .Cast<MessageHandler<T>>();
+            .Where(w => w.MessageType.IsAssignableFrom(typeof(T)))
+            .Select(s => s.MessageHandler)
+            .Cast<MessageHandler<T>>();
 
     private async Task InvokeHandlers<T>(IEnumerable<MessageHandler<T>> handlers, IMessage<T> message, CancellationToken cancellationToken)
         where T : class
@@ -132,4 +146,3 @@ public class InProcessMessageHub: IMessageHub, IMessageHubAsync
         }
     }
 }
-
