@@ -27,13 +27,7 @@ jobs:
         run: dotnet restore
 
       - name: Run Common.Utilities.UnitTests
-        run: >
-          dotnet test ./test/Common.Utilities.UnitTests/Common.Utilities.UnitTests.csproj
-          --no-restore
-          --configuration $config
-          /p:CollectCoverage=true
-          /p:CoverletOutputFormat=lcov
-          /p:CoverletOutput=../../coverage/lcov.info
+        run: pwsh ./pipeline/run-tests.ps1
 
       - uses: coverallsapp/github-action@master
         with:
