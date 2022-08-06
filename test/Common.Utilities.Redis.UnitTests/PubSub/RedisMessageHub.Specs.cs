@@ -77,6 +77,14 @@ public class RedisMessageHubSpecs
         cm.Verify(v => v.GetSubscriber(null), Times.Exactly(2));
         sub.Verify(v => v.Publish("topic_A", messageValue, CommandFlags.None), Times.Once);
 
+        // Unsubscribe in existent id
+        hub.Unsubscribe("not=a=valid=id");
+
+        // Check unsubscribe
+        cm.Verify(v => v.GetSubscriber(null), Times.Exactly(2));
+        sub.Verify(v => v.Unsubscribe("topic_A", handler, CommandFlags.None), Times.Never);
+
+
         // Unsubscribe
         hub.Unsubscribe(id);
 
@@ -149,6 +157,14 @@ public class RedisMessageHubSpecs
         // Check publish
         cm.Verify(v => v.GetSubscriber(null), Times.Exactly(2));
         sub.Verify(v => v.PublishAsync("topic_A", messageValue, CommandFlags.None), Times.Once);
+
+        // Unsubscribe in existent id
+        await hub.UnsubscribeAsync("not=a=valid=id", CancellationToken.None).ConfigureAwait(false);
+
+        // Check unsubscribe
+        cm.Verify(v => v.GetSubscriber(null), Times.Exactly(2));
+        sub.Verify(v => v.UnsubscribeAsync("topic_A", handler, CommandFlags.None), Times.Never);
+
 
         // Unsubscribe
         await hub.UnsubscribeAsync(id, CancellationToken.None).ConfigureAwait(false);
