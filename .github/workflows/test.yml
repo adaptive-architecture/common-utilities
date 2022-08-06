@@ -4,8 +4,6 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      config: 'Release'
 
     steps:
       - uses: actions/checkout@v3
@@ -26,10 +24,10 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
 
-      - name: Run Common.Utilities.UnitTests
-        run: pwsh ./pipeline/run-tests.ps1
+      - name: Run Unit Tests
+        run: sh ./pipeline/unit-test.sh
 
       - uses: coverallsapp/github-action@master
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-          path-to-lcov: "./coverage/lcov.info"
+          path-to-lcov: "./coverage/coverage.info"
