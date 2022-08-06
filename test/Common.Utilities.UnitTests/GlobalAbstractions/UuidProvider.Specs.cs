@@ -1,6 +1,6 @@
 ﻿using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations;
 
-namespace AdaptArch.UnitTests.GlobalAbstractions;
+namespace AdaptArch.Common.Utilities.UnitTests.GlobalAbstractions;
 
 public class UuidSpecs
 {

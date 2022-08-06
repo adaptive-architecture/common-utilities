@@ -1,10 +1,10 @@
 ﻿using AdaptArch.Common.Utilities.PubSub.Implementations;
 
-namespace AdaptArch.UnitTests.PubSub;
+namespace AdaptArch.Common.Utilities.UnitTests.PubSub;
 
 public class InProcessMessageHubSpec
 {
-    private static InProcessMessageHub GetHub() => new InProcessMessageHub(new InProcessMessageHubOptions());
+    private static InProcessMessageHub GetHub() => new(new InProcessMessageHubOptions());
 
     [Fact]
     public void Constructor_Should_Throw_If_Null_Options()

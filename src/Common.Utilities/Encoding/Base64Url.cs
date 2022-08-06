@@ -278,18 +278,18 @@ public static class Base64Url
     [SkipLocalsInit]
     public static string Encode(ReadOnlySpan<byte> input)
     {
-        const int StackAllocThreshold = 128;
+        const int stackAllocThreshold = 128;
 
         if (input.IsEmpty)
         {
             return String.Empty;
         }
 
-        int bufferSize = GetArraySizeRequiredToEncode(input.Length);
+        var bufferSize = GetArraySizeRequiredToEncode(input.Length);
 
         char[]? bufferToReturnToPool = null;
-        Span<char> buffer = bufferSize <= StackAllocThreshold
-            ? stackalloc char[StackAllocThreshold]
+        var buffer = bufferSize <= stackAllocThreshold
+            ? stackalloc char[stackAllocThreshold]
             : bufferToReturnToPool = ArrayPool<char>.Shared.Rent(bufferSize);
 
         var numBase64Chars = Encode(input, buffer);
@@ -312,7 +312,7 @@ public static class Base64Url
 
         // Use base64url encoding with no padding characters. See RFC 4648, Sec. 5.
 
-        Convert.TryToBase64Chars(input, output, out int charsWritten);
+        Convert.TryToBase64Chars(input, output, out var charsWritten);
 
         // Fix up '+' -> '-' and '/' -> '_'. Drop padding characters.
         for (var i = 0; i < charsWritten; i++)

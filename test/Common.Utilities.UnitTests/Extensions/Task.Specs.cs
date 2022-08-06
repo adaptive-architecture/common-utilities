@@ -1,6 +1,6 @@
 ﻿using AdaptArch.Common.Utilities.Extensions;
 
-namespace AdaptArch.UnitTests.Extensions;
+namespace AdaptArch.Common.Utilities.UnitTests.Extensions;
 
 public class TaskSpecs
 {

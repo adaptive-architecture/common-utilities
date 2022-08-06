@@ -2,7 +2,7 @@
 using AdaptArch.Common.Utilities.PubSub.Contracts;
 using AdaptArch.Common.Utilities.PubSub.Implementations;
 
-namespace AdaptArch.UnitTests.PubSub;
+namespace AdaptArch.Common.Utilities.UnitTests.PubSub;
 
 public class MessageBuilderSpec
 {

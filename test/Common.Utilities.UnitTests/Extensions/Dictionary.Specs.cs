@@ -1,12 +1,12 @@
 ﻿using AdaptArch.Common.Utilities.Extensions;
 
-namespace AdaptArch.UnitTests.Extensions;
+namespace AdaptArch.Common.Utilities.UnitTests.Extensions;
 
 public class DictionarySpecs
 {
     private class TestClass
     {
-        public string Id { get; set; }
+        public string Id { get; init; }
     }
 
     [Fact]
@@ -18,6 +18,7 @@ public class DictionarySpecs
         };
 
         Assert.True(dictionary.TryGetValueOrDefault(1, _ => null, out var v));
+        Assert.Equal(dictionary[1].Id, v.Id);
         Assert.Same(dictionary[1], v);
     }
 

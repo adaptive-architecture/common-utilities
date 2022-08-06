@@ -1,7 +1,7 @@
 ﻿using AdaptArch.Common.Utilities.PubSub.Contracts;
 using AdaptArch.Common.Utilities.PubSub.Implementations;
 
-namespace AdaptArch.UnitTests.PubSub;
+namespace AdaptArch.Common.Utilities.UnitTests.PubSub;
 
 public class InProcessMessageHubOptionsSpec
 {
@@ -16,6 +16,7 @@ public class InProcessMessageHubOptionsSpec
     [Fact]
     public void OnMessageHandlerError_Should_Be_Assignable()
     {
+        // ReSharper disable once ConvertToLocalFunction
         Action<Exception, IMessage<object>> handler = (_, _) => { };
         var opt = new InProcessMessageHubOptions {OnMessageHandlerError = handler};
 

@@ -1,6 +1,6 @@
 ﻿using AdaptArch.Common.Utilities.Encoding;
 
-namespace AdaptArch.UnitTests.Encoding;
+namespace AdaptArch.Common.Utilities.UnitTests.Encoding;
 
 public class Base64UrlEncoderSpecs
 {
@@ -10,17 +10,17 @@ public class Base64UrlEncoderSpecs
     public void DataOfVariousLengthRoundTripCorrectly()
     {
         IEncoder encoder = new Base64UrlEncoder();
-        for (int length = 0; length < 256; ++length)
+        for (var length = 0; length < 256; ++length)
         {
             var data = new byte[length];
-            for (int index = 0; index < length; ++index)
+            for (var index = 0; index < length; ++index)
             {
                 data[index] = (byte)(5 + length + (index * 23));
             }
-            string text = encoder.Encode(data);
-            byte[] result = encoder.Decode(text);
+            var text = encoder.Encode(data);
+            var result = encoder.Decode(text);
 
-            for (int index = 0; index < length; ++index)
+            for (var index = 0; index < length; ++index)
             {
                 Assert.Equal(data[index], result[index]);
             }

@@ -1,6 +1,7 @@
 ﻿using AdaptArch.Common.Utilities.Encoding;
+// ReSharper disable AssignNullToNotNullAttribute
 
-namespace AdaptArch.UnitTests.Encoding;
+namespace AdaptArch.Common.Utilities.UnitTests.Encoding;
 
 public class Base64UrlSpecs
 {
@@ -24,7 +25,7 @@ public class Base64UrlSpecs
     [InlineData(10, 9, -1)]
     public void Base64UrlEncode_BadOffsets(int inputLength, int offset, int count)
     {
-        byte[] input = new byte[inputLength];
+        var input = new byte[inputLength];
 
         Assert.ThrowsAny<ArgumentException>(() => _ = Base64Url.Encode(input, offset, count));
     }
@@ -32,17 +33,17 @@ public class Base64UrlSpecs
     [Fact]
     public void DataOfVariousLengthRoundTripCorrectly()
     {
-        for (int length = 0; length < 256; ++length)
+        for (var length = 0; length < 256; ++length)
         {
             var data = new byte[length];
-            for (int index = 0; index < length; ++index)
+            for (var index = 0; index < length; ++index)
             {
                 data[index] = (byte)(5 + length + (index * 23));
             }
-            string text = Base64Url.Encode(data);
-            byte[] result = Base64Url.Decode(text);
+            var text = Base64Url.Encode(data);
+            var result = Base64Url.Decode(text);
 
-            for (int index = 0; index < length; ++index)
+            for (var index = 0; index < length; ++index)
             {
                 Assert.Equal(data[index], result[index]);
             }
@@ -56,37 +57,37 @@ public class Base64UrlSpecs
     }
 
     [Fact]
-    public void Decode_Throwes_ArgumentNull_Exception_1()
+    public void Decode_Throws_ArgumentNull_Exception_1()
     {
         Assert.Throws<ArgumentNullException>(() => _ = Base64Url.Decode(null));
     }
 
     [Fact]
-    public void Decode_Throwes_ArgumentNull_Exception_2()
+    public void Decode_Throws_ArgumentNull_Exception_2()
     {
         Assert.Throws<ArgumentNullException>(() => _ = Base64Url.Decode(null, 0, 0));
     }
 
     [Fact]
-    public void Decode_Throwes_ArgumentNull_Exception_3()
+    public void Decode_Throws_ArgumentNull_Exception_3()
     {
         Assert.Throws<ArgumentNullException>(() => _ = Base64Url.Decode(null, 0, Array.Empty<char>(), 0, 0));
     }
 
     [Fact]
-    public void Decode_Throwes_ArgumentNull_Exception_4()
+    public void Decode_Throws_ArgumentNull_Exception_4()
     {
         Assert.Throws<ArgumentNullException>(() => _ = Base64Url.Decode(String.Empty, 0, null, 0, 0));
     }
 
     [Fact]
-    public void Decode_Throwes_ArgumentOutOfRange_Exception_4()
+    public void Decode_Throws_ArgumentOutOfRange_Exception_4()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => _ = Base64Url.Decode(String.Empty, 0, Array.Empty<char>(), -1, 0));
     }
 
     [Fact]
-    public void Decode_Throwes_Argument_Exception_4()
+    public void Decode_Throws_Argument_Exception_4()
     {
         Assert.Throws<ArgumentException>(() => _ = Base64Url.Decode("0123456789", 0, Array.Empty<char>(), 2, 2));
     }
@@ -98,37 +99,37 @@ public class Base64UrlSpecs
     }
 
     [Fact]
-    public void Encode_Throwes_ArgumentNull_Exception_1()
+    public void Encode_Throws_ArgumentNull_Exception_1()
     {
         Assert.Throws<ArgumentNullException>(() => _ = Base64Url.Encode(null));
     }
 
     [Fact]
-    public void Encode_Throwes_ArgumentNull_Exception_2()
+    public void Encode_Throws_ArgumentNull_Exception_2()
     {
         Assert.Throws<ArgumentNullException>(() => _ = Base64Url.Encode(null, 0, 0));
     }
 
     [Fact]
-    public void Encode_Throwes_ArgumentNull_Exception_3()
+    public void Encode_Throws_ArgumentNull_Exception_3()
     {
         Assert.Throws<ArgumentNullException>(() => _ = Base64Url.Encode(null, 0, Array.Empty<char>(), 0, 0));
     }
 
     [Fact]
-    public void Encode_Throwes_ArgumentNull_Exception_4()
+    public void Encode_Throws_ArgumentNull_Exception_4()
     {
         Assert.Throws<ArgumentNullException>(() => _ = Base64Url.Encode(Array.Empty<byte>(), 0, null, 0, 0));
     }
 
     [Fact]
-    public void Encode_Throwes_ArgumentOutOfRange_Exception_4()
+    public void Encode_Throws_ArgumentOutOfRange_Exception_4()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => _ = Base64Url.Encode(Array.Empty<byte>(), 0, Array.Empty<char>(), -1, 0));
     }
 
     [Fact]
-    public void Encode_Throwes_Argument_Exception_4()
+    public void Encode_Throws_Argument_Exception_4()
     {
         Assert.Throws<ArgumentException>(() => _ = Base64Url.Encode(Array.Empty<byte>(), 0, Array.Empty<char>(), 2, 0));
     }

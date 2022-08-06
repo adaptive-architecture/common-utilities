@@ -5,8 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <PackageTags>Common Utilities</PackageTags>
-    <Description>A collection of common utilities.</Description>
+    <PackageTags>Common Utilities Redis</PackageTags>
+    <Description>Redis integrations for the Common.Utilities contracts.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>logo.png</PackageIcon>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -23,9 +23,16 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup Condition="'$(CONFIGURATION)' == 'DEBUG'">
+    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(CONFIGURATION)' == 'RELEASE'">
+    <PackageReference Include="AdaptArch.Common.Utilities" Version="0.0.2" />
+  </ItemGroup>
+
   <ItemGroup>
-    <InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
-    <InternalsVisibleTo Include="$(AssemblyName).Redis" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.48" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks;
 
-namespace AdaptArch.UnitTests.GlobalAbstractions.Mocks;
+namespace AdaptArch.Common.Utilities.UnitTests.GlobalAbstractions.Mocks;
 
 public class DateTimeProviderSpecs
 {
