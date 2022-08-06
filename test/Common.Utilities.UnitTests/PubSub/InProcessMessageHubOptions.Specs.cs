@@ -3,7 +3,7 @@ using AdaptArch.Common.Utilities.PubSub.Implementations;
 
 namespace AdaptArch.Common.Utilities.UnitTests.PubSub;
 
-public class InProcessMessageHubOptionsSpec
+public class InProcessMessageHubOptionsSpecs
 {
     [Fact]
     public void OnMessageHandlerError_Should_Be_Null_By_Default()

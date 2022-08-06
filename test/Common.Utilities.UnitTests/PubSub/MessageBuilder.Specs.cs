@@ -4,7 +4,7 @@ using AdaptArch.Common.Utilities.PubSub.Implementations;
 
 namespace AdaptArch.Common.Utilities.UnitTests.PubSub;
 
-public class MessageBuilderSpec
+public class MessageBuilderSpecs
 {
     [Fact]
     public void MessageBuilder_Should_Build_Messages()

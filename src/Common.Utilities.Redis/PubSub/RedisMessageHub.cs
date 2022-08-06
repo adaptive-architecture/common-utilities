@@ -22,7 +22,7 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
     public RedisMessageHub(IConnectionMultiplexer connectionMultiplexer, RedisMessageHubOptions options)
         :base(options)
     {
-        _connectionMultiplexer = connectionMultiplexer;
+        _connectionMultiplexer = connectionMultiplexer ?? throw new ArgumentNullException(nameof(connectionMultiplexer));
     }
 
     /// <inheritdoc />
@@ -91,7 +91,7 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
 
     private IMessage<TMessageData> DeserializeMessage<TMessageData>(RedisValue data) where TMessageData : class
     {
-        return Options.DataSerializer.Deserialize<IMessage<TMessageData>>(data);
+        return Options.DataSerializer.Deserialize<Message<TMessageData>>(data);
     }
 
     private Action<RedisChannel, RedisValue> WrapAsRedisHandler<TMessageData>(MessageHandler<TMessageData> handler)

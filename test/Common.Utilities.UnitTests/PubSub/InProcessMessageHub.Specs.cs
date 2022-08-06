@@ -2,7 +2,7 @@
 
 namespace AdaptArch.Common.Utilities.UnitTests.PubSub;
 
-public class InProcessMessageHubSpec
+public class InProcessMessageHubSpecs
 {
     private static InProcessMessageHub GetHub() => new(new InProcessMessageHubOptions());
 
