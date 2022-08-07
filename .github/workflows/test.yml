@@ -4,6 +4,17 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      # Label used to access the service container
+      redis-service:
+        # Docker Hub image
+        image: redis
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - uses: actions/checkout@v3
@@ -26,6 +37,9 @@ jobs:
 
       - name: Run Unit Tests
         run: sh ./pipeline/unit-test.sh
+        env:
+          REDIS_HOST: redis-service
+          REDIS_PORT: 6379
 
       - uses: coverallsapp/github-action@master
         with:
