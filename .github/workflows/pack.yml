@@ -78,7 +78,7 @@ jobs:
           SOURCE_TAG_TRIMMED: ${{ steps.branch_name.outputs.SOURCE_TAG_TRIMMED }}
 
       - name: Build Common.Utilities.Redis
-        run: dotnet build --configuration $config --no-restore ./src/Common.Utilities.Redis/Common.Utilities.Redis.csproj /p:ContinuousIntegrationBuild=true /p:CI_BUILD=true -p:Version=$SOURCE_TAG_TRIMMED
+        run: dotnet build --configuration $config ./src/Common.Utilities.Redis/Common.Utilities.Redis.csproj /p:ContinuousIntegrationBuild=true /p:CI_BUILD=true -p:Version=$SOURCE_TAG_TRIMMED
         env:
           SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
           SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
