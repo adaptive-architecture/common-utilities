@@ -68,6 +68,9 @@ jobs:
           sed -i "s/Include=\"AdaptArch\.Common\.Utilities\".*Version=\".*\"/Include=\"AdaptArch.Common.Utilities\" Version=\"$SOURCE_TAG_TRIMMED\"/" ./src/Common.Utilities.Redis/Common.Utilities.Redis.csproj
           cat ./src/Common.Utilities.Redis/Common.Utilities.Redis.csproj
 
+          dotnet nuget add source --name '.local.Common.Utilities' --configfile './nuget.config' './src/Common.Utilities/bin/Release/'
+          cat ./nuget.config
+
           dotnet restore
         env:
           SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
