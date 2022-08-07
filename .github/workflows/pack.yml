@@ -1,4 +1,4 @@
-name: Publish NuGet package.
+name: Publish NuGet packages.
 on:
   release:
     types: [created]
@@ -65,7 +65,9 @@ jobs:
 
       - name: Change Common.Utilities version
         run: |
-          dotnet add ./src/Common.Utilities.Redis/Common.Utilities.Redis.csproj package AdaptArch.Common.Utilities --version $SOURCE_TAG_TRIMMED
+          echo $SOURCE_TAG_TRIMMED
+          sed -i 's/Include="AdaptArch\.Common\.Utilities".*Version=".*"/Include="AdaptArch.Common.Utilities" Version="$SOURCE_TAG_TRIMMED"/' ./src/Common.Utilities.Redis/Common.Utilities.Redis.csproj
+          dotnet restore
         env:
           SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
           SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
