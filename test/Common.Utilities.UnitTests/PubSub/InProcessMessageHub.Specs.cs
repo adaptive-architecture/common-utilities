@@ -93,7 +93,7 @@ public class InProcessMessageHubSpecs
 
         hub.Publish<object>(topic, null);
 
-        Thread.Sleep(TimeSpan.FromMilliseconds(20));
+        Thread.Sleep(TimeSpan.FromMilliseconds(50));
         Assert.Equal(3, reacted);
     }
 
@@ -108,7 +108,7 @@ public class InProcessMessageHubSpecs
 
         hub.Publish<object>(topic, null);
 
-        Thread.Sleep(TimeSpan.FromMilliseconds(20));
+        Thread.Sleep(TimeSpan.FromMilliseconds(50));
         Assert.Equal(0, reacted);
     }
 
@@ -123,7 +123,7 @@ public class InProcessMessageHubSpecs
 
         hub.Publish<object>(topic, null);
 
-        Thread.Sleep(TimeSpan.FromMilliseconds(20));
+        Thread.Sleep(TimeSpan.FromMilliseconds(50));
         Assert.Equal(1, reacted);
     }
 
@@ -145,7 +145,7 @@ public class InProcessMessageHubSpecs
 
         hub.Publish<object>(topic, null);
 
-        Thread.Sleep(TimeSpan.FromMilliseconds(20));
+        Thread.Sleep(TimeSpan.FromMilliseconds(50));
         Assert.Equal(1, reacted);
     }
 }
