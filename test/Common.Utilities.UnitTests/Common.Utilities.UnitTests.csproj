@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>    
+    <Nullable>disable</Nullable>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -25,8 +25,12 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(CONFIGURATION)' == 'Debug'">
     <ProjectReference Include="..\..\src\Common.Utilities\Common.Utilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(CONFIGURATION)' == 'Release'">
+    <PackageReference Include="AdaptArch.Common.Utilities" Version="0.0.3.9" />
   </ItemGroup>
 
 </Project>

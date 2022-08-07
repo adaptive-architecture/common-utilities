@@ -27,9 +27,14 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(CONFIGURATION)' == 'Debug'">
     <ProjectReference Include="..\..\src\Common.Utilities\Common.Utilities.csproj" />
     <ProjectReference Include="..\..\src\Common.Utilities.Redis\Common.Utilities.Redis.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(CONFIGURATION)' == 'Release'">
+    <PackageReference Include="AdaptArch.Common.Utilities" Version="0.0.3.9" />
+    <PackageReference Include="AdaptArch.Common.Utilities.Redis" Version="0.0.3.9" />
   </ItemGroup>
 
 </Project>
