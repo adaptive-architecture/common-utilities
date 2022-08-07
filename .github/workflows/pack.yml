@@ -65,10 +65,13 @@ jobs:
 
       - name: Change Common.Utilities version
         run: |
-          echo $SOURCE_TAG_TRIMMED
           dotnet nuget add source --username USERNAME --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name "GitHub Package Registry" "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-          sed -i 's/Include="AdaptArch\.Common\.Utilities".*Version=".*"/Include="AdaptArch.Common.Utilities" Version="$SOURCE_TAG_TRIMMED"/' ./src/Common.Utilities.Redis/Common.Utilities.Redis.csproj
-          dotnet restore --force
+          echo $SOURCE_TAG_TRIMMED
+
+          sed -i "s/Include=\"AdaptArch\.Common\.Utilities\".*Version=\".*\"/Include=\"AdaptArch.Common.Utilities\" Version=\"$SOURCE_TAG_TRIMMED\"/" ./src/Common.Utilities.Redis/Common.Utilities.Redis.csproj
+          cat ./src/Common.Utilities.Redis/Common.Utilities.Redis.csproj
+
+          dotnet restore
         env:
           SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
           SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
