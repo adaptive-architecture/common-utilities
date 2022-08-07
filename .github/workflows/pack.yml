@@ -62,3 +62,35 @@ jobs:
 
       - name: Push the Common.Utilities package to NuGet
         run: dotnet nuget push ./src/Common.Utilities/bin/Release/*.nupkg --api-key ${{secrets.NUGET_ORG_KEY}} --source https://api.nuget.org/v3/index.json --no-symbols --skip-duplicate
+
+      - name: Change Common.Utilities version
+        run: |
+          dotnet add ./src/Common.Utilities.Redis/Common.Utilities.Redis.csproj package AdaptArch.Common.Utilities --version $SOURCE_TAG_TRIMMED
+        env:
+          SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
+          SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
+          SOURCE_TAG_TRIMMED: ${{ steps.branch_name.outputs.SOURCE_TAG_TRIMMED }}
+
+      - name: Build Common.Utilities.Redis
+        run: dotnet build --configuration $config --no-restore ./src/Common.Utilities.Redis/Common.Utilities.Redis.csproj /p:ContinuousIntegrationBuild=true /p:CI_BUILD=true -p:Version=$SOURCE_TAG_TRIMMED
+        env:
+          SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
+          SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
+          SOURCE_TAG_TRIMMED: ${{ steps.branch_name.outputs.SOURCE_TAG_TRIMMED }}
+
+      - name: Create the Common.Utilities.Redis package
+        run: |
+          echo $SOURCE_NAME
+          echo $SOURCE_BRANCH
+          echo $SOURCE_TAG_TRIMMED
+          dotnet pack --configuration $config ./src/Common.Utilities.Redis/Common.Utilities.Redis.csproj /p:CI_BUILD=true -p:Version=$SOURCE_TAG_TRIMMED
+        env:
+          SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
+          SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
+          SOURCE_TAG_TRIMMED: ${{ steps.branch_name.outputs.SOURCE_TAG_TRIMMED }}
+
+      - name: Publish the Common.Utilities.Redis package to GPR
+        run: dotnet nuget push ./src/Common.Utilities.Redis/bin/Release/*.nupkg --api-key ${{secrets.GITHUB_TOKEN}} --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --no-symbols --skip-duplicate
+
+      - name: Push the Common.Utilities.Redis package to NuGet
+        run: dotnet nuget push ./src/Common.Utilities.Redis/bin/Release/*.nupkg --api-key ${{secrets.NUGET_ORG_KEY}} --source https://api.nuget.org/v3/index.json --no-symbols --skip-duplicate
