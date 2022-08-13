@@ -5,6 +5,7 @@ namespace AdaptArch.Common.Utilities.Redis.IntegrationTests.PubSub;
 
 public class RedisMessageHubInt
 {
+    private static readonly TimeSpan WaitTime = TimeSpan.FromMilliseconds(100);
     public record MyMessage
     {
         public string Id { get; set; }
@@ -36,7 +37,7 @@ public class RedisMessageHubInt
         var sentMessage = new MyMessage { Id = Guid.NewGuid().ToString("N") };
 
         _messageHub.Publish(nameof(MyMessage), sentMessage);
-        Thread.Sleep(TimeSpan.FromMilliseconds(10));
+        Thread.Sleep(WaitTime);
 
         Assert.NotNull(receivedMessage);
         Assert.Equal(sentMessage.Id, receivedMessage.Id);
@@ -45,7 +46,7 @@ public class RedisMessageHubInt
         receivedMessage = null;
 
         _messageHub.Publish(nameof(MyMessage), sentMessage);
-        Thread.Sleep(TimeSpan.FromMilliseconds(10));
+        Thread.Sleep(WaitTime);
 
         Assert.Null(receivedMessage);
     }
@@ -69,7 +70,7 @@ public class RedisMessageHubInt
         await _messageHubAsync.PublishAsync(nameof(MyMessage), sentMessage, CancellationToken.None)
             .ConfigureAwait(false);
 
-        await Task.Delay(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+        await Task.Delay(WaitTime).ConfigureAwait(false);
 
         Assert.NotNull(receivedMessage);
         Assert.Equal(sentMessage.Id, receivedMessage.Id);
@@ -80,7 +81,7 @@ public class RedisMessageHubInt
         await _messageHubAsync.PublishAsync(nameof(MyMessage), sentMessage, CancellationToken.None)
             .ConfigureAwait(false);
 
-        await Task.Delay(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+        await Task.Delay(WaitTime).ConfigureAwait(false);
 
         Assert.Null(receivedMessage);
     }
