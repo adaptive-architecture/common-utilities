@@ -37,10 +37,10 @@ public class DelayGeneratorOptions
     /// <summary>
     /// The value used to the "lowerBoundary" parameter of the <see cref="IJitterGenerator.New"/> method.
     /// </summary>
-    public float JitterLowerBoundary { get; set; } = 0.03f;
+    public float JitterLowerBoundary { get; set; } = 0.02f;
 
     /// <summary>
     /// The value used to the "upperBoundary" parameter of the <see cref="IJitterGenerator.New"/> method.
     /// </summary>
-    public float JitterUpperBoundary { get; set; } = 0.4f;
+    public float JitterUpperBoundary { get; set; } = 0.27f;
 }
