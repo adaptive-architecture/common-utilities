@@ -117,4 +117,26 @@ public class DelayGeneratorSpec
             it++;
         }
     }
+
+    [Fact]
+    public void Should_Return_Constant_Delays_With_Jitter()
+    {
+        var options = new DelayGeneratorOptions
+        {
+            DelayInterval = TimeSpan.FromSeconds(11),
+            DelayType = DelayType.Constant,
+            JitterGenerator = new ConstantJitterGenerator()
+        };
+        var generator = new DelayGenerator(options);
+
+        foreach (var delay in generator.GetDelays())
+        {
+            Assert.Equal(options.DelayInterval + TimeSpan.FromSeconds(1), delay);
+        }
+    }
+
+    private class ConstantJitterGenerator: IJitterGenerator
+    {
+        public TimeSpan New(TimeSpan baseValue, float lowerBoundary, float upperBoundary) => TimeSpan.FromSeconds(1);
+    }
 }

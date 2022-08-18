@@ -38,7 +38,7 @@ public class JitterGenerator: IJitterGenerator
     private float GetJitterPercentage(float lowerBoundary, float upperBoundary)
     {
         var percentage = _randomGenerator.Next(Convert.ToInt32(lowerBoundary * Percent100), Convert.ToInt32(upperBoundary * Percent100));
-        var sign = (_randomGenerator.Next(0, 99) % 2) == 1 ? -1 : 1;
+        var sign = (_randomGenerator.Next(0, 99) % 2) == 0 ? 1 : -1;
         return percentage * sign / Percent100;
     }
 }
