@@ -1,5 +1,8 @@
 #!/bin/bash
 
+rm -rf ./coverage
+rm -rf ./test/TestResults
+
 dotnet test \
   /p:CollectCoverage=\"true\" \
   /p:CoverletOutputFormat=\"json,lcov\"  \

@@ -32,7 +32,7 @@ public class DelayGeneratorOptions
     /// <summary>
     /// The jitter generator.
     /// </summary>
-    public IJitterGenerator JitterGenerator { get; set; } = new ZeroJitterGenerator();
+    public IJitterGenerator JitterGenerator { get; set; } = ZeroJitterGenerator.Instance;
 
     /// <summary>
     /// The value used to the "lowerBoundary" parameter of the <see cref="IJitterGenerator.New"/> method.

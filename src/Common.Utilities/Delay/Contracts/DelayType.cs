@@ -28,5 +28,5 @@ public enum DelayType
     /// <summary>
     /// The delays will increase/decrease following a power of e(2.71..) pattern.
     /// </summary>
-    Exponential = 4
+    PowerOfE = 4
 }

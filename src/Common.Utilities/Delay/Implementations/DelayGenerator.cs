@@ -31,7 +31,7 @@ public class DelayGenerator: IDelayGenerator
         }
     }
 
-    private TimeSpan GetCurrentDelay(int currentIteration)
+    private TimeSpan GetCurrentDelay(int iteration)
     {
         // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
         // ReSharper disable once ConvertSwitchStatementToSwitchExpression
@@ -40,11 +40,11 @@ public class DelayGenerator: IDelayGenerator
             case DelayType.Constant:
                 return _options.DelayInterval;
             case DelayType.Linear:
-                return currentIteration * _options.DelayInterval;
+                return iteration * _options.DelayInterval;
             case DelayType.PowerOf2:
-                return Math.Pow(currentIteration, 2) * _options.DelayInterval;
-            case DelayType.Exponential:
-                return Math.Pow(currentIteration, Math.E) * _options.DelayInterval;
+                return Math.Pow(iteration, 2) * _options.DelayInterval;
+            case DelayType.PowerOfE:
+                return Math.Pow(iteration, Math.E) * _options.DelayInterval;
             default:
                 throw new ArgumentOutOfRangeException();
         }
