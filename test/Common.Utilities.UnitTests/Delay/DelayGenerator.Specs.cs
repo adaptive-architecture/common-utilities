@@ -1,7 +1,5 @@
-using System.Linq;
-using AdaptArch.Common.Utilities.Delay.Contracts;
+﻿using AdaptArch.Common.Utilities.Delay.Contracts;
 using AdaptArch.Common.Utilities.Delay.Implementations;
-using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations;
 
 namespace AdaptArch.Common.Utilities.UnitTests.Delay;
 
@@ -20,7 +18,12 @@ public class DelayGeneratorSpec
     [Fact]
     public void Should_Return_As_Many_Delays_As_Requested()
     {
-        var options = new DelayGeneratorOptions();
+        var options = new DelayGeneratorOptions
+        {
+            MaxIterations = 13,
+            JitterLowerBoundary = 0,
+            JitterUpperBoundary= 1
+        };
         var delayGenerator = new DelayGenerator(options);
 
         var delays = delayGenerator.GetDelays().ToArray();

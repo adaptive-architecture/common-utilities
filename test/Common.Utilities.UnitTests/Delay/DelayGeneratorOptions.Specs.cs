@@ -1,6 +1,5 @@
-using AdaptArch.Common.Utilities.Delay.Contracts;
+﻿using AdaptArch.Common.Utilities.Delay.Contracts;
 using AdaptArch.Common.Utilities.Delay.Implementations;
-using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations;
 
 namespace AdaptArch.Common.Utilities.UnitTests.Delay;
 
