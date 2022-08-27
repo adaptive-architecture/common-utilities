@@ -1,5 +1,5 @@
 # common-utilities
-A set of common utilities to be used across projects.
+A set of common utilities to be used across projects and reduce amount of time wasted on cross cutting concerns.
 
 ## Status
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/aae7ef26eb2c48af97ec87878b60f897)](https://www.codacy.com/gh/adaptive-architecture/common-utilities/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=adaptive-architecture/common-utilities&amp;utm_campaign=Badge_Grade)
