@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Moq;
+using Moq.Language;
 
 namespace AdaptArch.Common.Utilities.Configuration.UnitTests.Providers;
 
@@ -46,7 +47,7 @@ public class CustomConfigurationProviderSpecs
     private static void AssertCustomConfiguration(IOptionsMonitor<CustomConfigurationSection> customConfiguration)
     {
         Assert.NotNull(customConfiguration);
-        Assert.Equal("A", customConfiguration!.CurrentValue.Hash);
+        Assert.Equal("0", customConfiguration!.CurrentValue.Hash);
         Assert.Equal("foo", customConfiguration!.CurrentValue.Data.Foo);
         Assert.Equal("bar", customConfiguration!.CurrentValue.Data.Bar);
     }
@@ -63,8 +64,15 @@ public class CustomConfigurationProviderSpecs
         Assert.Equal("bar", customConfiguration!.CurrentValue.Data.Bar);
     }
 
-    private ServiceProvider BuildServiceProvider(string customConfigurationSectionName = "")
+    private ServiceProvider BuildServiceProvider(Action<CustomConfigurationSource> configureSource, string customConfigurationSectionName = "")
     {
+        _configurationBuilder.AddCustomConfiguration(opt =>
+        {
+            opt.DataProvider = _dataProviderMoq.Object;
+            opt.Options.PoolingInterval = _poolingInterval;
+            configureSource?.Invoke(opt);
+        });
+
         var configuration = _configurationBuilder.Build();
         _services.AddSingleton(configuration);
         _services.AddSingleton<IConfiguration>(configuration);
@@ -74,26 +82,24 @@ public class CustomConfigurationProviderSpecs
         return _services.BuildServiceProvider();
     }
 
-    private void SetupGetHashSequence(Func<string> func, int count, int exceptionIndex = -1)
+    private void SetupSequence<TResult>(ISetupSequentialResult<Task<TResult>> sequentialResult, Func<TResult> func, int count, int exceptionIndex)
     {
-        var seq = _dataProviderMoq.SetupSequence(s => s.GetHashAsync(It.IsAny<CancellationToken>()));
         for (var i = 0; i < count; i++)
         {
-            seq = i == exceptionIndex
-                ? seq.Throws(_getHashException)
-                : seq.Returns(() => Task.FromResult(func()));
+            sequentialResult = i == exceptionIndex
+                ? sequentialResult.Throws(_getHashException)
+                : sequentialResult.Returns(() => Task.FromResult(func()));
         }
+    }
+
+    private void SetupGetHashSequence(Func<string> func, int count, int exceptionIndex = -1)
+    {
+        SetupSequence(_dataProviderMoq.SetupSequence(s => s.GetHashAsync(It.IsAny<CancellationToken>())), func, count, exceptionIndex);
     }
 
     private void SetupReadDataSequence(Func<IReadOnlyDictionary<string, string>> func, int count, int exceptionIndex = -1)
     {
-        var seq = _dataProviderMoq.SetupSequence(s => s.ReadDataAsync(It.IsAny<CancellationToken>()));
-        for (var i = 0; i < count; i++)
-        {
-            seq = i == exceptionIndex
-                ? seq.Throws(_getHashException)
-                : seq.Returns(() => Task.FromResult(func()));
-        }
+        SetupSequence(_dataProviderMoq.SetupSequence(s => s.ReadDataAsync(It.IsAny<CancellationToken>())), func, count, exceptionIndex);
     }
 
     [Fact]
@@ -139,22 +145,18 @@ public class CustomConfigurationProviderSpecs
     [Fact]
     public void Should_Load_Configuration()
     {
-        _dataProviderMoq.Setup(s => s.GetHashAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync("A");
         _dataProviderMoq.Setup(s => s.ReadDataAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<string, string>
             {
-                { "hash", "A" }, { "data/foo", "foo" }, { "data/bar", "bar" }
+                { "hash", "0" }, { "data/foo", "foo" }, { "data/bar", "bar" }
             });
 
-        _configurationBuilder.AddCustomConfiguration(opt =>
+        SetupGetHashSequence(GetConstantHashValue, 1);
+        var sp = BuildServiceProvider(opt =>
         {
-            opt.DataProvider = _dataProviderMoq.Object;
             opt.Options.Prefix = nameof(CustomConfigurationSection);
             opt.Options.OriginalKeyDelimiter = "/";
-        });
-
-        var sp = BuildServiceProvider(nameof(CustomConfigurationSection));
+        }, nameof(CustomConfigurationSection));
         var staticConfiguration = sp.GetService<IOptionsMonitor<ConfigurationData>>();
 
         Assert.NotNull(staticConfiguration);
@@ -167,42 +169,29 @@ public class CustomConfigurationProviderSpecs
     [Fact]
     public void Should_Load_Configuration_From_JSON()
     {
-        _dataProviderMoq.Setup(s => s.GetHashAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync("A");
         _dataProviderMoq.Setup(s => s.ReadDataAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<string, string>
             {
                 {
                     nameof(CustomConfigurationSection),
-                    "{\"hash\": \"A\", \"data\": {\"foo\": \"foo\", \"bar\": \"bar\"}}"
+                    "{\"hash\": \"0\", \"data\": {\"foo\": \"foo\", \"bar\": \"bar\"}}"
                 }
             });
+        SetupGetHashSequence(GetConstantHashValue, 1);
 
-        _configurationBuilder.AddCustomConfiguration(opt =>
-        {
-            opt.DataProvider = _dataProviderMoq.Object;
-            opt.Options.ConfigurationParser = new JsonConfigurationParser(ConfigurationPath.KeyDelimiter);
-        });
-
-        var sp = BuildServiceProvider(nameof(CustomConfigurationSection));
+        var sp = BuildServiceProvider(opt => opt.Options.ConfigurationParser = new JsonConfigurationParser(ConfigurationPath.KeyDelimiter),
+            nameof(CustomConfigurationSection));
         AssertCustomConfiguration(sp.GetService<IOptionsMonitor<CustomConfigurationSection>>());
     }
 
     [Fact]
     public void Should_Load_Configuration_From_JSON_Null()
     {
-        _dataProviderMoq.Setup(s => s.GetHashAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync("A");
         _dataProviderMoq.Setup(s => s.ReadDataAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<string, string> { { nameof(CustomConfigurationSection), null } });
 
-        _configurationBuilder.AddCustomConfiguration(opt =>
-        {
-            opt.DataProvider = _dataProviderMoq.Object;
-            opt.Options.ConfigurationParser = new JsonConfigurationParser(ConfigurationPath.KeyDelimiter);
-        });
-
-        var sp = BuildServiceProvider();
+        SetupGetHashSequence(GetConstantHashValue, 1);
+        var sp = BuildServiceProvider(opt => opt.Options.ConfigurationParser = new JsonConfigurationParser(ConfigurationPath.KeyDelimiter));
         var customConfiguration = sp.GetService<IOptionsMonitor<CustomConfigurationSection>>();
 
         Assert.NotNull(customConfiguration);
@@ -217,13 +206,7 @@ public class CustomConfigurationProviderSpecs
         SetupGetHashSequence(GetHashValue, 3);
         SetupReadDataSequence(GetReadValue, 3);
 
-        _configurationBuilder.AddCustomConfiguration(opt =>
-        {
-            opt.DataProvider = _dataProviderMoq.Object;
-            opt.Options.PoolingInterval = _poolingInterval;
-        });
-
-        var sp = BuildServiceProvider();
+        var sp = BuildServiceProvider(_ => {});
         var customConfiguration = sp.GetService<IOptionsMonitor<CustomConfigurationSection>>();
 
         await AssertConfigurationValuesPooling(customConfiguration, "1", false).ConfigureAwait(false);
@@ -240,13 +223,7 @@ public class CustomConfigurationProviderSpecs
         SetupGetHashSequence(GetConstantHashValue, 2);
         SetupReadDataSequence(GetReadValue, 3);
 
-        _configurationBuilder.AddCustomConfiguration(opt =>
-        {
-            opt.DataProvider = _dataProviderMoq.Object;
-            opt.Options.PoolingInterval = _poolingInterval;
-        });
-
-        var sp = BuildServiceProvider();
+        var sp = BuildServiceProvider(_ => { });
         var customConfiguration = sp.GetService<IOptionsMonitor<CustomConfigurationSection>>();
 
         await AssertConfigurationValuesPooling(customConfiguration, "0", false).ConfigureAwait(false);
@@ -263,10 +240,8 @@ public class CustomConfigurationProviderSpecs
         SetupReadDataSequence(GetReadValue, 4);
 
         var exceptions = new List<Exception>();
-        _configurationBuilder.AddCustomConfiguration(opt =>
+        var sp = BuildServiceProvider(opt =>
         {
-            opt.DataProvider = _dataProviderMoq.Object;
-            opt.Options.PoolingInterval = _poolingInterval;
             opt.Options.HandleLoadException = ctx =>
             {
                 var result = new LoadExceptionHandlerResult();
@@ -280,8 +255,6 @@ public class CustomConfigurationProviderSpecs
                 return result;
             };
         });
-
-        var sp = BuildServiceProvider();
         var customConfiguration = sp.GetService<IOptionsMonitor<CustomConfigurationSection>>();
 
         await AssertConfigurationValuesPooling(customConfiguration, "1", false).ConfigureAwait(false);
