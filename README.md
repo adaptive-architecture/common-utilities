@@ -7,8 +7,13 @@ A set of common utilities to be used across projects.
 
 ## Packages
 
-|Package|Description|Version|Downloads|
-|:--- |:--- | ---:| ---:|
-|AdaptArch.Common.Utilities|Common utilities and contracts.|[![NuGet](https://img.shields.io/nuget/v/AdaptArch.Common.Utilities.svg?style=flat-square)](https://www.nuget.org/packages/AdaptArch.Common.Utilities)|![Nuget](https://img.shields.io/nuget/dt/AdaptArch.Common.Utilities?style=flat-square)|
-|AdaptArch.Common.Utilities.Configuration|Configuration extension utilities.|[![NuGet](https://img.shields.io/nuget/v/AdaptArch.Common.Utilities.Configuration.svg?style=flat-square)](https://www.nuget.org/packages/AdaptArch.Common.Utilities.Configuration)|![Nuget](https://img.shields.io/nuget/dt/AdaptArch.Common.Utilities.Configuration?style=flat-square)|
-|AdaptArch.Common.Utilities.Redis|Integrations and implementations for Redis.|[![NuGet](https://img.shields.io/nuget/v/AdaptArch.Common.Utilities.Redis.svg?style=flat-square)](https://www.nuget.org/packages/AdaptArch.Common.Utilities.Redis)|![Nuget](https://img.shields.io/nuget/dt/AdaptArch.Common.Utilities.Redis?style=flat-square)|
+|Package|Description|NuGet|
+|:--- |:--- | ---:|
+|AdaptArch.Common.Utilities|Common utilities and contracts.|[![NuGet](https://img.shields.io/nuget/v/AdaptArch.Common.Utilities.svg?style=flat-square)![Nuget](https://img.shields.io/nuget/dt/AdaptArch.Common.Utilities?style=flat-square)][1]|
+|AdaptArch.Common.Utilities.Configuration|Configuration extension utilities.|[![NuGet](https://img.shields.io/nuget/v/AdaptArch.Common.Utilities.Configuration.svg?style=flat-square)![Nuget](https://img.shields.io/nuget/dt/AdaptArch.Common.Utilities.Configuration?style=flat-square)][2]|
+|AdaptArch.Common.Utilities.Redis|Integrations and implementations for Redis.|[![NuGet](https://img.shields.io/nuget/v/AdaptArch.Common.Utilities.Redis.svg?style=flat-square)![Nuget](https://img.shields.io/nuget/dt/AdaptArch.Common.Utilities.Redis?style=flat-square)][3]|
+
+
+[1]: https://www.nuget.org/packages/AdaptArch.Common.Utilities
+[2]: https://www.nuget.org/packages/AdaptArch.Common.Utilities.Configuration
+[3]: https://www.nuget.org/packages/AdaptArch.Common.Utilities.Redis
