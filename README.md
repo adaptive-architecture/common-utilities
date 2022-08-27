@@ -4,6 +4,7 @@ A set of common utilities to be used across projects.
 ## Status
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/aae7ef26eb2c48af97ec87878b60f897)](https://www.codacy.com/gh/adaptive-architecture/common-utilities/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=adaptive-architecture/common-utilities&amp;utm_campaign=Badge_Grade)
 [![Coverage Status](https://coveralls.io/repos/github/adaptive-architecture/common-utilities/badge.svg?branch=main)](https://coveralls.io/github/adaptive-architecture/common-utilities?branch=main)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=adaptive-architecture_common-utilities&metric=alert_status)](https://sonarcloud.io/dashboard?id=adaptive-architecture_common-utilities)
 
 ## Packages
 
