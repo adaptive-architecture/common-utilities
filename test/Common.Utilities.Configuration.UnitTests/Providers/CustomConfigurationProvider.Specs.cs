@@ -154,6 +154,7 @@ public class CustomConfigurationProviderSpecs
         SetupGetHashSequence(GetConstantHashValue, 1);
         var sp = BuildServiceProvider(opt =>
         {
+            opt.Options.PoolingInterval = TimeSpan.Zero;
             opt.Options.Prefix = nameof(CustomConfigurationSection);
             opt.Options.OriginalKeyDelimiter = "/";
         }, nameof(CustomConfigurationSection));
