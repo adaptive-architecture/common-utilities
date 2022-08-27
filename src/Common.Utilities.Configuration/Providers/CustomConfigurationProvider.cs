@@ -128,7 +128,7 @@ public class CustomConfigurationProvider : ConfigurationProvider
     {
         lock (_poolingStateLock)
         {
-            if (_cancellationTokenSource == null || _cancellationTokenSource.IsCancellationRequested)
+            if (_cancellationTokenSource == null)
                 return;
 
             _cancellationTokenSource.Cancel();
