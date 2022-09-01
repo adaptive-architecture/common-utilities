@@ -83,13 +83,11 @@ public class InProcessMessageHubSpecs
             return Task.CompletedTask;
         });
 
-
         _ = hub.Subscribe<object>(topic, (_, _) =>
         {
             reacted++;
             return Task.CompletedTask;
         });
-
 
         hub.Publish<object>(topic, null);
 
@@ -101,7 +99,7 @@ public class InProcessMessageHubSpecs
     public void Should_Not_Fail_If_Handler_Failed()
     {
         var topic = Guid.NewGuid().ToString("N");
-        var reacted = 0;
+        const int reacted = 0;
         var hub = GetHub();
 
         _ = hub.Subscribe<object>(topic, (_, _) => throw new ApplicationException());

@@ -19,8 +19,8 @@ public class HandlerRegistrySpecs
         var handlersTopicA = registry.GetTopicHandlers<object>("topic_a").ToArray();
         var collectionSize = handlersTopicA.Length;
         Assert.Equal(2, collectionSize);
-        Assert.NotNull(handlersTopicA.FirstOrDefault(a => a.Equals(DelegateA)));
-        Assert.NotNull(handlersTopicA.FirstOrDefault(a => a.Equals(DelegateB)));
+        Assert.NotNull(Array.Find(handlersTopicA, a => a.Equals(DelegateA)));
+        Assert.NotNull(Array.Find(handlersTopicA, a => a.Equals(DelegateB)));
 
         var handlersTopicB = registry.GetTopicHandlers<object>("topic_b").ToArray();
         collectionSize = handlersTopicB.Length;
@@ -39,8 +39,8 @@ public class HandlerRegistrySpecs
         var handlersTopicA = registry.GetTopicHandlers<HandlerRegistrySpecs>("topic_a").ToArray();
         var collectionSize = handlersTopicA.Length;
         Assert.Equal(2, collectionSize);
-        Assert.NotNull(handlersTopicA.FirstOrDefault(a => a.Equals(DelegateA)));
-        Assert.NotNull(handlersTopicA.FirstOrDefault(a => a.Equals(DelegateB)));
+        Assert.NotNull(Array.Find(handlersTopicA, a => a.Equals(DelegateA)));
+        Assert.NotNull(Array.Find(handlersTopicA, a => a.Equals(DelegateB)));
 
         var handlersTopicB = registry.GetTopicHandlers<object>("topic_a").ToArray();
         collectionSize = handlersTopicB.Length;

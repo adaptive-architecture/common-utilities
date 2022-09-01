@@ -46,7 +46,6 @@ jobs:
       - name: Install tools
         run: |
           dotnet tool install --global dotnet-sonarscanner
-        # dotnet tool install --global coverlet.console
 
       - name: Sonarqube Begin
         run: |

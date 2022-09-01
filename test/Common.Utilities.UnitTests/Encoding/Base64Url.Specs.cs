@@ -134,7 +134,6 @@ public class Base64UrlSpecs
         Assert.Throws<ArgumentException>(() => _ = Base64Url.Encode(Array.Empty<byte>(), 0, Array.Empty<char>(), 2, 0));
     }
 
-
     [Theory]
     [InlineData(0, 0)]
     [InlineData(2, 4)]
@@ -148,10 +147,7 @@ public class Base64UrlSpecs
     [Fact]
     public void GetArraySizeRequiredToDecode_Throws_Format_Exception()
     {
-        Assert.Throws<FormatException>(() =>
-        {
-            _ = Base64Url.GetArraySizeRequiredToDecode(1);
-        });
+        Assert.Throws<FormatException>(() => _ = Base64Url.GetArraySizeRequiredToDecode(1));
     }
 
     [Fact]

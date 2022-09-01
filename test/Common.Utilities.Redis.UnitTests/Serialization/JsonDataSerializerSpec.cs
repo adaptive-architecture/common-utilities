@@ -42,6 +42,6 @@ public class JsonDataSerializerSpec
     {
         IDataSerializer serializer = new JsonDataSerializer();
 
-        Assert.Throws<ApplicationException>(() => serializer.Deserialize<object>("null"));
+        Assert.Throws<ArgumentNullException>(() => serializer.Deserialize<object>("null"));
     }
 }

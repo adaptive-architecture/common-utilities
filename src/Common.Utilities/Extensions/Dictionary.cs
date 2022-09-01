@@ -34,20 +34,6 @@ public static class DictionaryExtensions
     /// <param name="dictionary">The dictionary.</param>
     /// <param name="key">The key.</param>
     /// <param name="defaultValue">The factory method for the default value to return.</param>
-    /// <typeparam name="TKey">The key type.</typeparam>
-    /// <typeparam name="TValue">The value type.</typeparam>
-    /// <returns>The returned value is the value found in the dictionary if this is not null or the default value if it is not present in the dictionary or it's null.</returns>
-    public static TValue GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> defaultValue)
-    {
-        _ = dictionary.TryGetValueOrDefault(key, defaultValue, out var v);
-        return v;
-    }
-    /// <summary>
-    /// Try to get the value specified by a key from a dictionary.
-    /// </summary>
-    /// <param name="dictionary">The dictionary.</param>
-    /// <param name="key">The key.</param>
-    /// <param name="defaultValue">The factory method for the default value to return.</param>
     /// <param name="setDefault">Add the default value to the original dictionary for the given key.</param>
     /// <param name="value">The returned value.</param>
     /// <typeparam name="TKey">The key type.</typeparam>
@@ -68,6 +54,21 @@ public static class DictionaryExtensions
             dictionary.Add(key, value);
         }
         return false;
+    }
+
+    /// <summary>
+    /// Try to get the value specified by a key from a dictionary.
+    /// </summary>
+    /// <param name="dictionary">The dictionary.</param>
+    /// <param name="key">The key.</param>
+    /// <param name="defaultValue">The factory method for the default value to return.</param>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <returns>The returned value is the value found in the dictionary if this is not null or the default value if it is not present in the dictionary or it's null.</returns>
+    public static TValue GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> defaultValue)
+    {
+        _ = dictionary.TryGetValueOrDefault(key, defaultValue, out var v);
+        return v;
     }
 
     /// <summary>

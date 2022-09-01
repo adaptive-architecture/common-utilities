@@ -4,6 +4,7 @@ namespace AdaptArch.Common.Utilities.GlobalAbstractions.Implementations;
 
 /// <summary>
 /// An implementation of <see cref="IRandomGenerator"/> based on <see cref="Random"/>.
+/// <remarks>This should not be used for cryptographically secure implementations.</remarks>
 /// </summary>
 public class RandomGenerator: IRandomGenerator
 {

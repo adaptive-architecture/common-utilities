@@ -11,7 +11,6 @@ public class DashedUuidProvider : IUuidProvider
     public string New() => Guid.NewGuid().ToString("D");
 }
 
-
 /// <summary>
 /// An implementation of <see cref="IUuidProvider"/> based on <see cref="Guid"/> that uses the "N" pattern when serializing to string.
 /// </summary>

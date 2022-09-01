@@ -27,6 +27,6 @@ public class CustomConfigurationExtensionsSpecs
         builder.AddCustomConfiguration(opt => opt.DataProvider = moq);
 
         Assert.NotEmpty(builder.Sources);
-        Assert.Same(moq, ((CustomConfigurationSource)builder.Sources.First()).DataProvider);
+        Assert.Same(moq, ((CustomConfigurationSource)builder.Sources[0]).DataProvider);
     }
 }
