@@ -12,6 +12,7 @@ public class JsonConfigurationParser: IConfigurationParser
     private readonly Dictionary<string, string?> _data = new(StringComparer.OrdinalIgnoreCase);
     private readonly Stack<string> _paths = new();
     private readonly string _keyDelimiter;
+    private readonly object _parseLock = new();
 
     /// <summary>
     /// Constructor.
@@ -25,22 +26,33 @@ public class JsonConfigurationParser: IConfigurationParser
     /// <inheritdoc />
     public IReadOnlyDictionary<string, string?> Parse(string input)
     {
-        var jsonDocumentOptions = new JsonDocumentOptions
+        lock (_parseLock)
         {
-            CommentHandling = JsonCommentHandling.Skip,
-            AllowTrailingCommas = true
-        };
-
-        using (var doc = JsonDocument.Parse(input, jsonDocumentOptions))
-        {
-            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+            try
             {
-                throw new FormatException($"Top-level JSON element must be an object. Instead, '{doc.RootElement.ValueKind}' was found.");
-            }
-            VisitObjectElement(doc.RootElement);
-        }
+                var jsonDocumentOptions = new JsonDocumentOptions
+                {
+                    CommentHandling = JsonCommentHandling.Skip,
+                    AllowTrailingCommas = true
+                };
 
-        return _data;
+                using (var doc = JsonDocument.Parse(input, jsonDocumentOptions))
+                {
+                    if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                    {
+                        throw new FormatException($"Top-level JSON element must be an object. Instead, '{doc.RootElement.ValueKind}' was found.");
+                    }
+                    VisitObjectElement(doc.RootElement);
+                }
+
+                return _data.ToDictionary(k => k.Key, v => v.Value);
+            }
+            finally
+            {
+                _data.Clear();
+                _paths.Clear();
+            }
+        }
     }
 
     private void VisitObjectElement(JsonElement element)
