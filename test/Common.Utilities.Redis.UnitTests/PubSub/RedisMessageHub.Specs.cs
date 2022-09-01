@@ -55,12 +55,10 @@ public class RedisMessageHubSpecs
                 It.IsAny<CommandFlags>()))
             .Callback(UnsubscribeCallback());
 
-
         _sub.Setup(s => s.Publish(It.IsAny<RedisChannel>(), It.IsAny<RedisValue>(), It.IsAny<CommandFlags>()))
             .Callback(PublishCallback());
         _sub.Setup(s => s.PublishAsync(It.IsAny<RedisChannel>(), It.IsAny<RedisValue>(), It.IsAny<CommandFlags>()))
             .Callback(PublishCallback());
-
 
         _cm = new Mock<IConnectionMultiplexer>();
         _cm.Setup(s => s.GetSubscriber(It.Is<object>(arg => arg == null))).Returns(_sub.Object);
@@ -85,7 +83,6 @@ public class RedisMessageHubSpecs
 
     private void VerifySubscriberCalled(int times) => _cm.Verify(v => v.GetSubscriber(null), Times.Exactly(times));
 
-
     [Fact]
     public void Should_Subscribe_And_Unsubscribe_MessageHandler()
     {
@@ -97,7 +94,6 @@ public class RedisMessageHubSpecs
 
         VerifySubscriberCalled(1);
         _sub.Verify(v => v.Subscribe("topic_A", _handler, CommandFlags.None), Times.Once);
-
 
         Assert.Equal(0, _handlerReactions);
         _hub.Publish<object>("topic_A", "message");
@@ -113,7 +109,6 @@ public class RedisMessageHubSpecs
         // Check unsubscribe
         VerifySubscriberCalled(2);
         _sub.Verify(v => v.Unsubscribe("topic_A", _handler, CommandFlags.None), Times.Never);
-
 
         // Unsubscribe
         _hub.Unsubscribe(id);
@@ -140,7 +135,6 @@ public class RedisMessageHubSpecs
         VerifySubscriberCalled(1);
         _sub.Verify(v => v.SubscribeAsync("topic_A", _handler, CommandFlags.None), Times.Once);
 
-
         Assert.Equal(0, _handlerReactions);
         await _hub.PublishAsync<object>("topic_A", "message", CancellationToken.None).ConfigureAwait(false);
         Assert.Equal(1, _handlerReactions);
@@ -155,7 +149,6 @@ public class RedisMessageHubSpecs
         // Check unsubscribe
         VerifySubscriberCalled(2);
         _sub.Verify(v => v.UnsubscribeAsync("topic_A", _handler, CommandFlags.None), Times.Never);
-
 
         // Unsubscribe
         await _hub.UnsubscribeAsync(id, CancellationToken.None).ConfigureAwait(false);

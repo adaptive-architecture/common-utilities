@@ -12,7 +12,6 @@ public class InProcessMessageHubOptionsSpecs
         Assert.Null(opt.OnMessageHandlerError);
     }
 
-
     [Fact]
     public void OnMessageHandlerError_Should_Be_Assignable()
     {

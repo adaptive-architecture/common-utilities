@@ -7,7 +7,6 @@ public class JitterGeneratorSpec
 {
     private readonly JitterGenerator _jitterGenerator = new JitterGenerator(new RandomGenerator(new Random(0)));
 
-
     [Fact]
     public void Should_Throw_ArgumentOutOfRange_Exceptions()
     {

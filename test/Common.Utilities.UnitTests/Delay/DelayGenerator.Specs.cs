@@ -101,7 +101,6 @@ public class DelayGeneratorSpec
         }
     }
 
-
     [Fact]
     public void Should_Start_From_A_Given_Current_Iteration()
     {

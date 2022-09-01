@@ -18,5 +18,4 @@ public class DelayGeneratorOptionsSpec
         Assert.Equal(0.02f, options.JitterLowerBoundary);
         Assert.Equal(0.27f, options.JitterUpperBoundary);
     }
-
 }

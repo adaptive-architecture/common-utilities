@@ -175,6 +175,20 @@ public static class Base64Url
     }
 
     /// <summary>
+    /// Get the minimum output <c>char[]</c> size required for encoding <paramref name="count"/>
+    /// <see cref="Byte"/>s with the <see cref="Encode(Byte[], Int32, Char[], Int32, Int32)"/> method.
+    /// </summary>
+    /// <param name="count">The number of characters to encode.</param>
+    /// <returns>
+    /// The minimum output <c>char[]</c> size required for encoding <paramref name="count"/> <see cref="Byte"/>s.
+    /// </returns>
+    public static int GetArraySizeRequiredToEncode(int count)
+    {
+        var numWholeOrPartialInputBlocks = checked(count + 2) / 3;
+        return checked(numWholeOrPartialInputBlocks * 4);
+    }
+
+    /// <summary>
     /// Encodes <paramref name="input"/> using base64url encoding.
     /// </summary>
     /// <param name="input">The binary input to encode.</param>
@@ -253,21 +267,6 @@ public static class Base64Url
         }
 
         return Encode(input.AsSpan(offset, count), output.AsSpan(outputOffset));
-
-    }
-
-    /// <summary>
-    /// Get the minimum output <c>char[]</c> size required for encoding <paramref name="count"/>
-    /// <see cref="Byte"/>s with the <see cref="Encode(Byte[], Int32, Char[], Int32, Int32)"/> method.
-    /// </summary>
-    /// <param name="count">The number of characters to encode.</param>
-    /// <returns>
-    /// The minimum output <c>char[]</c> size required for encoding <paramref name="count"/> <see cref="Byte"/>s.
-    /// </returns>
-    public static int GetArraySizeRequiredToEncode(int count)
-    {
-        var numWholeOrPartialInputBlocks = checked(count + 2) / 3;
-        return checked(numWholeOrPartialInputBlocks * 4);
     }
 
     /// <summary>
