@@ -52,28 +52,28 @@ jobs:
 
       - name: Test
         run: |
-          coverlet ./Common.Utilities.UnitTests/bin/Debug/net6.0/Common.Utilities.UnitTests.dll
+          coverlet ./test/Common.Utilities.UnitTests/bin/Debug/net6.0/AdaptArch.Common.Utilities.UnitTests.dll
             --target "dotnet"
             --targetargs "test --no-build"
             --format "json,opencover"
             --output "coverage.xml"
             --merge-with "coverage.json"
 
-          coverlet ./Common.Utilities.Redis.UnitTests/bin/Debug/net6.0/Common.Utilities.Redis.UnitTests.dll
+          coverlet ./test/Common.Utilities.Redis.UnitTests/bin/Debug/net6.0/AdaptArch.Common.Utilities.Redis.UnitTests.dll
             --target "dotnet"
             --targetargs "test --no-build"
             --format "json,opencover"
             --output "coverage.xml"
             --merge-with "coverage.json"
 
-          coverlet ./Common.Utilities.Redis.IntegrationTests/bin/Debug/net6.0/Common.Utilities.Redis.IntegrationTests.dll
+          coverlet ./test/Common.Utilities.Redis.IntegrationTests/bin/Debug/net6.0/AdaptArch.Common.Utilities.Redis.IntegrationTests.dll
             --target "dotnet"
             --targetargs "test --no-build"
             --format "json,opencover"
             --output "coverage.xml"
             --merge-with "coverage.json"
 
-          coverlet ./Common.Utilities.Configuration.UnitTests/bin/Debug/net6.0/Common.Utilities.Configuration.UnitTests.dll
+          coverlet ./test/Common.Utilities.Configuration.UnitTests/bin/Debug/net6.0/AdaptArch.Common.Utilities.Configuration.UnitTests.dll
             --target "dotnet"
             --targetargs "test --no-build"
             --format "json,opencover"
