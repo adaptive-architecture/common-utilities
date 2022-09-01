@@ -4,7 +4,6 @@ namespace AdaptArch.Common.Utilities.UnitTests.Encoding;
 
 public class Base64UrlEncoderSpecs
 {
-
     [Fact]
     public void DataOfVariousLengthRoundTripCorrectly()
     {

@@ -80,17 +80,14 @@ public class CustomConfigurationProvider : ConfigurationProvider
             ? k => k
             : k => k.Replace(_options.OriginalKeyDelimiter, ConfigurationPath.KeyDelimiter);
 
-
         Func<string, string> keyTransform = String.IsNullOrEmpty(_options.Prefix)
             ? k => keyDelimiterReplacer(k)
             : k => _options.Prefix + ConfigurationPath.KeyDelimiter + keyDelimiterReplacer(k);
-
 
         if (_options.ConfigurationParser == null)
         {
             return rawData.ToDictionary(k => keyTransform(k.Key), v => v.Value, StringComparer.InvariantCultureIgnoreCase);
         }
-
 
         var data = new Dictionary<string, string?>(StringComparer.InvariantCultureIgnoreCase);
         foreach (var kvp in rawData)

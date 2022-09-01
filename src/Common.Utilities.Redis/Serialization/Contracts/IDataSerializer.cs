@@ -18,5 +18,5 @@ public interface IDataSerializer
     /// </summary>
     /// <typeparam name="T">The type of the data.</typeparam>
     /// <param name="data">The data to deserialize.</param>
-    T Deserialize<T>(RedisValue data);
+    T? Deserialize<T>(RedisValue data);
 }

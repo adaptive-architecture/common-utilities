@@ -23,7 +23,7 @@ public class DelayGenerator: IDelayGenerator
     {
         while (_currentIteration < _options.MaxIterations)
         {
-            var delay = GetCurrentDelay(_currentIteration);
+            var delay = GetCurrentDelay(_currentIteration, _options.DelayType, _options.DelayInterval);
             var jitter = _options.JitterGenerator
                 .New(delay, _options.JitterLowerBoundary, _options.JitterUpperBoundary);
             _currentIteration++;
@@ -31,22 +31,22 @@ public class DelayGenerator: IDelayGenerator
         }
     }
 
-    private TimeSpan GetCurrentDelay(int iteration)
+    private static TimeSpan GetCurrentDelay(int iteration, DelayType delayType, TimeSpan delayInterval)
     {
         // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
         // ReSharper disable once ConvertSwitchStatementToSwitchExpression
-        switch (_options.DelayType)
+        switch (delayType)
         {
             case DelayType.Constant:
-                return _options.DelayInterval;
+                return delayInterval;
             case DelayType.Linear:
-                return iteration * _options.DelayInterval;
+                return iteration * delayInterval;
             case DelayType.PowerOf2:
-                return Math.Pow(iteration, 2) * _options.DelayInterval;
+                return Math.Pow(iteration, 2) * delayInterval;
             case DelayType.PowerOfE:
-                return Math.Pow(iteration, Math.E) * _options.DelayInterval;
+                return Math.Pow(iteration, Math.E) * delayInterval;
             default:
-                throw new ArgumentOutOfRangeException(nameof(_options.DelayType), $"The \"{_options.DelayType}\" delay type is not known.");
+                throw new ArgumentOutOfRangeException(nameof(delayType), $"The \"{delayType}\" delay type is not known.");
         }
         // ReSharper restore SwitchStatementHandlesSomeKnownEnumValuesWithDefault
     }

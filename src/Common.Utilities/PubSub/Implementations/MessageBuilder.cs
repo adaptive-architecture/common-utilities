@@ -8,7 +8,6 @@ namespace AdaptArch.Common.Utilities.PubSub.Implementations;
 public class MessageBuilder<T>: IMessageBuilder<T>
     where T : class
 {
-
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly IUuidProvider _uuidProvider;
 
