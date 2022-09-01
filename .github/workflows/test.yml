@@ -38,6 +38,53 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
 
+      - name: Install tools
+        run: |
+          dotnet tool install --global dotnet-sonarscanner
+          dotnet tool install --global coverlet.console
+
+      - name: Sonarqube Begin
+        run: |
+          dotnet sonarscanner /k:"adaptive-architecture_common-utilities" /o:"adaptive-architecture" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=coverage.xml
+
+      - name: Build
+        run: dotnet build --no-incremental
+
+      - name: Test
+        run: |
+          coverlet ./Common.Utilities.UnitTests/bin/Debug/net6.0/Common.Utilities.UnitTests.dll
+            --target "dotnet"
+            --targetargs "test --no-build"
+            --format "json,opencover"
+            --output "coverage.xml"
+            --merge-with "coverage.json"
+
+          coverlet ./Common.Utilities.Redis.UnitTests/bin/Debug/net6.0/Common.Utilities.Redis.UnitTests.dll
+            --target "dotnet"
+            --targetargs "test --no-build"
+            --format "json,opencover"
+            --output "coverage.xml"
+            --merge-with "coverage.json"
+
+          coverlet ./Common.Utilities.Redis.IntegrationTests/bin/Debug/net6.0/Common.Utilities.Redis.IntegrationTests.dll
+            --target "dotnet"
+            --targetargs "test --no-build"
+            --format "json,opencover"
+            --output "coverage.xml"
+            --merge-with "coverage.json"
+
+          coverlet ./Common.Utilities.Configuration.UnitTests/bin/Debug/net6.0/Common.Utilities.Configuration.UnitTests.dll
+            --target "dotnet"
+            --targetargs "test --no-build"
+            --format "json,opencover"
+            --output "coverage.xml"
+            --merge-with "coverage.json"
+
+      - name: Sonarqube End
+        run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run Unit Tests
         run: sh ./pipeline/unit-test.sh
 
