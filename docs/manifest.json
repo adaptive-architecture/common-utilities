@@ -1,0 +1,920 @@
+{
+  "homepages": [],
+  "source_base_path": "D:/xxx-code/github.com/adaptive-architecture/common-utilities/docfx_project",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      },
+      "is_incremental": false
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Configuration.Contracts.IConfigurationParser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Configuration.Contracts.IConfigurationParser.html",
+          "hash": "e245tYbXlN1BmEHnNp88KynnhgPRHl1FiSpEHanVW+w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.html",
+          "hash": "1NhBvX5zp2Op1dEyCXLciaK9jKofuciLTIwzmVYT6qE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Configuration.Contracts.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Configuration.Contracts.html",
+          "hash": "iNEQBo6uwEepc0OVtlQpRSkb2U/nOSFaVBx8hvdkLbU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.html",
+          "hash": "6uyeCNSil56CNYUiMGYcwppf1tHaQ0aaZxgdvn0sjqk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Configuration.Implementation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Configuration.Implementation.html",
+          "hash": "qlmXbxPyQh2rAjec54nyAO2mAoINJhCzoQVaFdDJouE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.html",
+          "hash": "eCYbRIeER1NMb+aeMuJGhClFgqWODBfxJme6+tq/yfc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProviderOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProviderOptions.html",
+          "hash": "Ih/u+Ry+V6zCQYHrJQHxmPLAnmN+x3ubPF1Lb3FSL+I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationSource.html",
+          "hash": "Y/NDYColJntLbtFVThCYITUbgpua70jR6Een+yGDnw8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.html",
+          "hash": "lQuecnVyZhjOC4YC4BzMFrlQunnBvgANof+u9Wcrfec="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionHandlerResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionHandlerResult.html",
+          "hash": "yg2kAFeUxnibQwRpOLfKd/7+/eq8nLgNuTK55uxt4s0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Configuration.Providers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Configuration.Providers.html",
+          "hash": "c3mRitw1n9VZY+Q42HHFlO3WvPT3g9ixPXPAtFWTyFs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Delay.Contracts.DelayType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Delay.Contracts.DelayType.html",
+          "hash": "bzXQUoU4+ScN88yPy5vSOzF8MAYd87WqDLS8n+hr/t0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Delay.Contracts.IDelayGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Delay.Contracts.IDelayGenerator.html",
+          "hash": "ZaE21zBU4x6lYT5/739iAji7GDB1+mqcF4K36aRyMRc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Delay.Contracts.IJitterGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Delay.Contracts.IJitterGenerator.html",
+          "hash": "h+/EfUQXE8LBvh5qtlsInxAlgzNLvVNf3+IOWUD+9Mc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Delay.Contracts.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Delay.Contracts.html",
+          "hash": "vDju1B719nh4GN/HCJE0wgygwXpTJjuImlpiiNphSAs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Delay.Implementations.DelayGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Delay.Implementations.DelayGenerator.html",
+          "hash": "W4RayuzwgJoLhX3oS30PbQ33rROZsctD6CjzODjM7D8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Delay.Implementations.DelayGeneratorOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Delay.Implementations.DelayGeneratorOptions.html",
+          "hash": "jEbZBImhvBIcA17bx15wn6lRaxe2lZ9CDmtRYcVVQrE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.html",
+          "hash": "ilZBFRIwV8Q02c8CEjAMRdStUngFyFIOTpWfgvzA0MM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Delay.Implementations.ZeroJitterGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Delay.Implementations.ZeroJitterGenerator.html",
+          "hash": "mNUKRlHQm3Ey+sfjRCb0fH/+g6NnJuKE3kqs7tS+lBg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Delay.Implementations.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Delay.Implementations.html",
+          "hash": "ZiyyaaRxnpoYczQVxf+0s2XoJeb3M89WDaYVnugdPas="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Encoding.Base64Url.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Encoding.Base64Url.html",
+          "hash": "FxpdO67bJeky/V5n/11VNXXMUDPO8EZwmh1vs3Mmm54="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.html",
+          "hash": "jvznPvdRR0tPOZdcJ5fo+XCsz33tgmsmwRx1Z+UJ8U0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Encoding.IEncoder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Encoding.IEncoder.html",
+          "hash": "wd8rkVtqg/Po4RXKSGMt+w2U0oSyLFL3MEMYJq+JBoM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Encoding.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Encoding.html",
+          "hash": "SpiGfL5bdd37wvPA/bCL7n8mlmF2q+yg/2Q66GTXkvA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.html",
+          "hash": "kqxqGIvVw8zbm4oZJY6w7xXAYi8Eg1oSpgFgy61nP0A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.html",
+          "hash": "sUIZfSE6ZBJW1ALthEXPijPA2rqBk2unSqR+zDVs1Lw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Extensions.TaskExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Extensions.TaskExtensions.html",
+          "hash": "Dp+GpLt2oX7wYaojL3fHmKC/r+zYzovxmNYBWHXARWc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Extensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Extensions.html",
+          "hash": "tErfIsntqXzfwoS6uF6gQdHsnOjmPrEGdOeKfi/J1XA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IDateTimeProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IDateTimeProvider.html",
+          "hash": "Lsp3dewmP70vuLtqHQqmIUgEeg2x84b5fLzWtRssKSI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IRandomGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IRandomGenerator.html",
+          "hash": "3PicZa6ty/sNd5eXiNrd1zA9dDsnUG2JhVUyW9V4NJw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IUuidProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IUuidProvider.html",
+          "hash": "vudF6XPPBJQcvGK0lN8YwyLfZc4xCgLaqRZF4d6A7dg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.html",
+          "hash": "ecAoI2cKqywAJB2AYkmbugPYl9Fn7VnyCiLR7QiqOcQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.DashedUuidProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.DashedUuidProvider.html",
+          "hash": "2yBmE61tSfnOAZvmAxnU20r0m8fkHUBkxoxfTfj4GjM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.DateTimeProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.DateTimeProvider.html",
+          "hash": "yWDNGKyhOJs7HPG+Ss7rvXDE6xyvrSAsCRHA5Gjs+h8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.html",
+          "hash": "JttxXd1l9am/ggxn/f3WKLprVZ8XuDPfmX+RGufeE4Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.MockProvider-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.MockProvider-1.html",
+          "hash": "vktx6SVRzW/uGVWKvoNh3s+0jp1n9cqFGlCe5gQ3zfo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.html",
+          "hash": "np7n3dXfuKjn9FRB9pmQvz0Y8Qys2C3DjwmIWf1HNks="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.html",
+          "hash": "+vggDi6TJ3HU9Ftv/UIGyKig2m2N5Lc5sDqUgoVb9+s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.html",
+          "hash": "4ISS6l+zX3zqykbCnsL2SF76Uqc91XwcXOlrtkbv1s4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.UnDashedUuidProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.UnDashedUuidProvider.html",
+          "hash": "Wf2Bzyo0FiYtvkStglDlH7dqtsyr07bDhkxutLCKX88="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.html",
+          "hash": "x0XE2cHW9uMW5Kfs7mWigLWNbNPb5YVEBIDvhpNseAw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessage-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessage-1.html",
+          "hash": "TuLvUaY+4dejllBgAVwz/Ovo2+1Plxg0+IPBsfltE6Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder-1.html",
+          "hash": "9dyB6aKMfDqCJB7PYcL6w1KnxkzzG7TFa1NFiAIyvtg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.html",
+          "hash": "8i7EUau5Pzqim3WGg5U9FsxJqQpsWVCkd77U9BbVq9I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.html",
+          "hash": "EbS8IlowBaL50GxIWdF6dGdhUq6kETry6LzXzNtQbSs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler-1.html",
+          "hash": "91LpxR27GtHzmP9WhsKFw8Z1esRb9x+PVKAeAgaD16g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.PubSub.Contracts.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.PubSub.Contracts.html",
+          "hash": "SOSdhcD3/G8gcoU4N+qN5WqqF9IHs+b7c9YP8LbU5xA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html",
+          "hash": "3c1zdjG8QNGI/cH2MEJvdw0Wt1lsABxRJqFPbzf0BJM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHubOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHubOptions.html",
+          "hash": "seJYzjyeX2Cr7pp3LYfUB7Gni2Ov70zgTXER0xpq0lw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder-1.html",
+          "hash": "AzYaf6tE86FsRMNgxSNJ90gzW/iLd+OYCSXwjjKdT98="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html",
+          "hash": "U7cUJTGi8uYKtM6CxZUM+bJaVUfGokDkSeNcnvl6fgM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHubOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHubOptions.html",
+          "hash": "SpheXvijue4f6q7aaZ3HI7OID+kQ1eAhV8sX94yrAVY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.PubSub.Implementations.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.PubSub.Implementations.html",
+          "hash": "KANgIWOpK37BovXbc0eKERUybh/etZRmOS37vINqRVY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html",
+          "hash": "KCIKS5sYmGgt2Nb6rD4gCgo6OM7P3wu/l6SoBc+6Uhs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions.html",
+          "hash": "jl+4tgjBD54UFJiMqlQPs3bA6NMB1qdYeAkGNUAZgSQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Redis.PubSub.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Redis.PubSub.html",
+          "hash": "MmIEkiqOMfiDM77NvqTiM7BPXehUDG4k61DLIHqNJgk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Redis.Serialization.Contracts.IDataSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Redis.Serialization.Contracts.IDataSerializer.html",
+          "hash": "Nhu8FXSvgIbU5HxURdGGiA8chfV+2cOVNTiVfye/e8I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Redis.Serialization.Contracts.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Redis.Serialization.Contracts.html",
+          "hash": "jp/yQAOPFDJfFIen4GOSVXMMfFXlCCgA5+D48emUcFw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Redis.Serialization.Implementations.JsonDataSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Redis.Serialization.Implementations.JsonDataSerializer.html",
+          "hash": "l5XQvv9y5U+aDdYGNKwon4AYY8WhnsQ3I2NYVoZpzjc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/AdaptArch.Common.Utilities.Redis.Serialization.Implementations.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/AdaptArch.Common.Utilities.Redis.Serialization.Implementations.html",
+          "hash": "MybZF9wvPofiV++g+4INfEoV4N65L6aI8imnaCbNDeA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.Configuration.CustomConfigurationExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.Configuration.CustomConfigurationExtensions.html",
+          "hash": "HNiM8zzXqQdfqbuoGMbCcxTOTcUrjOcQVwZIbaGanNo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.Configuration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.Configuration.html",
+          "hash": "TnvKoZwmcscXFvMl/kfofrdw1Lt0N8qGgDz2gWqUDR4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "j8qPPOgi6PSHhmymYmQb0P5DOvHepiJbnUo+DgETELM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "2+9AGOwyn+6FjzwGxKaDBcdrspgAj8ckl4CmdlUqDVQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/custom-configuration-provider.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/custom-configuration-provider.html",
+          "hash": "mXjHPdyPRi+XB938weP/RBRX5xzYwIRp4GVO9ogw4G8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/redis-message-bus.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/redis-message-bus.html",
+          "hash": "BIW2qLLB8ZqW1cK7ftCkSP/YVUi/HZOD7pGF2lf6Cic="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "articles/toc.html",
+          "hash": "ncvhjTJIitMmolyQHnSD5H9XArlHShJixhG65pcD5b0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/favicon.ico",
+      "output": {
+        "resource": {
+          "relative_path": "images/favicon.ico"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/logo.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/logo.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "t93UaY0OBhwGANvUWwXn+T8BfKRvhxMDZruIF1I9ZU0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "PVJ2w02cuzJQF4QmQsXpDLMhqA8gMpJQpcLlQ9744Fs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": true,
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 4,
+          "skipped_file_count": 4
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 62,
+          "skipped_file_count": 62
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: should not trace intermediate info.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
