@@ -10,14 +10,13 @@ public class CustomConfigurationProviderOptions
 {
     /// <summary>
     /// The interval at which the data provider should reload the configuration.
-    /// Default value <see cref="TimeSpan.Zero"/>.
-    /// This should be a value grater than <see cref="TimeSpan.Zero"/>.
+    /// Default value <see cref="System.TimeSpan.Zero"/>.
+    /// This should be a value grater than <see cref="System.TimeSpan.Zero"/>.
     /// </summary>
     public TimeSpan PoolingInterval { get; set; } = TimeSpan.Zero;
 
     /// <summary>
-    /// Exception handler.
-    /// If the function return "true" the exception is considered handled and it will not be re-thrown.
+    /// Exception handler in case the provider is unable to retrieve the configuration.
     /// </summary>
     public Func<LoadExceptionContext, LoadExceptionHandlerResult>? HandleLoadException { get; set; }
 

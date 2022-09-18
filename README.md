@@ -2,9 +2,8 @@
 A set of common utilities to be used across projects and reduce amount of time wasted on cross cutting concerns.
 
 ## Status
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/aae7ef26eb2c48af97ec87878b60f897)](https://www.codacy.com/gh/adaptive-architecture/common-utilities/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=adaptive-architecture/common-utilities&amp;utm_campaign=Badge_Grade)
-[![Coverage Status](https://coveralls.io/repos/github/adaptive-architecture/common-utilities/badge.svg?branch=main)](https://coveralls.io/github/adaptive-architecture/common-utilities?branch=main)
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=adaptive-architecture_common-utilities&metric=alert_status)](https://sonarcloud.io/dashboard?id=adaptive-architecture_common-utilities)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=adaptive-architecture_common-utilities&metric=coverage)](https://sonarcloud.io/summary/new_code?id=adaptive-architecture_common-utilities)
 
 |Package|Status|
 |:--- | ---:|
@@ -16,16 +15,6 @@ A set of common utilities to be used across projects and reduce amount of time w
 [2]: https://www.nuget.org/packages/AdaptArch.Common.Utilities.Configuration
 [3]: https://www.nuget.org/packages/AdaptArch.Common.Utilities.Redis
 
-## Packages Overview
-
-### AdaptArch.Common.Utilities
-Common utilities and contracts.
-
-### AdaptArch.Common.Utilities.Configuration
-Configuration extension utilities.
-
-### AdaptArch.Common.Utilities.Redis
-Integrations and implementations for Redis.
-
 ## Documentation
-Work in progress.
+
+Please read the documentation [here](https://adaptive-architecture.github.io/common-utilities/).

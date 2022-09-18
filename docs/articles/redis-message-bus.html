@@ -5,9 +5,9 @@
     <head>
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>WIP: Redis message bus | Adaptive Architecture Common Utilities </title>
+      <title>Redis message bus | Adaptive Architecture Common Utilities </title>
       <meta name="viewport" content="width=device-width">
-      <meta name="title" content="WIP: Redis message bus | Adaptive Architecture Common Utilities ">
+      <meta name="title" content="Redis message bus | Adaptive Architecture Common Utilities ">
       <meta name="generator" content="docfx 2.59.4.0">
       
       <link rel="shortcut icon" href="../images/favicon.ico">
@@ -49,7 +49,7 @@
                           <img src="../images/logo.png" alt="Common Utilities" class="logomark">
                           <span class="brand-title">Common Utilities</span>
                         </a>  </div>
-
+                    
                       <div class="sidesearch">
                         <form id="search" role="search" class="search">
                             <i class="bi bi-search search-icon"></i>
@@ -90,8 +90,86 @@
                         </div>
 
                     <article class="content wrap" id="_content" data-uid="">
-<h1 id="wip-redis-message-bus">WIP: Redis message bus</h1>
+<h1 id="redis-message-bus">Redis message bus</h1>
 
+<p>For some simple <code>pub/sub</code> workload it might be enough to use a Redis based implementation of <code>IMessageHub</code> or <code>IMessageHubAsync</code>.</p>
+<h2 id="service-registration">Service registration</h2>
+<p>To get to run using Reid all you need to do is:</p>
+<ul>
+<li>Register a <code>IConnectionMultiplexer</code> instance with the dependency container.</li>
+<li>Register the <code>RedisMessageHubOptions</code> with the dependency container.</li>
+<li>Register the <code>RedisMessageHub</code> or <code>IMessageHubAsync</code> with the dependency container.</li>
+</ul>
+<pre><code class="lang-csharp">services.AddSingleton&lt;IConnectionMultiplexer&gt;(ConnectionMultiplexer.Connect(&quot;localhost:6379&quot;));
+
+services.AddSingleton(new RedisMessageHubOptions {
+  // DataSerializer = new CustomDataSerializer() -- You can override the default serializer (JsonDataSerializer) if you wish to.
+});
+
+// Preferred way.
+services.AddSingleton&lt;IMessageHubAsync, RedisMessageHub&gt;();
+// OR
+services.AddSingleton&lt;IMessageHub, RedisMessageHub&gt;();
+// OR
+services
+  .AddSingleton&lt;RedisMessageHub&gt;()
+  .AddSingleton&lt;IMessageHub&gt;(svc =&gt; svc.GetService&lt;RedisMessageHub&gt;())
+  .AddSingleton&lt;IMessageHubAsync&gt;(svc =&gt; svc.GetService&lt;RedisMessageHub&gt;())
+
+
+// We will use this later.
+services.AddSingleton&lt;MyMessageHandler&gt;();
+</code></pre>
+<h2 id="usage">Usage</h2>
+<p>To use the message hub in your business manager all you need to do is:</p>
+<ul>
+<li>Inject a reference to the message hub.</li>
+<li>Subscribe to the messages you are interested in.</li>
+<li>Publish the messages you need to.</li>
+<li>Optionally unsubscribe from the messages you are no longer interested in.</li>
+</ul>
+<pre><code class="lang-csharp">public class SayHello
+{
+  public string Name { get; set; }
+}
+
+public class MyMessageHandler
+{
+  private readonly IMessageHubAsync _messageHub;
+  private const string MessageName = &quot;WELCOME_GUESTS&quot;;
+  private string subscriptionId;
+
+  public MyMessageHandler(IMessageHubAsync messageHub)
+  {
+    _messageHub = messageHub;
+  }
+
+  public Task StartListeningAsync(CancellationToken cancellationToken)
+  {
+    // Store the subscriptionId so we can latter unsubscribe.
+    subscriptionId = _messageHub.Subscribe&lt;SayHello&gt;(MessageName,
+      (m, _) =&gt; HandleMessageAsync(m.Data, CancellationToken.None));
+  }
+
+  public Task StopListeningAsync(CancellationToken cancellationToken)
+  {
+    // Use the subscription id to unsubscribe.
+    _messageHub.Unsubscribe(subscriptionId);
+  }
+
+  public Task PublishAsync(SayHello command, CancellationToken cancellationToken)
+  {
+    _messageHub.Publish(MessageName, command);
+  }
+
+  private Task HandleMessageAsync(SayHello command, CancellationToken cancellationToken)
+  {
+    // You will have more advanced logic than this
+    Console.WriteLine($&quot;Welcome {command.Name}&quot;);
+    return Task.CompletedTask;
+  }
+}
+</code></pre>
 </article>
                 </div>
 
