@@ -103,9 +103,6 @@
 <pre><code class="lang-csharp">// Minimal API example.
 
 var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
-
-
 
 builder.Services.AddSingleton&lt;IConnectionMultiplexer&gt;(ConnectionMultiplexer.Connect(&quot;localhost:6379&quot;));
 
@@ -126,6 +123,8 @@ builder.Services
 
 
 services.AddSingleton&lt;MyMessageHandler&gt;();
+
+var app = builder.Build();
 
 // Start listening.
 app.MapGet(&quot;/start-listening&quot;, static async (MyMessageHandler handler, CancellationToken token) =&gt; {

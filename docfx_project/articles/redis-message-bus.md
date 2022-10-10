@@ -12,9 +12,6 @@ To get to run using Reid all you need to do is:
 // Minimal API example.
 
 var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
-
-
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost:6379"));
 
@@ -35,6 +32,8 @@ builder.Services
 
 
 services.AddSingleton<MyMessageHandler>();
+
+var app = builder.Build();
 
 // Start listening.
 app.MapGet("/start-listening", static async (MyMessageHandler handler, CancellationToken token) => {
