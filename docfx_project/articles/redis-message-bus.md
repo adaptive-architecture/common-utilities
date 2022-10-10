@@ -9,25 +9,52 @@ To get to run using Reid all you need to do is:
 * Register the `RedisMessageHub` or `IMessageHubAsync` with the dependency container.
 
 ``` csharp
-services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost:6379"));
+// Minimal API example.
 
-services.AddSingleton(new RedisMessageHubOptions {
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost:6379"));
+
+builder.Services.AddSingleton(new RedisMessageHubOptions {
   // DataSerializer = new CustomDataSerializer() -- You can override the default serializer (JsonDataSerializer) if you wish to.
 });
 
 // Preferred way.
-services.AddSingleton<IMessageHubAsync, RedisMessageHub>();
+builder.Services.AddSingleton<IMessageHubAsync, RedisMessageHub>();
 // OR
-services.AddSingleton<IMessageHub, RedisMessageHub>();
+builder.Services.AddSingleton<IMessageHub, RedisMessageHub>();
 // OR
-services
+builder.Services
   .AddSingleton<RedisMessageHub>()
   .AddSingleton<IMessageHub>(svc => svc.GetService<RedisMessageHub>())
   .AddSingleton<IMessageHubAsync>(svc => svc.GetService<RedisMessageHub>())
 
 
-// We will use this later.
+
 services.AddSingleton<MyMessageHandler>();
+
+// Start listening.
+app.MapGet("/start-listening", static async (MyMessageHandler handler, CancellationToken token) => {
+  await handler.StartListeningAsync(token);
+  return Results.Ok();
+});
+
+// Stop listening.
+app.MapGet("/stop-listening", static async (MyMessageHandler handler, CancellationToken token) => {
+  await handler.StopListeningAsync(token);
+  return Results.Ok();
+});
+
+// Publish messages.
+app.MapGet("/publish", static async (MyMessageHandler handler, CancellationToken token) => {
+  await handler.PublishAsync(new SayHello { Name = "Marco" }, token);
+  return Results.Ok();
+});
+
+app.Run();
 ```
 
 ## Usage

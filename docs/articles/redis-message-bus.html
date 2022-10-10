@@ -100,25 +100,52 @@
 <li>Register the <code>RedisMessageHubOptions</code> with the dependency container.</li>
 <li>Register the <code>RedisMessageHub</code> or <code>IMessageHubAsync</code> with the dependency container.</li>
 </ul>
-<pre><code class="lang-csharp">services.AddSingleton&lt;IConnectionMultiplexer&gt;(ConnectionMultiplexer.Connect(&quot;localhost:6379&quot;));
+<pre><code class="lang-csharp">// Minimal API example.
 
-services.AddSingleton(new RedisMessageHubOptions {
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+
+
+builder.Services.AddSingleton&lt;IConnectionMultiplexer&gt;(ConnectionMultiplexer.Connect(&quot;localhost:6379&quot;));
+
+builder.Services.AddSingleton(new RedisMessageHubOptions {
   // DataSerializer = new CustomDataSerializer() -- You can override the default serializer (JsonDataSerializer) if you wish to.
 });
 
 // Preferred way.
-services.AddSingleton&lt;IMessageHubAsync, RedisMessageHub&gt;();
+builder.Services.AddSingleton&lt;IMessageHubAsync, RedisMessageHub&gt;();
 // OR
-services.AddSingleton&lt;IMessageHub, RedisMessageHub&gt;();
+builder.Services.AddSingleton&lt;IMessageHub, RedisMessageHub&gt;();
 // OR
-services
+builder.Services
   .AddSingleton&lt;RedisMessageHub&gt;()
   .AddSingleton&lt;IMessageHub&gt;(svc =&gt; svc.GetService&lt;RedisMessageHub&gt;())
   .AddSingleton&lt;IMessageHubAsync&gt;(svc =&gt; svc.GetService&lt;RedisMessageHub&gt;())
 
 
-// We will use this later.
+
 services.AddSingleton&lt;MyMessageHandler&gt;();
+
+// Start listening.
+app.MapGet(&quot;/start-listening&quot;, static async (MyMessageHandler handler, CancellationToken token) =&gt; {
+  await handler.StartListeningAsync(token);
+  return Results.Ok();
+});
+
+// Stop listening.
+app.MapGet(&quot;/stop-listening&quot;, static async (MyMessageHandler handler, CancellationToken token) =&gt; {
+  await handler.StopListeningAsync(token);
+  return Results.Ok();
+});
+
+// Publish messages.
+app.MapGet(&quot;/publish&quot;, static async (MyMessageHandler handler, CancellationToken token) =&gt; {
+  await handler.PublishAsync(new SayHello { Name = &quot;Marco&quot; }, token);
+  return Results.Ok();
+});
+
+app.Run();
 </code></pre>
 <h2 id="usage">Usage</h2>
 <p>To use the message hub in your business manager all you need to do is:</p>
