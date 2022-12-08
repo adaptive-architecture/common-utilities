@@ -1,9 +1,9 @@
-using AdaptArch.Common.Utilities.Delay.Implementations;
+﻿using AdaptArch.Common.Utilities.Delay.Implementations;
 using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations;
 
 namespace AdaptArch.Common.Utilities.UnitTests.Delay;
 
-public class JitterGeneratorSpec
+public class JitterGeneratorSpecs
 {
     private readonly JitterGenerator _jitterGenerator = new JitterGenerator(new RandomGenerator(new Random(0)));
 

@@ -1,8 +1,8 @@
-using AdaptArch.Common.Utilities.Delay.Implementations;
+﻿using AdaptArch.Common.Utilities.Delay.Implementations;
 
 namespace AdaptArch.Common.Utilities.UnitTests.Delay;
 
-public class ZeroJitterGeneratorSpec
+public class ZeroJitterGeneratorSpecs
 {
     [Fact]
     public void Should_Return_Zero()

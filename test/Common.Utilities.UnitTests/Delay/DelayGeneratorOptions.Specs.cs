@@ -3,7 +3,7 @@ using AdaptArch.Common.Utilities.Delay.Implementations;
 
 namespace AdaptArch.Common.Utilities.UnitTests.Delay;
 
-public class DelayGeneratorOptionsSpec
+public class DelayGeneratorOptionsSpecs
 {
     [Fact]
     public void Should_Have_Default_Values()

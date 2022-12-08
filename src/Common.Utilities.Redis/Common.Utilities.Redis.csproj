@@ -9,7 +9,6 @@
     <Description>Redis integrations for the Common.Utilities contracts.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>logo.png</PackageIcon>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(CI_BUILD)' == 'true'">
@@ -28,15 +27,11 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(CONFIGURATION)' == 'Release'">
-    <PackageReference Include="AdaptArch.Common.Utilities" Version="0.1.0" />
+    <PackageReference Include="AdaptArch.Common.Utilities" Version="0.1.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="StackExchange.Redis" Version="2.6.48" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.80" />
   </ItemGroup>
 
 </Project>

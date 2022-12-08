@@ -3,7 +3,7 @@ using AdaptArch.Common.Utilities.Delay.Implementations;
 
 namespace AdaptArch.Common.Utilities.UnitTests.Delay;
 
-public class DelayGeneratorSpec
+public class DelayGeneratorSpecs
 {
     [Fact]
     public void Should_Throw_If_Unknown_Delay_Type()
