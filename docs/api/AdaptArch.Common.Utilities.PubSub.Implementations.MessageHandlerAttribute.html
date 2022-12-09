@@ -5,10 +5,10 @@
     <head>
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Interface IMessageHub
+      <title>Class MessageHandlerAttribute
      | Adaptive Architecture Common Utilities </title>
       <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Interface IMessageHub
+      <meta name="title" content="Class MessageHandlerAttribute
      | Adaptive Architecture Common Utilities ">
       <meta name="generator" content="docfx 2.59.4.0">
       
@@ -91,31 +91,35 @@
                           </div>
                         </div>
 
-                    <article class="content wrap" id="_content" data-uid="AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub">
+                    <article class="content wrap" id="_content" data-uid="AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute">
   
   
-  <h1 id="AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub" data-uid="AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub" class="text-break">Interface IMessageHub
+  <h1 id="AdaptArch_Common_Utilities_PubSub_Implementations_MessageHandlerAttribute" data-uid="AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute" class="text-break">Class MessageHandlerAttribute
   </h1>
-  <div class="markdown level0 summary"><p>Contract for a Pub/Sub hub.</p>
+  <div class="markdown level0 summary"><p>A marker attribute for message handler functions.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="AdaptArch.Common.Utilities.PubSub.Contracts.html">AdaptArch.Common.Utilities.PubSub.Contracts</a></h6>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">MessageHandlerAttribute</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="AdaptArch.Common.Utilities.PubSub.Implementations.html">AdaptArch.Common.Utilities.PubSub.Implementations</a></h6>
   <h6><strong>Assembly</strong>: AdaptArch.Common.Utilities.dll</h6>
-  <h5 id="AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_syntax">Syntax</h5>
+  <h5 id="AdaptArch_Common_Utilities_PubSub_Implementations_MessageHandlerAttribute_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public interface IMessageHub</code></pre>
+    <pre><code class="lang-csharp hljs">public class MessageHandlerAttribute : Attribute</code></pre>
   </div>
-  <h3 id="methods">Methods
+  <h3 id="constructors">Constructors
   </h3>
-  <a id="AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Publish_" data-uid="AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Publish*"></a>
-  <h4 id="AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Publish__1_System_String___0_" data-uid="AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Publish``1(System.String,``0)">Publish&lt;TMessageData&gt;(String, TMessageData)</h4>
-  <div class="markdown level1 summary"><p>Publish a message.</p>
+  <a id="AdaptArch_Common_Utilities_PubSub_Implementations_MessageHandlerAttribute__ctor_" data-uid="AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.#ctor*"></a>
+  <h4 id="AdaptArch_Common_Utilities_PubSub_Implementations_MessageHandlerAttribute__ctor_System_String_" data-uid="AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.#ctor(System.String)">MessageHandlerAttribute(String)</h4>
+  <div class="markdown level1 summary"><p>Constructor.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void Publish&lt;TMessageData&gt;(string topic, TMessageData data)
-    where TMessageData : class</code></pre>
+    <pre><code class="lang-csharp hljs">public MessageHandlerAttribute(string topic)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -130,122 +134,34 @@
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">topic</span></td>
-        <td><p>The topic to publish to.</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">TMessageData</span></td>
-        <td><span class="parametername">data</span></td>
-        <td><p>The data to publish.</p>
+        <td><p>The name of the topic to handle.</p>
 </td>
       </tr>
     </tbody>
   </table>
-  <h5 class="typeParameters">Type Parameters</h5>
+  <h3 id="properties">Properties
+  </h3>
+  <a id="AdaptArch_Common_Utilities_PubSub_Implementations_MessageHandlerAttribute_Topic_" data-uid="AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.Topic*"></a>
+  <h4 id="AdaptArch_Common_Utilities_PubSub_Implementations_MessageHandlerAttribute_Topic" data-uid="AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.Topic">Topic</h4>
+  <div class="markdown level1 summary"><p>The topic this method can handle.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Topic { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
-        <th>Name</th>
+        <th>Type</th>
         <th>Description</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><span class="parametername">TMessageData</span></td>
+        <td><span class="xref">System.String</span></td>
         <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Subscribe_" data-uid="AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Subscribe*"></a>
-  <h4 id="AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Subscribe__1_System_String_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__" data-uid="AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Subscribe``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})">Subscribe&lt;TMessageData&gt;(String, MessageHandler&lt;TMessageData&gt;)</h4>
-  <div class="markdown level1 summary"><p>Subscribe a message handler to a topic.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">string Subscribe&lt;TMessageData&gt;(string topic, MessageHandler&lt;TMessageData&gt; handler)
-    where TMessageData : class</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">topic</span></td>
-        <td><p>The topic to publish to.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler-1.html">MessageHandler</a>&lt;TMessageData&gt;</td>
-        <td><span class="parametername">handler</span></td>
-        <td><p>The handler for the data.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><p>An id that can be used to unsubscribe.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="typeParameters">Type Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="parametername">TMessageData</span></td>
-        <td><p>The type of the data.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Unsubscribe_" data-uid="AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Unsubscribe*"></a>
-  <h4 id="AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Unsubscribe_System_String_" data-uid="AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Unsubscribe(System.String)">Unsubscribe(String)</h4>
-  <div class="markdown level1 summary"><p>Unsubscribe a handler from a topic.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void Unsubscribe(string id)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">id</span></td>
-        <td><p>The subscription id.</p>
-</td>
       </tr>
     </tbody>
   </table>

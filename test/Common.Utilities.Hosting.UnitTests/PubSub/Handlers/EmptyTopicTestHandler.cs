@@ -3,17 +3,17 @@ using AdaptArch.Common.Utilities.PubSub.Implementations;
 
 namespace AdaptArch.Common.Utilities.Hosting.UnitTests.PubSub.Handlers;
 
-public class TestHandler : BaseTestHandler
+public class EmptyTopicTestHandler : BaseTestHandler
 {
-    public TestHandler(HandlerDependency dependency)
+    public EmptyTopicTestHandler(HandlerDependency dependency)
         : base(dependency)
     {
     }
 
-    [MessageHandler(topic: "test-topic")]
+    [MessageHandler(topic: "")]
     public Task HandleAMessage(IMessage<object> message, CancellationToken cancellationToken)
     {
-        Dependency.RegisterCall(nameof(TestHandler), nameof(HandleAMessage), message.Topic);
+        Dependency.RegisterCall(nameof(EmptyTopicTestHandler), nameof(HandleAMessage), message.Topic);
         return Task.CompletedTask;
     }
 }

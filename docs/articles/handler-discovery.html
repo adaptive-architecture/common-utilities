@@ -5,11 +5,9 @@
     <head>
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class DashedUuidProvider
-     | Adaptive Architecture Common Utilities </title>
+      <title>Handler Discovery | Adaptive Architecture Common Utilities </title>
       <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class DashedUuidProvider
-     | Adaptive Architecture Common Utilities ">
+      <meta name="title" content="Handler Discovery | Adaptive Architecture Common Utilities ">
       <meta name="generator" content="docfx 2.59.4.0">
       
       <link rel="shortcut icon" href="../images/favicon.ico">
@@ -91,83 +89,55 @@
                           </div>
                         </div>
 
-                    <article class="content wrap" id="_content" data-uid="AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.DashedUuidProvider">
-  
-  
-  <h1 id="AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_DashedUuidProvider" data-uid="AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.DashedUuidProvider" class="text-break">Class DashedUuidProvider
-  </h1>
-  <div class="markdown level0 summary"><p>An implementation of <a class="xref" href="AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IUuidProvider.html">IUuidProvider</a> based on <see cref="!:Guid"></see> that uses the &quot;D&quot; pattern when serializing to string.</p>
-</div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><span class="xref">System.Object</span></div>
-    <div class="level1"><span class="xref">DashedUuidProvider</span></div>
-  </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IUuidProvider.html">IUuidProvider</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
-    <div>
-      <span class="xref">System.Object.Equals(System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.GetHashCode()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.GetType()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.MemberwiseClone()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.ToString()</span>
-    </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.html">AdaptArch.Common.Utilities.GlobalAbstractions.Implementations</a></h6>
-  <h6><strong>Assembly</strong>: AdaptArch.Common.Utilities.dll</h6>
-  <h5 id="AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_DashedUuidProvider_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class DashedUuidProvider : IUuidProvider</code></pre>
-  </div>
-  <h3 id="methods">Methods
-  </h3>
-  <a id="AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_DashedUuidProvider_New_" data-uid="AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.DashedUuidProvider.New*"></a>
-  <h4 id="AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_DashedUuidProvider_New" data-uid="AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.DashedUuidProvider.New">New()</h4>
-  <div class="markdown level1 summary"><p>Generate a new UUID.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string New()</code></pre>
-  </div>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="implements">Implements</h3>
-  <div>
-      <a class="xref" href="AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IUuidProvider.html">IUuidProvider</a>
-  </div>
+                    <article class="content wrap" id="_content" data-uid="">
+<h1 id="handler-discovery">Handler Discovery</h1>
+
+<p>In order to facilitate the registration and reduce the boilerplate needed the <code>AdaptArch.Common.Utilities.Hosting</code> package provides a set of helper methods.</p>
+<h2 id="usage">Usage</h2>
+<p>To use the new method all you need to do is:</p>
+<ul>
+<li>Define your handler class containing a <em><strong>public</strong></em> method that <em><strong>satisfies</strong></em> the contract of the <code>MessageHandler</code> delegate. In your class declaration you add whatever dependencies you need, these will be resolved in a <em><strong>scoped</strong></em> context.</li>
+<li>Decorate the handler method with the <code>MessageHandlerAttribute</code> marker attribute (or any other attribute). You can add the <code>MessageHandlerAttribute</code> multiple times to the same method to register the handler multiple time for multiple topic.</li>
+<li>In your service configuration register the necessary dependencies and the <code>IMessageHubAsync</code> implementation.</li>
+<li>Call the <code>AddPubSubMessageHandlers</code> method specifying the assembly containing yor message handler and a function to determine the messages to handle based on the marker attribute. You can call this method multiple times to add handlers from multiple assemblies or using different marker attributes.</li>
+</ul>
+<pre><code class="lang-csharp">// Example
+
+serviceCollection
+  // Register any dependency your handler class has.
+  .AddSingleton&lt;HandlerDependency&gt;()
+  // Register you `IMessageHubAsync` implementation.
+  // For the sample we are using the `InProcessMessageHub` implementation.
+  .AddSingleton(new InProcessMessageHubOptions
+  {
+      MaxDegreeOfParallelism = Environment.ProcessorCount * 4
+  })
+  .AddSingleton&lt;IMessageHubAsync, InProcessMessageHub&gt;()
+  // Wire-up the service host and discovery configuration.
+  .AddPubSubMessageHandlers&lt;MessageHandlerAttribute&gt;(GetType().Assembly, att =&gt; att.Topic);
+
+
+// The class implementation
+
+public class MyHandler
+{
+  private readonly HandlerDependency _dependency;
+
+  public MyHandler(HandlerDependency dependency)
+  {
+    _dependency = dependency;
+  }
+
+  [MessageHandler(topic: &quot;my-topic&quot;)]
+  public Task HandleAMessage(IMessage&lt;object&gt; message, CancellationToken cancellationToken)
+  {
+    // use the `_dependency` to implement your logic.
+    return Task.CompletedTask;
+  }
+}
+
+
+</code></pre>
 </article>
                 </div>
 
