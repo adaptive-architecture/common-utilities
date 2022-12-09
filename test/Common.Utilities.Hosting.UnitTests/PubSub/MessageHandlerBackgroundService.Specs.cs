@@ -23,7 +23,6 @@ namespace AdaptArch.Common.Utilities.Hosting.UnitTests.PubSub
                 .AddSingleton<IMessageHubAsync, InProcessMessageHub>()
                 .AddPubSubMessageHandlers<MessageHandlerAttribute>(GetType().Assembly, att => att.Topic);
 
-
             _serviceProviderSingleton = new Lazy<IServiceProvider>(BuildServiceProvider);
         }
 
@@ -70,6 +69,29 @@ namespace AdaptArch.Common.Utilities.Hosting.UnitTests.PubSub
             // Ensure we have 1 call.
             // The subscription should have been cancelled as the service stopped.
             VerifyCount(1, nameof(TestHandler), nameof(TestHandler.HandleAMessage), "test-topic");
+        }
+
+        [Fact]
+        public async Task Should_Discover_Handlers_And_Call_Them_With_Custom_Attributes()
+        {
+            _serviceCollection
+                .AddPubSubMessageHandlers<CustomAttribute>(GetType().Assembly, att => att.Topic);
+
+            await StartHostsAsync().ConfigureAwait(false);
+
+            // Ensure we have no calls.
+            VerifyCount(0, nameof(TestHandler), nameof(TestHandler.HandleAMessage), "custom-topic");
+
+            await PublishAsync("custom-topic").ConfigureAwait(false);
+            // Ensure we have 1 call.
+            VerifyCount(1, nameof(TestHandler), nameof(TestHandler.HandleAMessage), "custom-topic");
+
+            await StopHostsAsync().ConfigureAwait(false);
+
+            await PublishAsync("custom-topic").ConfigureAwait(false);
+            // Ensure we have 1 call.
+            // The subscription should have been cancelled as the service stopped.
+            VerifyCount(1, nameof(TestHandler), nameof(TestHandler.HandleAMessage), "custom-topic");
         }
 
         [Fact]

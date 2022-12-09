@@ -1,4 +1,5 @@
-﻿using AdaptArch.Common.Utilities.PubSub.Contracts;
+﻿using System.Diagnostics;
+using AdaptArch.Common.Utilities.PubSub.Contracts;
 using AdaptArch.Common.Utilities.PubSub.Implementations;
 
 namespace AdaptArch.Common.Utilities.Hosting.UnitTests.PubSub.Handlers;
@@ -13,6 +14,7 @@ public class EmptyTopicTestHandler : BaseTestHandler
     [MessageHandler(topic: "")]
     public Task HandleAMessage(IMessage<object> message, CancellationToken cancellationToken)
     {
+        Debug.Print("Cancellation token: {0}", cancellationToken);
         Dependency.RegisterCall(nameof(EmptyTopicTestHandler), nameof(HandleAMessage), message.Topic);
         return Task.CompletedTask;
     }

@@ -2,6 +2,7 @@
 using AdaptArch.Common.Utilities.Hosting.PubSub;
 using AdaptArch.Common.Utilities.PubSub.Contracts;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 // Keep this in the "Microsoft.Extensions.Configuration" for easy access.
 // ReSharper disable once CheckNamespace
@@ -27,7 +28,10 @@ public static class ServiceCollectionExtensions
         {
             services.AddScoped(handlerDefinition.HandlerMethod.DeclaringType!);
         }
-        return services.AddHostedService(svc => new MessageHandlerBackgroundService(svc, handlerDefinitions));
+
+        return services.AddSingleton<IHostedService>(svc => new MessageHandlerBackgroundService(svc, handlerDefinitions));
+        // See https://github.com/dotnet/runtime/issues/38751
+        //return services.AddHostedService(svc => new MessageHandlerBackgroundService(svc, handlerDefinitions));
     }
 
     private static IReadOnlyCollection<HandlerDefinitions> GetHandlerDefinitions<TAttribute>(Assembly assembly, Func<TAttribute, string> topicAccessor)
@@ -74,6 +78,6 @@ public static class ServiceCollectionExtensions
 
     private static IEnumerable<MethodInfo> GetPublicMethods(Assembly assembly)
         => assembly.GetExportedTypes()
-            .Where(w => w is { IsClass: true, IsAbstract: false })
+            .Where(w => w.IsClass && !w.IsAbstract)
             .SelectMany(s => s.GetMethods(BindingFlags.Public | BindingFlags.Instance));
 }

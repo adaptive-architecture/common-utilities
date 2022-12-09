@@ -121,7 +121,7 @@ public class InProcessMessageHubSpecs
 
         hub.Publish<object>(topic, null);
 
-        Thread.Sleep(TimeSpan.FromMilliseconds(50));
+        Thread.Sleep(TimeSpan.FromMilliseconds(100));
         Assert.Equal(1, reacted);
     }
 
