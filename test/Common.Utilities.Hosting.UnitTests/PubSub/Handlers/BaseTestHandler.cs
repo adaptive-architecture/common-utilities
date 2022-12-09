@@ -1,8 +1,6 @@
-﻿using AdaptArch.Common.Utilities.PubSub.Contracts;
+﻿namespace AdaptArch.Common.Utilities.Hosting.UnitTests.PubSub.Handlers;
 
-namespace AdaptArch.Common.Utilities.Hosting.UnitTests.PubSub.Handlers;
-
-public class BaseTestHandler
+public abstract class BaseTestHandler
 {
     protected readonly HandlerDependency Dependency;
 

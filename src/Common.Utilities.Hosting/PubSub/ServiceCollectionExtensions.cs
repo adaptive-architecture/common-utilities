@@ -40,9 +40,7 @@ public static class ServiceCollectionExtensions
         var result = new List<HandlerDefinitions>();
 
         // ReSharper disable once LoopCanBeConvertedToQuery
-        foreach (var methodInfo in assembly.GetExportedTypes()
-                     .Where(w => w.IsClass && !w.IsAbstract)
-                     .SelectMany(s => s.GetMethods(BindingFlags.Public | BindingFlags.Instance)))
+        foreach (var methodInfo in GetPublicMethods(assembly))
         {
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var methodAttribute in methodInfo.GetCustomAttributes<TAttribute>())
@@ -73,4 +71,9 @@ public static class ServiceCollectionExtensions
 
         return result;
     }
+
+    private static IEnumerable<MethodInfo> GetPublicMethods(Assembly assembly)
+        => assembly.GetExportedTypes()
+            .Where(w => w is { IsClass: true, IsAbstract: false })
+            .SelectMany(s => s.GetMethods(BindingFlags.Public | BindingFlags.Instance));
 }
