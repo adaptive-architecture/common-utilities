@@ -77,21 +77,23 @@ namespace AdaptArch.Common.Utilities.Hosting.UnitTests.PubSub
             _serviceCollection
                 .AddPubSubMessageHandlers<CustomAttribute>(GetType().Assembly, att => att.Topic);
 
+            var topic = KnownTopics.MyCustomTopic.ToString("G");
+
             await StartHostsAsync().ConfigureAwait(false);
 
             // Ensure we have no calls.
-            VerifyCount(0, nameof(TestHandler), nameof(TestHandler.HandleAMessage), "custom-topic");
+            VerifyCount(0, nameof(TestHandler), nameof(TestHandler.HandleAMessage), topic);
 
-            await PublishAsync("custom-topic").ConfigureAwait(false);
+            await PublishAsync(topic).ConfigureAwait(false);
             // Ensure we have 1 call.
-            VerifyCount(1, nameof(TestHandler), nameof(TestHandler.HandleAMessage), "custom-topic");
+            VerifyCount(1, nameof(TestHandler), nameof(TestHandler.HandleAMessage), topic);
 
             await StopHostsAsync().ConfigureAwait(false);
 
-            await PublishAsync("custom-topic").ConfigureAwait(false);
+            await PublishAsync(topic).ConfigureAwait(false);
             // Ensure we have 1 call.
             // The subscription should have been cancelled as the service stopped.
-            VerifyCount(1, nameof(TestHandler), nameof(TestHandler.HandleAMessage), "custom-topic");
+            VerifyCount(1, nameof(TestHandler), nameof(TestHandler.HandleAMessage), topic);
         }
 
         [Fact]

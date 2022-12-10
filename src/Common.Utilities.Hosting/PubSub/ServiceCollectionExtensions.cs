@@ -29,18 +29,15 @@ public static class ServiceCollectionExtensions
             services.AddScoped(handlerDefinition.HandlerMethod.DeclaringType!);
         }
 
-        return services.AddSingleton<IHostedService>(svc => new MessageHandlerBackgroundService(svc, handlerDefinitions));
         // See https://github.com/dotnet/runtime/issues/38751
-        //return services.AddHostedService(svc => new MessageHandlerBackgroundService(svc, handlerDefinitions));
+        // We no longer use AddHostedService(svc => new MessageHandlerBackgroundService(svc, handlerDefinitions)) due to that issue.
+        return services.AddSingleton<IHostedService>(svc => new MessageHandlerBackgroundService(svc, handlerDefinitions));
     }
 
     private static IReadOnlyCollection<HandlerDefinitions> GetHandlerDefinitions<TAttribute>(Assembly assembly, Func<TAttribute, string> topicAccessor)
         where TAttribute : Attribute
     {
-        var handlerReturnType = typeof(Task);
-        var messageContractType = typeof(IMessage<>);
-        var cancellationTokenType = typeof(CancellationToken);
-
+        var validator = new MethodInfoValidator();
         var result = new List<HandlerDefinitions>();
 
         // ReSharper disable once LoopCanBeConvertedToQuery
@@ -50,26 +47,10 @@ public static class ServiceCollectionExtensions
             foreach (var methodAttribute in methodInfo.GetCustomAttributes<TAttribute>())
             {
                 var topic = topicAccessor(methodAttribute);
-                if (String.IsNullOrEmpty(topic))
-                    continue;
-
-                if (methodInfo.ReturnType != handlerReturnType)
-                    continue; // Return type does not match the needed type.
-
-                var methodParameters = methodInfo.GetParameters();
-                if (methodParameters.Length != 2)
-                    continue; // We require 2 parameters.
-
-                if (!methodParameters[0].ParameterType.IsGenericType)
-                    continue; // The first parameter should be a IMessage<TClass>.
-
-                if (methodParameters[0].ParameterType.GetGenericTypeDefinition() != messageContractType)
-                    continue; // The first parameter should be a IMessage<TClass>.
-
-                if (methodParameters[1].ParameterType != cancellationTokenType)
-                    continue; // The seconds parameter should be a cancellation token.
-
-                result.Add(new HandlerDefinitions(topic, methodInfo));
+                if (!String.IsNullOrEmpty(topic) && validator.IsValidMethod(methodInfo))
+                {
+                    result.Add(new HandlerDefinitions(topic, methodInfo));
+                }
             }
         }
 
@@ -78,6 +59,35 @@ public static class ServiceCollectionExtensions
 
     private static IEnumerable<MethodInfo> GetPublicMethods(Assembly assembly)
         => assembly.GetExportedTypes()
-            .Where(w => w.IsClass && !w.IsAbstract)
+            .Where(w => w is { IsClass: true, IsAbstract: false })
             .SelectMany(s => s.GetMethods(BindingFlags.Public | BindingFlags.Instance));
+
+    private class MethodInfoValidator
+    {
+        private readonly Type _handlerReturnType = typeof(Task);
+        private readonly Type _messageContractType = typeof(IMessage<>);
+        private readonly Type _cancellationTokenType = typeof(CancellationToken);
+
+        public bool IsValidMethod(MethodInfo methodInfo)
+        {
+            if (methodInfo.ReturnType != _handlerReturnType)
+                return false;
+
+            var methodParameters = methodInfo.GetParameters();
+            if (methodParameters.Length != 2)
+                return false;
+
+            if (!methodParameters[0].ParameterType.IsGenericType)
+                return false;
+
+            if (methodParameters[0].ParameterType.GetGenericTypeDefinition() != _messageContractType)
+                return false;
+
+            // ReSharper disable once ConvertIfStatementToReturnStatement
+            if (methodParameters[1].ParameterType != _cancellationTokenType)
+                return false;
+
+            return true;
+        }
+    }
 }

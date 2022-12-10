@@ -12,7 +12,7 @@ public class TestHandler : BaseTestHandler
     }
 
     [MessageHandler(topic: "test-topic")]
-    [Custom(topic: "custom-topic")]
+    [Custom(topic: KnownTopics.MyCustomTopic)]
     public Task HandleAMessage(IMessage<object> message, CancellationToken cancellationToken)
     {
         Debug.Print("Cancellation token: {0}", cancellationToken);
