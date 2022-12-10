@@ -62,7 +62,7 @@ public static class ServiceCollectionExtensions
             .Where(w => w is { IsClass: true, IsAbstract: false })
             .SelectMany(s => s.GetMethods(BindingFlags.Public | BindingFlags.Instance));
 
-    private class MethodInfoValidator
+    private sealed class MethodInfoValidator
     {
         private readonly Type _handlerReturnType = typeof(Task);
         private readonly Type _messageContractType = typeof(IMessage<>);
