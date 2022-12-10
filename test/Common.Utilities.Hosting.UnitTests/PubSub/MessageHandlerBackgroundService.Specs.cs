@@ -21,7 +21,7 @@ namespace AdaptArch.Common.Utilities.Hosting.UnitTests.PubSub
                     MaxDegreeOfParallelism = Environment.ProcessorCount * 4
                 })
                 .AddSingleton<IMessageHubAsync, InProcessMessageHub>()
-                .AddPubSubMessageHandlers<MessageHandlerAttribute>(GetType().Assembly, att => att.Topic);
+                .AddPubSubMessageHandlers(GetType().Assembly);
 
             _serviceProviderSingleton = new Lazy<IServiceProvider>(BuildServiceProvider);
         }

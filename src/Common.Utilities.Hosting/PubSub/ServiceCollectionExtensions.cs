@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using AdaptArch.Common.Utilities.Hosting.PubSub;
 using AdaptArch.Common.Utilities.PubSub.Contracts;
+using AdaptArch.Common.Utilities.PubSub.Implementations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -13,6 +14,15 @@ namespace Microsoft.Extensions.ServiceCollection;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Discover the message handlers from the given assembly using the default <see cref="MessageHandlerAttribute"/> marker attribute.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> to register with.</param>
+    /// <param name="handlerAssembly">The <see cref="Assembly"/> containing the handlers.</param>
+    public static IServiceCollection AddPubSubMessageHandlers(this IServiceCollection services, Assembly handlerAssembly)
+        => services
+            .AddPubSubMessageHandlers<MessageHandlerAttribute>(handlerAssembly, a => a.Topic);
+
     /// <summary>
     /// Discover the message handlers from the given assembly.
     /// </summary>
