@@ -11,5 +11,8 @@ Common utilities functions and contracts. This is a dependency free package.
 ### AdaptArch.Common.Utilities.Configuration
 Integrations and extensions for `Microsoft.Extensions.Configuration`.
 
+### AdaptArch.Common.Utilities.Hosting
+Integrations and extensions for `Microsoft.Extensions.Hosting`.
+
 ### AdaptArch.Common.Utilities.Redis
 Integrations and extensions for Redis built on top of `StackExchange.Redis`.

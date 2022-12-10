@@ -66,6 +66,7 @@ jobs:
       - name: Change Common.Utilities version
         run: |
           sed -i "s/Include=\"AdaptArch\.Common\.Utilities\".*Version=\".*\"/Include=\"AdaptArch.Common.Utilities\" Version=\"$SOURCE_TAG_TRIMMED\"/" ./src/Common.Utilities.Configuration/Common.Utilities.Configuration.csproj
+          sed -i "s/Include=\"AdaptArch\.Common\.Utilities\".*Version=\".*\"/Include=\"AdaptArch.Common.Utilities\" Version=\"$SOURCE_TAG_TRIMMED\"/" ./src/Common.Utilities.Hosting/Common.Utilities.Hosting.csproj
           sed -i "s/Include=\"AdaptArch\.Common\.Utilities\".*Version=\".*\"/Include=\"AdaptArch.Common.Utilities\" Version=\"$SOURCE_TAG_TRIMMED\"/" ./src/Common.Utilities.Redis/Common.Utilities.Redis.csproj
 
           dotnet nuget add source --name '.local.Common.Utilities' --configfile './nuget.config' './src/Common.Utilities/bin/Release/'
@@ -74,6 +75,7 @@ jobs:
           SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
           SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
           SOURCE_TAG_TRIMMED: ${{ steps.branch_name.outputs.SOURCE_TAG_TRIMMED }}
+
 
       - name: Build Common.Utilities.Redis
         run: dotnet build --configuration $config ./src/Common.Utilities.Redis/Common.Utilities.Redis.csproj /p:ContinuousIntegrationBuild=true /p:CI_BUILD=true -p:Version=$SOURCE_TAG_TRIMMED
@@ -99,6 +101,7 @@ jobs:
       - name: Push the Common.Utilities.Redis package to NuGet
         run: dotnet nuget push ./src/Common.Utilities.Redis/bin/Release/*.nupkg --api-key ${{secrets.NUGET_ORG_KEY}} --source https://api.nuget.org/v3/index.json --no-symbols --skip-duplicate
 
+
       - name: Build Common.Utilities.Configuration
         run: dotnet build --configuration $config ./src/Common.Utilities.Configuration/Common.Utilities.Configuration.csproj /p:ContinuousIntegrationBuild=true /p:CI_BUILD=true -p:Version=$SOURCE_TAG_TRIMMED
         env:
@@ -122,3 +125,28 @@ jobs:
 
       - name: Push the Common.Utilities.Configuration package to NuGet
         run: dotnet nuget push ./src/Common.Utilities.Configuration/bin/Release/*.nupkg --api-key ${{secrets.NUGET_ORG_KEY}} --source https://api.nuget.org/v3/index.json --no-symbols --skip-duplicate
+
+
+      - name: Build Common.Utilities.Hosting
+        run: dotnet build --configuration $config ./src/Common.Utilities.Hosting/Common.Utilities.Hosting.csproj /p:ContinuousIntegrationBuild=true /p:CI_BUILD=true -p:Version=$SOURCE_TAG_TRIMMED
+        env:
+          SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
+          SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
+          SOURCE_TAG_TRIMMED: ${{ steps.branch_name.outputs.SOURCE_TAG_TRIMMED }}
+
+      - name: Create the Common.Utilities.Hosting package
+        run: |
+          echo $SOURCE_NAME
+          echo $SOURCE_BRANCH
+          echo $SOURCE_TAG_TRIMMED
+          dotnet pack --configuration $config ./src/Common.Utilities.Hosting/Common.Utilities.Hosting.csproj /p:CI_BUILD=true -p:Version=$SOURCE_TAG_TRIMMED
+        env:
+          SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
+          SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
+          SOURCE_TAG_TRIMMED: ${{ steps.branch_name.outputs.SOURCE_TAG_TRIMMED }}
+
+      - name: Publish the Common.Utilities.Hosting package to GPR
+        run: dotnet nuget push ./src/Common.Utilities.Hosting/bin/Release/*.nupkg --api-key ${{secrets.GITHUB_TOKEN}} --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --no-symbols --skip-duplicate
+
+      - name: Push the Common.Utilities.Hosting package to NuGet
+        run: dotnet nuget push ./src/Common.Utilities.Hosting/bin/Release/*.nupkg --api-key ${{secrets.NUGET_ORG_KEY}} --source https://api.nuget.org/v3/index.json --no-symbols --skip-duplicate

@@ -1629,6 +1629,38 @@ references:
   fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder(Of T).Build
   nameWithType: MessageBuilder<T>.Build
   nameWithType.vb: MessageBuilder(Of T).Build
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute
+  name: MessageHandlerAttribute
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.html
+  commentId: T:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute
+  nameWithType: MessageHandlerAttribute
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.#ctor(System.String)
+  name: MessageHandlerAttribute(String)
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHandlerAttribute__ctor_System_String_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.#ctor(System.String)
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.MessageHandlerAttribute(System.String)
+  nameWithType: MessageHandlerAttribute.MessageHandlerAttribute(String)
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.#ctor*
+  name: MessageHandlerAttribute
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHandlerAttribute__ctor_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.#ctor
+  isSpec: "True"
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.MessageHandlerAttribute
+  nameWithType: MessageHandlerAttribute.MessageHandlerAttribute
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.Topic
+  name: Topic
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHandlerAttribute_Topic
+  commentId: P:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.Topic
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.Topic
+  nameWithType: MessageHandlerAttribute.Topic
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.Topic*
+  name: Topic
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHandlerAttribute_Topic_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.Topic
+  isSpec: "True"
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.Topic
+  nameWithType: MessageHandlerAttribute.Topic
 - uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1
   name: MessageHub<TOptions>
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html
@@ -2072,3 +2104,31 @@ references:
   isSpec: "True"
   fullName: Microsoft.Extensions.Configuration.CustomConfigurationExtensions.AddCustomConfiguration
   nameWithType: CustomConfigurationExtensions.AddCustomConfiguration
+- uid: Microsoft.Extensions.ServiceCollection
+  name: Microsoft.Extensions.ServiceCollection
+  href: api/Microsoft.Extensions.ServiceCollection.html
+  commentId: N:Microsoft.Extensions.ServiceCollection
+  fullName: Microsoft.Extensions.ServiceCollection
+  nameWithType: Microsoft.Extensions.ServiceCollection
+- uid: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions
+  name: ServiceCollectionExtensions
+  href: api/Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.html
+  commentId: T:Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions
+  fullName: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions
+  nameWithType: ServiceCollectionExtensions
+- uid: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers*
+  name: AddPubSubMessageHandlers
+  href: api/Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.html#Microsoft_Extensions_ServiceCollection_ServiceCollectionExtensions_AddPubSubMessageHandlers_
+  commentId: Overload:Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers
+  isSpec: "True"
+  fullName: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers
+  nameWithType: ServiceCollectionExtensions.AddPubSubMessageHandlers
+- uid: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,Func{``0,System.String})
+  name: AddPubSubMessageHandlers<TAttribute>(IServiceCollection, Assembly, Func<TAttribute, String>)
+  href: api/Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.html#Microsoft_Extensions_ServiceCollection_ServiceCollectionExtensions_AddPubSubMessageHandlers__1_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Reflection_Assembly_Func___0_System_String__
+  commentId: M:Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,Func{``0,System.String})
+  name.vb: AddPubSubMessageHandlers(Of TAttribute)(IServiceCollection, Assembly, Func(Of TAttribute, String))
+  fullName: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers<TAttribute>(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Reflection.Assembly, Func<TAttribute, System.String>)
+  fullName.vb: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers(Of TAttribute)(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Reflection.Assembly, Func(Of TAttribute, System.String))
+  nameWithType: ServiceCollectionExtensions.AddPubSubMessageHandlers<TAttribute>(IServiceCollection, Assembly, Func<TAttribute, String>)
+  nameWithType.vb: ServiceCollectionExtensions.AddPubSubMessageHandlers(Of TAttribute)(IServiceCollection, Assembly, Func(Of TAttribute, String))

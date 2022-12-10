@@ -4,7 +4,7 @@ using StackExchange.Redis;
 
 namespace AdaptArch.Common.Utilities.Redis.UnitTests.Serialization;
 
-public class JsonDataSerializerSpec
+public class JsonDataSerializerSpecs
 {
     private record SerializationDataObject
     {
