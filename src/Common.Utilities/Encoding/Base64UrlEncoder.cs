@@ -1,7 +1,7 @@
 ﻿namespace AdaptArch.Common.Utilities.Encoding;
 
 /// <summary>
-/// An wrapper arouynd the <see cref="Base64Url"/> API implementing the <see cref="IEncoder"/> contract.
+/// An wrapper around the <see cref="Base64Url"/> API implementing the <see cref="IEncoder"/> contract.
 /// </summary>
 public class Base64UrlEncoder : IEncoder
 {
