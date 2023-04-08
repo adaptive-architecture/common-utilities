@@ -1,6 +1,11 @@
 {
     "cSpell.words": [
         "configfile",
-        "nupkg"
+        "coverallsapp",
+        "lcov",
+        "nupkg",
+        "opencover",
+        "Qube",
+        "sonarscanner"
     ]
 }
