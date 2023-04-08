@@ -2116,6 +2116,12 @@ references:
   commentId: T:Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions
   fullName: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions
   nameWithType: ServiceCollectionExtensions
+- uid: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly)
+  name: AddPubSubMessageHandlers(IServiceCollection, Assembly)
+  href: api/Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.html#Microsoft_Extensions_ServiceCollection_ServiceCollectionExtensions_AddPubSubMessageHandlers_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Reflection_Assembly_
+  commentId: M:Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly)
+  fullName: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Reflection.Assembly)
+  nameWithType: ServiceCollectionExtensions.AddPubSubMessageHandlers(IServiceCollection, Assembly)
 - uid: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers*
   name: AddPubSubMessageHandlers
   href: api/Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.html#Microsoft_Extensions_ServiceCollection_ServiceCollectionExtensions_AddPubSubMessageHandlers_

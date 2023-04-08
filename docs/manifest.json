@@ -270,7 +270,7 @@
       "output": {
         ".html": {
           "relative_path": "api/AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.html",
-          "hash": "HxqNgqweWenTtp/lAU/eqFacG/xOCNBotIPdujTmImI="
+          "hash": "kaYX5bc5dD8FR43Zn8q1IDrcIp9pql6c+PYZYDxnPdI="
         }
       },
       "is_incremental": false,
@@ -282,7 +282,7 @@
       "output": {
         ".html": {
           "relative_path": "api/AdaptArch.Common.Utilities.Encoding.IEncoder.html",
-          "hash": "kjNkSBzjm/Jm/UTJ5BAvciCP3Qr/ywPA67NgxdxuelA="
+          "hash": "N0BqOwnzMBqkuNIXExAuHFUOEaeKGav4VvPuQqPyxbk="
         }
       },
       "is_incremental": false,
@@ -294,7 +294,7 @@
       "output": {
         ".html": {
           "relative_path": "api/AdaptArch.Common.Utilities.Encoding.html",
-          "hash": "l3AAVof+8aA/IdN9tHUjsslVwv/UNfu7geYTReMcP7k="
+          "hash": "PjMAVfNehjFfktdGYegUzp1qUvW3ze9b0z+aBv/nQIg="
         }
       },
       "is_incremental": false,
@@ -774,7 +774,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.html",
-          "hash": "E/Kz2+PnK0LH0CkYEpXs8mQ2btkoBFdelmDKWwmU17g="
+          "hash": "b1wf7LRENLWzlsHVCQ19kAs8MQtzedLHpLwoG6CDGMw="
         }
       },
       "is_incremental": false,
@@ -924,13 +924,13 @@
           "can_incremental": true,
           "incrementalPhase": "build",
           "total_file_count": 5,
-          "skipped_file_count": 2
+          "skipped_file_count": 3
         },
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": true,
           "incrementalPhase": "build",
           "total_file_count": 65,
-          "skipped_file_count": 15
+          "skipped_file_count": 17
         },
         "ResourceDocumentProcessor": {
           "can_incremental": false,

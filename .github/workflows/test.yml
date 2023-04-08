@@ -53,7 +53,10 @@ jobs:
       - name: Install dependencies
         run: |
           dotnet restore
-          ${{steps.branch_name.outputs.SOURCE_TAG_TRIMMED}}
+          echo ${{steps.branch_name.outputs.SOURCE_NAME}}
+          echo ${{steps.branch_name.outputs.SOURCE_BRANCH}}
+          echo ${{steps.branch_name.outputs.SOURCE_TAG}}
+          echo ${{steps.branch_name.outputs.SOURCE_TAG_TRIMMED}}
 
       - name: Install tools
         run: |
