@@ -292,7 +292,7 @@ public static class Base64Url
             : bufferToReturnToPool = ArrayPool<char>.Shared.Rent(bufferSize);
 
         var numBase64Chars = Encode(input, buffer);
-        var base64Url = new string(buffer.Slice(0, numBase64Chars));
+        var base64Url = new string(buffer[..numBase64Chars]);
 
         if (bufferToReturnToPool != null)
         {

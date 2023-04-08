@@ -5,7 +5,7 @@ namespace AdaptArch.Common.Utilities.UnitTests.Delay;
 
 public class JitterGeneratorSpecs
 {
-    private readonly JitterGenerator _jitterGenerator = new JitterGenerator(new RandomGenerator(new Random(0)));
+    private readonly JitterGenerator _jitterGenerator = new(new RandomGenerator(new Random(0)));
 
     [Fact]
     public void Should_Throw_ArgumentOutOfRange_Exceptions()
