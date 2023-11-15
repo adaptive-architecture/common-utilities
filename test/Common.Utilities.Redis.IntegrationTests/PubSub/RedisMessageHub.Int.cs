@@ -61,27 +61,27 @@ public class RedisMessageHubInt
                     receivedMessage = m.Data;
                     return Task.CompletedTask;
                 }, CancellationToken.None)
-            .ConfigureAwait(false);
+            ;
 
         Assert.Null(receivedMessage);
 
         var sentMessage = new MyMessage { Id = Guid.NewGuid().ToString("N") };
 
         await _messageHubAsync.PublishAsync(nameof(MyMessage), sentMessage, CancellationToken.None)
-            .ConfigureAwait(false);
+            ;
 
-        await Task.Delay(WaitTime).ConfigureAwait(false);
+        await Task.Delay(WaitTime);
 
         Assert.NotNull(receivedMessage);
         Assert.Equal(sentMessage.Id, receivedMessage.Id);
 
-        await _messageHubAsync.UnsubscribeAsync(subId, CancellationToken.None).ConfigureAwait(false);
+        await _messageHubAsync.UnsubscribeAsync(subId, CancellationToken.None);
         receivedMessage = null;
 
         await _messageHubAsync.PublishAsync(nameof(MyMessage), sentMessage, CancellationToken.None)
-            .ConfigureAwait(false);
+            ;
 
-        await Task.Delay(WaitTime).ConfigureAwait(false);
+        await Task.Delay(WaitTime);
 
         Assert.Null(receivedMessage);
     }

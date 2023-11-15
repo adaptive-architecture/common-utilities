@@ -4,10 +4,10 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup Condition="'$(CONFIGURATION)' == 'Release'">
-    <PackageVersion Include="AdaptArch.Common.Utilities" Version="4.3.2.1" />
-    <PackageVersion Include="AdaptArch.Common.Utilities.Configuration" Version="4.3.2.1" />
-    <PackageVersion Include="AdaptArch.Common.Utilities.Hosting" Version="4.3.2.1" />
-    <PackageVersion Include="AdaptArch.Common.Utilities.Redis" Version="4.3.2.1" />
+    <PackageVersion Include="AdaptArch.Common.Utilities" Version="0.1.3.3" />
+    <PackageVersion Include="AdaptArch.Common.Utilities.Configuration" Version="0.1.3.3" />
+    <PackageVersion Include="AdaptArch.Common.Utilities.Hosting" Version="0.1.3.3" />
+    <PackageVersion Include="AdaptArch.Common.Utilities.Redis" Version="0.1.3.3" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />

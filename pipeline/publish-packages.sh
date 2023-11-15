@@ -29,8 +29,8 @@ projects=( \
   "Common.Utilities.Hosting" \
 )
 
-rm -rf ./nuget/*.nupkg
-rm -rf ./nuget/*.snupkg
+rm -rf ./.nuget/*.nupkg
+rm -rf ./.nuget/*.snupkg
 
 # Loop over the array and print each variable
 for project in "${projects[@]}"; do
@@ -42,17 +42,17 @@ for project in "${projects[@]}"; do
   dotnet pack ./src/$project/$project.csproj --configuration $configuration -p:Version=$version \
     -p:CI_BUILD=true
 
-  # dotnet nuget push ./src/$project/bin/$configuration/*.nupkg \
-  #   --api-key $github_api_key \
-  #   --source https://nuget.pkg.github.com/adaptive-architecture/index.json \
-  #   --skip-duplicate
+  dotnet nuget push ./src/$project/bin/$configuration/*.nupkg \
+    --api-key $github_api_key \
+    --source https://nuget.pkg.github.com/adaptive-architecture/index.json \
+    --skip-duplicate
 
-  # dotnet nuget push ./src/$project/bin/$configuration/*.nupkg \
-  #   --api-key $nuget_api_key \
-  #   --source https://api.nuget.org/v3/index.json \
-  #   --skip-duplicate
+  dotnet nuget push ./src/$project/bin/$configuration/*.nupkg \
+    --api-key $nuget_api_key \
+    --source https://api.nuget.org/v3/index.json \
+    --skip-duplicate
 
-  cp ./src/$project/bin/$configuration/*.nupkg ./nuget/
+  cp ./src/$project/bin/$configuration/*.nupkg ./.nuget/
 
   sed -i "s/Include=\"AdaptArch\.$project\".*Version=\".*\"/Include=\"AdaptArch.$project\" Version=\"$version\"/" ./Directory.Packages.props
 done

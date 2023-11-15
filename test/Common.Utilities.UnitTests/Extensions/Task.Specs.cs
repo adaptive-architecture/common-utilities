@@ -22,7 +22,7 @@ public class TaskSpecs
     {
         if (delay.TotalMilliseconds > 0)
         {
-            await Task.Delay(delay).ConfigureAwait(false);
+            await Task.Delay(delay);
         }
 
         throw new ApplicationException("Fail!");

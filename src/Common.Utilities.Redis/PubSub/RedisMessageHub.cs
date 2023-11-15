@@ -2,6 +2,7 @@
 using AdaptArch.Common.Utilities.PubSub.Contracts;
 using AdaptArch.Common.Utilities.PubSub.Implementations;
 using AdaptArch.Common.Utilities.PubSub.Implementations.Internals;
+using AdaptArch.Common.Utilities.Redis.Utilities;
 using StackExchange.Redis;
 
 namespace AdaptArch.Common.Utilities.Redis.PubSub;
@@ -30,7 +31,7 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
         where TMessageData : class
     {
         var message = SerializeMessage(topic, data);
-        _ = GetSubscriber().Publish(topic, message);
+        _ = GetSubscriber().Publish(topic.ToChannel(), message);
     }
 
     /// <inheritdoc />
@@ -39,7 +40,7 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
     {
         var redisHandler = WrapAsRedisHandler(handler);
         var id = _registry.Add<TMessageData>(topic, redisHandler);
-        GetSubscriber().Subscribe(topic, redisHandler);
+        GetSubscriber().Subscribe(topic.ToChannel(), redisHandler);
         return id;
     }
 
@@ -49,7 +50,7 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
         var registration = _registry.GetRegistration(id);
         if (registration is { Handler: Action<RedisChannel, RedisValue> redisHandler })
         {
-            GetSubscriber().Unsubscribe(registration.Topic, redisHandler);
+            GetSubscriber().Unsubscribe(registration.Topic.ToChannel(), redisHandler);
         }
     }
 
@@ -58,7 +59,7 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
         where TMessageData : class
     {
         var message = SerializeMessage(topic, data);
-        _ = await GetSubscriber().PublishAsync(topic, message).ConfigureAwait(false);
+        _ = await GetSubscriber().PublishAsync(topic.ToChannel(), message).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
@@ -67,7 +68,7 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
     {
         var redisHandler = WrapAsRedisHandler(handler);
         var id = _registry.Add<TMessageData>(topic, redisHandler);
-        await GetSubscriber().SubscribeAsync(topic, redisHandler).ConfigureAwait(false);
+        await GetSubscriber().SubscribeAsync(topic.ToChannel(), redisHandler).ConfigureAwait(false);
         return id;
     }
 
@@ -77,7 +78,7 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
         var registration = _registry.GetRegistration(id);
         if (registration is { Handler: Action<RedisChannel, RedisValue> redisHandler })
         {
-            await GetSubscriber().UnsubscribeAsync(registration.Topic, redisHandler).ConfigureAwait(false);
+            await GetSubscriber().UnsubscribeAsync(registration.Topic.ToChannel(), redisHandler).ConfigureAwait(false);
         }
     }
 
@@ -89,7 +90,7 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
 
     private ISubscriber GetSubscriber() => _connectionMultiplexer.GetSubscriber();
 
-    private IMessage<TMessageData> DeserializeMessage<TMessageData>(RedisValue data) where TMessageData : class
+    private Message<TMessageData> DeserializeMessage<TMessageData>(RedisValue data) where TMessageData : class
     {
         return Options.DataSerializer.Deserialize<Message<TMessageData>>(data)!;
     }

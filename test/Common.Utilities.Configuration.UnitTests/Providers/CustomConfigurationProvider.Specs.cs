@@ -56,7 +56,7 @@ public class CustomConfigurationProviderSpecs
     {
         if (wait)
         {
-            await Task.Delay(_waitInterval).ConfigureAwait(false);
+            await Task.Delay(_waitInterval);
         }
 
         Assert.Equal(hash, customConfiguration!.CurrentValue.Hash);
@@ -210,9 +210,9 @@ public class CustomConfigurationProviderSpecs
         var sp = BuildServiceProvider(_ => {});
         var customConfiguration = sp.GetService<IOptionsMonitor<CustomConfigurationSection>>();
 
-        await AssertConfigurationValuesPooling(customConfiguration, "1", false).ConfigureAwait(false);
-        await AssertConfigurationValuesPooling(customConfiguration, "2", true).ConfigureAwait(false);
-        await AssertConfigurationValuesPooling(customConfiguration, "3", true).ConfigureAwait(false);
+        await AssertConfigurationValuesPooling(customConfiguration, "1", false);
+        await AssertConfigurationValuesPooling(customConfiguration, "2", true);
+        await AssertConfigurationValuesPooling(customConfiguration, "3", true);
 
         _dataProviderMoq.Verify(v => v.GetHashAsync(It.IsAny<CancellationToken>()), Times.Exactly(3));
         _dataProviderMoq.Verify(v => v.ReadDataAsync(It.IsAny<CancellationToken>()), Times.Exactly(3));
@@ -227,8 +227,8 @@ public class CustomConfigurationProviderSpecs
         var sp = BuildServiceProvider(_ => { });
         var customConfiguration = sp.GetService<IOptionsMonitor<CustomConfigurationSection>>();
 
-        await AssertConfigurationValuesPooling(customConfiguration, "0", false).ConfigureAwait(false);
-        await AssertConfigurationValuesPooling(customConfiguration, "0", true).ConfigureAwait(false);
+        await AssertConfigurationValuesPooling(customConfiguration, "0", false);
+        await AssertConfigurationValuesPooling(customConfiguration, "0", true);
 
         _dataProviderMoq.Verify(v => v.GetHashAsync(It.IsAny<CancellationToken>()), Times.Exactly(2));
         _dataProviderMoq.Verify(v => v.ReadDataAsync(It.IsAny<CancellationToken>()), Times.Exactly(1));
@@ -258,10 +258,10 @@ public class CustomConfigurationProviderSpecs
         });
         var customConfiguration = sp.GetService<IOptionsMonitor<CustomConfigurationSection>>();
 
-        await AssertConfigurationValuesPooling(customConfiguration, "1", false).ConfigureAwait(false);
-        await AssertConfigurationValuesPooling(customConfiguration, "2", true).ConfigureAwait(false);
-        await AssertConfigurationValuesPooling(customConfiguration, "2", true).ConfigureAwait(false);
-        await AssertConfigurationValuesPooling(customConfiguration, "2", true).ConfigureAwait(false);
+        await AssertConfigurationValuesPooling(customConfiguration, "1", false);
+        await AssertConfigurationValuesPooling(customConfiguration, "2", true);
+        await AssertConfigurationValuesPooling(customConfiguration, "2", true);
+        await AssertConfigurationValuesPooling(customConfiguration, "2", true);
 
         Assert.NotEmpty(exceptions);
         Assert.True(exceptions[0] is ApplicationException);

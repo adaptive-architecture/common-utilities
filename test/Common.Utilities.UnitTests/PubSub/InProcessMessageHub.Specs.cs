@@ -50,16 +50,16 @@ public class InProcessMessageHubSpecs
         {
             reacted++;
             return Task.CompletedTask;
-        }, CancellationToken.None).ConfigureAwait(false);
+        }, CancellationToken.None);
 
-        await hub.PublishAsync<object>(topic, null, CancellationToken.None).ConfigureAwait(false);
-        await hub.PublishAsync<object>("other-topic", null, CancellationToken.None).ConfigureAwait(false);
+        await hub.PublishAsync<object>(topic, null, CancellationToken.None);
+        await hub.PublishAsync<object>("other-topic", null, CancellationToken.None);
 
         Assert.Equal(1, reacted);
 
-        await hub.UnsubscribeAsync(subscriptionId, CancellationToken.None).ConfigureAwait(false);
+        await hub.UnsubscribeAsync(subscriptionId, CancellationToken.None);
 
-        await hub.PublishAsync<object>(topic, null, CancellationToken.None).ConfigureAwait(false);
+        await hub.PublishAsync<object>(topic, null, CancellationToken.None);
 
         Assert.Equal(1, reacted);
     }
