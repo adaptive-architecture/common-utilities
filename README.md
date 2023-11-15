@@ -23,7 +23,7 @@ Please read the documentation [here](https://adaptive-architecture.github.io/com
 
 
 ### To do:
-- use source genrerator for AOT: [link](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/source-generation?pivots=dotnet-8-0#disable-reflection-defaults), [link](https://learn.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/source-generators-overview)
-- add symbold to package: [link](https://learn.microsoft.com/en-us/dotnet/standard/library-guidance/nuget#symbol-packages)
+- use source genrerator for AOT: [link](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/source-generation?pivots=dotnet-8-0#disable-reflection-defaults), [link](https://learn.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/source-generators-overview), [link](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-8#source-link)
+- add symbold to package: [link](https://learn.microsoft.com/en-us/dotnet/standard/library-guidance/nuget#symbol-packages), [link](https://learn.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg)
 - remove source link packages: [link](https://learn.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink), [link](https://github.com/dotnet/sourcelink/blob/main/README.md)
-- 
+
