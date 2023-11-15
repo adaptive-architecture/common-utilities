@@ -1,5 +1,6 @@
 ﻿using AdaptArch.Common.Utilities.PubSub.Contracts;
 using AdaptArch.Common.Utilities.Redis.PubSub;
+using AdaptArch.Common.Utilities.Redis.Utilities;
 using Moq;
 using StackExchange.Redis;
 
@@ -93,7 +94,7 @@ public class RedisMessageHubSpecs
         Assert.NotNull(id);
 
         VerifySubscriberCalled(1);
-        _sub.Verify(v => v.Subscribe("topic_A", _handler, CommandFlags.None), Times.Once);
+        _sub.Verify(v => v.Subscribe("topic_A".ToChannel(), _handler, CommandFlags.None), Times.Once);
 
         Assert.Equal(0, _handlerReactions);
         _hub.Publish<object>("topic_A", "message");
@@ -101,21 +102,21 @@ public class RedisMessageHubSpecs
 
         // Check publish
         VerifySubscriberCalled(2);
-        _sub.Verify(v => v.Publish("topic_A", _messageValue, CommandFlags.None), Times.Once);
+        _sub.Verify(v => v.Publish("topic_A".ToChannel(), _messageValue, CommandFlags.None), Times.Once);
 
         // Unsubscribe in existent id
         _hub.Unsubscribe("not=a=valid=id");
 
         // Check unsubscribe
         VerifySubscriberCalled(2);
-        _sub.Verify(v => v.Unsubscribe("topic_A", _handler, CommandFlags.None), Times.Never);
+        _sub.Verify(v => v.Unsubscribe("topic_A".ToChannel(), _handler, CommandFlags.None), Times.Never);
 
         // Unsubscribe
         _hub.Unsubscribe(id);
 
         // Check unsubscribe
         VerifySubscriberCalled(3);
-        _sub.Verify(v => v.Unsubscribe("topic_A", _handler, CommandFlags.None), Times.Once);
+        _sub.Verify(v => v.Unsubscribe("topic_A".ToChannel(), _handler, CommandFlags.None), Times.Once);
 
         Assert.True(_shouldHaveRemovedHandler);
 
@@ -127,35 +128,35 @@ public class RedisMessageHubSpecs
     public async Task Should_Subscribe_And_Unsubscribe_MessageHandler_Async()
     {
         VerifySubscriberCalled(0);
-        var id = await _hub.SubscribeAsync<object>("topic_A", TopicHandler, CancellationToken.None).ConfigureAwait(false);
+        var id = await _hub.SubscribeAsync<object>("topic_A", TopicHandler, CancellationToken.None);
 
         // Check subscription
         Assert.NotNull(id);
 
         VerifySubscriberCalled(1);
-        _sub.Verify(v => v.SubscribeAsync("topic_A", _handler, CommandFlags.None), Times.Once);
+        _sub.Verify(v => v.SubscribeAsync("topic_A".ToChannel(), _handler, CommandFlags.None), Times.Once);
 
         Assert.Equal(0, _handlerReactions);
-        await _hub.PublishAsync<object>("topic_A", "message", CancellationToken.None).ConfigureAwait(false);
+        await _hub.PublishAsync<object>("topic_A", "message", CancellationToken.None);
         Assert.Equal(1, _handlerReactions);
 
         // Check publish
         VerifySubscriberCalled(2);
-        _sub.Verify(v => v.PublishAsync("topic_A", _messageValue, CommandFlags.None), Times.Once);
+        _sub.Verify(v => v.PublishAsync("topic_A".ToChannel(), _messageValue, CommandFlags.None), Times.Once);
 
         // Unsubscribe in existent id
-        await _hub.UnsubscribeAsync("not=a=valid=id", CancellationToken.None).ConfigureAwait(false);
+        await _hub.UnsubscribeAsync("not=a=valid=id", CancellationToken.None);
 
         // Check unsubscribe
         VerifySubscriberCalled(2);
-        _sub.Verify(v => v.UnsubscribeAsync("topic_A", _handler, CommandFlags.None), Times.Never);
+        _sub.Verify(v => v.UnsubscribeAsync("topic_A".ToChannel(), _handler, CommandFlags.None), Times.Never);
 
         // Unsubscribe
-        await _hub.UnsubscribeAsync(id, CancellationToken.None).ConfigureAwait(false);
+        await _hub.UnsubscribeAsync(id, CancellationToken.None);
 
         // Check unsubscribe
         VerifySubscriberCalled(3);
-        _sub.Verify(v => v.UnsubscribeAsync("topic_A", _handler, CommandFlags.None), Times.Once);
+        _sub.Verify(v => v.UnsubscribeAsync("topic_A".ToChannel(), _handler, CommandFlags.None), Times.Once);
 
         Assert.True(_shouldHaveRemovedHandler);
 
