@@ -4,8 +4,6 @@ using static AdaptArch.Common.Utilities.Redis.IntegrationTests.PubSub.RedisMessa
 
 namespace AdaptArch.Common.Utilities.Redis.IntegrationTests;
 
-[JsonSerializable(typeof(object))]
 [JsonSerializable(typeof(MyMessage))]
-[JsonSerializable(typeof(IMessage<object>))]
-[JsonSerializable(typeof(IMessage<MyMessage>))]
+//[JsonSerializable(typeof(IMessage<MyMessage>))]
 internal partial class IntegrationJsonSerializerContext : JsonSerializerContext;

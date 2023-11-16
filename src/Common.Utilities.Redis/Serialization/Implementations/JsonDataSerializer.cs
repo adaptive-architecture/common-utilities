@@ -1,5 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using AdaptArch.Common.Utilities.PubSub.Contracts;
+using AdaptArch.Common.Utilities.PubSub.Implementations.Internals;
 using AdaptArch.Common.Utilities.Redis.Serialization.Contracts;
 using StackExchange.Redis;
 
@@ -23,6 +25,8 @@ public class JsonDataSerializer : IDataSerializer
     {
         _jsonSerializerContext = jsonSerializerContext
             ?? throw new ArgumentNullException(nameof(jsonSerializerContext));
+
+        _jsonSerializerContext.Options.TypeInfoResolverChain.Add(InternalJsonSerializerContext.Default);
     }
 
     /// <inheritdoc />
@@ -39,3 +43,8 @@ public class JsonDataSerializer : IDataSerializer
         return (T?)JsonSerializer.Deserialize(data.ToString(), typeof(T), _jsonSerializerContext);
     }
 }
+
+[JsonSerializable(typeof(object))]
+[JsonSerializable(typeof(Message<object>))]
+[JsonSerializable(typeof(IMessage<object>))]
+internal partial class InternalJsonSerializerContext : JsonSerializerContext;
