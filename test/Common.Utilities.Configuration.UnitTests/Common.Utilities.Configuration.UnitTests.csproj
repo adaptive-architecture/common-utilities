@@ -28,12 +28,13 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(CONFIGURATION)' == 'Debug'">
+  <ItemGroup Condition="'$(CONFIGURATION)' == 'Debug' Or '$(BuildDocFx)' == 'true'">
     <ProjectReference Include="..\..\src\Common.Utilities\Common.Utilities.csproj" />
-    <ProjectReference Include="..\..\src\Common.Utilities.Configuration\Common.Utilities.Configuration.csproj" />
+    <ProjectReference
+      Include="..\..\src\Common.Utilities.Configuration\Common.Utilities.Configuration.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(CONFIGURATION)' == 'Release'">
+  <ItemGroup Condition="'$(CONFIGURATION)' == 'Release' And '$(BuildDocFx)' != 'true'">
     <PackageReference Include="AdaptArch.Common.Utilities" />
     <PackageReference Include="AdaptArch.Common.Utilities.Configuration" />
   </ItemGroup>

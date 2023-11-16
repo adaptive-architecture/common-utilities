@@ -1,5 +1,4 @@
-﻿using AdaptArch.Common.Utilities.Redis.Serialization.Contracts;
-using AdaptArch.Common.Utilities.Redis.Serialization.Implementations;
+﻿using AdaptArch.Common.Utilities.Redis.Serialization.Implementations;
 using StackExchange.Redis;
 
 namespace AdaptArch.Common.Utilities.Redis.UnitTests.Serialization;
@@ -15,7 +14,7 @@ public class JsonDataSerializerSpecs
     [Fact]
     public void Should_Serialize_And_Deserialize()
     {
-        IDataSerializer serializer = new JsonDataSerializer();
+        var serializer = new JsonDataSerializer(TestJsonSerializerContext.Default);
 
         var data = new SerializationDataObject { Id = "someId", Date = DateTime.UtcNow };
 
@@ -32,7 +31,7 @@ public class JsonDataSerializerSpecs
     [Fact]
     public void Should_Throw_When_Deserializing_Null()
     {
-        IDataSerializer serializer = new JsonDataSerializer();
+        var serializer = new JsonDataSerializer(TestJsonSerializerContext.Default);
 
         Assert.Throws<ArgumentNullException>(() => serializer.Deserialize<object>(RedisValue.Null));
     }
@@ -40,7 +39,7 @@ public class JsonDataSerializerSpecs
     [Fact]
     public void Should_Throw_When_Deserializing_Empty()
     {
-        IDataSerializer serializer = new JsonDataSerializer();
+        var serializer = new JsonDataSerializer(TestJsonSerializerContext.Default);
 
         var nullValue = serializer.Deserialize<object>("null");
         Assert.Null(nullValue);

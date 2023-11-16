@@ -22,7 +22,9 @@ public class CustomConfigurationSource: IConfigurationSource
     public IConfigurationProvider Build(IConfigurationBuilder builder)
     {
         return new CustomConfigurationProvider(
+#pragma warning disable S112 // General exceptions should never be thrown
             DataProvider ?? throw new NullReferenceException($"The {nameof(DataProvider)} property is null."),
+#pragma warning restore S112 // General exceptions should never be thrown
             Options
         );
     }

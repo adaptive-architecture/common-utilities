@@ -4,41 +4,25 @@
       "src": [
         {
           "files": [
-            "**.csproj"
+            "**/**/*.csproj"
           ],
           "src": "../src"
         }
       ],
       "dest": "api",
-      "disableGitFeatures": false,
-      "disableDefaultFilter": false
+      "properties": {
+        "BuildDocFx": "true"
+      }
     }
   ],
   "build": {
-    "globalMetadata": {
-      "_appTitle": "Adaptive Architecture Common Utilities",
-      "_appName": "Common Utilities",
-      "_appLogoPath": "images/logo.png",
-      "_appFaviconPath": "images/favicon.ico",
-      "_appFooter": "Adaptive Architecture",
-      "_copyrightFooter": null,
-      "_disableContribution": true,
-      "_enableSearch": true,
-      "_enableNewTab": true
-    },
     "content": [
       {
         "files": [
-          "api/**.yml",
-          "api/index.md"
-        ]
-      },
-      {
-        "files": [
-          "articles/**.md",
-          "articles/**/toc.yml",
-          "toc.yml",
-          "*.md"
+          "**/*.{md,yml}"
+        ],
+        "exclude": [
+          "**/docs/**"
         ]
       }
     ],
@@ -49,29 +33,21 @@
         ]
       }
     ],
-    "overwrite": [
-      {
-        "files": [
-          "apidoc/**.md"
-        ],
-        "exclude": [
-          "obj/**",
-          "docs/**"
-        ]
-      }
-    ],
-    "dest": "../docs",
-    "globalMetadataFiles": [],
-    "fileMetadataFiles": [],
+    "output": "../docs",
     "template": [
       "default",
       "templates/singulinkfx"
     ],
-    "postProcessors": [],
-    "markdownEngineName": "markdig",
-    "noLangKeyword": false,
-    "keepFileLink": false,
-    "cleanupCacheHistory": false,
-    "disableGitFeatures": false
+    "globalMetadata": {
+      "_appName": "Common Utilities",
+      "_appTitle": "Adaptive Architecture Common Utilities",
+      "_appLogoPath": "images/logo.png",
+      "_appFaviconPath": "images/favicon.ico",
+      "_appFooter": "Adaptive Architecture",
+      "_copyrightFooter": null,
+      "_disableContribution": true,
+      "_enableSearch": true,
+      "pdf": false
+    }
   }
 }

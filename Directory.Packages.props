@@ -3,7 +3,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
-  <ItemGroup Condition="'$(CONFIGURATION)' == 'Release'">
+  <ItemGroup Condition="'$(CONFIGURATION)' == 'Release' And '$(BuildDocFx)' != 'true'">
     <PackageVersion Include="AdaptArch.Common.Utilities" Version="0.1.3.3" />
     <PackageVersion Include="AdaptArch.Common.Utilities.Configuration" Version="0.1.3.3" />
     <PackageVersion Include="AdaptArch.Common.Utilities.Hosting" Version="0.1.3.3" />

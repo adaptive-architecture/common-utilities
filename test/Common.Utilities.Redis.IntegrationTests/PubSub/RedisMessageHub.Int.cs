@@ -1,5 +1,4 @@
-﻿using AdaptArch.Common.Utilities.PubSub.Contracts;
-using AdaptArch.Common.Utilities.Redis.PubSub;
+﻿using AdaptArch.Common.Utilities.Redis.PubSub;
 
 namespace AdaptArch.Common.Utilities.Redis.IntegrationTests.PubSub;
 
@@ -11,12 +10,12 @@ public class RedisMessageHubInt
         public string Id { get; set; }
     }
 
-    private readonly IMessageHub _messageHub;
-    private readonly IMessageHubAsync _messageHubAsync;
+    private readonly RedisMessageHub _messageHub;
+    private readonly RedisMessageHub _messageHubAsync;
 
     public RedisMessageHubInt()
     {
-        var hub = new RedisMessageHub(Utilities.GetDefaultConnectionMultiplexer(), new RedisMessageHubOptions());
+        var hub = new RedisMessageHub(Utilities.GetDefaultConnectionMultiplexer(), new RedisMessageHubOptions(IntegrationJsonSerializerContext.Default));
         _messageHub = hub;
         _messageHubAsync = hub;
     }
@@ -60,15 +59,13 @@ public class RedisMessageHubInt
                 {
                     receivedMessage = m.Data;
                     return Task.CompletedTask;
-                }, CancellationToken.None)
-            ;
+                }, CancellationToken.None);
 
         Assert.Null(receivedMessage);
 
         var sentMessage = new MyMessage { Id = Guid.NewGuid().ToString("N") };
 
-        await _messageHubAsync.PublishAsync(nameof(MyMessage), sentMessage, CancellationToken.None)
-            ;
+        await _messageHubAsync.PublishAsync(nameof(MyMessage), sentMessage, CancellationToken.None);
 
         await Task.Delay(WaitTime);
 
@@ -78,8 +75,7 @@ public class RedisMessageHubInt
         await _messageHubAsync.UnsubscribeAsync(subId, CancellationToken.None);
         receivedMessage = null;
 
-        await _messageHubAsync.PublishAsync(nameof(MyMessage), sentMessage, CancellationToken.None)
-            ;
+        await _messageHubAsync.PublishAsync(nameof(MyMessage), sentMessage, CancellationToken.None);
 
         await Task.Delay(WaitTime);
 
