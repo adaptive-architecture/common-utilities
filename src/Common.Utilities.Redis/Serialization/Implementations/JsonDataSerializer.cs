@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using AdaptArch.Common.Utilities.PubSub.Contracts;
-using AdaptArch.Common.Utilities.PubSub.Implementations.Internals;
+using System.Text.Json.Serialization.Metadata;
 using AdaptArch.Common.Utilities.Redis.Serialization.Contracts;
 using StackExchange.Redis;
 
@@ -15,7 +14,7 @@ namespace AdaptArch.Common.Utilities.Redis.Serialization.Implementations;
 /// </remarks>
 public class JsonDataSerializer : IDataSerializer
 {
-    private readonly JsonSerializerContext _jsonSerializerContext;
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="JsonDataSerializer"/> class.
@@ -23,14 +22,18 @@ public class JsonDataSerializer : IDataSerializer
     /// </summary>
     public JsonDataSerializer(JsonSerializerContext jsonSerializerContext)
     {
-        _jsonSerializerContext = jsonSerializerContext
-            ?? throw new ArgumentNullException(nameof(jsonSerializerContext));
+        if (jsonSerializerContext == null)
+            throw new ArgumentNullException(nameof(jsonSerializerContext));
 
-        _jsonSerializerContext.Options.TypeInfoResolverChain.Add(InternalJsonSerializerContext.Default);
+        _jsonSerializerOptions = new JsonSerializerOptions(jsonSerializerContext.Options)
+        {
+            TypeInfoResolver = JsonTypeInfoResolver.Combine(MessagesJsonSerializerContext.Default, jsonSerializerContext.Options.TypeInfoResolver)
+        };
     }
 
     /// <inheritdoc />
-    public RedisValue Serialize<T>(T data) => JsonSerializer.Serialize(data, typeof(T), _jsonSerializerContext);
+    public RedisValue Serialize<T>(T data) =>
+        JsonSerializer.Serialize(data, _jsonSerializerOptions.GetTypeInfo(typeof(T)));
 
     /// <inheritdoc />
     public T? Deserialize<T>(RedisValue data)
@@ -40,11 +43,6 @@ public class JsonDataSerializer : IDataSerializer
             throw new ArgumentNullException(nameof(data));
         }
 
-        return (T?)JsonSerializer.Deserialize(data.ToString(), typeof(T), _jsonSerializerContext);
+        return (T?)JsonSerializer.Deserialize(data.ToString(), _jsonSerializerOptions.GetTypeInfo(typeof(T?)));
     }
 }
-
-[JsonSerializable(typeof(object))]
-[JsonSerializable(typeof(Message<object>))]
-[JsonSerializable(typeof(IMessage<object>))]
-internal partial class InternalJsonSerializerContext : JsonSerializerContext;
