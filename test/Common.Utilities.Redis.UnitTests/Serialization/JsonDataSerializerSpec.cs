@@ -5,7 +5,7 @@ namespace AdaptArch.Common.Utilities.Redis.UnitTests.Serialization;
 
 public class JsonDataSerializerSpecs
 {
-    private record SerializationDataObject
+    public record SerializationDataObject
     {
         public string Id { get; init; }
         public DateTime Date { get; init; }
@@ -41,7 +41,7 @@ public class JsonDataSerializerSpecs
     {
         var serializer = new JsonDataSerializer(TestJsonSerializerContext.Default);
 
-        var nullValue = serializer.Deserialize<object>("null");
+        var nullValue = serializer.Deserialize<SerializationDataObject>("null");
         Assert.Null(nullValue);
     }
 }

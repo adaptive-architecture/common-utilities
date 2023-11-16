@@ -1,8 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using AdaptArch.Common.Utilities.PubSub.Contracts;
+using AdaptArch.Common.Utilities.Redis.UnitTests.Serialization;
 
 namespace AdaptArch.Common.Utilities.Redis.UnitTests;
 
-[JsonSerializable(typeof(object))]
-[JsonSerializable(typeof(IMessage<object>))]
+[JsonSerializable(typeof(JsonDataSerializerSpecs.SerializationDataObject))]
 internal partial class TestJsonSerializerContext : JsonSerializerContext;
