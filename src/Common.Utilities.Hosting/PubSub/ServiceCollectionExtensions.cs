@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using AdaptArch.Common.Utilities.Hosting.PubSub;
 using AdaptArch.Common.Utilities.PubSub.Contracts;
 using AdaptArch.Common.Utilities.PubSub.Implementations;
@@ -19,6 +20,8 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/> to register with.</param>
     /// <param name="handlerAssembly">The <see cref="Assembly"/> containing the handlers.</param>
+    [RequiresDynamicCode("The native code for this instantiation might not be available at runtime.")]
+    [RequiresUnreferencedCode("Calls methods from the \"System.Reflection\" namespace.")]
     public static IServiceCollection AddPubSubMessageHandlers(this IServiceCollection services, Assembly handlerAssembly)
         => services
             .AddPubSubMessageHandlers<MessageHandlerAttribute>(handlerAssembly, a => a.Topic);
@@ -29,6 +32,8 @@ public static class ServiceCollectionExtensions
     /// <param name="services">The <see cref="IServiceCollection"/> to register with.</param>
     /// <param name="handlerAssembly">The <see cref="Assembly"/> containing the handlers.</param>
     /// <param name="handlerTopicAccessor">The <see cref="Attribute"/> property that specifies the topic.</param>
+    [RequiresDynamicCode("The native code for this instantiation might not be available at runtime.")]
+    [RequiresUnreferencedCode("Calls methods from the \"System.Reflection\" namespace.")]
     public static IServiceCollection AddPubSubMessageHandlers<TAttribute>(this IServiceCollection services,
         Assembly handlerAssembly, Func<TAttribute, string> handlerTopicAccessor)
         where TAttribute : Attribute
@@ -44,7 +49,9 @@ public static class ServiceCollectionExtensions
         return services.AddSingleton<IHostedService>(svc => new MessageHandlerBackgroundService(svc, handlerDefinitions));
     }
 
-    private static IReadOnlyCollection<HandlerDefinitions> GetHandlerDefinitions<TAttribute>(Assembly assembly, Func<TAttribute, string> topicAccessor)
+    [RequiresDynamicCode("The native code for this instantiation might not be available at runtime.")]
+    [RequiresUnreferencedCode("Calls methods from the \"System.Reflection\" namespace.")]
+    private static List<HandlerDefinitions> GetHandlerDefinitions<TAttribute>(Assembly assembly, Func<TAttribute, string> topicAccessor)
         where TAttribute : Attribute
     {
         var validator = new MethodInfoValidator();
@@ -67,6 +74,8 @@ public static class ServiceCollectionExtensions
         return result;
     }
 
+    [RequiresDynamicCode("The native code for this instantiation might not be available at runtime.")]
+    [RequiresUnreferencedCode("Calls methods from the \"System.Reflection\" namespace.")]
     private static IEnumerable<MethodInfo> GetPublicMethods(Assembly assembly)
         => assembly.GetExportedTypes()
             .Where(w => w is { IsClass: true, IsAbstract: false })

@@ -1,10 +1,13 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using AdaptArch.Common.Utilities.PubSub.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace AdaptArch.Common.Utilities.Hosting.PubSub;
 
+[RequiresDynamicCode("The native code for this instantiation might not be available at runtime.")]
+[RequiresUnreferencedCode("Calls methods from the \"System.Reflection\" namespace.")]
 internal class MessageHandlerBackgroundService : IHostedService
 {
     private readonly IServiceProvider _serviceProvider;

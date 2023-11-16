@@ -45,7 +45,7 @@ public abstract class MessageHub<TOptions> : IMessageHub, IMessageHubAsync
     public abstract Task UnsubscribeAsync(string id, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Wrap the handler in the <see cref="SafeInvokeHandler{T}"/> method call.
+    /// Wrap the original handler in a try/catch block to prevent errors from bubbling.
     /// </summary>
     /// <param name="handler">The original handler for the data.</param>
     /// <typeparam name="TMessageData">The type of the data.</typeparam>
@@ -56,8 +56,8 @@ public abstract class MessageHub<TOptions> : IMessageHub, IMessageHubAsync
         return (message, token) => SafeInvokeHandler(handler, message, Options, token);
     }
 
-    private static async Task SafeInvokeHandler<T>(MessageHandler<T> handler, IMessage<T> message, TOptions options, CancellationToken cancellationToken)
-        where T : class
+    private static async Task SafeInvokeHandler<TMessageData>(MessageHandler<TMessageData> handler, IMessage<TMessageData> message, TOptions options, CancellationToken cancellationToken)
+        where TMessageData : class
     {
         try
         {

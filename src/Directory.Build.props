@@ -1,9 +1,9 @@
 <Project>
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
   <PropertyGroup>
-    <!-- <IsTrimmable>false</IsTrimmable>
-	<EnableTrimAnalyzer>true</EnableTrimAnalyzer>
-	<EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>	
-	<EnableAotAnalyzer>true</EnableAotAnalyzer> -->
+    <!-- <IsTrimmable>false</IsTrimmable> -->
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
+    <EnableAotAnalyzer>true</EnableAotAnalyzer>
   </PropertyGroup>
 </Project>

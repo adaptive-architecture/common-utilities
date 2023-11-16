@@ -14,11 +14,14 @@ references:
   fullName: AdaptArch.Common.Utilities.Configuration.Contracts.IConfigurationParser
   nameWithType: IConfigurationParser
 - uid: AdaptArch.Common.Utilities.Configuration.Contracts.IConfigurationParser.Parse(System.String)
-  name: Parse(String)
+  name: Parse(string)
   href: api/AdaptArch.Common.Utilities.Configuration.Contracts.IConfigurationParser.html#AdaptArch_Common_Utilities_Configuration_Contracts_IConfigurationParser_Parse_System_String_
   commentId: M:AdaptArch.Common.Utilities.Configuration.Contracts.IConfigurationParser.Parse(System.String)
-  fullName: AdaptArch.Common.Utilities.Configuration.Contracts.IConfigurationParser.Parse(System.String)
-  nameWithType: IConfigurationParser.Parse(String)
+  name.vb: Parse(String)
+  fullName: AdaptArch.Common.Utilities.Configuration.Contracts.IConfigurationParser.Parse(string)
+  fullName.vb: AdaptArch.Common.Utilities.Configuration.Contracts.IConfigurationParser.Parse(String)
+  nameWithType: IConfigurationParser.Parse(string)
+  nameWithType.vb: IConfigurationParser.Parse(String)
 - uid: AdaptArch.Common.Utilities.Configuration.Contracts.IConfigurationParser.Parse*
   name: Parse
   href: api/AdaptArch.Common.Utilities.Configuration.Contracts.IConfigurationParser.html#AdaptArch_Common_Utilities_Configuration_Contracts_IConfigurationParser_Parse_
@@ -32,11 +35,11 @@ references:
   commentId: T:AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider
   fullName: AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider
   nameWithType: IDataProvider
-- uid: AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.GetHashAsync(CancellationToken)
+- uid: AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.GetHashAsync(System.Threading.CancellationToken)
   name: GetHashAsync(CancellationToken)
-  href: api/AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.html#AdaptArch_Common_Utilities_Configuration_Contracts_IDataProvider_GetHashAsync_CancellationToken_
-  commentId: M:AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.GetHashAsync(CancellationToken)
-  fullName: AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.GetHashAsync(CancellationToken)
+  href: api/AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.html#AdaptArch_Common_Utilities_Configuration_Contracts_IDataProvider_GetHashAsync_System_Threading_CancellationToken_
+  commentId: M:AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.GetHashAsync(System.Threading.CancellationToken)
+  fullName: AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.GetHashAsync(System.Threading.CancellationToken)
   nameWithType: IDataProvider.GetHashAsync(CancellationToken)
 - uid: AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.GetHashAsync*
   name: GetHashAsync
@@ -45,11 +48,11 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.GetHashAsync
   nameWithType: IDataProvider.GetHashAsync
-- uid: AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.ReadDataAsync(CancellationToken)
+- uid: AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.ReadDataAsync(System.Threading.CancellationToken)
   name: ReadDataAsync(CancellationToken)
-  href: api/AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.html#AdaptArch_Common_Utilities_Configuration_Contracts_IDataProvider_ReadDataAsync_CancellationToken_
-  commentId: M:AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.ReadDataAsync(CancellationToken)
-  fullName: AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.ReadDataAsync(CancellationToken)
+  href: api/AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.html#AdaptArch_Common_Utilities_Configuration_Contracts_IDataProvider_ReadDataAsync_System_Threading_CancellationToken_
+  commentId: M:AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.ReadDataAsync(System.Threading.CancellationToken)
+  fullName: AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.ReadDataAsync(System.Threading.CancellationToken)
   nameWithType: IDataProvider.ReadDataAsync(CancellationToken)
 - uid: AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider.ReadDataAsync*
   name: ReadDataAsync
@@ -71,24 +74,33 @@ references:
   fullName: AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser
   nameWithType: JsonConfigurationParser
 - uid: AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.#ctor(System.String)
-  name: JsonConfigurationParser(String)
+  name: JsonConfigurationParser(string)
   href: api/AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.html#AdaptArch_Common_Utilities_Configuration_Implementation_JsonConfigurationParser__ctor_System_String_
   commentId: M:AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.#ctor(System.String)
-  fullName: AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.JsonConfigurationParser(System.String)
-  nameWithType: JsonConfigurationParser.JsonConfigurationParser(String)
+  name.vb: New(String)
+  fullName: AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.JsonConfigurationParser(string)
+  fullName.vb: AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.New(String)
+  nameWithType: JsonConfigurationParser.JsonConfigurationParser(string)
+  nameWithType.vb: JsonConfigurationParser.New(String)
 - uid: AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.#ctor*
   name: JsonConfigurationParser
   href: api/AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.html#AdaptArch_Common_Utilities_Configuration_Implementation_JsonConfigurationParser__ctor_
   commentId: Overload:AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.JsonConfigurationParser
+  fullName.vb: AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.New
   nameWithType: JsonConfigurationParser.JsonConfigurationParser
+  nameWithType.vb: JsonConfigurationParser.New
 - uid: AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.Parse(System.String)
-  name: Parse(String)
+  name: Parse(string)
   href: api/AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.html#AdaptArch_Common_Utilities_Configuration_Implementation_JsonConfigurationParser_Parse_System_String_
   commentId: M:AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.Parse(System.String)
-  fullName: AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.Parse(System.String)
-  nameWithType: JsonConfigurationParser.Parse(String)
+  name.vb: Parse(String)
+  fullName: AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.Parse(string)
+  fullName.vb: AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.Parse(String)
+  nameWithType: JsonConfigurationParser.Parse(string)
+  nameWithType.vb: JsonConfigurationParser.Parse(String)
 - uid: AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.Parse*
   name: Parse
   href: api/AdaptArch.Common.Utilities.Configuration.Implementation.JsonConfigurationParser.html#AdaptArch_Common_Utilities_Configuration_Implementation_JsonConfigurationParser_Parse_
@@ -108,19 +120,25 @@ references:
   commentId: T:AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider
   fullName: AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider
   nameWithType: CustomConfigurationProvider
-- uid: AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.#ctor(IDataProvider,AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProviderOptions)
+- uid: AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.#ctor(AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider,AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProviderOptions)
   name: CustomConfigurationProvider(IDataProvider, CustomConfigurationProviderOptions)
-  href: api/AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.html#AdaptArch_Common_Utilities_Configuration_Providers_CustomConfigurationProvider__ctor_IDataProvider_AdaptArch_Common_Utilities_Configuration_Providers_CustomConfigurationProviderOptions_
-  commentId: M:AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.#ctor(IDataProvider,AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProviderOptions)
-  fullName: AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.CustomConfigurationProvider(IDataProvider, AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProviderOptions)
+  href: api/AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.html#AdaptArch_Common_Utilities_Configuration_Providers_CustomConfigurationProvider__ctor_AdaptArch_Common_Utilities_Configuration_Contracts_IDataProvider_AdaptArch_Common_Utilities_Configuration_Providers_CustomConfigurationProviderOptions_
+  commentId: M:AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.#ctor(AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider,AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProviderOptions)
+  name.vb: New(IDataProvider, CustomConfigurationProviderOptions)
+  fullName: AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.CustomConfigurationProvider(AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider, AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProviderOptions)
+  fullName.vb: AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.New(AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider, AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProviderOptions)
   nameWithType: CustomConfigurationProvider.CustomConfigurationProvider(IDataProvider, CustomConfigurationProviderOptions)
+  nameWithType.vb: CustomConfigurationProvider.New(IDataProvider, CustomConfigurationProviderOptions)
 - uid: AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.#ctor*
   name: CustomConfigurationProvider
   href: api/AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.html#AdaptArch_Common_Utilities_Configuration_Providers_CustomConfigurationProvider__ctor_
   commentId: Overload:AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.CustomConfigurationProvider
+  fullName.vb: AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.New
   nameWithType: CustomConfigurationProvider.CustomConfigurationProvider
+  nameWithType.vb: CustomConfigurationProvider.New
 - uid: AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.Load
   name: Load()
   href: api/AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationProvider.html#AdaptArch_Common_Utilities_Configuration_Providers_CustomConfigurationProvider_Load
@@ -256,19 +274,25 @@ references:
   commentId: T:AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext
   fullName: AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext
   nameWithType: LoadExceptionContext
-- uid: AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.#ctor(Exception)
+- uid: AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.#ctor(System.Exception)
   name: LoadExceptionContext(Exception)
-  href: api/AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.html#AdaptArch_Common_Utilities_Configuration_Providers_LoadExceptionContext__ctor_Exception_
-  commentId: M:AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.#ctor(Exception)
-  fullName: AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.LoadExceptionContext(Exception)
+  href: api/AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.html#AdaptArch_Common_Utilities_Configuration_Providers_LoadExceptionContext__ctor_System_Exception_
+  commentId: M:AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.#ctor(System.Exception)
+  name.vb: New(Exception)
+  fullName: AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.LoadExceptionContext(System.Exception)
+  fullName.vb: AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.New(System.Exception)
   nameWithType: LoadExceptionContext.LoadExceptionContext(Exception)
+  nameWithType.vb: LoadExceptionContext.New(Exception)
 - uid: AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.#ctor*
   name: LoadExceptionContext
   href: api/AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.html#AdaptArch_Common_Utilities_Configuration_Providers_LoadExceptionContext__ctor_
   commentId: Overload:AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.LoadExceptionContext
+  fullName.vb: AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.New
   nameWithType: LoadExceptionContext.LoadExceptionContext
+  nameWithType.vb: LoadExceptionContext.New
 - uid: AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.Exception
   name: Exception
   href: api/AdaptArch.Common.Utilities.Configuration.Providers.LoadExceptionContext.html#AdaptArch_Common_Utilities_Configuration_Providers_LoadExceptionContext_Exception
@@ -394,12 +418,15 @@ references:
   commentId: T:AdaptArch.Common.Utilities.Delay.Contracts.IJitterGenerator
   fullName: AdaptArch.Common.Utilities.Delay.Contracts.IJitterGenerator
   nameWithType: IJitterGenerator
-- uid: AdaptArch.Common.Utilities.Delay.Contracts.IJitterGenerator.New(TimeSpan,System.Single,System.Single)
-  name: New(TimeSpan, Single, Single)
-  href: api/AdaptArch.Common.Utilities.Delay.Contracts.IJitterGenerator.html#AdaptArch_Common_Utilities_Delay_Contracts_IJitterGenerator_New_TimeSpan_System_Single_System_Single_
-  commentId: M:AdaptArch.Common.Utilities.Delay.Contracts.IJitterGenerator.New(TimeSpan,System.Single,System.Single)
-  fullName: AdaptArch.Common.Utilities.Delay.Contracts.IJitterGenerator.New(TimeSpan, System.Single, System.Single)
-  nameWithType: IJitterGenerator.New(TimeSpan, Single, Single)
+- uid: AdaptArch.Common.Utilities.Delay.Contracts.IJitterGenerator.New(System.TimeSpan,System.Single,System.Single)
+  name: New(TimeSpan, float, float)
+  href: api/AdaptArch.Common.Utilities.Delay.Contracts.IJitterGenerator.html#AdaptArch_Common_Utilities_Delay_Contracts_IJitterGenerator_New_System_TimeSpan_System_Single_System_Single_
+  commentId: M:AdaptArch.Common.Utilities.Delay.Contracts.IJitterGenerator.New(System.TimeSpan,System.Single,System.Single)
+  name.vb: New(TimeSpan, Single, Single)
+  fullName: AdaptArch.Common.Utilities.Delay.Contracts.IJitterGenerator.New(System.TimeSpan, float, float)
+  fullName.vb: AdaptArch.Common.Utilities.Delay.Contracts.IJitterGenerator.New(System.TimeSpan, Single, Single)
+  nameWithType: IJitterGenerator.New(TimeSpan, float, float)
+  nameWithType.vb: IJitterGenerator.New(TimeSpan, Single, Single)
 - uid: AdaptArch.Common.Utilities.Delay.Contracts.IJitterGenerator.New*
   name: New
   href: api/AdaptArch.Common.Utilities.Delay.Contracts.IJitterGenerator.html#AdaptArch_Common_Utilities_Delay_Contracts_IJitterGenerator_New_
@@ -423,15 +450,21 @@ references:
   name: DelayGenerator(DelayGeneratorOptions)
   href: api/AdaptArch.Common.Utilities.Delay.Implementations.DelayGenerator.html#AdaptArch_Common_Utilities_Delay_Implementations_DelayGenerator__ctor_AdaptArch_Common_Utilities_Delay_Implementations_DelayGeneratorOptions_
   commentId: M:AdaptArch.Common.Utilities.Delay.Implementations.DelayGenerator.#ctor(AdaptArch.Common.Utilities.Delay.Implementations.DelayGeneratorOptions)
+  name.vb: New(DelayGeneratorOptions)
   fullName: AdaptArch.Common.Utilities.Delay.Implementations.DelayGenerator.DelayGenerator(AdaptArch.Common.Utilities.Delay.Implementations.DelayGeneratorOptions)
+  fullName.vb: AdaptArch.Common.Utilities.Delay.Implementations.DelayGenerator.New(AdaptArch.Common.Utilities.Delay.Implementations.DelayGeneratorOptions)
   nameWithType: DelayGenerator.DelayGenerator(DelayGeneratorOptions)
+  nameWithType.vb: DelayGenerator.New(DelayGeneratorOptions)
 - uid: AdaptArch.Common.Utilities.Delay.Implementations.DelayGenerator.#ctor*
   name: DelayGenerator
   href: api/AdaptArch.Common.Utilities.Delay.Implementations.DelayGenerator.html#AdaptArch_Common_Utilities_Delay_Implementations_DelayGenerator__ctor_
   commentId: Overload:AdaptArch.Common.Utilities.Delay.Implementations.DelayGenerator.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: AdaptArch.Common.Utilities.Delay.Implementations.DelayGenerator.DelayGenerator
+  fullName.vb: AdaptArch.Common.Utilities.Delay.Implementations.DelayGenerator.New
   nameWithType: DelayGenerator.DelayGenerator
+  nameWithType.vb: DelayGenerator.New
 - uid: AdaptArch.Common.Utilities.Delay.Implementations.DelayGenerator.GetDelays
   name: GetDelays()
   href: api/AdaptArch.Common.Utilities.Delay.Implementations.DelayGenerator.html#AdaptArch_Common_Utilities_Delay_Implementations_DelayGenerator_GetDelays
@@ -552,21 +585,30 @@ references:
   name: JitterGenerator(IRandomGenerator)
   href: api/AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.html#AdaptArch_Common_Utilities_Delay_Implementations_JitterGenerator__ctor_AdaptArch_Common_Utilities_GlobalAbstractions_Contracts_IRandomGenerator_
   commentId: M:AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.#ctor(AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IRandomGenerator)
+  name.vb: New(IRandomGenerator)
   fullName: AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.JitterGenerator(AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IRandomGenerator)
+  fullName.vb: AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.New(AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IRandomGenerator)
   nameWithType: JitterGenerator.JitterGenerator(IRandomGenerator)
+  nameWithType.vb: JitterGenerator.New(IRandomGenerator)
 - uid: AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.#ctor*
   name: JitterGenerator
   href: api/AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.html#AdaptArch_Common_Utilities_Delay_Implementations_JitterGenerator__ctor_
   commentId: Overload:AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.JitterGenerator
+  fullName.vb: AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.New
   nameWithType: JitterGenerator.JitterGenerator
-- uid: AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.New(TimeSpan,System.Single,System.Single)
-  name: New(TimeSpan, Single, Single)
-  href: api/AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.html#AdaptArch_Common_Utilities_Delay_Implementations_JitterGenerator_New_TimeSpan_System_Single_System_Single_
-  commentId: M:AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.New(TimeSpan,System.Single,System.Single)
-  fullName: AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.New(TimeSpan, System.Single, System.Single)
-  nameWithType: JitterGenerator.New(TimeSpan, Single, Single)
+  nameWithType.vb: JitterGenerator.New
+- uid: AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.New(System.TimeSpan,System.Single,System.Single)
+  name: New(TimeSpan, float, float)
+  href: api/AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.html#AdaptArch_Common_Utilities_Delay_Implementations_JitterGenerator_New_System_TimeSpan_System_Single_System_Single_
+  commentId: M:AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.New(System.TimeSpan,System.Single,System.Single)
+  name.vb: New(TimeSpan, Single, Single)
+  fullName: AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.New(System.TimeSpan, float, float)
+  fullName.vb: AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.New(System.TimeSpan, Single, Single)
+  nameWithType: JitterGenerator.New(TimeSpan, float, float)
+  nameWithType.vb: JitterGenerator.New(TimeSpan, Single, Single)
 - uid: AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.New*
   name: New
   href: api/AdaptArch.Common.Utilities.Delay.Implementations.JitterGenerator.html#AdaptArch_Common_Utilities_Delay_Implementations_JitterGenerator_New_
@@ -586,12 +628,15 @@ references:
   commentId: F:AdaptArch.Common.Utilities.Delay.Implementations.ZeroJitterGenerator.Instance
   fullName: AdaptArch.Common.Utilities.Delay.Implementations.ZeroJitterGenerator.Instance
   nameWithType: ZeroJitterGenerator.Instance
-- uid: AdaptArch.Common.Utilities.Delay.Implementations.ZeroJitterGenerator.New(TimeSpan,System.Single,System.Single)
-  name: New(TimeSpan, Single, Single)
-  href: api/AdaptArch.Common.Utilities.Delay.Implementations.ZeroJitterGenerator.html#AdaptArch_Common_Utilities_Delay_Implementations_ZeroJitterGenerator_New_TimeSpan_System_Single_System_Single_
-  commentId: M:AdaptArch.Common.Utilities.Delay.Implementations.ZeroJitterGenerator.New(TimeSpan,System.Single,System.Single)
-  fullName: AdaptArch.Common.Utilities.Delay.Implementations.ZeroJitterGenerator.New(TimeSpan, System.Single, System.Single)
-  nameWithType: ZeroJitterGenerator.New(TimeSpan, Single, Single)
+- uid: AdaptArch.Common.Utilities.Delay.Implementations.ZeroJitterGenerator.New(System.TimeSpan,System.Single,System.Single)
+  name: New(TimeSpan, float, float)
+  href: api/AdaptArch.Common.Utilities.Delay.Implementations.ZeroJitterGenerator.html#AdaptArch_Common_Utilities_Delay_Implementations_ZeroJitterGenerator_New_System_TimeSpan_System_Single_System_Single_
+  commentId: M:AdaptArch.Common.Utilities.Delay.Implementations.ZeroJitterGenerator.New(System.TimeSpan,System.Single,System.Single)
+  name.vb: New(TimeSpan, Single, Single)
+  fullName: AdaptArch.Common.Utilities.Delay.Implementations.ZeroJitterGenerator.New(System.TimeSpan, float, float)
+  fullName.vb: AdaptArch.Common.Utilities.Delay.Implementations.ZeroJitterGenerator.New(System.TimeSpan, Single, Single)
+  nameWithType: ZeroJitterGenerator.New(TimeSpan, float, float)
+  nameWithType.vb: ZeroJitterGenerator.New(TimeSpan, Single, Single)
 - uid: AdaptArch.Common.Utilities.Delay.Implementations.ZeroJitterGenerator.New*
   name: New
   href: api/AdaptArch.Common.Utilities.Delay.Implementations.ZeroJitterGenerator.html#AdaptArch_Common_Utilities_Delay_Implementations_ZeroJitterGenerator_New_
@@ -612,26 +657,32 @@ references:
   fullName: AdaptArch.Common.Utilities.Encoding.Base64Url
   nameWithType: Base64Url
 - uid: AdaptArch.Common.Utilities.Encoding.Base64Url.Decode(System.String)
-  name: Decode(String)
+  name: Decode(string)
   href: api/AdaptArch.Common.Utilities.Encoding.Base64Url.html#AdaptArch_Common_Utilities_Encoding_Base64Url_Decode_System_String_
   commentId: M:AdaptArch.Common.Utilities.Encoding.Base64Url.Decode(System.String)
-  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.Decode(System.String)
-  nameWithType: Base64Url.Decode(String)
+  name.vb: Decode(String)
+  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.Decode(string)
+  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64Url.Decode(String)
+  nameWithType: Base64Url.Decode(string)
+  nameWithType.vb: Base64Url.Decode(String)
 - uid: AdaptArch.Common.Utilities.Encoding.Base64Url.Decode(System.String,System.Int32,System.Char[],System.Int32,System.Int32)
-  name: Decode(String, Int32, Char[], Int32, Int32)
+  name: Decode(string, int, char[], int, int)
   href: api/AdaptArch.Common.Utilities.Encoding.Base64Url.html#AdaptArch_Common_Utilities_Encoding_Base64Url_Decode_System_String_System_Int32_System_Char___System_Int32_System_Int32_
   commentId: M:AdaptArch.Common.Utilities.Encoding.Base64Url.Decode(System.String,System.Int32,System.Char[],System.Int32,System.Int32)
-  name.vb: Decode(String, Int32, Char(), Int32, Int32)
-  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.Decode(System.String, System.Int32, System.Char[], System.Int32, System.Int32)
-  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64Url.Decode(System.String, System.Int32, System.Char(), System.Int32, System.Int32)
-  nameWithType: Base64Url.Decode(String, Int32, Char[], Int32, Int32)
-  nameWithType.vb: Base64Url.Decode(String, Int32, Char(), Int32, Int32)
+  name.vb: Decode(String, Integer, Char(), Integer, Integer)
+  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.Decode(string, int, char[], int, int)
+  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64Url.Decode(String, Integer, Char(), Integer, Integer)
+  nameWithType: Base64Url.Decode(string, int, char[], int, int)
+  nameWithType.vb: Base64Url.Decode(String, Integer, Char(), Integer, Integer)
 - uid: AdaptArch.Common.Utilities.Encoding.Base64Url.Decode(System.String,System.Int32,System.Int32)
-  name: Decode(String, Int32, Int32)
+  name: Decode(string, int, int)
   href: api/AdaptArch.Common.Utilities.Encoding.Base64Url.html#AdaptArch_Common_Utilities_Encoding_Base64Url_Decode_System_String_System_Int32_System_Int32_
   commentId: M:AdaptArch.Common.Utilities.Encoding.Base64Url.Decode(System.String,System.Int32,System.Int32)
-  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.Decode(System.String, System.Int32, System.Int32)
-  nameWithType: Base64Url.Decode(String, Int32, Int32)
+  name.vb: Decode(String, Integer, Integer)
+  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.Decode(string, int, int)
+  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64Url.Decode(String, Integer, Integer)
+  nameWithType: Base64Url.Decode(string, int, int)
+  nameWithType.vb: Base64Url.Decode(String, Integer, Integer)
 - uid: AdaptArch.Common.Utilities.Encoding.Base64Url.Decode*
   name: Decode
   href: api/AdaptArch.Common.Utilities.Encoding.Base64Url.html#AdaptArch_Common_Utilities_Encoding_Base64Url_Decode_
@@ -639,42 +690,42 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.Decode
   nameWithType: Base64Url.Decode
-- uid: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(ReadOnlySpan{System.Byte})
-  name: Encode(ReadOnlySpan<Byte>)
-  href: api/AdaptArch.Common.Utilities.Encoding.Base64Url.html#AdaptArch_Common_Utilities_Encoding_Base64Url_Encode_ReadOnlySpan_System_Byte__
-  commentId: M:AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(ReadOnlySpan{System.Byte})
-  name.vb: Encode(ReadOnlySpan(Of Byte))
-  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(ReadOnlySpan<System.Byte>)
-  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(ReadOnlySpan(Of System.Byte))
-  nameWithType: Base64Url.Encode(ReadOnlySpan<Byte>)
-  nameWithType.vb: Base64Url.Encode(ReadOnlySpan(Of Byte))
 - uid: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(System.Byte[])
-  name: Encode(Byte[])
+  name: Encode(byte[])
   href: api/AdaptArch.Common.Utilities.Encoding.Base64Url.html#AdaptArch_Common_Utilities_Encoding_Base64Url_Encode_System_Byte___
   commentId: M:AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(System.Byte[])
   name.vb: Encode(Byte())
-  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(System.Byte[])
-  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(System.Byte())
-  nameWithType: Base64Url.Encode(Byte[])
+  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(byte[])
+  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(Byte())
+  nameWithType: Base64Url.Encode(byte[])
   nameWithType.vb: Base64Url.Encode(Byte())
 - uid: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(System.Byte[],System.Int32,System.Char[],System.Int32,System.Int32)
-  name: Encode(Byte[], Int32, Char[], Int32, Int32)
+  name: Encode(byte[], int, char[], int, int)
   href: api/AdaptArch.Common.Utilities.Encoding.Base64Url.html#AdaptArch_Common_Utilities_Encoding_Base64Url_Encode_System_Byte___System_Int32_System_Char___System_Int32_System_Int32_
   commentId: M:AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(System.Byte[],System.Int32,System.Char[],System.Int32,System.Int32)
-  name.vb: Encode(Byte(), Int32, Char(), Int32, Int32)
-  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(System.Byte[], System.Int32, System.Char[], System.Int32, System.Int32)
-  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(System.Byte(), System.Int32, System.Char(), System.Int32, System.Int32)
-  nameWithType: Base64Url.Encode(Byte[], Int32, Char[], Int32, Int32)
-  nameWithType.vb: Base64Url.Encode(Byte(), Int32, Char(), Int32, Int32)
+  name.vb: Encode(Byte(), Integer, Char(), Integer, Integer)
+  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(byte[], int, char[], int, int)
+  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(Byte(), Integer, Char(), Integer, Integer)
+  nameWithType: Base64Url.Encode(byte[], int, char[], int, int)
+  nameWithType.vb: Base64Url.Encode(Byte(), Integer, Char(), Integer, Integer)
 - uid: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(System.Byte[],System.Int32,System.Int32)
-  name: Encode(Byte[], Int32, Int32)
+  name: Encode(byte[], int, int)
   href: api/AdaptArch.Common.Utilities.Encoding.Base64Url.html#AdaptArch_Common_Utilities_Encoding_Base64Url_Encode_System_Byte___System_Int32_System_Int32_
   commentId: M:AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(System.Byte[],System.Int32,System.Int32)
-  name.vb: Encode(Byte(), Int32, Int32)
-  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(System.Byte[], System.Int32, System.Int32)
-  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(System.Byte(), System.Int32, System.Int32)
-  nameWithType: Base64Url.Encode(Byte[], Int32, Int32)
-  nameWithType.vb: Base64Url.Encode(Byte(), Int32, Int32)
+  name.vb: Encode(Byte(), Integer, Integer)
+  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(byte[], int, int)
+  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(Byte(), Integer, Integer)
+  nameWithType: Base64Url.Encode(byte[], int, int)
+  nameWithType.vb: Base64Url.Encode(Byte(), Integer, Integer)
+- uid: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(System.ReadOnlySpan{System.Byte})
+  name: Encode(ReadOnlySpan<byte>)
+  href: api/AdaptArch.Common.Utilities.Encoding.Base64Url.html#AdaptArch_Common_Utilities_Encoding_Base64Url_Encode_System_ReadOnlySpan_System_Byte__
+  commentId: M:AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(System.ReadOnlySpan{System.Byte})
+  name.vb: Encode(ReadOnlySpan(Of Byte))
+  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(System.ReadOnlySpan<byte>)
+  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode(System.ReadOnlySpan(Of Byte))
+  nameWithType: Base64Url.Encode(ReadOnlySpan<byte>)
+  nameWithType.vb: Base64Url.Encode(ReadOnlySpan(Of Byte))
 - uid: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode*
   name: Encode
   href: api/AdaptArch.Common.Utilities.Encoding.Base64Url.html#AdaptArch_Common_Utilities_Encoding_Base64Url_Encode_
@@ -683,11 +734,14 @@ references:
   fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.Encode
   nameWithType: Base64Url.Encode
 - uid: AdaptArch.Common.Utilities.Encoding.Base64Url.GetArraySizeRequiredToDecode(System.Int32)
-  name: GetArraySizeRequiredToDecode(Int32)
+  name: GetArraySizeRequiredToDecode(int)
   href: api/AdaptArch.Common.Utilities.Encoding.Base64Url.html#AdaptArch_Common_Utilities_Encoding_Base64Url_GetArraySizeRequiredToDecode_System_Int32_
   commentId: M:AdaptArch.Common.Utilities.Encoding.Base64Url.GetArraySizeRequiredToDecode(System.Int32)
-  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.GetArraySizeRequiredToDecode(System.Int32)
-  nameWithType: Base64Url.GetArraySizeRequiredToDecode(Int32)
+  name.vb: GetArraySizeRequiredToDecode(Integer)
+  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.GetArraySizeRequiredToDecode(int)
+  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64Url.GetArraySizeRequiredToDecode(Integer)
+  nameWithType: Base64Url.GetArraySizeRequiredToDecode(int)
+  nameWithType.vb: Base64Url.GetArraySizeRequiredToDecode(Integer)
 - uid: AdaptArch.Common.Utilities.Encoding.Base64Url.GetArraySizeRequiredToDecode*
   name: GetArraySizeRequiredToDecode
   href: api/AdaptArch.Common.Utilities.Encoding.Base64Url.html#AdaptArch_Common_Utilities_Encoding_Base64Url_GetArraySizeRequiredToDecode_
@@ -696,11 +750,14 @@ references:
   fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.GetArraySizeRequiredToDecode
   nameWithType: Base64Url.GetArraySizeRequiredToDecode
 - uid: AdaptArch.Common.Utilities.Encoding.Base64Url.GetArraySizeRequiredToEncode(System.Int32)
-  name: GetArraySizeRequiredToEncode(Int32)
+  name: GetArraySizeRequiredToEncode(int)
   href: api/AdaptArch.Common.Utilities.Encoding.Base64Url.html#AdaptArch_Common_Utilities_Encoding_Base64Url_GetArraySizeRequiredToEncode_System_Int32_
   commentId: M:AdaptArch.Common.Utilities.Encoding.Base64Url.GetArraySizeRequiredToEncode(System.Int32)
-  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.GetArraySizeRequiredToEncode(System.Int32)
-  nameWithType: Base64Url.GetArraySizeRequiredToEncode(Int32)
+  name.vb: GetArraySizeRequiredToEncode(Integer)
+  fullName: AdaptArch.Common.Utilities.Encoding.Base64Url.GetArraySizeRequiredToEncode(int)
+  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64Url.GetArraySizeRequiredToEncode(Integer)
+  nameWithType: Base64Url.GetArraySizeRequiredToEncode(int)
+  nameWithType.vb: Base64Url.GetArraySizeRequiredToEncode(Integer)
 - uid: AdaptArch.Common.Utilities.Encoding.Base64Url.GetArraySizeRequiredToEncode*
   name: GetArraySizeRequiredToEncode
   href: api/AdaptArch.Common.Utilities.Encoding.Base64Url.html#AdaptArch_Common_Utilities_Encoding_Base64Url_GetArraySizeRequiredToEncode_
@@ -715,11 +772,14 @@ references:
   fullName: AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder
   nameWithType: Base64UrlEncoder
 - uid: AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.Decode(System.String)
-  name: Decode(String)
+  name: Decode(string)
   href: api/AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.html#AdaptArch_Common_Utilities_Encoding_Base64UrlEncoder_Decode_System_String_
   commentId: M:AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.Decode(System.String)
-  fullName: AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.Decode(System.String)
-  nameWithType: Base64UrlEncoder.Decode(String)
+  name.vb: Decode(String)
+  fullName: AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.Decode(string)
+  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.Decode(String)
+  nameWithType: Base64UrlEncoder.Decode(string)
+  nameWithType.vb: Base64UrlEncoder.Decode(String)
 - uid: AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.Decode*
   name: Decode
   href: api/AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.html#AdaptArch_Common_Utilities_Encoding_Base64UrlEncoder_Decode_
@@ -728,13 +788,13 @@ references:
   fullName: AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.Decode
   nameWithType: Base64UrlEncoder.Decode
 - uid: AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.Encode(System.Byte[])
-  name: Encode(Byte[])
+  name: Encode(byte[])
   href: api/AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.html#AdaptArch_Common_Utilities_Encoding_Base64UrlEncoder_Encode_System_Byte___
   commentId: M:AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.Encode(System.Byte[])
   name.vb: Encode(Byte())
-  fullName: AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.Encode(System.Byte[])
-  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.Encode(System.Byte())
-  nameWithType: Base64UrlEncoder.Encode(Byte[])
+  fullName: AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.Encode(byte[])
+  fullName.vb: AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.Encode(Byte())
+  nameWithType: Base64UrlEncoder.Encode(byte[])
   nameWithType.vb: Base64UrlEncoder.Encode(Byte())
 - uid: AdaptArch.Common.Utilities.Encoding.Base64UrlEncoder.Encode*
   name: Encode
@@ -750,11 +810,14 @@ references:
   fullName: AdaptArch.Common.Utilities.Encoding.IEncoder
   nameWithType: IEncoder
 - uid: AdaptArch.Common.Utilities.Encoding.IEncoder.Decode(System.String)
-  name: Decode(String)
+  name: Decode(string)
   href: api/AdaptArch.Common.Utilities.Encoding.IEncoder.html#AdaptArch_Common_Utilities_Encoding_IEncoder_Decode_System_String_
   commentId: M:AdaptArch.Common.Utilities.Encoding.IEncoder.Decode(System.String)
-  fullName: AdaptArch.Common.Utilities.Encoding.IEncoder.Decode(System.String)
-  nameWithType: IEncoder.Decode(String)
+  name.vb: Decode(String)
+  fullName: AdaptArch.Common.Utilities.Encoding.IEncoder.Decode(string)
+  fullName.vb: AdaptArch.Common.Utilities.Encoding.IEncoder.Decode(String)
+  nameWithType: IEncoder.Decode(string)
+  nameWithType.vb: IEncoder.Decode(String)
 - uid: AdaptArch.Common.Utilities.Encoding.IEncoder.Decode*
   name: Decode
   href: api/AdaptArch.Common.Utilities.Encoding.IEncoder.html#AdaptArch_Common_Utilities_Encoding_IEncoder_Decode_
@@ -763,13 +826,13 @@ references:
   fullName: AdaptArch.Common.Utilities.Encoding.IEncoder.Decode
   nameWithType: IEncoder.Decode
 - uid: AdaptArch.Common.Utilities.Encoding.IEncoder.Encode(System.Byte[])
-  name: Encode(Byte[])
+  name: Encode(byte[])
   href: api/AdaptArch.Common.Utilities.Encoding.IEncoder.html#AdaptArch_Common_Utilities_Encoding_IEncoder_Encode_System_Byte___
   commentId: M:AdaptArch.Common.Utilities.Encoding.IEncoder.Encode(System.Byte[])
   name.vb: Encode(Byte())
-  fullName: AdaptArch.Common.Utilities.Encoding.IEncoder.Encode(System.Byte[])
-  fullName.vb: AdaptArch.Common.Utilities.Encoding.IEncoder.Encode(System.Byte())
-  nameWithType: IEncoder.Encode(Byte[])
+  fullName: AdaptArch.Common.Utilities.Encoding.IEncoder.Encode(byte[])
+  fullName.vb: AdaptArch.Common.Utilities.Encoding.IEncoder.Encode(Byte())
+  nameWithType: IEncoder.Encode(byte[])
   nameWithType.vb: IEncoder.Encode(Byte())
 - uid: AdaptArch.Common.Utilities.Encoding.IEncoder.Encode*
   name: Encode
@@ -791,23 +854,32 @@ references:
   fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions
   nameWithType: DateTimeExtensions
 - uid: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds(System.Double)
-  name: AsUnixTimeMilliseconds(Double)
+  name: AsUnixTimeMilliseconds(double)
   href: api/AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.html#AdaptArch_Common_Utilities_Extensions_DateTimeExtensions_AsUnixTimeMilliseconds_System_Double_
   commentId: M:AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds(System.Double)
-  fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds(System.Double)
-  nameWithType: DateTimeExtensions.AsUnixTimeMilliseconds(Double)
+  name.vb: AsUnixTimeMilliseconds(Double)
+  fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds(double)
+  fullName.vb: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds(Double)
+  nameWithType: DateTimeExtensions.AsUnixTimeMilliseconds(double)
+  nameWithType.vb: DateTimeExtensions.AsUnixTimeMilliseconds(Double)
 - uid: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds(System.Int64)
-  name: AsUnixTimeMilliseconds(Int64)
+  name: AsUnixTimeMilliseconds(long)
   href: api/AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.html#AdaptArch_Common_Utilities_Extensions_DateTimeExtensions_AsUnixTimeMilliseconds_System_Int64_
   commentId: M:AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds(System.Int64)
-  fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds(System.Int64)
-  nameWithType: DateTimeExtensions.AsUnixTimeMilliseconds(Int64)
+  name.vb: AsUnixTimeMilliseconds(Long)
+  fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds(long)
+  fullName.vb: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds(Long)
+  nameWithType: DateTimeExtensions.AsUnixTimeMilliseconds(long)
+  nameWithType.vb: DateTimeExtensions.AsUnixTimeMilliseconds(Long)
 - uid: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds(System.UInt64)
-  name: AsUnixTimeMilliseconds(UInt64)
+  name: AsUnixTimeMilliseconds(ulong)
   href: api/AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.html#AdaptArch_Common_Utilities_Extensions_DateTimeExtensions_AsUnixTimeMilliseconds_System_UInt64_
   commentId: M:AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds(System.UInt64)
-  fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds(System.UInt64)
-  nameWithType: DateTimeExtensions.AsUnixTimeMilliseconds(UInt64)
+  name.vb: AsUnixTimeMilliseconds(ULong)
+  fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds(ulong)
+  fullName.vb: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds(ULong)
+  nameWithType: DateTimeExtensions.AsUnixTimeMilliseconds(ulong)
+  nameWithType.vb: DateTimeExtensions.AsUnixTimeMilliseconds(ULong)
 - uid: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds*
   name: AsUnixTimeMilliseconds
   href: api/AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.html#AdaptArch_Common_Utilities_Extensions_DateTimeExtensions_AsUnixTimeMilliseconds_
@@ -816,23 +888,32 @@ references:
   fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeMilliseconds
   nameWithType: DateTimeExtensions.AsUnixTimeMilliseconds
 - uid: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds(System.Double)
-  name: AsUnixTimeSeconds(Double)
+  name: AsUnixTimeSeconds(double)
   href: api/AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.html#AdaptArch_Common_Utilities_Extensions_DateTimeExtensions_AsUnixTimeSeconds_System_Double_
   commentId: M:AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds(System.Double)
-  fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds(System.Double)
-  nameWithType: DateTimeExtensions.AsUnixTimeSeconds(Double)
+  name.vb: AsUnixTimeSeconds(Double)
+  fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds(double)
+  fullName.vb: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds(Double)
+  nameWithType: DateTimeExtensions.AsUnixTimeSeconds(double)
+  nameWithType.vb: DateTimeExtensions.AsUnixTimeSeconds(Double)
 - uid: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds(System.Int64)
-  name: AsUnixTimeSeconds(Int64)
+  name: AsUnixTimeSeconds(long)
   href: api/AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.html#AdaptArch_Common_Utilities_Extensions_DateTimeExtensions_AsUnixTimeSeconds_System_Int64_
   commentId: M:AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds(System.Int64)
-  fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds(System.Int64)
-  nameWithType: DateTimeExtensions.AsUnixTimeSeconds(Int64)
+  name.vb: AsUnixTimeSeconds(Long)
+  fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds(long)
+  fullName.vb: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds(Long)
+  nameWithType: DateTimeExtensions.AsUnixTimeSeconds(long)
+  nameWithType.vb: DateTimeExtensions.AsUnixTimeSeconds(Long)
 - uid: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds(System.UInt64)
-  name: AsUnixTimeSeconds(UInt64)
+  name: AsUnixTimeSeconds(ulong)
   href: api/AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.html#AdaptArch_Common_Utilities_Extensions_DateTimeExtensions_AsUnixTimeSeconds_System_UInt64_
   commentId: M:AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds(System.UInt64)
-  fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds(System.UInt64)
-  nameWithType: DateTimeExtensions.AsUnixTimeSeconds(UInt64)
+  name.vb: AsUnixTimeSeconds(ULong)
+  fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds(ulong)
+  fullName.vb: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds(ULong)
+  nameWithType: DateTimeExtensions.AsUnixTimeSeconds(ulong)
+  nameWithType.vb: DateTimeExtensions.AsUnixTimeSeconds(ULong)
 - uid: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds*
   name: AsUnixTimeSeconds
   href: api/AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.html#AdaptArch_Common_Utilities_Extensions_DateTimeExtensions_AsUnixTimeSeconds_
@@ -840,12 +921,15 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.AsUnixTimeSeconds
   nameWithType: DateTimeExtensions.AsUnixTimeSeconds
-- uid: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeMilliseconds(DateTime)
+- uid: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeMilliseconds(System.DateTime)
   name: ToUnixTimeMilliseconds(DateTime)
-  href: api/AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.html#AdaptArch_Common_Utilities_Extensions_DateTimeExtensions_ToUnixTimeMilliseconds_DateTime_
-  commentId: M:AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeMilliseconds(DateTime)
-  fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeMilliseconds(DateTime)
+  href: api/AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.html#AdaptArch_Common_Utilities_Extensions_DateTimeExtensions_ToUnixTimeMilliseconds_System_DateTime_
+  commentId: M:AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeMilliseconds(System.DateTime)
+  name.vb: ToUnixTimeMilliseconds(Date)
+  fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeMilliseconds(System.DateTime)
+  fullName.vb: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeMilliseconds(Date)
   nameWithType: DateTimeExtensions.ToUnixTimeMilliseconds(DateTime)
+  nameWithType.vb: DateTimeExtensions.ToUnixTimeMilliseconds(Date)
 - uid: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeMilliseconds*
   name: ToUnixTimeMilliseconds
   href: api/AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.html#AdaptArch_Common_Utilities_Extensions_DateTimeExtensions_ToUnixTimeMilliseconds_
@@ -853,12 +937,15 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeMilliseconds
   nameWithType: DateTimeExtensions.ToUnixTimeMilliseconds
-- uid: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeSeconds(DateTime)
+- uid: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeSeconds(System.DateTime)
   name: ToUnixTimeSeconds(DateTime)
-  href: api/AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.html#AdaptArch_Common_Utilities_Extensions_DateTimeExtensions_ToUnixTimeSeconds_DateTime_
-  commentId: M:AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeSeconds(DateTime)
-  fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeSeconds(DateTime)
+  href: api/AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.html#AdaptArch_Common_Utilities_Extensions_DateTimeExtensions_ToUnixTimeSeconds_System_DateTime_
+  commentId: M:AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeSeconds(System.DateTime)
+  name.vb: ToUnixTimeSeconds(Date)
+  fullName: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeSeconds(System.DateTime)
+  fullName.vb: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeSeconds(Date)
   nameWithType: DateTimeExtensions.ToUnixTimeSeconds(DateTime)
+  nameWithType.vb: DateTimeExtensions.ToUnixTimeSeconds(Date)
 - uid: AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.ToUnixTimeSeconds*
   name: ToUnixTimeSeconds
   href: api/AdaptArch.Common.Utilities.Extensions.DateTimeExtensions.html#AdaptArch_Common_Utilities_Extensions_DateTimeExtensions_ToUnixTimeSeconds_
@@ -879,22 +966,22 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault
   nameWithType: DictionaryExtensions.GetValueOrDefault
-- uid: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault``2(IDictionary{``0,``1},``0,Func{``0,``1},System.Boolean)
-  name: GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue>, TKey, Func<TKey, TValue>, Boolean)
-  href: api/AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.html#AdaptArch_Common_Utilities_Extensions_DictionaryExtensions_GetValueOrDefault__2_IDictionary___0___1____0_Func___0___1__System_Boolean_
-  commentId: M:AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault``2(IDictionary{``0,``1},``0,Func{``0,``1},System.Boolean)
+- uid: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1},System.Boolean)
+  name: GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue>, TKey, Func<TKey, TValue>, bool)
+  href: api/AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.html#AdaptArch_Common_Utilities_Extensions_DictionaryExtensions_GetValueOrDefault__2_System_Collections_Generic_IDictionary___0___1____0_System_Func___0___1__System_Boolean_
+  commentId: M:AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1},System.Boolean)
   name.vb: GetValueOrDefault(Of TKey, TValue)(IDictionary(Of TKey, TValue), TKey, Func(Of TKey, TValue), Boolean)
-  fullName: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue>, TKey, Func<TKey, TValue>, System.Boolean)
-  fullName.vb: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault(Of TKey, TValue)(IDictionary(Of TKey, TValue), TKey, Func(Of TKey, TValue), System.Boolean)
-  nameWithType: DictionaryExtensions.GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue>, TKey, Func<TKey, TValue>, Boolean)
+  fullName: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault<TKey, TValue>(System.Collections.Generic.IDictionary<TKey, TValue>, TKey, System.Func<TKey, TValue>, bool)
+  fullName.vb: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault(Of TKey, TValue)(System.Collections.Generic.IDictionary(Of TKey, TValue), TKey, System.Func(Of TKey, TValue), Boolean)
+  nameWithType: DictionaryExtensions.GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue>, TKey, Func<TKey, TValue>, bool)
   nameWithType.vb: DictionaryExtensions.GetValueOrDefault(Of TKey, TValue)(IDictionary(Of TKey, TValue), TKey, Func(Of TKey, TValue), Boolean)
-- uid: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault``2(IReadOnlyDictionary{``0,``1},``0,Func{``0,``1})
+- uid: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0,System.Func{``0,``1})
   name: GetValueOrDefault<TKey, TValue>(IReadOnlyDictionary<TKey, TValue>, TKey, Func<TKey, TValue>)
-  href: api/AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.html#AdaptArch_Common_Utilities_Extensions_DictionaryExtensions_GetValueOrDefault__2_IReadOnlyDictionary___0___1____0_Func___0___1__
-  commentId: M:AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault``2(IReadOnlyDictionary{``0,``1},``0,Func{``0,``1})
+  href: api/AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.html#AdaptArch_Common_Utilities_Extensions_DictionaryExtensions_GetValueOrDefault__2_System_Collections_Generic_IReadOnlyDictionary___0___1____0_System_Func___0___1__
+  commentId: M:AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0,System.Func{``0,``1})
   name.vb: GetValueOrDefault(Of TKey, TValue)(IReadOnlyDictionary(Of TKey, TValue), TKey, Func(Of TKey, TValue))
-  fullName: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault<TKey, TValue>(IReadOnlyDictionary<TKey, TValue>, TKey, Func<TKey, TValue>)
-  fullName.vb: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault(Of TKey, TValue)(IReadOnlyDictionary(Of TKey, TValue), TKey, Func(Of TKey, TValue))
+  fullName: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault<TKey, TValue>(System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>, TKey, System.Func<TKey, TValue>)
+  fullName.vb: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.GetValueOrDefault(Of TKey, TValue)(System.Collections.Generic.IReadOnlyDictionary(Of TKey, TValue), TKey, System.Func(Of TKey, TValue))
   nameWithType: DictionaryExtensions.GetValueOrDefault<TKey, TValue>(IReadOnlyDictionary<TKey, TValue>, TKey, Func<TKey, TValue>)
   nameWithType.vb: DictionaryExtensions.GetValueOrDefault(Of TKey, TValue)(IReadOnlyDictionary(Of TKey, TValue), TKey, Func(Of TKey, TValue))
 - uid: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault*
@@ -904,35 +991,35 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault
   nameWithType: DictionaryExtensions.TryGetValueOrDefault
-- uid: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault``2(IDictionary{``0,``1},``0,Func{``0,``1},System.Boolean,``1@)
-  name: TryGetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue>, TKey, Func<TKey, TValue>, Boolean, out TValue)
-  href: api/AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.html#AdaptArch_Common_Utilities_Extensions_DictionaryExtensions_TryGetValueOrDefault__2_IDictionary___0___1____0_Func___0___1__System_Boolean___1__
-  commentId: M:AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault``2(IDictionary{``0,``1},``0,Func{``0,``1},System.Boolean,``1@)
-  name.vb: TryGetValueOrDefault(Of TKey, TValue)(IDictionary(Of TKey, TValue), TKey, Func(Of TKey, TValue), Boolean, ByRef TValue)
-  fullName: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue>, TKey, Func<TKey, TValue>, System.Boolean, out TValue)
-  fullName.vb: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault(Of TKey, TValue)(IDictionary(Of TKey, TValue), TKey, Func(Of TKey, TValue), System.Boolean, ByRef TValue)
-  nameWithType: DictionaryExtensions.TryGetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue>, TKey, Func<TKey, TValue>, Boolean, out TValue)
-  nameWithType.vb: DictionaryExtensions.TryGetValueOrDefault(Of TKey, TValue)(IDictionary(Of TKey, TValue), TKey, Func(Of TKey, TValue), Boolean, ByRef TValue)
-- uid: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault``2(IReadOnlyDictionary{``0,``1},``0,Func{``0,``1},``1@)
+- uid: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1},System.Boolean,``1@)
+  name: TryGetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue>, TKey, Func<TKey, TValue>, bool, out TValue)
+  href: api/AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.html#AdaptArch_Common_Utilities_Extensions_DictionaryExtensions_TryGetValueOrDefault__2_System_Collections_Generic_IDictionary___0___1____0_System_Func___0___1__System_Boolean___1__
+  commentId: M:AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1},System.Boolean,``1@)
+  name.vb: TryGetValueOrDefault(Of TKey, TValue)(IDictionary(Of TKey, TValue), TKey, Func(Of TKey, TValue), Boolean, TValue)
+  fullName: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault<TKey, TValue>(System.Collections.Generic.IDictionary<TKey, TValue>, TKey, System.Func<TKey, TValue>, bool, out TValue)
+  fullName.vb: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault(Of TKey, TValue)(System.Collections.Generic.IDictionary(Of TKey, TValue), TKey, System.Func(Of TKey, TValue), Boolean, TValue)
+  nameWithType: DictionaryExtensions.TryGetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue>, TKey, Func<TKey, TValue>, bool, out TValue)
+  nameWithType.vb: DictionaryExtensions.TryGetValueOrDefault(Of TKey, TValue)(IDictionary(Of TKey, TValue), TKey, Func(Of TKey, TValue), Boolean, TValue)
+- uid: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0,System.Func{``0,``1},``1@)
   name: TryGetValueOrDefault<TKey, TValue>(IReadOnlyDictionary<TKey, TValue>, TKey, Func<TKey, TValue>, out TValue)
-  href: api/AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.html#AdaptArch_Common_Utilities_Extensions_DictionaryExtensions_TryGetValueOrDefault__2_IReadOnlyDictionary___0___1____0_Func___0___1____1__
-  commentId: M:AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault``2(IReadOnlyDictionary{``0,``1},``0,Func{``0,``1},``1@)
-  name.vb: TryGetValueOrDefault(Of TKey, TValue)(IReadOnlyDictionary(Of TKey, TValue), TKey, Func(Of TKey, TValue), ByRef TValue)
-  fullName: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault<TKey, TValue>(IReadOnlyDictionary<TKey, TValue>, TKey, Func<TKey, TValue>, out TValue)
-  fullName.vb: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault(Of TKey, TValue)(IReadOnlyDictionary(Of TKey, TValue), TKey, Func(Of TKey, TValue), ByRef TValue)
+  href: api/AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.html#AdaptArch_Common_Utilities_Extensions_DictionaryExtensions_TryGetValueOrDefault__2_System_Collections_Generic_IReadOnlyDictionary___0___1____0_System_Func___0___1____1__
+  commentId: M:AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0,System.Func{``0,``1},``1@)
+  name.vb: TryGetValueOrDefault(Of TKey, TValue)(IReadOnlyDictionary(Of TKey, TValue), TKey, Func(Of TKey, TValue), TValue)
+  fullName: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault<TKey, TValue>(System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>, TKey, System.Func<TKey, TValue>, out TValue)
+  fullName.vb: AdaptArch.Common.Utilities.Extensions.DictionaryExtensions.TryGetValueOrDefault(Of TKey, TValue)(System.Collections.Generic.IReadOnlyDictionary(Of TKey, TValue), TKey, System.Func(Of TKey, TValue), TValue)
   nameWithType: DictionaryExtensions.TryGetValueOrDefault<TKey, TValue>(IReadOnlyDictionary<TKey, TValue>, TKey, Func<TKey, TValue>, out TValue)
-  nameWithType.vb: DictionaryExtensions.TryGetValueOrDefault(Of TKey, TValue)(IReadOnlyDictionary(Of TKey, TValue), TKey, Func(Of TKey, TValue), ByRef TValue)
+  nameWithType.vb: DictionaryExtensions.TryGetValueOrDefault(Of TKey, TValue)(IReadOnlyDictionary(Of TKey, TValue), TKey, Func(Of TKey, TValue), TValue)
 - uid: AdaptArch.Common.Utilities.Extensions.TaskExtensions
   name: TaskExtensions
   href: api/AdaptArch.Common.Utilities.Extensions.TaskExtensions.html
   commentId: T:AdaptArch.Common.Utilities.Extensions.TaskExtensions
   fullName: AdaptArch.Common.Utilities.Extensions.TaskExtensions
   nameWithType: TaskExtensions
-- uid: AdaptArch.Common.Utilities.Extensions.TaskExtensions.Forget(Task)
+- uid: AdaptArch.Common.Utilities.Extensions.TaskExtensions.Forget(System.Threading.Tasks.Task)
   name: Forget(Task)
-  href: api/AdaptArch.Common.Utilities.Extensions.TaskExtensions.html#AdaptArch_Common_Utilities_Extensions_TaskExtensions_Forget_Task_
-  commentId: M:AdaptArch.Common.Utilities.Extensions.TaskExtensions.Forget(Task)
-  fullName: AdaptArch.Common.Utilities.Extensions.TaskExtensions.Forget(Task)
+  href: api/AdaptArch.Common.Utilities.Extensions.TaskExtensions.html#AdaptArch_Common_Utilities_Extensions_TaskExtensions_Forget_System_Threading_Tasks_Task_
+  commentId: M:AdaptArch.Common.Utilities.Extensions.TaskExtensions.Forget(System.Threading.Tasks.Task)
+  fullName: AdaptArch.Common.Utilities.Extensions.TaskExtensions.Forget(System.Threading.Tasks.Task)
   nameWithType: TaskExtensions.Forget(Task)
 - uid: AdaptArch.Common.Utilities.Extensions.TaskExtensions.Forget*
   name: Forget
@@ -973,11 +1060,14 @@ references:
   fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IRandomGenerator
   nameWithType: IRandomGenerator
 - uid: AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IRandomGenerator.Next(System.Int32,System.Int32)
-  name: Next(Int32, Int32)
+  name: Next(int, int)
   href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IRandomGenerator.html#AdaptArch_Common_Utilities_GlobalAbstractions_Contracts_IRandomGenerator_Next_System_Int32_System_Int32_
   commentId: M:AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IRandomGenerator.Next(System.Int32,System.Int32)
-  fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IRandomGenerator.Next(System.Int32, System.Int32)
-  nameWithType: IRandomGenerator.Next(Int32, Int32)
+  name.vb: Next(Integer, Integer)
+  fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IRandomGenerator.Next(int, int)
+  fullName.vb: AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IRandomGenerator.Next(Integer, Integer)
+  nameWithType: IRandomGenerator.Next(int, int)
+  nameWithType.vb: IRandomGenerator.Next(Integer, Integer)
 - uid: AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IRandomGenerator.Next*
   name: Next
   href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IRandomGenerator.html#AdaptArch_Common_Utilities_GlobalAbstractions_Contracts_IRandomGenerator_Next_
@@ -1060,22 +1150,25 @@ references:
   commentId: T:AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider
   fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider
   nameWithType: DateTimeMockProvider
-- uid: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.#ctor(DateTime[])
+- uid: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.#ctor(System.DateTime[])
   name: DateTimeMockProvider(DateTime[])
-  href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_Mocks_DateTimeMockProvider__ctor_DateTime___
-  commentId: M:AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.#ctor(DateTime[])
-  name.vb: DateTimeMockProvider(DateTime())
-  fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.DateTimeMockProvider(DateTime[])
-  fullName.vb: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.DateTimeMockProvider(DateTime())
+  href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_Mocks_DateTimeMockProvider__ctor_System_DateTime___
+  commentId: M:AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.#ctor(System.DateTime[])
+  name.vb: New(Date())
+  fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.DateTimeMockProvider(System.DateTime[])
+  fullName.vb: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.New(Date())
   nameWithType: DateTimeMockProvider.DateTimeMockProvider(DateTime[])
-  nameWithType.vb: DateTimeMockProvider.DateTimeMockProvider(DateTime())
+  nameWithType.vb: DateTimeMockProvider.New(Date())
 - uid: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.#ctor*
   name: DateTimeMockProvider
   href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_Mocks_DateTimeMockProvider__ctor_
   commentId: Overload:AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.DateTimeMockProvider
+  fullName.vb: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.New
   nameWithType: DateTimeMockProvider.DateTimeMockProvider
+  nameWithType.vb: DateTimeMockProvider.New
 - uid: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.UtcNow
   name: UtcNow
   href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.DateTimeMockProvider.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_Mocks_DateTimeMockProvider_UtcNow
@@ -1102,20 +1195,21 @@ references:
   name: MockProvider(T[])
   href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.MockProvider-1.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_Mocks_MockProvider_1__ctor__0___
   commentId: M:AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.MockProvider`1.#ctor(`0[])
-  name.vb: MockProvider(T())
+  name.vb: New(T())
   fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.MockProvider<T>.MockProvider(T[])
-  fullName.vb: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.MockProvider(Of T).MockProvider(T())
+  fullName.vb: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.MockProvider(Of T).New(T())
   nameWithType: MockProvider<T>.MockProvider(T[])
-  nameWithType.vb: MockProvider(Of T).MockProvider(T())
+  nameWithType.vb: MockProvider(Of T).New(T())
 - uid: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.MockProvider`1.#ctor*
   name: MockProvider
   href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.MockProvider-1.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_Mocks_MockProvider_1__ctor_
   commentId: Overload:AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.MockProvider`1.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.MockProvider<T>.MockProvider
-  fullName.vb: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.MockProvider(Of T).MockProvider
+  fullName.vb: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.MockProvider(Of T).New
   nameWithType: MockProvider<T>.MockProvider
-  nameWithType.vb: MockProvider(Of T).MockProvider
+  nameWithType.vb: MockProvider(Of T).New
 - uid: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.MockProvider`1.GetNextValue
   name: GetNextValue()
   href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.MockProvider-1.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_Mocks_MockProvider_1_GetNextValue
@@ -1139,22 +1233,25 @@ references:
   commentId: T:AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider
   fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider
   nameWithType: UuidMockProvider
-- uid: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.#ctor(Guid[])
+- uid: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.#ctor(System.Guid[])
   name: UuidMockProvider(Guid[])
-  href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_Mocks_UuidMockProvider__ctor_Guid___
-  commentId: M:AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.#ctor(Guid[])
-  name.vb: UuidMockProvider(Guid())
-  fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.UuidMockProvider(Guid[])
-  fullName.vb: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.UuidMockProvider(Guid())
+  href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_Mocks_UuidMockProvider__ctor_System_Guid___
+  commentId: M:AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.#ctor(System.Guid[])
+  name.vb: New(Guid())
+  fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.UuidMockProvider(System.Guid[])
+  fullName.vb: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.New(System.Guid())
   nameWithType: UuidMockProvider.UuidMockProvider(Guid[])
-  nameWithType.vb: UuidMockProvider.UuidMockProvider(Guid())
+  nameWithType.vb: UuidMockProvider.New(Guid())
 - uid: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.#ctor*
   name: UuidMockProvider
   href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_Mocks_UuidMockProvider__ctor_
   commentId: Overload:AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.UuidMockProvider
+  fullName.vb: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.New
   nameWithType: UuidMockProvider.UuidMockProvider
+  nameWithType.vb: UuidMockProvider.New
 - uid: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.New
   name: New()
   href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks.UuidMockProvider.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_Mocks_UuidMockProvider_New
@@ -1174,19 +1271,25 @@ references:
   commentId: T:AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator
   fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator
   nameWithType: RandomGenerator
-- uid: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.#ctor(Random)
+- uid: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.#ctor(System.Random)
   name: RandomGenerator(Random)
-  href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_RandomGenerator__ctor_Random_
-  commentId: M:AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.#ctor(Random)
-  fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.RandomGenerator(Random)
+  href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_RandomGenerator__ctor_System_Random_
+  commentId: M:AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.#ctor(System.Random)
+  name.vb: New(Random)
+  fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.RandomGenerator(System.Random)
+  fullName.vb: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.New(System.Random)
   nameWithType: RandomGenerator.RandomGenerator(Random)
+  nameWithType.vb: RandomGenerator.New(Random)
 - uid: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.#ctor*
   name: RandomGenerator
   href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_RandomGenerator__ctor_
   commentId: Overload:AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.RandomGenerator
+  fullName.vb: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.New
   nameWithType: RandomGenerator.RandomGenerator
+  nameWithType.vb: RandomGenerator.New
 - uid: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.Instance
   name: Instance
   href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_RandomGenerator_Instance
@@ -1201,11 +1304,14 @@ references:
   fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.Instance
   nameWithType: RandomGenerator.Instance
 - uid: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.Next(System.Int32,System.Int32)
-  name: Next(Int32, Int32)
+  name: Next(int, int)
   href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_RandomGenerator_Next_System_Int32_System_Int32_
   commentId: M:AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.Next(System.Int32,System.Int32)
-  fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.Next(System.Int32, System.Int32)
-  nameWithType: RandomGenerator.Next(Int32, Int32)
+  name.vb: Next(Integer, Integer)
+  fullName: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.Next(int, int)
+  fullName.vb: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.Next(Integer, Integer)
+  nameWithType: RandomGenerator.Next(int, int)
+  nameWithType.vb: RandomGenerator.Next(Integer, Integer)
 - uid: AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.Next*
   name: Next
   href: api/AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.RandomGenerator.html#AdaptArch_Common_Utilities_GlobalAbstractions_Implementations_RandomGenerator_Next_
@@ -1238,6 +1344,141 @@ references:
   commentId: N:AdaptArch.Common.Utilities.PubSub.Contracts
   fullName: AdaptArch.Common.Utilities.PubSub.Contracts
   nameWithType: AdaptArch.Common.Utilities.PubSub.Contracts
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder`1
+  name: IMessageBuilder<T>
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder-1.html
+  commentId: T:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder`1
+  name.vb: IMessageBuilder(Of T)
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder<T>
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder(Of T)
+  nameWithType: IMessageBuilder<T>
+  nameWithType.vb: IMessageBuilder(Of T)
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder`1.Build(System.String,`0)
+  name: Build(string, T)
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder-1.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageBuilder_1_Build_System_String__0_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder`1.Build(System.String,`0)
+  name.vb: Build(String, T)
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder<T>.Build(string, T)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder(Of T).Build(String, T)
+  nameWithType: IMessageBuilder<T>.Build(string, T)
+  nameWithType.vb: IMessageBuilder(Of T).Build(String, T)
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder`1.Build*
+  name: Build
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder-1.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageBuilder_1_Build_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder`1.Build
+  isSpec: "True"
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder<T>.Build
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder(Of T).Build
+  nameWithType: IMessageBuilder<T>.Build
+  nameWithType.vb: IMessageBuilder(Of T).Build
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub
+  name: IMessageHub
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.html
+  commentId: T:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub
+  nameWithType: IMessageHub
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Publish*
+  name: Publish
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Publish_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Publish
+  isSpec: "True"
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Publish
+  nameWithType: IMessageHub.Publish
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Publish``1(System.String,``0)
+  name: Publish<TMessageData>(string, TMessageData)
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Publish__1_System_String___0_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Publish``1(System.String,``0)
+  name.vb: Publish(Of TMessageData)(String, TMessageData)
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Publish<TMessageData>(string, TMessageData)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Publish(Of TMessageData)(String, TMessageData)
+  nameWithType: IMessageHub.Publish<TMessageData>(string, TMessageData)
+  nameWithType.vb: IMessageHub.Publish(Of TMessageData)(String, TMessageData)
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Subscribe*
+  name: Subscribe
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Subscribe_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Subscribe
+  isSpec: "True"
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Subscribe
+  nameWithType: IMessageHub.Subscribe
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Subscribe``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
+  name: Subscribe<TMessageData>(string, MessageHandler<TMessageData>)
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Subscribe__1_System_String_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Subscribe``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
+  name.vb: Subscribe(Of TMessageData)(String, MessageHandler(Of TMessageData))
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Subscribe<TMessageData>(string, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler<TMessageData>)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Subscribe(Of TMessageData)(String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler(Of TMessageData))
+  nameWithType: IMessageHub.Subscribe<TMessageData>(string, MessageHandler<TMessageData>)
+  nameWithType.vb: IMessageHub.Subscribe(Of TMessageData)(String, MessageHandler(Of TMessageData))
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Unsubscribe(System.String)
+  name: Unsubscribe(string)
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Unsubscribe_System_String_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Unsubscribe(System.String)
+  name.vb: Unsubscribe(String)
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Unsubscribe(string)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Unsubscribe(String)
+  nameWithType: IMessageHub.Unsubscribe(string)
+  nameWithType.vb: IMessageHub.Unsubscribe(String)
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Unsubscribe*
+  name: Unsubscribe
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Unsubscribe_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Unsubscribe
+  isSpec: "True"
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Unsubscribe
+  nameWithType: IMessageHub.Unsubscribe
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync
+  name: IMessageHubAsync
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.html
+  commentId: T:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync
+  nameWithType: IMessageHubAsync
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.PublishAsync*
+  name: PublishAsync
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHubAsync_PublishAsync_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.PublishAsync
+  isSpec: "True"
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.PublishAsync
+  nameWithType: IMessageHubAsync.PublishAsync
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.PublishAsync``1(System.String,``0,System.Threading.CancellationToken)
+  name: PublishAsync<TMessageData>(string, TMessageData, CancellationToken)
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHubAsync_PublishAsync__1_System_String___0_System_Threading_CancellationToken_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.PublishAsync``1(System.String,``0,System.Threading.CancellationToken)
+  name.vb: PublishAsync(Of TMessageData)(String, TMessageData, CancellationToken)
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.PublishAsync<TMessageData>(string, TMessageData, System.Threading.CancellationToken)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.PublishAsync(Of TMessageData)(String, TMessageData, System.Threading.CancellationToken)
+  nameWithType: IMessageHubAsync.PublishAsync<TMessageData>(string, TMessageData, CancellationToken)
+  nameWithType.vb: IMessageHubAsync.PublishAsync(Of TMessageData)(String, TMessageData, CancellationToken)
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.SubscribeAsync*
+  name: SubscribeAsync
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHubAsync_SubscribeAsync_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.SubscribeAsync
+  isSpec: "True"
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.SubscribeAsync
+  nameWithType: IMessageHubAsync.SubscribeAsync
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.SubscribeAsync``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0},System.Threading.CancellationToken)
+  name: SubscribeAsync<TMessageData>(string, MessageHandler<TMessageData>, CancellationToken)
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHubAsync_SubscribeAsync__1_System_String_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__System_Threading_CancellationToken_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.SubscribeAsync``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0},System.Threading.CancellationToken)
+  name.vb: SubscribeAsync(Of TMessageData)(String, MessageHandler(Of TMessageData), CancellationToken)
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.SubscribeAsync<TMessageData>(string, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler<TMessageData>, System.Threading.CancellationToken)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.SubscribeAsync(Of TMessageData)(String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler(Of TMessageData), System.Threading.CancellationToken)
+  nameWithType: IMessageHubAsync.SubscribeAsync<TMessageData>(string, MessageHandler<TMessageData>, CancellationToken)
+  nameWithType.vb: IMessageHubAsync.SubscribeAsync(Of TMessageData)(String, MessageHandler(Of TMessageData), CancellationToken)
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.UnsubscribeAsync(System.String,System.Threading.CancellationToken)
+  name: UnsubscribeAsync(string, CancellationToken)
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHubAsync_UnsubscribeAsync_System_String_System_Threading_CancellationToken_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.UnsubscribeAsync(System.String,System.Threading.CancellationToken)
+  name.vb: UnsubscribeAsync(String, CancellationToken)
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.UnsubscribeAsync(string, System.Threading.CancellationToken)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.UnsubscribeAsync(String, System.Threading.CancellationToken)
+  nameWithType: IMessageHubAsync.UnsubscribeAsync(string, CancellationToken)
+  nameWithType.vb: IMessageHubAsync.UnsubscribeAsync(String, CancellationToken)
+- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.UnsubscribeAsync*
+  name: UnsubscribeAsync
+  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHubAsync_UnsubscribeAsync_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.UnsubscribeAsync
+  isSpec: "True"
+  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.UnsubscribeAsync
+  nameWithType: IMessageHubAsync.UnsubscribeAsync
 - uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessage`1
   name: IMessage<T>
   href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessage-1.html
@@ -1315,134 +1556,6 @@ references:
   fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessage(Of T).Topic
   nameWithType: IMessage<T>.Topic
   nameWithType.vb: IMessage(Of T).Topic
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder`1
-  name: IMessageBuilder<T>
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder-1.html
-  commentId: T:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder`1
-  name.vb: IMessageBuilder(Of T)
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder<T>
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder(Of T)
-  nameWithType: IMessageBuilder<T>
-  nameWithType.vb: IMessageBuilder(Of T)
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder`1.Build(System.String,`0)
-  name: Build(String, T)
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder-1.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageBuilder_1_Build_System_String__0_
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder`1.Build(System.String,`0)
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder<T>.Build(System.String, T)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder(Of T).Build(System.String, T)
-  nameWithType: IMessageBuilder<T>.Build(String, T)
-  nameWithType.vb: IMessageBuilder(Of T).Build(String, T)
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder`1.Build*
-  name: Build
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder-1.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageBuilder_1_Build_
-  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder`1.Build
-  isSpec: "True"
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder<T>.Build
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageBuilder(Of T).Build
-  nameWithType: IMessageBuilder<T>.Build
-  nameWithType.vb: IMessageBuilder(Of T).Build
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub
-  name: IMessageHub
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.html
-  commentId: T:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub
-  nameWithType: IMessageHub
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Publish*
-  name: Publish
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Publish_
-  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Publish
-  isSpec: "True"
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Publish
-  nameWithType: IMessageHub.Publish
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Publish``1(System.String,``0)
-  name: Publish<TMessageData>(String, TMessageData)
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Publish__1_System_String___0_
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Publish``1(System.String,``0)
-  name.vb: Publish(Of TMessageData)(String, TMessageData)
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Publish<TMessageData>(System.String, TMessageData)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Publish(Of TMessageData)(System.String, TMessageData)
-  nameWithType: IMessageHub.Publish<TMessageData>(String, TMessageData)
-  nameWithType.vb: IMessageHub.Publish(Of TMessageData)(String, TMessageData)
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Subscribe*
-  name: Subscribe
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Subscribe_
-  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Subscribe
-  isSpec: "True"
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Subscribe
-  nameWithType: IMessageHub.Subscribe
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Subscribe``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
-  name: Subscribe<TMessageData>(String, MessageHandler<TMessageData>)
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Subscribe__1_System_String_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Subscribe``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
-  name.vb: Subscribe(Of TMessageData)(String, MessageHandler(Of TMessageData))
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Subscribe<TMessageData>(System.String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler<TMessageData>)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Subscribe(Of TMessageData)(System.String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler(Of TMessageData))
-  nameWithType: IMessageHub.Subscribe<TMessageData>(String, MessageHandler<TMessageData>)
-  nameWithType.vb: IMessageHub.Subscribe(Of TMessageData)(String, MessageHandler(Of TMessageData))
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Unsubscribe(System.String)
-  name: Unsubscribe(String)
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Unsubscribe_System_String_
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Unsubscribe(System.String)
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Unsubscribe(System.String)
-  nameWithType: IMessageHub.Unsubscribe(String)
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Unsubscribe*
-  name: Unsubscribe
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHub_Unsubscribe_
-  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Unsubscribe
-  isSpec: "True"
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHub.Unsubscribe
-  nameWithType: IMessageHub.Unsubscribe
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync
-  name: IMessageHubAsync
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.html
-  commentId: T:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync
-  nameWithType: IMessageHubAsync
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.PublishAsync*
-  name: PublishAsync
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHubAsync_PublishAsync_
-  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.PublishAsync
-  isSpec: "True"
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.PublishAsync
-  nameWithType: IMessageHubAsync.PublishAsync
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.PublishAsync``1(System.String,``0,CancellationToken)
-  name: PublishAsync<TMessageData>(String, TMessageData, CancellationToken)
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHubAsync_PublishAsync__1_System_String___0_CancellationToken_
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.PublishAsync``1(System.String,``0,CancellationToken)
-  name.vb: PublishAsync(Of TMessageData)(String, TMessageData, CancellationToken)
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.PublishAsync<TMessageData>(System.String, TMessageData, CancellationToken)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.PublishAsync(Of TMessageData)(System.String, TMessageData, CancellationToken)
-  nameWithType: IMessageHubAsync.PublishAsync<TMessageData>(String, TMessageData, CancellationToken)
-  nameWithType.vb: IMessageHubAsync.PublishAsync(Of TMessageData)(String, TMessageData, CancellationToken)
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.SubscribeAsync*
-  name: SubscribeAsync
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHubAsync_SubscribeAsync_
-  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.SubscribeAsync
-  isSpec: "True"
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.SubscribeAsync
-  nameWithType: IMessageHubAsync.SubscribeAsync
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.SubscribeAsync``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0},CancellationToken)
-  name: SubscribeAsync<TMessageData>(String, MessageHandler<TMessageData>, CancellationToken)
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHubAsync_SubscribeAsync__1_System_String_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__CancellationToken_
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.SubscribeAsync``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0},CancellationToken)
-  name.vb: SubscribeAsync(Of TMessageData)(String, MessageHandler(Of TMessageData), CancellationToken)
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.SubscribeAsync<TMessageData>(System.String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler<TMessageData>, CancellationToken)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.SubscribeAsync(Of TMessageData)(System.String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler(Of TMessageData), CancellationToken)
-  nameWithType: IMessageHubAsync.SubscribeAsync<TMessageData>(String, MessageHandler<TMessageData>, CancellationToken)
-  nameWithType.vb: IMessageHubAsync.SubscribeAsync(Of TMessageData)(String, MessageHandler(Of TMessageData), CancellationToken)
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.UnsubscribeAsync(System.String,CancellationToken)
-  name: UnsubscribeAsync(String, CancellationToken)
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHubAsync_UnsubscribeAsync_System_String_CancellationToken_
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.UnsubscribeAsync(System.String,CancellationToken)
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.UnsubscribeAsync(System.String, CancellationToken)
-  nameWithType: IMessageHubAsync.UnsubscribeAsync(String, CancellationToken)
-- uid: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.UnsubscribeAsync*
-  name: UnsubscribeAsync
-  href: api/AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.html#AdaptArch_Common_Utilities_PubSub_Contracts_IMessageHubAsync_UnsubscribeAsync_
-  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.UnsubscribeAsync
-  isSpec: "True"
-  fullName: AdaptArch.Common.Utilities.PubSub.Contracts.IMessageHubAsync.UnsubscribeAsync
-  nameWithType: IMessageHubAsync.UnsubscribeAsync
 - uid: AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler`1
   name: MessageHandler<TMessage>
   href: api/AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler-1.html
@@ -1468,15 +1581,21 @@ references:
   name: InProcessMessageHub(InProcessMessageHubOptions)
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub__ctor_AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHubOptions_
   commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.#ctor(AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHubOptions)
+  name.vb: New(InProcessMessageHubOptions)
   fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.InProcessMessageHub(AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHubOptions)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.New(AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHubOptions)
   nameWithType: InProcessMessageHub.InProcessMessageHub(InProcessMessageHubOptions)
+  nameWithType.vb: InProcessMessageHub.New(InProcessMessageHubOptions)
 - uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.#ctor*
   name: InProcessMessageHub
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub__ctor_
   commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.InProcessMessageHub
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.New
   nameWithType: InProcessMessageHub.InProcessMessageHub
+  nameWithType.vb: InProcessMessageHub.New
 - uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Publish*
   name: Publish
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_Publish_
@@ -1484,15 +1603,6 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Publish
   nameWithType: InProcessMessageHub.Publish
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Publish``1(System.String,``0)
-  name: Publish<TMessageData>(String, TMessageData)
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_Publish__1_System_String___0_
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Publish``1(System.String,``0)
-  name.vb: Publish(Of TMessageData)(String, TMessageData)
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Publish<TMessageData>(System.String, TMessageData)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Publish(Of TMessageData)(System.String, TMessageData)
-  nameWithType: InProcessMessageHub.Publish<TMessageData>(String, TMessageData)
-  nameWithType.vb: InProcessMessageHub.Publish(Of TMessageData)(String, TMessageData)
 - uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.PublishAsync*
   name: PublishAsync
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_PublishAsync_
@@ -1500,15 +1610,24 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.PublishAsync
   nameWithType: InProcessMessageHub.PublishAsync
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.PublishAsync``1(System.String,``0,CancellationToken)
-  name: PublishAsync<TMessageData>(String, TMessageData, CancellationToken)
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_PublishAsync__1_System_String___0_CancellationToken_
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.PublishAsync``1(System.String,``0,CancellationToken)
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.PublishAsync``1(System.String,``0,System.Threading.CancellationToken)
+  name: PublishAsync<TMessageData>(string, TMessageData, CancellationToken)
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_PublishAsync__1_System_String___0_System_Threading_CancellationToken_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.PublishAsync``1(System.String,``0,System.Threading.CancellationToken)
   name.vb: PublishAsync(Of TMessageData)(String, TMessageData, CancellationToken)
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.PublishAsync<TMessageData>(System.String, TMessageData, CancellationToken)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.PublishAsync(Of TMessageData)(System.String, TMessageData, CancellationToken)
-  nameWithType: InProcessMessageHub.PublishAsync<TMessageData>(String, TMessageData, CancellationToken)
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.PublishAsync<TMessageData>(string, TMessageData, System.Threading.CancellationToken)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.PublishAsync(Of TMessageData)(String, TMessageData, System.Threading.CancellationToken)
+  nameWithType: InProcessMessageHub.PublishAsync<TMessageData>(string, TMessageData, CancellationToken)
   nameWithType.vb: InProcessMessageHub.PublishAsync(Of TMessageData)(String, TMessageData, CancellationToken)
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Publish``1(System.String,``0)
+  name: Publish<TMessageData>(string, TMessageData)
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_Publish__1_System_String___0_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Publish``1(System.String,``0)
+  name.vb: Publish(Of TMessageData)(String, TMessageData)
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Publish<TMessageData>(string, TMessageData)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Publish(Of TMessageData)(String, TMessageData)
+  nameWithType: InProcessMessageHub.Publish<TMessageData>(string, TMessageData)
+  nameWithType.vb: InProcessMessageHub.Publish(Of TMessageData)(String, TMessageData)
 - uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Subscribe*
   name: Subscribe
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_Subscribe_
@@ -1516,15 +1635,6 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Subscribe
   nameWithType: InProcessMessageHub.Subscribe
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Subscribe``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
-  name: Subscribe<TMessageData>(String, MessageHandler<TMessageData>)
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_Subscribe__1_System_String_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Subscribe``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
-  name.vb: Subscribe(Of TMessageData)(String, MessageHandler(Of TMessageData))
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Subscribe<TMessageData>(System.String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler<TMessageData>)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Subscribe(Of TMessageData)(System.String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler(Of TMessageData))
-  nameWithType: InProcessMessageHub.Subscribe<TMessageData>(String, MessageHandler<TMessageData>)
-  nameWithType.vb: InProcessMessageHub.Subscribe(Of TMessageData)(String, MessageHandler(Of TMessageData))
 - uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.SubscribeAsync*
   name: SubscribeAsync
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_SubscribeAsync_
@@ -1532,21 +1642,33 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.SubscribeAsync
   nameWithType: InProcessMessageHub.SubscribeAsync
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.SubscribeAsync``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0},CancellationToken)
-  name: SubscribeAsync<TMessageData>(String, MessageHandler<TMessageData>, CancellationToken)
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_SubscribeAsync__1_System_String_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__CancellationToken_
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.SubscribeAsync``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0},CancellationToken)
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.SubscribeAsync``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0},System.Threading.CancellationToken)
+  name: SubscribeAsync<TMessageData>(string, MessageHandler<TMessageData>, CancellationToken)
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_SubscribeAsync__1_System_String_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__System_Threading_CancellationToken_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.SubscribeAsync``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0},System.Threading.CancellationToken)
   name.vb: SubscribeAsync(Of TMessageData)(String, MessageHandler(Of TMessageData), CancellationToken)
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.SubscribeAsync<TMessageData>(System.String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler<TMessageData>, CancellationToken)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.SubscribeAsync(Of TMessageData)(System.String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler(Of TMessageData), CancellationToken)
-  nameWithType: InProcessMessageHub.SubscribeAsync<TMessageData>(String, MessageHandler<TMessageData>, CancellationToken)
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.SubscribeAsync<TMessageData>(string, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler<TMessageData>, System.Threading.CancellationToken)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.SubscribeAsync(Of TMessageData)(String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler(Of TMessageData), System.Threading.CancellationToken)
+  nameWithType: InProcessMessageHub.SubscribeAsync<TMessageData>(string, MessageHandler<TMessageData>, CancellationToken)
   nameWithType.vb: InProcessMessageHub.SubscribeAsync(Of TMessageData)(String, MessageHandler(Of TMessageData), CancellationToken)
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Subscribe``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
+  name: Subscribe<TMessageData>(string, MessageHandler<TMessageData>)
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_Subscribe__1_System_String_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Subscribe``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
+  name.vb: Subscribe(Of TMessageData)(String, MessageHandler(Of TMessageData))
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Subscribe<TMessageData>(string, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler<TMessageData>)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Subscribe(Of TMessageData)(String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler(Of TMessageData))
+  nameWithType: InProcessMessageHub.Subscribe<TMessageData>(string, MessageHandler<TMessageData>)
+  nameWithType.vb: InProcessMessageHub.Subscribe(Of TMessageData)(String, MessageHandler(Of TMessageData))
 - uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Unsubscribe(System.String)
-  name: Unsubscribe(String)
+  name: Unsubscribe(string)
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_Unsubscribe_System_String_
   commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Unsubscribe(System.String)
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Unsubscribe(System.String)
-  nameWithType: InProcessMessageHub.Unsubscribe(String)
+  name.vb: Unsubscribe(String)
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Unsubscribe(string)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Unsubscribe(String)
+  nameWithType: InProcessMessageHub.Unsubscribe(string)
+  nameWithType.vb: InProcessMessageHub.Unsubscribe(String)
 - uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Unsubscribe*
   name: Unsubscribe
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_Unsubscribe_
@@ -1554,12 +1676,15 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.Unsubscribe
   nameWithType: InProcessMessageHub.Unsubscribe
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.UnsubscribeAsync(System.String,CancellationToken)
-  name: UnsubscribeAsync(String, CancellationToken)
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_UnsubscribeAsync_System_String_CancellationToken_
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.UnsubscribeAsync(System.String,CancellationToken)
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.UnsubscribeAsync(System.String, CancellationToken)
-  nameWithType: InProcessMessageHub.UnsubscribeAsync(String, CancellationToken)
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.UnsubscribeAsync(System.String,System.Threading.CancellationToken)
+  name: UnsubscribeAsync(string, CancellationToken)
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_UnsubscribeAsync_System_String_System_Threading_CancellationToken_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.UnsubscribeAsync(System.String,System.Threading.CancellationToken)
+  name.vb: UnsubscribeAsync(String, CancellationToken)
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.UnsubscribeAsync(string, System.Threading.CancellationToken)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.UnsubscribeAsync(String, System.Threading.CancellationToken)
+  nameWithType: InProcessMessageHub.UnsubscribeAsync(string, CancellationToken)
+  nameWithType.vb: InProcessMessageHub.UnsubscribeAsync(String, CancellationToken)
 - uid: AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.UnsubscribeAsync*
   name: UnsubscribeAsync
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.InProcessMessageHub.html#AdaptArch_Common_Utilities_PubSub_Implementations_InProcessMessageHub_UnsubscribeAsync_
@@ -1599,26 +1724,29 @@ references:
   name: MessageBuilder(IDateTimeProvider, IUuidProvider)
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageBuilder_1__ctor_AdaptArch_Common_Utilities_GlobalAbstractions_Contracts_IDateTimeProvider_AdaptArch_Common_Utilities_GlobalAbstractions_Contracts_IUuidProvider_
   commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder`1.#ctor(AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IDateTimeProvider,AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IUuidProvider)
+  name.vb: New(IDateTimeProvider, IUuidProvider)
   fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder<T>.MessageBuilder(AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IDateTimeProvider, AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IUuidProvider)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder(Of T).MessageBuilder(AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IDateTimeProvider, AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IUuidProvider)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder(Of T).New(AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IDateTimeProvider, AdaptArch.Common.Utilities.GlobalAbstractions.Contracts.IUuidProvider)
   nameWithType: MessageBuilder<T>.MessageBuilder(IDateTimeProvider, IUuidProvider)
-  nameWithType.vb: MessageBuilder(Of T).MessageBuilder(IDateTimeProvider, IUuidProvider)
+  nameWithType.vb: MessageBuilder(Of T).New(IDateTimeProvider, IUuidProvider)
 - uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder`1.#ctor*
   name: MessageBuilder
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageBuilder_1__ctor_
   commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder`1.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder<T>.MessageBuilder
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder(Of T).MessageBuilder
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder(Of T).New
   nameWithType: MessageBuilder<T>.MessageBuilder
-  nameWithType.vb: MessageBuilder(Of T).MessageBuilder
+  nameWithType.vb: MessageBuilder(Of T).New
 - uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder`1.Build(System.String,`0)
-  name: Build(String, T)
+  name: Build(string, T)
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageBuilder_1_Build_System_String__0_
   commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder`1.Build(System.String,`0)
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder<T>.Build(System.String, T)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder(Of T).Build(System.String, T)
-  nameWithType: MessageBuilder<T>.Build(String, T)
+  name.vb: Build(String, T)
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder<T>.Build(string, T)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder(Of T).Build(String, T)
+  nameWithType: MessageBuilder<T>.Build(string, T)
   nameWithType.vb: MessageBuilder(Of T).Build(String, T)
 - uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageBuilder`1.Build*
   name: Build
@@ -1636,18 +1764,24 @@ references:
   fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute
   nameWithType: MessageHandlerAttribute
 - uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.#ctor(System.String)
-  name: MessageHandlerAttribute(String)
+  name: MessageHandlerAttribute(string)
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHandlerAttribute__ctor_System_String_
   commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.#ctor(System.String)
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.MessageHandlerAttribute(System.String)
-  nameWithType: MessageHandlerAttribute.MessageHandlerAttribute(String)
+  name.vb: New(String)
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.MessageHandlerAttribute(string)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.New(String)
+  nameWithType: MessageHandlerAttribute.MessageHandlerAttribute(string)
+  nameWithType.vb: MessageHandlerAttribute.New(String)
 - uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.#ctor*
   name: MessageHandlerAttribute
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHandlerAttribute__ctor_
   commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.MessageHandlerAttribute
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.New
   nameWithType: MessageHandlerAttribute.MessageHandlerAttribute
+  nameWithType.vb: MessageHandlerAttribute.New
 - uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.Topic
   name: Topic
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHandlerAttribute_Topic
@@ -1661,164 +1795,6 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHandlerAttribute.Topic
   nameWithType: MessageHandlerAttribute.Topic
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1
-  name: MessageHub<TOptions>
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html
-  commentId: T:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1
-  name.vb: MessageHub(Of TOptions)
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions)
-  nameWithType: MessageHub<TOptions>
-  nameWithType.vb: MessageHub(Of TOptions)
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.#ctor(`0)
-  name: MessageHub(TOptions)
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1__ctor__0_
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.#ctor(`0)
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.MessageHub(TOptions)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).MessageHub(TOptions)
-  nameWithType: MessageHub<TOptions>.MessageHub(TOptions)
-  nameWithType.vb: MessageHub(Of TOptions).MessageHub(TOptions)
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.#ctor*
-  name: MessageHub
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1__ctor_
-  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.#ctor
-  isSpec: "True"
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.MessageHub
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).MessageHub
-  nameWithType: MessageHub<TOptions>.MessageHub
-  nameWithType.vb: MessageHub(Of TOptions).MessageHub
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Options
-  name: Options
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_Options
-  commentId: F:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Options
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.Options
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).Options
-  nameWithType: MessageHub<TOptions>.Options
-  nameWithType.vb: MessageHub(Of TOptions).Options
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Publish*
-  name: Publish
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_Publish_
-  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Publish
-  isSpec: "True"
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.Publish
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).Publish
-  nameWithType: MessageHub<TOptions>.Publish
-  nameWithType.vb: MessageHub(Of TOptions).Publish
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Publish``1(System.String,``0)
-  name: Publish<TMessageData>(String, TMessageData)
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_Publish__1_System_String___0_
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Publish``1(System.String,``0)
-  name.vb: Publish(Of TMessageData)(String, TMessageData)
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.Publish<TMessageData>(System.String, TMessageData)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).Publish(Of TMessageData)(System.String, TMessageData)
-  nameWithType: MessageHub<TOptions>.Publish<TMessageData>(String, TMessageData)
-  nameWithType.vb: MessageHub(Of TOptions).Publish(Of TMessageData)(String, TMessageData)
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.PublishAsync*
-  name: PublishAsync
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_PublishAsync_
-  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.PublishAsync
-  isSpec: "True"
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.PublishAsync
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).PublishAsync
-  nameWithType: MessageHub<TOptions>.PublishAsync
-  nameWithType.vb: MessageHub(Of TOptions).PublishAsync
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.PublishAsync``1(System.String,``0,CancellationToken)
-  name: PublishAsync<TMessageData>(String, TMessageData, CancellationToken)
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_PublishAsync__1_System_String___0_CancellationToken_
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.PublishAsync``1(System.String,``0,CancellationToken)
-  name.vb: PublishAsync(Of TMessageData)(String, TMessageData, CancellationToken)
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.PublishAsync<TMessageData>(System.String, TMessageData, CancellationToken)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).PublishAsync(Of TMessageData)(System.String, TMessageData, CancellationToken)
-  nameWithType: MessageHub<TOptions>.PublishAsync<TMessageData>(String, TMessageData, CancellationToken)
-  nameWithType.vb: MessageHub(Of TOptions).PublishAsync(Of TMessageData)(String, TMessageData, CancellationToken)
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Subscribe*
-  name: Subscribe
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_Subscribe_
-  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Subscribe
-  isSpec: "True"
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.Subscribe
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).Subscribe
-  nameWithType: MessageHub<TOptions>.Subscribe
-  nameWithType.vb: MessageHub(Of TOptions).Subscribe
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Subscribe``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
-  name: Subscribe<TMessageData>(String, MessageHandler<TMessageData>)
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_Subscribe__1_System_String_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Subscribe``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
-  name.vb: Subscribe(Of TMessageData)(String, MessageHandler(Of TMessageData))
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.Subscribe<TMessageData>(System.String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler<TMessageData>)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).Subscribe(Of TMessageData)(System.String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler(Of TMessageData))
-  nameWithType: MessageHub<TOptions>.Subscribe<TMessageData>(String, MessageHandler<TMessageData>)
-  nameWithType.vb: MessageHub(Of TOptions).Subscribe(Of TMessageData)(String, MessageHandler(Of TMessageData))
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.SubscribeAsync*
-  name: SubscribeAsync
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_SubscribeAsync_
-  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.SubscribeAsync
-  isSpec: "True"
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.SubscribeAsync
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).SubscribeAsync
-  nameWithType: MessageHub<TOptions>.SubscribeAsync
-  nameWithType.vb: MessageHub(Of TOptions).SubscribeAsync
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.SubscribeAsync``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0},CancellationToken)
-  name: SubscribeAsync<TMessageData>(String, MessageHandler<TMessageData>, CancellationToken)
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_SubscribeAsync__1_System_String_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__CancellationToken_
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.SubscribeAsync``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0},CancellationToken)
-  name.vb: SubscribeAsync(Of TMessageData)(String, MessageHandler(Of TMessageData), CancellationToken)
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.SubscribeAsync<TMessageData>(System.String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler<TMessageData>, CancellationToken)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).SubscribeAsync(Of TMessageData)(System.String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler(Of TMessageData), CancellationToken)
-  nameWithType: MessageHub<TOptions>.SubscribeAsync<TMessageData>(String, MessageHandler<TMessageData>, CancellationToken)
-  nameWithType.vb: MessageHub(Of TOptions).SubscribeAsync(Of TMessageData)(String, MessageHandler(Of TMessageData), CancellationToken)
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Unsubscribe(System.String)
-  name: Unsubscribe(String)
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_Unsubscribe_System_String_
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Unsubscribe(System.String)
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.Unsubscribe(System.String)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).Unsubscribe(System.String)
-  nameWithType: MessageHub<TOptions>.Unsubscribe(String)
-  nameWithType.vb: MessageHub(Of TOptions).Unsubscribe(String)
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Unsubscribe*
-  name: Unsubscribe
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_Unsubscribe_
-  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Unsubscribe
-  isSpec: "True"
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.Unsubscribe
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).Unsubscribe
-  nameWithType: MessageHub<TOptions>.Unsubscribe
-  nameWithType.vb: MessageHub(Of TOptions).Unsubscribe
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.UnsubscribeAsync(System.String,CancellationToken)
-  name: UnsubscribeAsync(String, CancellationToken)
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_UnsubscribeAsync_System_String_CancellationToken_
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.UnsubscribeAsync(System.String,CancellationToken)
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.UnsubscribeAsync(System.String, CancellationToken)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).UnsubscribeAsync(System.String, CancellationToken)
-  nameWithType: MessageHub<TOptions>.UnsubscribeAsync(String, CancellationToken)
-  nameWithType.vb: MessageHub(Of TOptions).UnsubscribeAsync(String, CancellationToken)
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.UnsubscribeAsync*
-  name: UnsubscribeAsync
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_UnsubscribeAsync_
-  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.UnsubscribeAsync
-  isSpec: "True"
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.UnsubscribeAsync
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).UnsubscribeAsync
-  nameWithType: MessageHub<TOptions>.UnsubscribeAsync
-  nameWithType.vb: MessageHub(Of TOptions).UnsubscribeAsync
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.WrapHandler*
-  name: WrapHandler
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_WrapHandler_
-  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.WrapHandler
-  isSpec: "True"
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.WrapHandler
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).WrapHandler
-  nameWithType: MessageHub<TOptions>.WrapHandler
-  nameWithType.vb: MessageHub(Of TOptions).WrapHandler
-- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.WrapHandler``1(AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
-  name: WrapHandler<TMessageData>(MessageHandler<TMessageData>)
-  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_WrapHandler__1_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__
-  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.WrapHandler``1(AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
-  name.vb: WrapHandler(Of TMessageData)(MessageHandler(Of TMessageData))
-  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.WrapHandler<TMessageData>(AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler<TMessageData>)
-  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).WrapHandler(Of TMessageData)(AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler(Of TMessageData))
-  nameWithType: MessageHub<TOptions>.WrapHandler<TMessageData>(MessageHandler<TMessageData>)
-  nameWithType.vb: MessageHub(Of TOptions).WrapHandler(Of TMessageData)(MessageHandler(Of TMessageData))
 - uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHubOptions
   name: MessageHubOptions
   href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHubOptions.html
@@ -1854,6 +1830,168 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHubOptions.OnMessageHandlerError
   nameWithType: MessageHubOptions.OnMessageHandlerError
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1
+  name: MessageHub<TOptions>
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html
+  commentId: T:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1
+  name.vb: MessageHub(Of TOptions)
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions)
+  nameWithType: MessageHub<TOptions>
+  nameWithType.vb: MessageHub(Of TOptions)
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.#ctor(`0)
+  name: MessageHub(TOptions)
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1__ctor__0_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.#ctor(`0)
+  name.vb: New(TOptions)
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.MessageHub(TOptions)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).New(TOptions)
+  nameWithType: MessageHub<TOptions>.MessageHub(TOptions)
+  nameWithType.vb: MessageHub(Of TOptions).New(TOptions)
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.#ctor*
+  name: MessageHub
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1__ctor_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.MessageHub
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).New
+  nameWithType: MessageHub<TOptions>.MessageHub
+  nameWithType.vb: MessageHub(Of TOptions).New
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Options
+  name: Options
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_Options
+  commentId: F:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Options
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.Options
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).Options
+  nameWithType: MessageHub<TOptions>.Options
+  nameWithType.vb: MessageHub(Of TOptions).Options
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Publish*
+  name: Publish
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_Publish_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Publish
+  isSpec: "True"
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.Publish
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).Publish
+  nameWithType: MessageHub<TOptions>.Publish
+  nameWithType.vb: MessageHub(Of TOptions).Publish
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.PublishAsync*
+  name: PublishAsync
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_PublishAsync_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.PublishAsync
+  isSpec: "True"
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.PublishAsync
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).PublishAsync
+  nameWithType: MessageHub<TOptions>.PublishAsync
+  nameWithType.vb: MessageHub(Of TOptions).PublishAsync
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.PublishAsync``1(System.String,``0,System.Threading.CancellationToken)
+  name: PublishAsync<TMessageData>(string, TMessageData, CancellationToken)
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_PublishAsync__1_System_String___0_System_Threading_CancellationToken_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.PublishAsync``1(System.String,``0,System.Threading.CancellationToken)
+  name.vb: PublishAsync(Of TMessageData)(String, TMessageData, CancellationToken)
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.PublishAsync<TMessageData>(string, TMessageData, System.Threading.CancellationToken)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).PublishAsync(Of TMessageData)(String, TMessageData, System.Threading.CancellationToken)
+  nameWithType: MessageHub<TOptions>.PublishAsync<TMessageData>(string, TMessageData, CancellationToken)
+  nameWithType.vb: MessageHub(Of TOptions).PublishAsync(Of TMessageData)(String, TMessageData, CancellationToken)
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Publish``1(System.String,``0)
+  name: Publish<TMessageData>(string, TMessageData)
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_Publish__1_System_String___0_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Publish``1(System.String,``0)
+  name.vb: Publish(Of TMessageData)(String, TMessageData)
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.Publish<TMessageData>(string, TMessageData)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).Publish(Of TMessageData)(String, TMessageData)
+  nameWithType: MessageHub<TOptions>.Publish<TMessageData>(string, TMessageData)
+  nameWithType.vb: MessageHub(Of TOptions).Publish(Of TMessageData)(String, TMessageData)
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Subscribe*
+  name: Subscribe
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_Subscribe_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Subscribe
+  isSpec: "True"
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.Subscribe
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).Subscribe
+  nameWithType: MessageHub<TOptions>.Subscribe
+  nameWithType.vb: MessageHub(Of TOptions).Subscribe
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.SubscribeAsync*
+  name: SubscribeAsync
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_SubscribeAsync_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.SubscribeAsync
+  isSpec: "True"
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.SubscribeAsync
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).SubscribeAsync
+  nameWithType: MessageHub<TOptions>.SubscribeAsync
+  nameWithType.vb: MessageHub(Of TOptions).SubscribeAsync
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.SubscribeAsync``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0},System.Threading.CancellationToken)
+  name: SubscribeAsync<TMessageData>(string, MessageHandler<TMessageData>, CancellationToken)
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_SubscribeAsync__1_System_String_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__System_Threading_CancellationToken_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.SubscribeAsync``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0},System.Threading.CancellationToken)
+  name.vb: SubscribeAsync(Of TMessageData)(String, MessageHandler(Of TMessageData), CancellationToken)
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.SubscribeAsync<TMessageData>(string, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler<TMessageData>, System.Threading.CancellationToken)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).SubscribeAsync(Of TMessageData)(String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler(Of TMessageData), System.Threading.CancellationToken)
+  nameWithType: MessageHub<TOptions>.SubscribeAsync<TMessageData>(string, MessageHandler<TMessageData>, CancellationToken)
+  nameWithType.vb: MessageHub(Of TOptions).SubscribeAsync(Of TMessageData)(String, MessageHandler(Of TMessageData), CancellationToken)
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Subscribe``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
+  name: Subscribe<TMessageData>(string, MessageHandler<TMessageData>)
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_Subscribe__1_System_String_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Subscribe``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
+  name.vb: Subscribe(Of TMessageData)(String, MessageHandler(Of TMessageData))
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.Subscribe<TMessageData>(string, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler<TMessageData>)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).Subscribe(Of TMessageData)(String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler(Of TMessageData))
+  nameWithType: MessageHub<TOptions>.Subscribe<TMessageData>(string, MessageHandler<TMessageData>)
+  nameWithType.vb: MessageHub(Of TOptions).Subscribe(Of TMessageData)(String, MessageHandler(Of TMessageData))
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Unsubscribe(System.String)
+  name: Unsubscribe(string)
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_Unsubscribe_System_String_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Unsubscribe(System.String)
+  name.vb: Unsubscribe(String)
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.Unsubscribe(string)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).Unsubscribe(String)
+  nameWithType: MessageHub<TOptions>.Unsubscribe(string)
+  nameWithType.vb: MessageHub(Of TOptions).Unsubscribe(String)
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Unsubscribe*
+  name: Unsubscribe
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_Unsubscribe_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.Unsubscribe
+  isSpec: "True"
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.Unsubscribe
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).Unsubscribe
+  nameWithType: MessageHub<TOptions>.Unsubscribe
+  nameWithType.vb: MessageHub(Of TOptions).Unsubscribe
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.UnsubscribeAsync(System.String,System.Threading.CancellationToken)
+  name: UnsubscribeAsync(string, CancellationToken)
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_UnsubscribeAsync_System_String_System_Threading_CancellationToken_
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.UnsubscribeAsync(System.String,System.Threading.CancellationToken)
+  name.vb: UnsubscribeAsync(String, CancellationToken)
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.UnsubscribeAsync(string, System.Threading.CancellationToken)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).UnsubscribeAsync(String, System.Threading.CancellationToken)
+  nameWithType: MessageHub<TOptions>.UnsubscribeAsync(string, CancellationToken)
+  nameWithType.vb: MessageHub(Of TOptions).UnsubscribeAsync(String, CancellationToken)
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.UnsubscribeAsync*
+  name: UnsubscribeAsync
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_UnsubscribeAsync_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.UnsubscribeAsync
+  isSpec: "True"
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.UnsubscribeAsync
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).UnsubscribeAsync
+  nameWithType: MessageHub<TOptions>.UnsubscribeAsync
+  nameWithType.vb: MessageHub(Of TOptions).UnsubscribeAsync
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.WrapHandler*
+  name: WrapHandler
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_WrapHandler_
+  commentId: Overload:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.WrapHandler
+  isSpec: "True"
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.WrapHandler
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).WrapHandler
+  nameWithType: MessageHub<TOptions>.WrapHandler
+  nameWithType.vb: MessageHub(Of TOptions).WrapHandler
+- uid: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.WrapHandler``1(AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
+  name: WrapHandler<TMessageData>(MessageHandler<TMessageData>)
+  href: api/AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub-1.html#AdaptArch_Common_Utilities_PubSub_Implementations_MessageHub_1_WrapHandler__1_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__
+  commentId: M:AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub`1.WrapHandler``1(AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
+  name.vb: WrapHandler(Of TMessageData)(MessageHandler(Of TMessageData))
+  fullName: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub<TOptions>.WrapHandler<TMessageData>(AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler<TMessageData>)
+  fullName.vb: AdaptArch.Common.Utilities.PubSub.Implementations.MessageHub(Of TOptions).WrapHandler(Of TMessageData)(AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler(Of TMessageData))
+  nameWithType: MessageHub<TOptions>.WrapHandler<TMessageData>(MessageHandler<TMessageData>)
+  nameWithType.vb: MessageHub(Of TOptions).WrapHandler(Of TMessageData)(MessageHandler(Of TMessageData))
 - uid: AdaptArch.Common.Utilities.Redis.PubSub
   name: AdaptArch.Common.Utilities.Redis.PubSub
   href: api/AdaptArch.Common.Utilities.Redis.PubSub.html
@@ -1870,15 +2008,21 @@ references:
   name: RedisMessageHub(IConnectionMultiplexer, RedisMessageHubOptions)
   href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub__ctor_StackExchange_Redis_IConnectionMultiplexer_AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHubOptions_
   commentId: M:AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.#ctor(StackExchange.Redis.IConnectionMultiplexer,AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions)
+  name.vb: New(IConnectionMultiplexer, RedisMessageHubOptions)
   fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.RedisMessageHub(StackExchange.Redis.IConnectionMultiplexer, AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions)
+  fullName.vb: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.New(StackExchange.Redis.IConnectionMultiplexer, AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions)
   nameWithType: RedisMessageHub.RedisMessageHub(IConnectionMultiplexer, RedisMessageHubOptions)
+  nameWithType.vb: RedisMessageHub.New(IConnectionMultiplexer, RedisMessageHubOptions)
 - uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.#ctor*
   name: RedisMessageHub
   href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub__ctor_
   commentId: Overload:AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.RedisMessageHub
+  fullName.vb: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.New
   nameWithType: RedisMessageHub.RedisMessageHub
+  nameWithType.vb: RedisMessageHub.New
 - uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Publish*
   name: Publish
   href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_Publish_
@@ -1886,15 +2030,6 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Publish
   nameWithType: RedisMessageHub.Publish
-- uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Publish``1(System.String,``0)
-  name: Publish<TMessageData>(String, TMessageData)
-  href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_Publish__1_System_String___0_
-  commentId: M:AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Publish``1(System.String,``0)
-  name.vb: Publish(Of TMessageData)(String, TMessageData)
-  fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Publish<TMessageData>(System.String, TMessageData)
-  fullName.vb: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Publish(Of TMessageData)(System.String, TMessageData)
-  nameWithType: RedisMessageHub.Publish<TMessageData>(String, TMessageData)
-  nameWithType.vb: RedisMessageHub.Publish(Of TMessageData)(String, TMessageData)
 - uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.PublishAsync*
   name: PublishAsync
   href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_PublishAsync_
@@ -1902,15 +2037,24 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.PublishAsync
   nameWithType: RedisMessageHub.PublishAsync
-- uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.PublishAsync``1(System.String,``0,CancellationToken)
-  name: PublishAsync<TMessageData>(String, TMessageData, CancellationToken)
-  href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_PublishAsync__1_System_String___0_CancellationToken_
-  commentId: M:AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.PublishAsync``1(System.String,``0,CancellationToken)
+- uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.PublishAsync``1(System.String,``0,System.Threading.CancellationToken)
+  name: PublishAsync<TMessageData>(string, TMessageData, CancellationToken)
+  href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_PublishAsync__1_System_String___0_System_Threading_CancellationToken_
+  commentId: M:AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.PublishAsync``1(System.String,``0,System.Threading.CancellationToken)
   name.vb: PublishAsync(Of TMessageData)(String, TMessageData, CancellationToken)
-  fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.PublishAsync<TMessageData>(System.String, TMessageData, CancellationToken)
-  fullName.vb: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.PublishAsync(Of TMessageData)(System.String, TMessageData, CancellationToken)
-  nameWithType: RedisMessageHub.PublishAsync<TMessageData>(String, TMessageData, CancellationToken)
+  fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.PublishAsync<TMessageData>(string, TMessageData, System.Threading.CancellationToken)
+  fullName.vb: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.PublishAsync(Of TMessageData)(String, TMessageData, System.Threading.CancellationToken)
+  nameWithType: RedisMessageHub.PublishAsync<TMessageData>(string, TMessageData, CancellationToken)
   nameWithType.vb: RedisMessageHub.PublishAsync(Of TMessageData)(String, TMessageData, CancellationToken)
+- uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Publish``1(System.String,``0)
+  name: Publish<TMessageData>(string, TMessageData)
+  href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_Publish__1_System_String___0_
+  commentId: M:AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Publish``1(System.String,``0)
+  name.vb: Publish(Of TMessageData)(String, TMessageData)
+  fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Publish<TMessageData>(string, TMessageData)
+  fullName.vb: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Publish(Of TMessageData)(String, TMessageData)
+  nameWithType: RedisMessageHub.Publish<TMessageData>(string, TMessageData)
+  nameWithType.vb: RedisMessageHub.Publish(Of TMessageData)(String, TMessageData)
 - uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Subscribe*
   name: Subscribe
   href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_Subscribe_
@@ -1918,15 +2062,6 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Subscribe
   nameWithType: RedisMessageHub.Subscribe
-- uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Subscribe``1(System.String,MessageHandler{``0})
-  name: Subscribe<TMessageData>(String, MessageHandler<TMessageData>)
-  href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_Subscribe__1_System_String_MessageHandler___0__
-  commentId: M:AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Subscribe``1(System.String,MessageHandler{``0})
-  name.vb: Subscribe(Of TMessageData)(String, MessageHandler(Of TMessageData))
-  fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Subscribe<TMessageData>(System.String, MessageHandler<TMessageData>)
-  fullName.vb: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Subscribe(Of TMessageData)(System.String, MessageHandler(Of TMessageData))
-  nameWithType: RedisMessageHub.Subscribe<TMessageData>(String, MessageHandler<TMessageData>)
-  nameWithType.vb: RedisMessageHub.Subscribe(Of TMessageData)(String, MessageHandler(Of TMessageData))
 - uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.SubscribeAsync*
   name: SubscribeAsync
   href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_SubscribeAsync_
@@ -1934,21 +2069,33 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.SubscribeAsync
   nameWithType: RedisMessageHub.SubscribeAsync
-- uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.SubscribeAsync``1(System.String,MessageHandler{``0},CancellationToken)
-  name: SubscribeAsync<TMessageData>(String, MessageHandler<TMessageData>, CancellationToken)
-  href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_SubscribeAsync__1_System_String_MessageHandler___0__CancellationToken_
-  commentId: M:AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.SubscribeAsync``1(System.String,MessageHandler{``0},CancellationToken)
+- uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.SubscribeAsync``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0},System.Threading.CancellationToken)
+  name: SubscribeAsync<TMessageData>(string, MessageHandler<TMessageData>, CancellationToken)
+  href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_SubscribeAsync__1_System_String_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__System_Threading_CancellationToken_
+  commentId: M:AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.SubscribeAsync``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0},System.Threading.CancellationToken)
   name.vb: SubscribeAsync(Of TMessageData)(String, MessageHandler(Of TMessageData), CancellationToken)
-  fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.SubscribeAsync<TMessageData>(System.String, MessageHandler<TMessageData>, CancellationToken)
-  fullName.vb: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.SubscribeAsync(Of TMessageData)(System.String, MessageHandler(Of TMessageData), CancellationToken)
-  nameWithType: RedisMessageHub.SubscribeAsync<TMessageData>(String, MessageHandler<TMessageData>, CancellationToken)
+  fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.SubscribeAsync<TMessageData>(string, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler<TMessageData>, System.Threading.CancellationToken)
+  fullName.vb: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.SubscribeAsync(Of TMessageData)(String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler(Of TMessageData), System.Threading.CancellationToken)
+  nameWithType: RedisMessageHub.SubscribeAsync<TMessageData>(string, MessageHandler<TMessageData>, CancellationToken)
   nameWithType.vb: RedisMessageHub.SubscribeAsync(Of TMessageData)(String, MessageHandler(Of TMessageData), CancellationToken)
+- uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Subscribe``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
+  name: Subscribe<TMessageData>(string, MessageHandler<TMessageData>)
+  href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_Subscribe__1_System_String_AdaptArch_Common_Utilities_PubSub_Contracts_MessageHandler___0__
+  commentId: M:AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Subscribe``1(System.String,AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler{``0})
+  name.vb: Subscribe(Of TMessageData)(String, MessageHandler(Of TMessageData))
+  fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Subscribe<TMessageData>(string, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler<TMessageData>)
+  fullName.vb: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Subscribe(Of TMessageData)(String, AdaptArch.Common.Utilities.PubSub.Contracts.MessageHandler(Of TMessageData))
+  nameWithType: RedisMessageHub.Subscribe<TMessageData>(string, MessageHandler<TMessageData>)
+  nameWithType.vb: RedisMessageHub.Subscribe(Of TMessageData)(String, MessageHandler(Of TMessageData))
 - uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Unsubscribe(System.String)
-  name: Unsubscribe(String)
+  name: Unsubscribe(string)
   href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_Unsubscribe_System_String_
   commentId: M:AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Unsubscribe(System.String)
-  fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Unsubscribe(System.String)
-  nameWithType: RedisMessageHub.Unsubscribe(String)
+  name.vb: Unsubscribe(String)
+  fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Unsubscribe(string)
+  fullName.vb: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Unsubscribe(String)
+  nameWithType: RedisMessageHub.Unsubscribe(string)
+  nameWithType.vb: RedisMessageHub.Unsubscribe(String)
 - uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Unsubscribe*
   name: Unsubscribe
   href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_Unsubscribe_
@@ -1956,12 +2103,15 @@ references:
   isSpec: "True"
   fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.Unsubscribe
   nameWithType: RedisMessageHub.Unsubscribe
-- uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.UnsubscribeAsync(System.String,CancellationToken)
-  name: UnsubscribeAsync(String, CancellationToken)
-  href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_UnsubscribeAsync_System_String_CancellationToken_
-  commentId: M:AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.UnsubscribeAsync(System.String,CancellationToken)
-  fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.UnsubscribeAsync(System.String, CancellationToken)
-  nameWithType: RedisMessageHub.UnsubscribeAsync(String, CancellationToken)
+- uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.UnsubscribeAsync(System.String,System.Threading.CancellationToken)
+  name: UnsubscribeAsync(string, CancellationToken)
+  href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_UnsubscribeAsync_System_String_System_Threading_CancellationToken_
+  commentId: M:AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.UnsubscribeAsync(System.String,System.Threading.CancellationToken)
+  name.vb: UnsubscribeAsync(String, CancellationToken)
+  fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.UnsubscribeAsync(string, System.Threading.CancellationToken)
+  fullName.vb: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.UnsubscribeAsync(String, System.Threading.CancellationToken)
+  nameWithType: RedisMessageHub.UnsubscribeAsync(string, CancellationToken)
+  nameWithType.vb: RedisMessageHub.UnsubscribeAsync(String, CancellationToken)
 - uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.UnsubscribeAsync*
   name: UnsubscribeAsync
   href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHub.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHub_UnsubscribeAsync_
@@ -1975,6 +2125,25 @@ references:
   commentId: T:AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions
   fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions
   nameWithType: RedisMessageHubOptions
+- uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions.#ctor(System.Text.Json.Serialization.JsonSerializerContext)
+  name: RedisMessageHubOptions(JsonSerializerContext)
+  href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHubOptions__ctor_System_Text_Json_Serialization_JsonSerializerContext_
+  commentId: M:AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions.#ctor(System.Text.Json.Serialization.JsonSerializerContext)
+  name.vb: New(JsonSerializerContext)
+  fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions.RedisMessageHubOptions(System.Text.Json.Serialization.JsonSerializerContext)
+  fullName.vb: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions.New(System.Text.Json.Serialization.JsonSerializerContext)
+  nameWithType: RedisMessageHubOptions.RedisMessageHubOptions(JsonSerializerContext)
+  nameWithType.vb: RedisMessageHubOptions.New(JsonSerializerContext)
+- uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions.#ctor*
+  name: RedisMessageHubOptions
+  href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHubOptions__ctor_
+  commentId: Overload:AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions.RedisMessageHubOptions
+  fullName.vb: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions.New
+  nameWithType: RedisMessageHubOptions.RedisMessageHubOptions
+  nameWithType.vb: RedisMessageHubOptions.New
 - uid: AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions.DataSerializer
   name: DataSerializer
   href: api/AdaptArch.Common.Utilities.Redis.PubSub.RedisMessageHubOptions.html#AdaptArch_Common_Utilities_Redis_PubSub_RedisMessageHubOptions_DataSerializer
@@ -2044,6 +2213,25 @@ references:
   commentId: T:AdaptArch.Common.Utilities.Redis.Serialization.Implementations.JsonDataSerializer
   fullName: AdaptArch.Common.Utilities.Redis.Serialization.Implementations.JsonDataSerializer
   nameWithType: JsonDataSerializer
+- uid: AdaptArch.Common.Utilities.Redis.Serialization.Implementations.JsonDataSerializer.#ctor(System.Text.Json.Serialization.JsonSerializerContext)
+  name: JsonDataSerializer(JsonSerializerContext)
+  href: api/AdaptArch.Common.Utilities.Redis.Serialization.Implementations.JsonDataSerializer.html#AdaptArch_Common_Utilities_Redis_Serialization_Implementations_JsonDataSerializer__ctor_System_Text_Json_Serialization_JsonSerializerContext_
+  commentId: M:AdaptArch.Common.Utilities.Redis.Serialization.Implementations.JsonDataSerializer.#ctor(System.Text.Json.Serialization.JsonSerializerContext)
+  name.vb: New(JsonSerializerContext)
+  fullName: AdaptArch.Common.Utilities.Redis.Serialization.Implementations.JsonDataSerializer.JsonDataSerializer(System.Text.Json.Serialization.JsonSerializerContext)
+  fullName.vb: AdaptArch.Common.Utilities.Redis.Serialization.Implementations.JsonDataSerializer.New(System.Text.Json.Serialization.JsonSerializerContext)
+  nameWithType: JsonDataSerializer.JsonDataSerializer(JsonSerializerContext)
+  nameWithType.vb: JsonDataSerializer.New(JsonSerializerContext)
+- uid: AdaptArch.Common.Utilities.Redis.Serialization.Implementations.JsonDataSerializer.#ctor*
+  name: JsonDataSerializer
+  href: api/AdaptArch.Common.Utilities.Redis.Serialization.Implementations.JsonDataSerializer.html#AdaptArch_Common_Utilities_Redis_Serialization_Implementations_JsonDataSerializer__ctor_
+  commentId: Overload:AdaptArch.Common.Utilities.Redis.Serialization.Implementations.JsonDataSerializer.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: AdaptArch.Common.Utilities.Redis.Serialization.Implementations.JsonDataSerializer.JsonDataSerializer
+  fullName.vb: AdaptArch.Common.Utilities.Redis.Serialization.Implementations.JsonDataSerializer.New
+  nameWithType: JsonDataSerializer.JsonDataSerializer
+  nameWithType.vb: JsonDataSerializer.New
 - uid: AdaptArch.Common.Utilities.Redis.Serialization.Implementations.JsonDataSerializer.Deserialize*
   name: Deserialize
   href: api/AdaptArch.Common.Utilities.Redis.Serialization.Implementations.JsonDataSerializer.html#AdaptArch_Common_Utilities_Redis_Serialization_Implementations_JsonDataSerializer_Deserialize_
@@ -2088,13 +2276,13 @@ references:
   commentId: T:Microsoft.Extensions.Configuration.CustomConfigurationExtensions
   fullName: Microsoft.Extensions.Configuration.CustomConfigurationExtensions
   nameWithType: CustomConfigurationExtensions
-- uid: Microsoft.Extensions.Configuration.CustomConfigurationExtensions.AddCustomConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder,Action{AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationSource})
+- uid: Microsoft.Extensions.Configuration.CustomConfigurationExtensions.AddCustomConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.Action{AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationSource})
   name: AddCustomConfiguration(IConfigurationBuilder, Action<CustomConfigurationSource>)
-  href: api/Microsoft.Extensions.Configuration.CustomConfigurationExtensions.html#Microsoft_Extensions_Configuration_CustomConfigurationExtensions_AddCustomConfiguration_Microsoft_Extensions_Configuration_IConfigurationBuilder_Action_AdaptArch_Common_Utilities_Configuration_Providers_CustomConfigurationSource__
-  commentId: M:Microsoft.Extensions.Configuration.CustomConfigurationExtensions.AddCustomConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder,Action{AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationSource})
+  href: api/Microsoft.Extensions.Configuration.CustomConfigurationExtensions.html#Microsoft_Extensions_Configuration_CustomConfigurationExtensions_AddCustomConfiguration_Microsoft_Extensions_Configuration_IConfigurationBuilder_System_Action_AdaptArch_Common_Utilities_Configuration_Providers_CustomConfigurationSource__
+  commentId: M:Microsoft.Extensions.Configuration.CustomConfigurationExtensions.AddCustomConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.Action{AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationSource})
   name.vb: AddCustomConfiguration(IConfigurationBuilder, Action(Of CustomConfigurationSource))
-  fullName: Microsoft.Extensions.Configuration.CustomConfigurationExtensions.AddCustomConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder, Action<AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationSource>)
-  fullName.vb: Microsoft.Extensions.Configuration.CustomConfigurationExtensions.AddCustomConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder, Action(Of AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationSource))
+  fullName: Microsoft.Extensions.Configuration.CustomConfigurationExtensions.AddCustomConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder, System.Action<AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationSource>)
+  fullName.vb: Microsoft.Extensions.Configuration.CustomConfigurationExtensions.AddCustomConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder, System.Action(Of AdaptArch.Common.Utilities.Configuration.Providers.CustomConfigurationSource))
   nameWithType: CustomConfigurationExtensions.AddCustomConfiguration(IConfigurationBuilder, Action<CustomConfigurationSource>)
   nameWithType.vb: CustomConfigurationExtensions.AddCustomConfiguration(IConfigurationBuilder, Action(Of CustomConfigurationSource))
 - uid: Microsoft.Extensions.Configuration.CustomConfigurationExtensions.AddCustomConfiguration*
@@ -2129,12 +2317,12 @@ references:
   isSpec: "True"
   fullName: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers
   nameWithType: ServiceCollectionExtensions.AddPubSubMessageHandlers
-- uid: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,Func{``0,System.String})
-  name: AddPubSubMessageHandlers<TAttribute>(IServiceCollection, Assembly, Func<TAttribute, String>)
-  href: api/Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.html#Microsoft_Extensions_ServiceCollection_ServiceCollectionExtensions_AddPubSubMessageHandlers__1_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Reflection_Assembly_Func___0_System_String__
-  commentId: M:Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,Func{``0,System.String})
+- uid: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,System.Func{``0,System.String})
+  name: AddPubSubMessageHandlers<TAttribute>(IServiceCollection, Assembly, Func<TAttribute, string>)
+  href: api/Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.html#Microsoft_Extensions_ServiceCollection_ServiceCollectionExtensions_AddPubSubMessageHandlers__1_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Reflection_Assembly_System_Func___0_System_String__
+  commentId: M:Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,System.Func{``0,System.String})
   name.vb: AddPubSubMessageHandlers(Of TAttribute)(IServiceCollection, Assembly, Func(Of TAttribute, String))
-  fullName: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers<TAttribute>(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Reflection.Assembly, Func<TAttribute, System.String>)
-  fullName.vb: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers(Of TAttribute)(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Reflection.Assembly, Func(Of TAttribute, System.String))
-  nameWithType: ServiceCollectionExtensions.AddPubSubMessageHandlers<TAttribute>(IServiceCollection, Assembly, Func<TAttribute, String>)
+  fullName: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers<TAttribute>(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Reflection.Assembly, System.Func<TAttribute, string>)
+  fullName.vb: Microsoft.Extensions.ServiceCollection.ServiceCollectionExtensions.AddPubSubMessageHandlers(Of TAttribute)(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Reflection.Assembly, System.Func(Of TAttribute, String))
+  nameWithType: ServiceCollectionExtensions.AddPubSubMessageHandlers<TAttribute>(IServiceCollection, Assembly, Func<TAttribute, string>)
   nameWithType.vb: ServiceCollectionExtensions.AddPubSubMessageHandlers(Of TAttribute)(IServiceCollection, Assembly, Func(Of TAttribute, String))

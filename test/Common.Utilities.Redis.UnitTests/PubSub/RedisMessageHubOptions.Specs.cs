@@ -8,15 +8,15 @@ public class RedisMessageHubOptionsSpecs
     [Fact]
     public void Should_Have_A_JsonSerialize_By_Default()
     {
-        var options = new RedisMessageHubOptions();
+        var options = new RedisMessageHubOptions(TestJsonSerializerContext.Default);
         Assert.IsType<JsonDataSerializer>(options.DataSerializer);
     }
 
     [Fact]
     public void Should_Have_Allow_Replacing_The_Serializer()
     {
-        var serializer = new JsonDataSerializer();
-        var options = new RedisMessageHubOptions();
+        var serializer = new JsonDataSerializer(TestJsonSerializerContext.Default);
+        var options = new RedisMessageHubOptions(TestJsonSerializerContext.Default);
         Assert.NotSame(serializer, options.DataSerializer);
 
         options.DataSerializer = serializer;

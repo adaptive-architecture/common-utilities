@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using AdaptArch.Common.Utilities.Redis.Serialization.Contracts;
 using StackExchange.Redis;
 
@@ -7,10 +8,25 @@ namespace AdaptArch.Common.Utilities.Redis.Serialization.Implementations;
 /// <summary>
 /// A <see cref="IDataSerializer"/> that uses <see cref="System.Text.Json"/>.
 /// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="JsonDataSerializer"/> class.
+/// </remarks>
 public class JsonDataSerializer : IDataSerializer
 {
+    private readonly JsonSerializerContext _jsonSerializerContext;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JsonDataSerializer"/> class.
+    /// <param name="jsonSerializerContext">The <see cref="JsonSerializerContext"/>.</param>
+    /// </summary>
+    public JsonDataSerializer(JsonSerializerContext jsonSerializerContext)
+    {
+        _jsonSerializerContext = jsonSerializerContext
+            ?? throw new ArgumentNullException(nameof(jsonSerializerContext));
+    }
+
     /// <inheritdoc />
-    public RedisValue Serialize<T>(T data) => JsonSerializer.Serialize(data);
+    public RedisValue Serialize<T>(T data) => JsonSerializer.Serialize(data, typeof(T), _jsonSerializerContext);
 
     /// <inheritdoc />
     public T? Deserialize<T>(RedisValue data)
@@ -20,6 +36,6 @@ public class JsonDataSerializer : IDataSerializer
             throw new ArgumentNullException(nameof(data));
         }
 
-        return JsonSerializer.Deserialize<T>(data.ToString());
+        return (T?)JsonSerializer.Deserialize(data.ToString(), typeof(T), _jsonSerializerContext);
     }
 }

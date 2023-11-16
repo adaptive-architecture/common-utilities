@@ -1,1 +1,1 @@
-docfx docfx_project/docfx.json
+docfx build docfx_project/docfx.json #--logLevel Error

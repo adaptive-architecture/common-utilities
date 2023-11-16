@@ -8,7 +8,7 @@ namespace AdaptArch.Common.Utilities.Redis.UnitTests.PubSub;
 
 public class RedisMessageHubSpecs
 {
-    private static readonly RedisMessageHubOptions Options = new();
+    private static readonly RedisMessageHubOptions Options = new(TestJsonSerializerContext.Default);
 
     private int _handlerReactions;
     private Action<RedisChannel, RedisValue> _handler;
@@ -21,25 +21,6 @@ public class RedisMessageHubSpecs
 
     public RedisMessageHubSpecs()
     {
-        Action<RedisChannel, Action<RedisChannel, RedisValue>, CommandFlags> SubscribeCallback()
-        {
-            return (_, h, _) => _handler = h;
-        }
-
-        Action<RedisChannel, Action<RedisChannel, RedisValue>, CommandFlags> UnsubscribeCallback()
-        {
-            return (_, h, _) => _shouldHaveRemovedHandler = _handler == h;
-        }
-
-        Action<RedisChannel, RedisValue, CommandFlags> PublishCallback()
-        {
-            return (c, val, _) =>
-            {
-                _messageValue = val;
-                _handler!.Invoke(c, val);
-            };
-        }
-
         _sub = new Mock<ISubscriber>();
 
         _sub.Setup(s => s.Subscribe(It.IsAny<RedisChannel>(), It.IsAny<Action<RedisChannel, RedisValue>>(),
@@ -65,6 +46,26 @@ public class RedisMessageHubSpecs
         _cm.Setup(s => s.GetSubscriber(It.Is<object>(arg => arg == null))).Returns(_sub.Object);
 
         _hub = new RedisMessageHub(_cm.Object, Options);
+        return;
+
+        Action<RedisChannel, Action<RedisChannel, RedisValue>, CommandFlags> SubscribeCallback()
+        {
+            return (_, h, _) => _handler = h;
+        }
+
+        Action<RedisChannel, Action<RedisChannel, RedisValue>, CommandFlags> UnsubscribeCallback()
+        {
+            return (_, h, _) => _shouldHaveRemovedHandler = _handler == h;
+        }
+
+        Action<RedisChannel, RedisValue, CommandFlags> PublishCallback()
+        {
+            return (c, val, _) =>
+            {
+                _messageValue = val;
+                _handler!.Invoke(c, val);
+            };
+        }
     }
 
     [Fact]

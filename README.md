@@ -20,9 +20,3 @@ A set of common utilities to be used across projects and reduce amount of time w
 ## Documentation
 
 Please read the documentation [here](https://adaptive-architecture.github.io/common-utilities/).
-
-
-### To do:
-- use source genrerator for AOT: [link](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/source-generation?pivots=dotnet-8-0#disable-reflection-defaults), [link](https://learn.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/source-generators-overview), [link](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-8#source-link)
-
-
