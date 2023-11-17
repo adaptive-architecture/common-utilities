@@ -1,9 +1,9 @@
 ﻿using AdaptArch.Common.Utilities.PubSub.Contracts;
 
-namespace AdaptArch.Common.Utilities.PubSub.Implementations.Internals;
+namespace AdaptArch.Common.Utilities.PubSub.Implementations;
 
 /// <inheritdoc />
-internal class Message<TData> : IMessage<TData> where TData : class
+public sealed class Message<TData> : IMessage<TData> where TData : class
 {
     /// <summary>
     /// Constructor.

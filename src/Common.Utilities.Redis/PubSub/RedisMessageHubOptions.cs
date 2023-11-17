@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
 using AdaptArch.Common.Utilities.PubSub.Implementations;
 using AdaptArch.Common.Utilities.Redis.Serialization.Contracts;
 using AdaptArch.Common.Utilities.Redis.Serialization.Implementations;
@@ -13,12 +13,11 @@ public class RedisMessageHubOptions: MessageHubOptions
     /// <summary>
     /// Create a new instance.
     /// </summary>
-    /// <param name="jsonSerializerContext">The <see cref="JsonSerializerContext"/></param>
-    public RedisMessageHubOptions(JsonSerializerContext jsonSerializerContext)
+    /// <param name="jsonSerializerOptions">The <see cref="JsonSerializerOptions"/></param>
+    public RedisMessageHubOptions(JsonSerializerOptions jsonSerializerOptions)
     {
-        var serializerContext = jsonSerializerContext
-                                ?? throw new ArgumentNullException(nameof(jsonSerializerContext));
-        DataSerializer = new JsonDataSerializer(serializerContext);
+        ArgumentNullException.ThrowIfNull(jsonSerializerOptions, nameof(jsonSerializerOptions));
+        DataSerializer = new JsonDataSerializer(jsonSerializerOptions);
     }
 
     /// <summary>

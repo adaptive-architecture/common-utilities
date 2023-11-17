@@ -1,7 +1,6 @@
 ﻿using AdaptArch.Common.Utilities.Extensions;
 using AdaptArch.Common.Utilities.PubSub.Contracts;
 using AdaptArch.Common.Utilities.PubSub.Implementations;
-using AdaptArch.Common.Utilities.PubSub.Implementations.Internals;
 using AdaptArch.Common.Utilities.Redis.Utilities;
 using StackExchange.Redis;
 

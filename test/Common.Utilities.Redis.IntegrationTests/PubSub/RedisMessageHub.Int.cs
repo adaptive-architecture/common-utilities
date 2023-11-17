@@ -4,7 +4,7 @@ namespace AdaptArch.Common.Utilities.Redis.IntegrationTests.PubSub;
 
 public class RedisMessageHubInt
 {
-    private static readonly TimeSpan WaitTime = TimeSpan.FromMilliseconds(100);
+    private static readonly TimeSpan s_waitTime = TimeSpan.FromMilliseconds(100);
     public record MyMessage
     {
         public string Id { get; set; }
@@ -15,7 +15,8 @@ public class RedisMessageHubInt
 
     public RedisMessageHubInt()
     {
-        var hub = new RedisMessageHub(Utilities.GetDefaultConnectionMultiplexer(), new RedisMessageHubOptions(IntegrationJsonSerializerContext.Default));
+        var hub = new RedisMessageHub(Utilities.GetDefaultConnectionMultiplexer(),
+            new RedisMessageHubOptions(IntegrationJsonSerializerContext.Default.Options));
         _messageHub = hub;
         _messageHubAsync = hub;
     }
@@ -36,7 +37,7 @@ public class RedisMessageHubInt
         var sentMessage = new MyMessage { Id = Guid.NewGuid().ToString("N") };
 
         _messageHub.Publish(nameof(MyMessage), sentMessage);
-        Thread.Sleep(WaitTime);
+        Thread.Sleep(s_waitTime);
 
         Assert.NotNull(receivedMessage);
         Assert.Equal(sentMessage.Id, receivedMessage.Id);
@@ -45,7 +46,7 @@ public class RedisMessageHubInt
         receivedMessage = null;
 
         _messageHub.Publish(nameof(MyMessage), sentMessage);
-        Thread.Sleep(WaitTime);
+        Thread.Sleep(s_waitTime);
 
         Assert.Null(receivedMessage);
     }
@@ -67,7 +68,7 @@ public class RedisMessageHubInt
 
         await _messageHubAsync.PublishAsync(nameof(MyMessage), sentMessage, CancellationToken.None);
 
-        await Task.Delay(WaitTime);
+        await Task.Delay(s_waitTime);
 
         Assert.NotNull(receivedMessage);
         Assert.Equal(sentMessage.Id, receivedMessage.Id);
@@ -77,7 +78,7 @@ public class RedisMessageHubInt
 
         await _messageHubAsync.PublishAsync(nameof(MyMessage), sentMessage, CancellationToken.None);
 
-        await Task.Delay(WaitTime);
+        await Task.Delay(s_waitTime);
 
         Assert.Null(receivedMessage);
     }
