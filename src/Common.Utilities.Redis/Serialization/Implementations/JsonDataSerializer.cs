@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using AdaptArch.Common.Utilities.Redis.Serialization.Contracts;
 using StackExchange.Redis;
@@ -18,16 +17,15 @@ public class JsonDataSerializer : IDataSerializer
 
     /// <summary>
     /// Initializes a new instance of the <see cref="JsonDataSerializer"/> class.
-    /// <param name="jsonSerializerContext">The <see cref="JsonSerializerContext"/>.</param>
+    /// <param name="jsonSerializerOptions">The <see cref="JsonSerializerOptions"/>.</param>
     /// </summary>
-    public JsonDataSerializer(JsonSerializerContext jsonSerializerContext)
+    public JsonDataSerializer(JsonSerializerOptions jsonSerializerOptions)
     {
-        if (jsonSerializerContext == null)
-            throw new ArgumentNullException(nameof(jsonSerializerContext));
-
-        _jsonSerializerOptions = new JsonSerializerOptions(jsonSerializerContext.Options)
+        ArgumentNullException.ThrowIfNull(jsonSerializerOptions, nameof(jsonSerializerOptions));
+        _jsonSerializerOptions = new JsonSerializerOptions(jsonSerializerOptions)
         {
-            TypeInfoResolver = JsonTypeInfoResolver.Combine(MessagesJsonSerializerContext.Default, jsonSerializerContext.Options.TypeInfoResolver)
+            TypeInfoResolver = JsonTypeInfoResolver.Combine(
+                MessagesJsonSerializerContext.Default, jsonSerializerOptions.TypeInfoResolver)
         };
     }
 

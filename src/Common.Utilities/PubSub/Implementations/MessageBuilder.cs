@@ -1,6 +1,5 @@
 ﻿using AdaptArch.Common.Utilities.GlobalAbstractions.Contracts;
 using AdaptArch.Common.Utilities.PubSub.Contracts;
-using AdaptArch.Common.Utilities.PubSub.Implementations.Internals;
 
 namespace AdaptArch.Common.Utilities.PubSub.Implementations;
 

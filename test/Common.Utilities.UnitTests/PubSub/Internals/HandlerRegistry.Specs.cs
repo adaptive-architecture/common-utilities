@@ -1,4 +1,4 @@
-﻿using AdaptArch.Common.Utilities.PubSub.Implementations.Internals;
+﻿using AdaptArch.Common.Utilities.PubSub.Implementations;
 
 namespace AdaptArch.Common.Utilities.UnitTests.PubSub.Internals;
 

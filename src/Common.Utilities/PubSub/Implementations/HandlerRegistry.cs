@@ -1,14 +1,23 @@
 ﻿using System.Collections.Concurrent;
-using AdaptArch.Common.Utilities.GlobalAbstractions.Contracts;
 using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations;
 
-namespace AdaptArch.Common.Utilities.PubSub.Implementations.Internals;
+namespace AdaptArch.Common.Utilities.PubSub.Implementations;
 
-internal class HandlerRegistry
+/// <summary>
+/// A registry to keep track of the handlers.
+/// </summary>
+public sealed class HandlerRegistry
 {
     private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, HandlerRegistration>> _handlers = new();
-    private readonly IUuidProvider _uuidProvider = new DashedUuidProvider();
+    private readonly DashedUuidProvider _uuidProvider = new();
 
+    /// <summary>
+    /// Add a new topic delegate to the registry.
+    /// </summary>
+    /// <typeparam name="T">The type of data handled by the handler.</typeparam>
+    /// <param name="topic">The topic.</param>
+    /// <param name="handler">The handler.</param>
+    /// <returns>The id of the registration.</returns>
     public string Add<T>(string topic, Delegate handler)
         where T : class
     {
@@ -31,6 +40,10 @@ internal class HandlerRegistry
         return registration.Id;
     }
 
+    /// <summary>
+    /// Remove a registration.
+    /// </summary>
+    /// <param name="registrationId">The registration to remove.</param>
     public void Remove(string registrationId)
     {
         foreach (var topicHandlers in _handlers.Values)
@@ -39,6 +52,11 @@ internal class HandlerRegistry
         }
     }
 
+    /// <summary>
+    /// Get the handlers for a topic.
+    /// </summary>
+    /// <typeparam name="T">The type of data handled by the handler.</typeparam>
+    /// <param name="topic">The topic.</param>
     public IEnumerable<Delegate> GetTopicHandlers<T>(string topic)
         where T : class
     {
@@ -47,6 +65,10 @@ internal class HandlerRegistry
             : Array.Empty<Delegate>();
     }
 
+    /// <summary>
+    /// Get a specific registration.
+    /// </summary>
+    /// <param name="registrationId">The registration id.</param>
     public HandlerRegistration? GetRegistration(string registrationId)
     {
         foreach (var topicHandlers in _handlers.Values)

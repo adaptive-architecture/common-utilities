@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using AdaptArch.Common.Utilities.PubSub.Contracts;
-using AdaptArch.Common.Utilities.PubSub.Implementations.Internals;
+using AdaptArch.Common.Utilities.PubSub.Implementations;
 
 namespace AdaptArch.Common.Utilities.Redis.Serialization.Implementations;
 

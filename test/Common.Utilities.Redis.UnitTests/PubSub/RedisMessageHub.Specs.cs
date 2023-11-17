@@ -8,7 +8,7 @@ namespace AdaptArch.Common.Utilities.Redis.UnitTests.PubSub;
 
 public class RedisMessageHubSpecs
 {
-    private static readonly RedisMessageHubOptions Options = new(TestJsonSerializerContext.Default);
+    private static readonly RedisMessageHubOptions Options = new(TestJsonSerializerContext.Default.Options);
 
     private int _handlerReactions;
     private Action<RedisChannel, RedisValue> _handler;
