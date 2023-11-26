@@ -20,3 +20,12 @@ A set of common utilities to be used across projects and reduce amount of time w
 ## Documentation
 
 Please read the documentation [here](https://adaptive-architecture.github.io/common-utilities/).
+
+
+### To do:
+* source generators so you do not need to register JSON serializer context for each message handler
+* source generator to register all handlers in the service container/application hosting
+
+Ref:
+* https://learn.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/source-generators-overview
+* https://github.com/wilder-minds/MinimalApiDiscovery
