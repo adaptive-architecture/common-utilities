@@ -5,7 +5,7 @@ namespace AdaptArch.Common.Utilities.Redis.UnitTests.Serialization;
 
 public class JsonDataSerializerSpecs
 {
-    private static readonly JsonDataSerializer s_serializer = new(TestJsonSerializerContext.Default.Options);
+    private static readonly JsonDataSerializer s_serializer = new();
 
     public record SerializationDataObject
     {
@@ -31,7 +31,7 @@ public class JsonDataSerializerSpecs
     [Fact]
     public void Should_Throw_When_Deserializing_Null()
     {
-        var serializer = new JsonDataSerializer(TestJsonSerializerContext.Default.Options);
+        var serializer = new JsonDataSerializer();
 
         Assert.Throws<ArgumentNullException>(() => serializer.Deserialize<object>(RedisValue.Null));
     }
