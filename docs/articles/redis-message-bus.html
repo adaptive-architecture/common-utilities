@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
 
@@ -93,17 +93,17 @@
 
 
                     <article class="content wrap" id="_content" data-uid="">
-<h1 id="redis-message-bus">Redis message bus</h1>
+<h1 id="redis-message-bus" sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="1">Redis message bus</h1>
 
-<p>For some simple <code>pub/sub</code> workload it might be enough to use a Redis based implementation of <code>IMessageHub</code> or <code>IMessageHubAsync</code>.</p>
-<h2 id="service-registration">Service registration</h2>
-<p>To get to run using Reid all you need to do is:</p>
-<ul>
-<li>Register a <code>IConnectionMultiplexer</code> instance with the dependency container.</li>
-<li>Register the <code>RedisMessageHubOptions</code> with the dependency container.</li>
-<li>Register the <code>RedisMessageHub</code> or <code>IMessageHubAsync</code> with the dependency container.</li>
+<p sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="3">For some simple <code sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="3">pub/sub</code> workload it might be enough to use a Redis based implementation of <code sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="3">IMessageHub</code> or <code sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="3">IMessageHubAsync</code>.</p>
+<h2 id="service-registration" sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="5">Service registration</h2>
+<p sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="6">To get to run using Reid all you need to do is:</p>
+<ul sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="7">
+<li sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="7">Register a <code sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="7">IConnectionMultiplexer</code> instance with the dependency container.</li>
+<li sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="8">Register the <code sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="8">RedisMessageHubOptions</code> with the dependency container.</li>
+<li sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="9">Register the <code sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="9">RedisMessageHub</code> or <code sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="9">IMessageHubAsync</code> with the dependency container.</li>
 </ul>
-<pre><code class="lang-csharp">// Minimal API example.
+<pre><code class="lang-csharp" sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="11">// Minimal API example.
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -149,15 +149,15 @@ app.MapGet(&quot;/publish&quot;, static async (MyMessageHandler handler, Cancell
 
 app.Run();
 </code></pre>
-<h2 id="usage">Usage</h2>
-<p>To use the message hub in your business manager all you need to do is:</p>
-<ul>
-<li>Inject a reference to the message hub.</li>
-<li>Subscribe to the messages you are interested in.</li>
-<li>Publish the messages you need to.</li>
-<li>Optionally unsubscribe from the messages you are no longer interested in.</li>
+<h2 id="usage" sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="59">Usage</h2>
+<p sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="61">To use the message hub in your business manager all you need to do is:</p>
+<ul sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="62">
+<li sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="62">Inject a reference to the message hub.</li>
+<li sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="63">Subscribe to the messages you are interested in.</li>
+<li sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="64">Publish the messages you need to.</li>
+<li sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="65">Optionally unsubscribe from the messages you are no longer interested in.</li>
 </ul>
-<pre><code class="lang-csharp">public class SayHello
+<pre><code class="lang-csharp" sourcefile="articles/redis-message-bus.md" sourcestartlinenumber="68">public class SayHello
 {
   public string Name { get; set; }
 }

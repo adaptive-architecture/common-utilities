@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
 
@@ -93,34 +93,34 @@
 
 
                     <article class="content wrap" id="_content" data-uid="">
-<h1 id="custom-configuration-provider">Custom configuration provider</h1>
+<h1 id="custom-configuration-provider" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="1">Custom configuration provider</h1>
 
-<p>Provide a simple way to implement your own configuration provider to without the hassle of knowing the internal workings of <code>Microsoft.Extensions.Configuration.ConfigurationProvider</code>.</p>
-<h2 id="defining-your-configuration-provider">Defining your configuration provider</h2>
-<p>The following code samples assume you are using a database to store the configuration values in a table called <code>configuration_values</code> similar to:</p>
-<table>
+<p sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="3">Provide a simple way to implement your own configuration provider to without the hassle of knowing the internal workings of <code sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="3">Microsoft.Extensions.Configuration.ConfigurationProvider</code>.</p>
+<h2 id="defining-your-configuration-provider" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="5">Defining your configuration provider</h2>
+<p sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="7">The following code samples assume you are using a database to store the configuration values in a table called <code sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="7">configuration_values</code> similar to:</p>
+<table sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="9">
 <thead>
-<tr>
-<th style="text-align: left;">key</th>
-<th style="text-align: left;">value</th>
-<th style="text-align: right;">modified_date</th>
+<tr sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="9">
+<th style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="9">key</th>
+<th style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="9">value</th>
+<th style="text-align: right;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="9">modified_date</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align: left;">Enabled</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: right;">2022-09-18T15:17:43Z</td>
+<tr sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="11">
+<td style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="11">Enabled</td>
+<td style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="11">1</td>
+<td style="text-align: right;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="11">2022-09-18T15:17:43Z</td>
 </tr>
-<tr>
-<td style="text-align: left;">MaxThreads</td>
-<td style="text-align: left;">10</td>
-<td style="text-align: right;">2022-09-18T15:17:43Z</td>
+<tr sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="12">
+<td style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="12">MaxThreads</td>
+<td style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="12">10</td>
+<td style="text-align: right;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="12">2022-09-18T15:17:43Z</td>
 </tr>
 </tbody>
 </table>
-<p>Before you register a custom configuration provider you need to implement your own version of <code>AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider</code>.</p>
-<pre><code class="lang-csharp">
+<p sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="14">Before you register a custom configuration provider you need to implement your own version of <code sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="14">AdaptArch.Common.Utilities.Configuration.Contracts.IDataProvider</code>.</p>
+<pre><code class="lang-csharp" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="16">
 public class DbConfigurationValuesDataProvider: IDataProvider
 {
   private readonly string _connectionString;
@@ -172,13 +172,13 @@ public class DbConfigurationValuesDataProvider: IDataProvider
 }
 
 </code></pre>
-<h2 id="using-the-provider">Using the provider</h2>
-<p>Now that you have the configuration data provider created you need to:</p>
-<ul>
-<li>Define an options class to use the <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0">options pattern</a>.</li>
-<li>Register the provider in you application start-up.</li>
+<h2 id="using-the-provider" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="70">Using the provider</h2>
+<p sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="72">Now that you have the configuration data provider created you need to:</p>
+<ul sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="73">
+<li sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="73">Define an options class to use the <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="73">options pattern</a>.</li>
+<li sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="74">Register the provider in you application start-up.</li>
 </ul>
-<pre><code class="lang-csharp">
+<pre><code class="lang-csharp" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="76">
 // Class used to bind via the options pattern.
 public class ParallelProcessingOptions
 {
@@ -234,57 +234,57 @@ var host = Host.CreateDefaultBuilder(args)
 
 await host.RunAsync();
 </code></pre>
-<p>To take advantage of the reload functionality of the configuration provider and have the latest configuration values you should not use an instance of <code>ParallelProcessingOptions</code> but instead use <code>IOptionsSnapshot&lt;ParallelProcessingOptions&gt;</code> or <code>IOptionsMonitor&lt;ParallelProcessingOptions&gt;</code>. For more details see the <a href="https://learn.microsoft.com/en-us/dotnet/core/extensions/options#options-interfaces">official documentation</a>.</p>
-<h2 id="advanced-usage">Advanced usage</h2>
-<p>Depending on the storage you will use you might have cases where your <code>IDataProvider</code> implementation will return the data in a more compact format:</p>
-<table>
+<p sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="135">To take advantage of the reload functionality of the configuration provider and have the latest configuration values you should not use an instance of <code sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="135">ParallelProcessingOptions</code> but instead use <code sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="135">IOptionsSnapshot&lt;ParallelProcessingOptions&gt;</code> or <code sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="135">IOptionsMonitor&lt;ParallelProcessingOptions&gt;</code>. For more details see the <a href="https://learn.microsoft.com/en-us/dotnet/core/extensions/options#options-interfaces" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="135">official documentation</a>.</p>
+<h2 id="advanced-usage" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="138">Advanced usage</h2>
+<p sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="140">Depending on the storage you will use you might have cases where your <code sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="140">IDataProvider</code> implementation will return the data in a more compact format:</p>
+<table sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="142">
 <thead>
-<tr>
-<th style="text-align: left;">key</th>
-<th style="text-align: left;">value</th>
+<tr sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="142">
+<th style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="142">key</th>
+<th style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="142">value</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align: left;">CentralConfiguration/SectionA</td>
-<td style="text-align: left;">{ &quot;foo&quot;: 1, &quot;bar&quot;: 2, &quot;buzz&quot;: 3}</td>
+<tr sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="144">
+<td style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="144">CentralConfiguration/SectionA</td>
+<td style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="144">{ &quot;foo&quot;: 1, &quot;bar&quot;: 2, &quot;buzz&quot;: 3}</td>
 </tr>
-<tr>
-<td style="text-align: left;">CentralConfiguration/SectionB</td>
-<td style="text-align: left;">{ &quot;foo&quot;: { &quot;bar&quot;: &quot;buzz&quot; }</td>
+<tr sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="145">
+<td style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="145">CentralConfiguration/SectionB</td>
+<td style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="145">{ &quot;foo&quot;: { &quot;bar&quot;: &quot;buzz&quot; }</td>
 </tr>
 </tbody>
 </table>
-<p>To allow the data provider to correctly parse the values you can change the following options:</p>
-<pre><code class="lang-csharp">// This will transform &quot;CentralConfiguration/SectionA&quot; to &quot;CentralConfiguration:SectionA&quot;.
+<p sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="147">To allow the data provider to correctly parse the values you can change the following options:</p>
+<pre><code class="lang-csharp" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="149">// This will transform &quot;CentralConfiguration/SectionA&quot; to &quot;CentralConfiguration:SectionA&quot;.
 source.Options.OriginalKeyDelimiter = &quot;/&quot;;
 // This will go through the JSON properties and create a linear set ov values.
 source.Options.ConfigurationParser = new JsonConfigurationParser(ConfigurationPath.KeyDelimiter);
 </code></pre>
-<p>With the above options added to the configuration the parsed values are:</p>
-<table>
+<p sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="156">With the above options added to the configuration the parsed values are:</p>
+<table sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="158">
 <thead>
-<tr>
-<th style="text-align: left;">key</th>
-<th style="text-align: left;">value</th>
+<tr sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="158">
+<th style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="158">key</th>
+<th style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="158">value</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align: left;">CentralConfiguration:SectionA:foo</td>
-<td style="text-align: left;">1</td>
+<tr sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="160">
+<td style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="160">CentralConfiguration:SectionA:foo</td>
+<td style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="160">1</td>
 </tr>
-<tr>
-<td style="text-align: left;">CentralConfiguration:SectionA:bar</td>
-<td style="text-align: left;">2</td>
+<tr sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="161">
+<td style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="161">CentralConfiguration:SectionA:bar</td>
+<td style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="161">2</td>
 </tr>
-<tr>
-<td style="text-align: left;">CentralConfiguration:SectionA:buzz</td>
-<td style="text-align: left;">3</td>
+<tr sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="162">
+<td style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="162">CentralConfiguration:SectionA:buzz</td>
+<td style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="162">3</td>
 </tr>
-<tr>
-<td style="text-align: left;">CentralConfiguration:SectionB:foo:bar</td>
-<td style="text-align: left;">buzz</td>
+<tr sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="163">
+<td style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="163">CentralConfiguration:SectionB:foo:bar</td>
+<td style="text-align: left;" sourcefile="articles/custom-configuration-provider.md" sourcestartlinenumber="163">buzz</td>
 </tr>
 </tbody>
 </table>
