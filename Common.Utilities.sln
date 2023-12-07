@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Utilities.Configurat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Utilities.Hosting", "src\Common.Utilities.Hosting\Common.Utilities.Hosting.csproj", "{F860460C-980A-404B-A6F0-F6CEAA125970}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Utilities.Hosting.UnitTests", "test\Common.Utilities.Hosting.UnitTests\Common.Utilities.Hosting.UnitTests.csproj", "{9CE4590E-BA75-478C-8E1B-7F6FF8165125}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Utilities.Hosting.UnitTests", "test\Common.Utilities.Hosting.UnitTests\Common.Utilities.Hosting.UnitTests.csproj", "{9CE4590E-BA75-478C-8E1B-7F6FF8165125}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

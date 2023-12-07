@@ -16,7 +16,7 @@ public class RedisMessageHubInt
     public RedisMessageHubInt()
     {
         var hub = new RedisMessageHub(Utilities.GetDefaultConnectionMultiplexer(),
-            new RedisMessageHubOptions(IntegrationJsonSerializerContext.Default.Options));
+            new RedisMessageHubOptions());
         _messageHub = hub;
         _messageHubAsync = hub;
     }
