@@ -40,4 +40,4 @@ jobs:
         run: dotnet restore
 
       - name: Publish packages
-        run: sh ./pipeline/publish-packages.sh -c $config -v ${{steps.branch_name.outputs.SOURCE_TAG_TRIMMED}} -n ${{secrets.NUGET_ORG_KEY}} -g ${{secrets.GITHUB_TOKEN}}
+        run: bash ./pipeline/publish-packages.sh -c $config -v ${{steps.branch_name.outputs.SOURCE_TAG_TRIMMED}} -n ${{secrets.NUGET_ORG_KEY}} -g ${{secrets.GITHUB_TOKEN}}
