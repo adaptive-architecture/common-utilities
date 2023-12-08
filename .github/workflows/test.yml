@@ -6,6 +6,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+concurrency:
+  group: "tests"
+  cancel-in-progress: false
+
 jobs:
   test:
     runs-on: ubuntu-latest
