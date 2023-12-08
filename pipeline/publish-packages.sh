@@ -42,10 +42,10 @@ for project in "${projects[@]}"; do
   dotnet pack ./src/$project/$project.csproj --configuration $configuration -p:Version=$version \
     -p:CI_BUILD=true
 
-  dotnet nuget push ./src/$project/bin/$configuration/*.nupkg \
-    --api-key $github_api_key \
-    --source https://nuget.pkg.github.com/adaptive-architecture/index.json \
-    --skip-duplicate
+  # dotnet nuget push ./src/$project/bin/$configuration/*.nupkg \
+  #   --api-key $github_api_key \
+  #   --source https://nuget.pkg.github.com/adaptive-architecture/index.json \
+  #   --skip-duplicate
 
   dotnet nuget push ./src/$project/bin/$configuration/*.nupkg \
     --api-key $nuget_api_key \
