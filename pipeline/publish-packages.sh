@@ -36,7 +36,7 @@ rm -rf ./.nuget/*.snupkg
 for project in "${projects[@]}"; do
   echo "Publishing $project"
 
-  dotnet build ./src/$project/$project.csproj --configuration $configuration --no-restore \
+  dotnet build ./src/$project/$project.csproj --configuration $configuration \
     -p:ContinuousIntegrationBuild=true -p:CI_BUILD=true -p:Version=$version
 
   dotnet pack ./src/$project/$project.csproj --configuration $configuration -p:Version=$version \
