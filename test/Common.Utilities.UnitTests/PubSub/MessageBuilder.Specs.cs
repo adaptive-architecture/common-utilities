@@ -9,9 +9,9 @@ public class MessageBuilderSpecs
     [Fact]
     public void MessageBuilder_Should_Build_Messages()
     {
-        var dateProvider = new DateTimeMockProvider(new[] {DateTime.UtcNow});
-        var uuidProvider = new UuidMockProvider(new[] {Guid.NewGuid()});
-        IMessageBuilder<object> messageBuilder = new MessageBuilder<object>(dateProvider, uuidProvider);
+        var dateProvider = new DateTimeMockProvider([DateTime.UtcNow]);
+        var uuidProvider = new UuidMockProvider([Guid.NewGuid()]);
+        MessageBuilder<object> messageBuilder = new(dateProvider, uuidProvider);
 
         var data = new { myProp = 1 };
         var message = messageBuilder.Build("my-topic", data);

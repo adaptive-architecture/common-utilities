@@ -9,7 +9,7 @@ public class UuidMockProviderSpecs
     {
         var uuid0 = Guid.NewGuid();
         var uuid1 = Guid.NewGuid();
-        var mockProvider = new UuidMockProvider(new[] {uuid0, uuid1});
+        var mockProvider = new UuidMockProvider([uuid0, uuid1]);
 
         Assert.Equal(uuid0.ToString("D"), mockProvider.New());
         Assert.Equal(uuid1.ToString("D"), mockProvider.New());

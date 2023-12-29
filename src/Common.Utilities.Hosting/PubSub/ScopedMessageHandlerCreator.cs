@@ -17,6 +17,6 @@ internal static class ScopedMessageHandlerCreator
         return typeof(ScopedMessageHandlerCreator)
             .GetMethod(nameof(CreateScopedMessageHandler))!
             .MakeGenericMethod(type)
-            .Invoke(null, new object[] { scopeFactory, handlerMethod })!;
+            .Invoke(null, [scopeFactory, handlerMethod])!;
     }
 }

@@ -21,7 +21,7 @@ internal class ScopedMessageHandler<TMessage>
         using var scope = _scopeFactory.CreateScope();
         var handlerImplementation = scope.ServiceProvider.GetService(_handlerMethod.DeclaringType!);
 
-        var handlerInvocation = (Task)_handlerMethod.Invoke(handlerImplementation, new object[] { message, cancellationToken })!;
+        var handlerInvocation = (Task)_handlerMethod.Invoke(handlerImplementation, [message, cancellationToken])!;
 
         await handlerInvocation.ConfigureAwait(false);
     }

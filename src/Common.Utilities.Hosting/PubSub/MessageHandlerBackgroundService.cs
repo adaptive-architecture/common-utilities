@@ -40,10 +40,10 @@ internal class MessageHandlerBackgroundService : IHostedService
             var handler = Delegate.CreateDelegate(delegateType, scopedHandlerInstance, nameof(ScopedMessageHandler<object>.HandleAsync));
 
             var genericType = subscribeAsyncMethod!.MakeGenericMethod(messageType);
-            var resultTask = (Task<string>)genericType.Invoke(_messageHub, new object[]
-            {
+            var resultTask = (Task<string>)genericType.Invoke(_messageHub,
+            [
                 handlerDefinition.Topic, handler, cancellationToken
-            })!;
+            ])!;
 
             _subscriptionIds.Add(await resultTask.ConfigureAwait(false));
         }
