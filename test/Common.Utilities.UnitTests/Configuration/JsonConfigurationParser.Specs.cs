@@ -42,7 +42,7 @@ public class JsonConfigurationParserSpecs
             {
                 _parser.GetType()
                     !.GetMethod("VisitValue", BindingFlags.Instance | BindingFlags.NonPublic)!
-                    .Invoke(_parser, new object[] { new JsonElement() });
+                    .Invoke(_parser, [new JsonElement()]);
             }
             catch (Exception e)
             {

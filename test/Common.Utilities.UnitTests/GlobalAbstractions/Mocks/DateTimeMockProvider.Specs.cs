@@ -8,7 +8,7 @@ public class DateTimeProviderSpecs
     public void Should_Cycle_Through_The_Values()
     {
         var now = DateTime.UtcNow;
-        var mockProvider = new DateTimeMockProvider(new[] {DateTime.UnixEpoch, now});
+        var mockProvider = new DateTimeMockProvider([DateTime.UnixEpoch, now]);
 
         Assert.Equal(DateTime.UnixEpoch, mockProvider.UtcNow);
         Assert.Equal(now, mockProvider.UtcNow);
