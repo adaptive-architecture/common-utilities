@@ -1,13 +1,15 @@
 {
-    "cSpell.words": [
-        "configfile",
-        "coverallsapp",
-        "docfx",
-        "lcov",
-        "nupkg",
-        "opencover",
-        "Qube",
-        "sonarscanner",
-        "temurin"
-    ]
+  "cSpell.words": [
+    "configfile",
+    "coverallsapp",
+    "docfx",
+    "lcov",
+    "nupkg",
+    "opencover",
+    "Qube",
+    "sonarscanner",
+    "temurin"
+  ],
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file"
 }
