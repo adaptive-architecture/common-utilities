@@ -248,10 +248,12 @@ public static class Base64Url
 
         var bufferSize = GetArraySizeRequiredToEncode(input.Length);
 
+#pragma warning disable S1121 // SONAR: Assignments should not be made from within sub-expressions
         char[]? bufferToReturnToPool = null;
         var buffer = bufferSize <= stackAllocThreshold
             ? stackalloc char[stackAllocThreshold]
             : bufferToReturnToPool = ArrayPool<char>.Shared.Rent(bufferSize);
+#pragma warning restore S1121
 
         var numBase64Chars = Encode(input, buffer);
         var base64Url = new string(buffer[..numBase64Chars]);

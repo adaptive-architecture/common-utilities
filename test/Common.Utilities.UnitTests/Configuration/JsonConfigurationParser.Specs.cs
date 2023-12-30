@@ -7,7 +7,7 @@ namespace AdaptArch.Common.Utilities.UnitTests.Configuration;
 
 public class JsonConfigurationParserSpecs
 {
-    private readonly IConfigurationParser _parser = new JsonConfigurationParser(":");
+    private readonly JsonConfigurationParser _parser = new(":");
 
     private readonly string _jsonConfiguration = @"{
   'boolean': {

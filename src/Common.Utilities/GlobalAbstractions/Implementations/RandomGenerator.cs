@@ -8,7 +8,9 @@ namespace AdaptArch.Common.Utilities.GlobalAbstractions.Implementations;
 /// </summary>
 public class RandomGenerator : IRandomGenerator
 {
+#pragma warning disable S2245 // SONAR: Make sure that using this pseudorandom number generator is safe here.
     private static readonly Lazy<IRandomGenerator> LazyInstance = new(() => new RandomGenerator(new Random()));
+#pragma warning restore S2245
     private readonly Random _random;
 
     /// <summary>

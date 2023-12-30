@@ -7,7 +7,7 @@ public class Base64UrlEncoderSpecs
     [Fact]
     public void DataOfVariousLengthRoundTripCorrectly()
     {
-        IEncoder encoder = new Base64UrlEncoder();
+        var encoder = new Base64UrlEncoder();
         for (var length = 0; length < 256; ++length)
         {
             var data = new byte[length];
