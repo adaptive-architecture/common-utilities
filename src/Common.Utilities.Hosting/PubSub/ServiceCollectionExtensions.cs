@@ -13,7 +13,7 @@ namespace Microsoft.Extensions.ServiceCollection;
 /// <summary>
 /// Extension methods for registering message handlers.
 /// </summary>
-public static class ServiceCollectionExtensions
+public static partial class ServiceCollectionExtensions
 {
     /// <summary>
     /// Discover the message handlers from the given assembly using the default <see cref="MessageHandlerAttribute"/> marker attribute.
