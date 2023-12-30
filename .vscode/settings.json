@@ -11,5 +11,9 @@
     "temurin"
   ],
   "editor.formatOnSave": true,
-  "editor.formatOnSaveMode": "file"
+  "editor.formatOnSaveMode": "file",
+  "sonarlint.connectedMode.project": {
+    "connectionId": "adaptive-architecture",
+    "projectKey": "adaptive-architecture_common-utilities"
+  }
 }

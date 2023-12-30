@@ -25,11 +25,7 @@ public static class Base64Url
     /// </remarks>
     public static byte[] Decode(string input)
     {
-        if (input == null)
-        {
-            throw new ArgumentNullException(nameof(input));
-        }
-
+        ArgumentNullException.ThrowIfNull(input);
         return Decode(input, offset: 0, count: input.Length);
     }
 
@@ -46,11 +42,7 @@ public static class Base64Url
     /// </remarks>
     public static byte[] Decode(string input, int offset, int count)
     {
-        if (input == null)
-        {
-            throw new ArgumentNullException(nameof(input));
-        }
-
+        ArgumentNullException.ThrowIfNull(input);
         ValidateParameters(input.Length, nameof(input), offset, count);
 
         // Special-case empty input
@@ -86,20 +78,11 @@ public static class Base64Url
     /// </remarks>
     public static byte[] Decode(string input, int offset, char[] buffer, int bufferOffset, int count)
     {
-        if (input == null)
-        {
-            throw new ArgumentNullException(nameof(input));
-        }
-        if (buffer == null)
-        {
-            throw new ArgumentNullException(nameof(buffer));
-        }
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(buffer);
 
         ValidateParameters(input.Length, nameof(input), offset, count);
-        if (bufferOffset < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(bufferOffset));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegative(bufferOffset);
 
         if (count == 0)
         {
@@ -159,10 +142,7 @@ public static class Base64Url
     /// </returns>
     public static int GetArraySizeRequiredToDecode(int count)
     {
-        if (count < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(count));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegative(count);
 
         if (count == 0)
         {
@@ -195,11 +175,7 @@ public static class Base64Url
     /// <returns>The base64url-encoded form of <paramref name="input"/>.</returns>
     public static string Encode(byte[] input)
     {
-        if (input == null)
-        {
-            throw new ArgumentNullException(nameof(input));
-        }
-
+        ArgumentNullException.ThrowIfNull(input);
         return Encode(input, offset: 0, count: input.Length);
     }
 
@@ -212,11 +188,7 @@ public static class Base64Url
     /// <returns>The base64url-encoded form of <paramref name="input"/>.</returns>
     public static string Encode(byte[] input, int offset, int count)
     {
-        if (input == null)
-        {
-            throw new ArgumentNullException(nameof(input));
-        }
-
+        ArgumentNullException.ThrowIfNull(input);
         ValidateParameters(input.Length, nameof(input), offset, count);
 
         return Encode(input.AsSpan(offset, count));
@@ -242,20 +214,10 @@ public static class Base64Url
     /// </returns>
     public static int Encode(byte[] input, int offset, char[] output, int outputOffset, int count)
     {
-        if (input == null)
-        {
-            throw new ArgumentNullException(nameof(input));
-        }
-        if (output == null)
-        {
-            throw new ArgumentNullException(nameof(output));
-        }
-
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(output);
         ValidateParameters(input.Length, nameof(input), offset, count);
-        if (outputOffset < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(outputOffset));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegative(outputOffset);
 
         var arraySizeRequired = GetArraySizeRequiredToEncode(count);
         if (output.Length - outputOffset < arraySizeRequired)
@@ -352,14 +314,8 @@ public static class Base64Url
 
     private static void ValidateParameters(int bufferLength, string inputName, int offset, int count)
     {
-        if (offset < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(offset));
-        }
-        if (count < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(count));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegative(offset);
+        ArgumentOutOfRangeException.ThrowIfNegative(count);
         if (bufferLength - offset < count)
         {
             throw new ArgumentException(

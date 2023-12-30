@@ -22,8 +22,11 @@ public class CustomConfigurationProvider : ConfigurationProvider
     /// <param name="options">The configuration provider options.</param>
     public CustomConfigurationProvider(IDataProvider dataProvider, CustomConfigurationProviderOptions options)
     {
-        _dataProvider = dataProvider ?? throw new ArgumentNullException(nameof(dataProvider));
-        _options = options ?? throw new ArgumentNullException(nameof(options));
+        ArgumentNullException.ThrowIfNull(dataProvider);
+        ArgumentNullException.ThrowIfNull(options);
+
+        _dataProvider = dataProvider;
+        _options = options;
     }
 
     /// <inheritdoc />
@@ -74,7 +77,7 @@ public class CustomConfigurationProvider : ConfigurationProvider
         }
     }
 
-    private IDictionary<string, string?> ProcessData(IReadOnlyDictionary<string, string?> rawData)
+    private Dictionary<string, string?> ProcessData(IReadOnlyDictionary<string, string?> rawData)
     {
         Func<string, string> keyDelimiterReplacer = _options.OriginalKeyDelimiter == null
             ? k => k

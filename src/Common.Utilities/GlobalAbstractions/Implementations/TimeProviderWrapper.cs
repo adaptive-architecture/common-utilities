@@ -15,7 +15,8 @@ internal class TimeProviderWrapper : IDateTimeProvider
     /// <param name="timeProvider">A reference to the desired <see cref="TimeProvider"/></param>
     public TimeProviderWrapper(TimeProvider timeProvider)
     {
-        _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
+        ArgumentNullException.ThrowIfNull(timeProvider);
+        _timeProvider = timeProvider;
     }
 
     /// <inheritdoc />

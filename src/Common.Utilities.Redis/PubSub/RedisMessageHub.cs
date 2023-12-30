@@ -22,7 +22,8 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
     public RedisMessageHub(IConnectionMultiplexer connectionMultiplexer, RedisMessageHubOptions options)
         : base(options)
     {
-        _connectionMultiplexer = connectionMultiplexer ?? throw new ArgumentNullException(nameof(connectionMultiplexer));
+        ArgumentNullException.ThrowIfNull(connectionMultiplexer);
+        _connectionMultiplexer = connectionMultiplexer;
     }
 
     /// <inheritdoc />

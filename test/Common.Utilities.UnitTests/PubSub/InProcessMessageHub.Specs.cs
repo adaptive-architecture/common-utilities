@@ -1,6 +1,7 @@
 ﻿using AdaptArch.Common.Utilities.PubSub.Implementations;
 
 namespace AdaptArch.Common.Utilities.UnitTests.PubSub;
+#pragma warning disable S2925 // SONAR: Do not use 'Thread.Sleep()' in a test.
 
 public class InProcessMessageHubSpecs
 {

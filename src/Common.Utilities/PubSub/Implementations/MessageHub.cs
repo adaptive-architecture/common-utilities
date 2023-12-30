@@ -19,7 +19,8 @@ public abstract class MessageHub<TOptions> : IMessageHub, IMessageHubAsync
     /// <param name="options">Message hub options.</param>
     protected MessageHub(TOptions options)
     {
-        Options = options ?? throw new ArgumentNullException(nameof(options));
+        ArgumentNullException.ThrowIfNull(options);
+        Options = options;
     }
 
     /// <inheritdoc />
