@@ -20,7 +20,7 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
     /// <param name="connectionMultiplexer">An instance of <see cref="IConnectionMultiplexer"/>.</param>
     /// <param name="options">The hub options.</param>
     public RedisMessageHub(IConnectionMultiplexer connectionMultiplexer, RedisMessageHubOptions options)
-        :base(options)
+        : base(options)
     {
         _connectionMultiplexer = connectionMultiplexer ?? throw new ArgumentNullException(nameof(connectionMultiplexer));
     }

@@ -5,7 +5,7 @@ namespace AdaptArch.Common.Utilities.Delay.Implementations;
 /// <summary>
 /// An implementation of <see cref="IJitterGenerator"/> that return <see cref="TimeSpan.Zero"/> all the time.
 /// </summary>
-public class ZeroJitterGenerator: IJitterGenerator
+public class ZeroJitterGenerator : IJitterGenerator
 {
     /// <summary>
     /// A singleton instance of <see cref="ZeroJitterGenerator"/>.

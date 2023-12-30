@@ -1,4 +1,4 @@
-using AdaptArch.Common.Utilities.Hosting.DependencyInjection.Contracts;
+﻿using AdaptArch.Common.Utilities.Hosting.DependencyInjection.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AdaptArch.Common.Utilities.Hosting.DependencyInjection.Implementations

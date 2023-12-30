@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers;
 using AdaptArch.Common.Utilities.Hosting.DependencyInjection.Contracts;
 using AdaptArch.Common.Utilities.Hosting.DependencyInjection.Implementations;

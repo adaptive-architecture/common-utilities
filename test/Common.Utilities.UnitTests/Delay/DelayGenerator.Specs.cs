@@ -8,7 +8,8 @@ public class DelayGeneratorSpecs
     [Fact]
     public void Should_Throw_If_Unknown_Delay_Type()
     {
-        var delayGenerator = new DelayGenerator(new DelayGeneratorOptions {
+        var delayGenerator = new DelayGenerator(new DelayGeneratorOptions
+        {
             DelayType = DelayType.Unknown
         });
 
@@ -22,7 +23,7 @@ public class DelayGeneratorSpecs
         {
             MaxIterations = 13,
             JitterLowerBoundary = 0,
-            JitterUpperBoundary= 1
+            JitterUpperBoundary = 1
         };
         var delayGenerator = new DelayGenerator(options);
 
@@ -137,7 +138,7 @@ public class DelayGeneratorSpecs
         }
     }
 
-    private class ConstantJitterGenerator: IJitterGenerator
+    private class ConstantJitterGenerator : IJitterGenerator
     {
         public TimeSpan New(TimeSpan baseValue, float lowerBoundary, float upperBoundary) => TimeSpan.FromSeconds(1);
     }

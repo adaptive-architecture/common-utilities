@@ -1,4 +1,4 @@
-using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Configuration;
+﻿using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Configuration;
 using AdaptArch.Common.Utilities.Hosting.DependencyInjection.Contracts;
 using AdaptArch.Common.Utilities.Jobs.Contracts;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +16,6 @@ public class PeriodicBackgroundWorker<T> : BackgroundService
 {
     private readonly IScopeFactory _scopeFactory;
     private readonly IOptionsMonitor<PeriodicWorkerConfiguration> _options;
-    private readonly TimeProvider _timeProvider;
     private readonly PeriodicTimer _timer;
     private readonly ILogger<PeriodicBackgroundWorker<T>> _logger;
     private PeriodicWorkerConfiguration _configuration;
@@ -35,10 +34,9 @@ public class PeriodicBackgroundWorker<T> : BackgroundService
         _scopeFactory = scopeFactory;
         _logger = logger;
         _options = options;
-        _timeProvider = timeProvider;
 
         _configuration = GetConfiguration();
-        _timer = new PeriodicTimer(TimeSpan.FromDays(1), _timeProvider);
+        _timer = new PeriodicTimer(TimeSpan.FromDays(1), timeProvider);
         _options.OnChange(_ => HandleConfigurationChange());
     }
 

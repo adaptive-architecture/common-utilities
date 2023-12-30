@@ -31,7 +31,7 @@ public class CustomConfigurationProviderSpecs
         });
 
     private readonly ServiceCollection _services = new();
-    private readonly Mock<IDataProvider>  _dataProviderMoq = new();
+    private readonly Mock<IDataProvider> _dataProviderMoq = new();
     private readonly Exception _getHashException = new ApplicationException();
     private readonly TimeSpan _poolingInterval = TimeSpan.FromMilliseconds(100);
     private readonly TimeSpan _waitInterval = TimeSpan.FromMilliseconds(120);
@@ -133,7 +133,7 @@ public class CustomConfigurationProviderSpecs
             opt.Options.HandleLoadException = ctx =>
             {
                 contextException = ctx.Exception;
-                return new LoadExceptionHandlerResult { IgnoreException = true, DisablePooling = true};
+                return new LoadExceptionHandlerResult { IgnoreException = true, DisablePooling = true };
             };
         });
 
@@ -202,12 +202,12 @@ public class CustomConfigurationProviderSpecs
     }
 
     [Fact]
-    public async  Task Should_Pool_Configuration_Changes()
+    public async Task Should_Pool_Configuration_Changes()
     {
         SetupGetHashSequence(GetHashValue, 3);
         SetupReadDataSequence(GetReadValue, 3);
 
-        var sp = BuildServiceProvider(_ => {});
+        var sp = BuildServiceProvider(_ => { });
         var customConfiguration = sp.GetService<IOptionsMonitor<CustomConfigurationSection>>();
 
         await AssertConfigurationValuesPooling(customConfiguration, "1", false);

@@ -7,7 +7,7 @@ namespace AdaptArch.Common.Utilities.Configuration.Implementation;
 /// An <see cref="IConfigurationParser"/> implementation that handles JSON data.
 /// Based on https://github.com/dotnet/runtime/blob/main/src/libraries/Microsoft.Extensions.Configuration.Json/src/JsonConfigurationFileParser.cs .
 /// </summary>
-public class JsonConfigurationParser: IConfigurationParser
+public class JsonConfigurationParser : IConfigurationParser
 {
     private readonly Dictionary<string, string?> _data = new(StringComparer.OrdinalIgnoreCase);
     private readonly Stack<string> _paths = new();

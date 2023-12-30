@@ -17,7 +17,7 @@ public class InProcessMessageHubOptionsSpecs
     {
         // ReSharper disable once ConvertToLocalFunction
         Action<Exception, IMessage<object>> handler = (_, _) => { };
-        var opt = new InProcessMessageHubOptions {OnMessageHandlerError = handler};
+        var opt = new InProcessMessageHubOptions { OnMessageHandlerError = handler };
 
         Assert.Same(handler, opt.OnMessageHandlerError);
     }

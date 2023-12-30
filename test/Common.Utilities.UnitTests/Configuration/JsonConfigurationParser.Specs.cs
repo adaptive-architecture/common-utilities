@@ -30,7 +30,7 @@ public class JsonConfigurationParserSpecs
     [Fact]
     public void Should_Throw_If_Top_Level_Is_Not_Object()
     {
-        Assert.Throws<FormatException>(() => _ = _parser.Parse("[]") );
+        Assert.Throws<FormatException>(() => _ = _parser.Parse("[]"));
     }
 
     [Fact]

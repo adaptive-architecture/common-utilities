@@ -6,7 +6,7 @@ namespace AdaptArch.Common.Utilities.GlobalAbstractions.Implementations;
 /// An implementation of <see cref="IRandomGenerator"/> based on <see cref="Random"/>.
 /// <remarks>This should not be used for cryptographically secure implementations.</remarks>
 /// </summary>
-public class RandomGenerator: IRandomGenerator
+public class RandomGenerator : IRandomGenerator
 {
     private static readonly Lazy<IRandomGenerator> LazyInstance = new(() => new RandomGenerator(new Random()));
     private readonly Random _random;
