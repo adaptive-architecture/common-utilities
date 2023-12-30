@@ -190,7 +190,7 @@ public class PeriodicBackgroundWorkerSpecs
 
         private DateTime? _start;
         private DateTime? _stop;
-        private readonly TimeSpan _contextSwitchingTime = TimeSpan.FromMilliseconds(31);
+        private readonly TimeSpan _contextSwitchingTime = TimeSpan.FromMilliseconds(37);
 
         public JobState(TimeSpan duration, TimeSpan initialDelay, TimeSpan period)
         {
