@@ -18,8 +18,9 @@ public class PeriodicBackgroundWorker<T> : BackgroundService
     private readonly IOptionsMonitor<PeriodicWorkerConfiguration> _options;
     private readonly TimeProvider _timeProvider;
     private readonly PeriodicTimer _timer;
-
     private readonly ILogger<PeriodicBackgroundWorker<T>> _logger;
+    private PeriodicWorkerConfiguration _configuration;
+    private CancellationTokenSource? _cancellationTokenSource;
 
     /// <summary>
     /// Constructs a new instance of <see cref="PeriodicBackgroundWorker{T}"/>.
@@ -36,14 +37,15 @@ public class PeriodicBackgroundWorker<T> : BackgroundService
         _options = options;
         _timeProvider = timeProvider;
 
-        _timer = new PeriodicTimer(GetConfiguration().Period, _timeProvider);
-        _options.OnChange(_ => UpdateTimerPeriod());
+        _configuration = GetConfiguration();
+        _timer = new PeriodicTimer(TimeSpan.FromDays(1), _timeProvider);
+        _options.OnChange(_ => HandleConfigurationChange());
     }
 
     /// <inheritdoc/>
     public override Task StartAsync(CancellationToken cancellationToken)
     {
-        UpdateTimerPeriod();
+        HandleConfigurationChange();
         return base.StartAsync(cancellationToken);
     }
 
@@ -57,43 +59,11 @@ public class PeriodicBackgroundWorker<T> : BackgroundService
     /// <inheritdoc/>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var initialDelay = GetConfiguration().InitialDelay;
-        if (initialDelay > TimeSpan.Zero)
+        while (!stoppingToken.IsCancellationRequested)
         {
-            await Task.Delay(initialDelay, stoppingToken).ConfigureAwait(false);
-        }
-
-        var timerWasStopped = false;
-        while (!stoppingToken.IsCancellationRequested && !timerWasStopped)
-        {
-            try
-            {
-                await ExecuteJobAsync(stoppingToken).ConfigureAwait(false);
-
-                var nextTickWasCompleted = false;
-                do
-                {
-                    // Filter out the immediate completion of the wait call on the timer.
-                    // https://github.com/dotnet/runtime/issues/95238#issuecomment-1826758659
-                    var nextTick = _timer.WaitForNextTickAsync(stoppingToken);
-                    nextTickWasCompleted = nextTick.IsCompleted;
-
-                    var @continue = await nextTick.ConfigureAwait(false);
-                    if (!@continue)
-                    {
-                        timerWasStopped = true;
-                    }
-
-                } while (nextTickWasCompleted && !timerWasStopped);
-            }
-            catch (OperationCanceledException oEx)
-            {
-                _logger.LogInformation(oEx, "Background job {JobName} cancelled.", typeof(T).Name);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Background job {JobName} failed.", typeof(T).Name);
-            }
+            _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
+            await RepeatJobAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            _cancellationTokenSource.Dispose();
         }
     }
 
@@ -105,12 +75,47 @@ public class PeriodicBackgroundWorker<T> : BackgroundService
         return _options.CurrentValue.GetConfiguration(GetNamespacedName(typeof(T)));
     }
 
+    private async Task RepeatJobAsync(CancellationToken stoppingToken)
+    {
+        var isInitialCall = true;
+        _timer.Period = _configuration.InitialDelay;
+
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            try
+            {
+                var continueRunning = await _timer.WaitForNextTickAsync(stoppingToken).ConfigureAwait(false);
+                if (!continueRunning)
+                {
+                    break;
+                }
+
+                if (_configuration.Enabled)
+                {
+                    await ExecuteJobAsync(stoppingToken).ConfigureAwait(false);
+                }
+
+                if (isInitialCall)
+                {
+                    // Reset the period to the configured value after the initial call.
+                    isInitialCall = false;
+                    _timer.Period = _configuration.Period;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Background job {JobName} failed.", GetNamespacedName(typeof(T)));
+            }
+        }
+    }
+
     private static string GetNamespacedName(Type type) => $"{type.Namespace}.{type.Name}";
 
-    private void UpdateTimerPeriod()
+    private void HandleConfigurationChange()
     {
-        var configuration = GetConfiguration();
-        _timer.Period = configuration.Enabled ? GetConfiguration().Period : TimeSpan.MaxValue;
+        _configuration = GetConfiguration();
+        _timer.Period = _configuration.Period;
+        _cancellationTokenSource?.Cancel();
     }
 
     private async Task ExecuteJobAsync(CancellationToken cancellationToken)
