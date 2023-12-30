@@ -1,12 +1,12 @@
+﻿using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Configuration;
+using AdaptArch.Common.Utilities.Jobs.Contracts;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.ServiceCollection;
-using Microsoft.Extensions.Configuration;
-using AdaptArch.Common.Utilities.Jobs.Contracts;
-using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration.Memory;
 
 namespace AdaptArch.Common.Utilities.Hosting.UnitTests.BackgroundWorkers;
 

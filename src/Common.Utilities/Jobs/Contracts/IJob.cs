@@ -1,4 +1,4 @@
-namespace AdaptArch.Common.Utilities.Jobs.Contracts;
+﻿namespace AdaptArch.Common.Utilities.Jobs.Contracts;
 
 /// <summary>
 /// Represents a background job.

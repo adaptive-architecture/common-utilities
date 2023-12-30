@@ -16,7 +16,7 @@ public class CustomConfigurationExtensionsSpecs
     [Fact]
     public void Should_Throw_If_Null_Data_Provider()
     {
-        Assert.Throws<NullReferenceException>(() => _ = new ConfigurationBuilder().AddCustomConfiguration(_ => {}));
+        Assert.Throws<NullReferenceException>(() => _ = new ConfigurationBuilder().AddCustomConfiguration(_ => { }));
     }
 
     [Fact]

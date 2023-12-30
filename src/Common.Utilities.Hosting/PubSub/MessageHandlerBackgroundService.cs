@@ -42,7 +42,9 @@ internal class MessageHandlerBackgroundService : IHostedService
             var genericType = subscribeAsyncMethod!.MakeGenericMethod(messageType);
             var resultTask = (Task<string>)genericType.Invoke(_messageHub,
             [
-                handlerDefinition.Topic, handler, cancellationToken
+                handlerDefinition.Topic,
+                handler,
+                cancellationToken
             ])!;
 
             _subscriptionIds.Add(await resultTask.ConfigureAwait(false));
@@ -54,7 +56,8 @@ internal class MessageHandlerBackgroundService : IHostedService
         await Parallel.ForEachAsync(_subscriptionIds,
                 new ParallelOptions
                 {
-                    CancellationToken = cancellationToken, MaxDegreeOfParallelism = Environment.ProcessorCount * 2
+                    CancellationToken = cancellationToken,
+                    MaxDegreeOfParallelism = Environment.ProcessorCount * 2
                 },
                 async (id, ct) => await _messageHub.UnsubscribeAsync(id, ct).ConfigureAwait(false))
             .ConfigureAwait(false);

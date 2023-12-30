@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Configuration;
 
@@ -40,7 +40,8 @@ public class PeriodicWorkerConfiguration
                 continue;
             }
 
-            var matcher = new Regex(@override.Pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            var matcher = new Regex(@override.Pattern,
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1));
             if (matcher.IsMatch(workerName))
             {
                 matchingOverride = @override;

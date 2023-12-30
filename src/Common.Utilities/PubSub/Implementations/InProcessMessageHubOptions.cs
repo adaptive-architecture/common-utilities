@@ -3,7 +3,7 @@
 /// <summary>
 /// Configuration options for <see cref="InProcessMessageHub"/>.
 /// </summary>
-public class InProcessMessageHubOptions: MessageHubOptions
+public class InProcessMessageHubOptions : MessageHubOptions
 {
     /// <summary>
     /// The hub's maximum degree of parallelism.

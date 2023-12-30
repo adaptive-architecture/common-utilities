@@ -3,7 +3,7 @@
 namespace AdaptArch.Common.Utilities.Delay.Implementations;
 
 /// <inheritdoc />
-public class DelayGenerator: IDelayGenerator
+public class DelayGenerator : IDelayGenerator
 {
     private readonly DelayGeneratorOptions _options;
     private int _currentIteration;

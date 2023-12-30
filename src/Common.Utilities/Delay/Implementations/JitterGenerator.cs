@@ -6,7 +6,7 @@ namespace AdaptArch.Common.Utilities.Delay.Implementations;
 /// <summary>
 /// Simple jitter generator.
 /// </summary>
-public class JitterGenerator: IJitterGenerator
+public class JitterGenerator : IJitterGenerator
 {
     private const float Percent100 = 100;
     private readonly IRandomGenerator _randomGenerator;

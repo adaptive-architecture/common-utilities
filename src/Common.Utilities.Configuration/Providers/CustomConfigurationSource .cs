@@ -6,7 +6,7 @@ namespace AdaptArch.Common.Utilities.Configuration.Providers;
 /// <summary>
 /// A custom implementation for <see cref="IConfigurationSource"/>.
 /// </summary>
-public class CustomConfigurationSource: IConfigurationSource
+public class CustomConfigurationSource : IConfigurationSource
 {
     /// <summary>
     /// The configuration provider options;

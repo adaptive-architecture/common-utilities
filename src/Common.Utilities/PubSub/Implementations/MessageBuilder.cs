@@ -4,7 +4,7 @@ using AdaptArch.Common.Utilities.PubSub.Contracts;
 namespace AdaptArch.Common.Utilities.PubSub.Implementations;
 
 /// <inheritdoc />
-public class MessageBuilder<T>: IMessageBuilder<T>
+public class MessageBuilder<T> : IMessageBuilder<T>
     where T : class
 {
     private readonly IDateTimeProvider _dateTimeProvider;

@@ -10,7 +10,7 @@ namespace AdaptArch.Common.Utilities.Redis.PubSub;
 /// </summary>
 [RequiresDynamicCode("The native code for this instantiation might not be available at runtime.")]
 [RequiresUnreferencedCode("Calls methods from the \"System.Reflection\" namespace.")]
-public class RedisMessageHubOptions: MessageHubOptions
+public class RedisMessageHubOptions : MessageHubOptions
 {
     /// <summary>
     /// Create a new instance.

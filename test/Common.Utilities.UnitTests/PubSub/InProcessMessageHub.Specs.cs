@@ -115,7 +115,7 @@ public class InProcessMessageHubSpecs
     {
         var topic = Guid.NewGuid().ToString("N");
         var reacted = 0;
-        var hub = new InProcessMessageHub(new InProcessMessageHubOptions {OnMessageHandlerError = (_, _) => reacted++});
+        var hub = new InProcessMessageHub(new InProcessMessageHubOptions { OnMessageHandlerError = (_, _) => reacted++ });
 
         _ = hub.Subscribe<object>(topic, (_, _) => throw new ApplicationException());
 

@@ -1,4 +1,4 @@
-namespace AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Configuration;
+﻿namespace AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Configuration;
 
 /// <summary>
 /// The configuration override for a periodic background worker.
