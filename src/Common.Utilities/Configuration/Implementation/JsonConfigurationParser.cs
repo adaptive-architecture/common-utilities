@@ -20,7 +20,8 @@ public class JsonConfigurationParser : IConfigurationParser
     /// <param name="keyDelimiter">The key delimiter.</param>
     public JsonConfigurationParser(string keyDelimiter)
     {
-        _keyDelimiter = keyDelimiter ?? throw new ArgumentNullException(nameof(keyDelimiter));
+        ArgumentNullException.ThrowIfNull(keyDelimiter);
+        _keyDelimiter = keyDelimiter;
     }
 
     /// <inheritdoc />

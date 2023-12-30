@@ -19,7 +19,7 @@ public static class CustomConfigurationExtensions
     /// </remarks>
     public static IConfigurationBuilder AddCustomConfiguration(this IConfigurationBuilder builder, Action<CustomConfigurationSource> configureSource)
     {
-        if (configureSource == null) throw new ArgumentNullException(nameof(configureSource));
+        ArgumentNullException.ThrowIfNull(configureSource);
 
         var source = new CustomConfigurationSource();
         configureSource(source);

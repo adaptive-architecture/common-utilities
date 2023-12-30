@@ -1,6 +1,7 @@
 ﻿using AdaptArch.Common.Utilities.Redis.PubSub;
 
 namespace AdaptArch.Common.Utilities.Redis.IntegrationTests.PubSub;
+#pragma warning disable S2925 // SONAR: Do not use 'Thread.Sleep()' in a test.
 
 public class RedisMessageHubInt
 {
