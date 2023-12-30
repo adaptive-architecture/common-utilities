@@ -1,9 +1,9 @@
-namespace AdaptArch.Common.Utilities.Hosting.BackgroundWorkers;
+namespace AdaptArch.Common.Utilities.Jobs.Contracts;
 
 /// <summary>
 /// Represents a background job.
 /// </summary>
-public interface IBackgroundJob
+public interface IJob
 {
     /// <summary>
     /// Executes the background job.
