@@ -54,7 +54,7 @@ public class PeriodicWorkerConfigurationSpecs
     }
 
     [Fact]
-    public void Should_Apply_Overrides()
+    public void Should_Apply_All_Overrides()
     {
         var configuration = new PeriodicWorkerConfiguration
         {
@@ -75,6 +75,27 @@ public class PeriodicWorkerConfigurationSpecs
         Assert.False(result.Enabled);
         Assert.Equal(TimeSpan.FromMinutes(1), result.Period);
         Assert.Equal(TimeSpan.FromSeconds(10), result.InitialDelay);
+    }
+
+    [Fact]
+    public void Should_Apply_Present_Overrides()
+    {
+        var configuration = new PeriodicWorkerConfiguration
+        {
+            Overrides =
+            [
+                new()
+                {
+                    Pattern = "Test",
+                }
+            ]
+        };
+
+        var result = configuration.GetConfiguration(WorkerName);
+
+        Assert.Equal(configuration.Enabled, result.Enabled);
+        Assert.Equal(configuration.Period, result.Period);
+        Assert.Equal(configuration.InitialDelay, result.InitialDelay);
     }
 
     [Fact]

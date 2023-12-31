@@ -15,7 +15,7 @@ public class PeriodicWorkerConfiguration
     /// <summary>
     /// Gets or sets the repeat period.
     /// </summary>
-    public TimeSpan Period { get; init; } = TimeSpan.FromMinutes(60);
+    public TimeSpan Period { get; set; } = TimeSpan.FromMinutes(60);
 
     /// <summary>
     /// Gets or sets the initial delay.
@@ -43,15 +43,31 @@ public class PeriodicWorkerConfiguration
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1));
             if (matcher.IsMatch(workerName))
             {
-                return new PeriodicWorkerConfiguration
-                {
-                    Enabled = @override.Enabled ?? Enabled,
-                    Period = @override.Period ?? Period,
-                    InitialDelay = @override.InitialDelay ?? InitialDelay
-                };
+                return FromOverride(@override);
             }
         }
 
         return this;
+    }
+
+    private static PeriodicWorkerConfiguration FromOverride(PeriodicWorkerConfigurationOverride @override)
+    {
+        var result = new PeriodicWorkerConfiguration();
+        if (@override.Enabled.HasValue)
+        {
+            result.Enabled = @override.Enabled.Value;
+        }
+
+        if (@override.Period.HasValue)
+        {
+            result.Period = @override.Period.Value;
+        }
+
+        if (@override.InitialDelay.HasValue)
+        {
+            result.InitialDelay = @override.InitialDelay.Value;
+        }
+
+        return result;
     }
 }
