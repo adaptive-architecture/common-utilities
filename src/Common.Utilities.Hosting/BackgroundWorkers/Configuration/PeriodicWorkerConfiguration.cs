@@ -32,7 +32,6 @@ public class PeriodicWorkerConfiguration
     /// </summary>
     public PeriodicWorkerConfiguration GetConfiguration(string workerName)
     {
-        PeriodicWorkerConfigurationOverride? matchingOverride = null;
         foreach (var @override in Overrides)
         {
             if (String.IsNullOrWhiteSpace(@override.Pattern))
@@ -44,15 +43,15 @@ public class PeriodicWorkerConfiguration
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1));
             if (matcher.IsMatch(workerName))
             {
-                matchingOverride = @override;
+                return new PeriodicWorkerConfiguration
+                {
+                    Enabled = @override.Enabled ?? Enabled,
+                    Period = @override.Period ?? Period,
+                    InitialDelay = @override.InitialDelay ?? InitialDelay
+                };
             }
         }
 
-        return matchingOverride == null ? this : new PeriodicWorkerConfiguration
-        {
-            Enabled = matchingOverride.Enabled ?? Enabled,
-            Period = matchingOverride.Period ?? Period,
-            InitialDelay = matchingOverride.InitialDelay ?? InitialDelay
-        };
+        return this;
     }
 }
