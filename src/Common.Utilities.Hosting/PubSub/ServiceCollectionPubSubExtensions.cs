@@ -3,17 +3,16 @@ using System.Reflection;
 using AdaptArch.Common.Utilities.Hosting.PubSub;
 using AdaptArch.Common.Utilities.PubSub.Contracts;
 using AdaptArch.Common.Utilities.PubSub.Implementations;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-// Keep this in the "Microsoft.Extensions.Configuration" for easy access.
+// Keep this in the "Microsoft.Extensions.DependencyInjection" for easy access.
 // ReSharper disable once CheckNamespace
-namespace Microsoft.Extensions.ServiceCollection;
+namespace Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// Extension methods for registering message handlers.
 /// </summary>
-public static partial class ServiceCollectionExtensions
+public static class ServiceCollectionPubSubExtensions
 {
     /// <summary>
     /// Discover the message handlers from the given assembly using the default <see cref="MessageHandlerAttribute"/> marker attribute.

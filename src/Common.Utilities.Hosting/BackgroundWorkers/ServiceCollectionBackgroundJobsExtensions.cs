@@ -3,14 +3,16 @@ using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Implementations;
 using AdaptArch.Common.Utilities.Hosting.DependencyInjection.Contracts;
 using AdaptArch.Common.Utilities.Hosting.DependencyInjection.Implementations;
 using AdaptArch.Common.Utilities.Jobs.Contracts;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-// Keep this in the "Microsoft.Extensions.Configuration" for easy access.
+// Keep this in the "Microsoft.Extensions.DependencyInjection" for easy access.
 // ReSharper disable once CheckNamespace
-namespace Microsoft.Extensions.ServiceCollection;
+namespace Microsoft.Extensions.DependencyInjection;
 
-public static partial class ServiceCollectionExtensions
+/// <summary>
+/// Extension methods for adding periodic jobs to the <see cref="IServiceCollection"/>.
+/// </summary>
+public static class ServiceCollectionBackgroundJobsExtensions
 {
     /// <summary>
     /// Add a periodic background service.
