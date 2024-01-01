@@ -3,9 +3,9 @@
 namespace AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Configuration;
 
 /// <summary>
-/// The configuration for a periodic background worker.
+/// The configuration for a repeating job worker.
 /// </summary>
-public class PeriodicWorkerConfiguration
+public class RepeatingWorkerConfiguration
 {
     /// <summary>
     /// Gets or sets a value indicating whether the worker is enabled.
@@ -25,12 +25,12 @@ public class PeriodicWorkerConfiguration
     /// <summary>
     /// Gets or sets the overrides for specific workers.
     /// </summary>
-    public List<PeriodicWorkerConfigurationOverride> Overrides { get; init; } = new();
+    public List<RepeatingWorkerConfigurationOverride> Overrides { get; init; } = new();
 
     /// <summary>
     /// Gets the configuration for a specific worker.
     /// </summary>
-    public PeriodicWorkerConfiguration GetConfiguration(string workerName)
+    public RepeatingWorkerConfiguration GetConfiguration(string workerName)
     {
         foreach (var @override in Overrides)
         {
@@ -50,9 +50,9 @@ public class PeriodicWorkerConfiguration
         return this;
     }
 
-    private static PeriodicWorkerConfiguration FromOverride(PeriodicWorkerConfigurationOverride @override)
+    private static RepeatingWorkerConfiguration FromOverride(RepeatingWorkerConfigurationOverride @override)
     {
-        var result = new PeriodicWorkerConfiguration();
+        var result = new RepeatingWorkerConfiguration();
         if (@override.Enabled.HasValue)
         {
             result.Enabled = @override.Enabled.Value;

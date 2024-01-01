@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers;
+using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Implementations;
 using AdaptArch.Common.Utilities.Hosting.DependencyInjection.Contracts;
 using AdaptArch.Common.Utilities.Hosting.DependencyInjection.Implementations;
 using AdaptArch.Common.Utilities.Jobs.Contracts;
@@ -54,7 +54,7 @@ public static partial class ServiceCollectionExtensions
         where TJob : class, IJob
     {
         builder.Services.TryAddScoped<TJob>();
-        builder.Services.AddHostedService<PeriodicBackgroundWorker<TJob>>();
+        builder.Services.AddHostedService<PeriodicJobWorker<TJob>>();
         return builder;
     }
 }

@@ -2,18 +2,18 @@
 
 namespace AdaptArch.Common.Utilities.Hosting.UnitTests.BackgroundWorkers;
 
-public class PeriodicWorkerConfigurationSpecs
+public class RepeatingWorkerConfigurationSpecs
 {
     private const string WorkerName = "TestWorker";
     private readonly HashSet<string> ConfigurationIgnoredProperties = new()
     {
-        nameof(PeriodicWorkerConfiguration.Overrides)
+        nameof(RepeatingWorkerConfiguration.Overrides)
     };
 
     [Fact]
     public void Should_Return_Default_Values_When_No_Overrides()
     {
-        var configuration = new PeriodicWorkerConfiguration();
+        var configuration = new RepeatingWorkerConfiguration();
 
         var result = configuration.GetConfiguration(WorkerName);
 
@@ -25,7 +25,7 @@ public class PeriodicWorkerConfigurationSpecs
     [Fact]
     public void Should_Ignore_Overrides_With_Empty_String_Pattern()
     {
-        var configuration = new PeriodicWorkerConfiguration
+        var configuration = new RepeatingWorkerConfiguration
         {
             Overrides =
             [
@@ -56,7 +56,7 @@ public class PeriodicWorkerConfigurationSpecs
     [Fact]
     public void Should_Apply_All_Overrides()
     {
-        var configuration = new PeriodicWorkerConfiguration
+        var configuration = new RepeatingWorkerConfiguration
         {
             Overrides =
             [
@@ -80,7 +80,7 @@ public class PeriodicWorkerConfigurationSpecs
     [Fact]
     public void Should_Apply_Present_Overrides()
     {
-        var configuration = new PeriodicWorkerConfiguration
+        var configuration = new RepeatingWorkerConfiguration
         {
             Overrides =
             [
@@ -101,22 +101,22 @@ public class PeriodicWorkerConfigurationSpecs
     [Fact]
     public void Overrides_Should_Override_All_Configuration_Properties()
     {
-        var configuration = new PeriodicWorkerConfiguration
+        var configuration = new RepeatingWorkerConfiguration
         {
             Enabled = true,
             Period = TimeSpan.FromMinutes(60),
             InitialDelay = TimeSpan.FromSeconds(30)
         };
 
-        var overrides = new PeriodicWorkerConfigurationOverride
+        var overrides = new RepeatingWorkerConfigurationOverride
         {
             Pattern = "Test"
         };
 
         configuration.Overrides.Add(overrides);
 
-        var configurationProperties = typeof(PeriodicWorkerConfiguration).GetProperties();
-        var overrideProperties = typeof(PeriodicWorkerConfigurationOverride).GetProperties();
+        var configurationProperties = typeof(RepeatingWorkerConfiguration).GetProperties();
+        var overrideProperties = typeof(RepeatingWorkerConfigurationOverride).GetProperties();
 
         foreach (var property in configurationProperties)
         {

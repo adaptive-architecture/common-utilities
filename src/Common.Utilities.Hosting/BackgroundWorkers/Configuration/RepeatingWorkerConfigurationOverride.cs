@@ -1,9 +1,9 @@
 ﻿namespace AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Configuration;
 
 /// <summary>
-/// The configuration override for a periodic background worker.
+/// The configuration override for a repeating job worker.
 /// </summary>
-public class PeriodicWorkerConfigurationOverride
+public class RepeatingWorkerConfigurationOverride
 {
     /// <summary>
     /// Gets or sets the name of the worker to override.

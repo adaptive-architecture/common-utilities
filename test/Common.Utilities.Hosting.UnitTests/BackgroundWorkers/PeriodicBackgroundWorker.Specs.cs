@@ -63,7 +63,7 @@ public class PeriodicBackgroundWorkerSpecs
 
         var configuration = serviceProvider.GetRequiredService<IConfigurationRoot>();
         var memoryConfigurationProvider = configuration.Providers.OfType<MemoryConfigurationProvider>().Single();
-        memoryConfigurationProvider.Set($"periodicWorkers:{nameof(PeriodicWorkerConfiguration.Enabled)}", Boolean.FalseString);
+        memoryConfigurationProvider.Set($"periodicWorkers:{nameof(RepeatingWorkerConfiguration.Enabled)}", Boolean.FalseString);
         configuration.Reload();
 
         while (state.Elapsed < TimeSpan.FromMilliseconds(5_000))
@@ -96,7 +96,7 @@ public class PeriodicBackgroundWorkerSpecs
 
         var configuration = serviceProvider.GetRequiredService<IConfigurationRoot>();
         var memoryConfigurationProvider = configuration.Providers.OfType<MemoryConfigurationProvider>().Single();
-        memoryConfigurationProvider.Set($"periodicWorkers:{nameof(PeriodicWorkerConfiguration.Enabled)}", Boolean.TrueString);
+        memoryConfigurationProvider.Set($"periodicWorkers:{nameof(RepeatingWorkerConfiguration.Enabled)}", Boolean.TrueString);
         configuration.Reload();
 
         // Call `Start` again to refresh the state's internal start time.
@@ -134,9 +134,9 @@ public class PeriodicBackgroundWorkerSpecs
         var configurationBuilder = new ConfigurationBuilder()
         .AddInMemoryCollection(new Dictionary<string, string>
         {
-            { $"periodicWorkers:{nameof(PeriodicWorkerConfiguration.Enabled)}", enabled },
-            { $"periodicWorkers:{nameof(PeriodicWorkerConfiguration.Period)}", state.Period.ToString("c") },
-            { $"periodicWorkers:{nameof(PeriodicWorkerConfiguration.InitialDelay)}", state.InitialDelay.ToString("c") },
+            { $"periodicWorkers:{nameof(RepeatingWorkerConfiguration.Enabled)}", enabled },
+            { $"periodicWorkers:{nameof(RepeatingWorkerConfiguration.Period)}", state.Period.ToString("c") },
+            { $"periodicWorkers:{nameof(RepeatingWorkerConfiguration.InitialDelay)}", state.InitialDelay.ToString("c") },
         });
 
         var configuration = configurationBuilder.Build();
@@ -146,7 +146,7 @@ public class PeriodicBackgroundWorkerSpecs
         serviceCollection
             .AddSingleton(configuration)
             .AddSingleton<IConfiguration>(configuration)
-            .AddOptions<PeriodicWorkerConfiguration>().BindConfiguration("periodicWorkers");
+            .AddOptions<RepeatingWorkerConfiguration>().BindConfiguration("periodicWorkers");
 
         serviceCollection
             .AddSingleton<ILoggerFactory, NullLoggerFactory>()
