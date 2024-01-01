@@ -1,7 +1,6 @@
 ﻿using AdaptArch.Common.Utilities.Configuration.Contracts;
 using AdaptArch.Common.Utilities.Configuration.Providers;
 using Microsoft.Extensions.Configuration;
-using Moq;
 
 namespace AdaptArch.Common.Utilities.Configuration.UnitTests.Providers;
 
@@ -27,7 +26,7 @@ public class CustomConfigurationSourceSpecs
     {
         var provider = new CustomConfigurationSource
         {
-            DataProvider = new Mock<IDataProvider>().Object
+            DataProvider = NSubstitute.Substitute.For<IDataProvider>()
         }.Build(new ConfigurationBuilder());
 
         Assert.NotNull(provider);

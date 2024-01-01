@@ -4,8 +4,8 @@ using AdaptArch.Common.Utilities.Configuration.Providers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Moq;
-using Moq.Language;
+using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 
 namespace AdaptArch.Common.Utilities.Configuration.UnitTests.Providers;
 
@@ -31,7 +31,7 @@ public class CustomConfigurationProviderSpecs
         });
 
     private readonly ServiceCollection _services = new();
-    private readonly Mock<IDataProvider> _dataProviderMoq = new();
+    private readonly IDataProvider _dataProviderMock = Substitute.For<IDataProvider>();
     private readonly Exception _getHashException = new ApplicationException();
     private readonly TimeSpan _poolingInterval = TimeSpan.FromMilliseconds(100);
     private readonly TimeSpan _waitInterval = TimeSpan.FromMilliseconds(120);
@@ -68,7 +68,7 @@ public class CustomConfigurationProviderSpecs
     {
         _configurationBuilder.AddCustomConfiguration(opt =>
         {
-            opt.DataProvider = _dataProviderMoq.Object;
+            opt.DataProvider = _dataProviderMock;
             opt.Options.PoolingInterval = _poolingInterval;
             configureSource?.Invoke(opt);
         });
@@ -82,40 +82,49 @@ public class CustomConfigurationProviderSpecs
         return _services.BuildServiceProvider();
     }
 
-    private void SetupSequence<TResult>(ISetupSequentialResult<Task<TResult>> sequentialResult, Func<TResult> func, int count, int exceptionIndex)
+    private List<Func<NSubstitute.Core.CallInfo, Task<TResult>>> GetSequence<TResult>(Func<TResult> func, int count, int exceptionIndex)
     {
+        var results = new List<Func<NSubstitute.Core.CallInfo, Task<TResult>>>();
         for (var i = 0; i < count; i++)
         {
-            sequentialResult = i == exceptionIndex
-                ? sequentialResult.Throws(_getHashException)
-                : sequentialResult.Returns(() => Task.FromResult(func()));
+            if (i == exceptionIndex)
+            {
+                results.Add(_ => Task.FromException<TResult>(_getHashException));
+            }
+            else
+            {
+                results.Add(_ => Task.FromResult(func()));
+            }
         }
+
+        return results;
     }
 
     private void SetupGetHashSequence(Func<string> func, int count, int exceptionIndex = -1)
     {
-        SetupSequence(_dataProviderMoq.SetupSequence(s => s.GetHashAsync(It.IsAny<CancellationToken>())), func, count, exceptionIndex);
+        var results = GetSequence(func, count, exceptionIndex);
+        _dataProviderMock.GetHashAsync(Arg.Any<CancellationToken>()).ReturnsForAnyArgs(results[0], results.Skip(1).ToArray());
     }
 
     private void SetupReadDataSequence(Func<IReadOnlyDictionary<string, string>> func, int count, int exceptionIndex = -1)
     {
-        SetupSequence(_dataProviderMoq.SetupSequence(s => s.ReadDataAsync(It.IsAny<CancellationToken>())), func, count, exceptionIndex);
+        var results = GetSequence(func, count, exceptionIndex);
+        _dataProviderMock.ReadDataAsync(Arg.Any<CancellationToken>()).ReturnsForAnyArgs(results[0], results.Skip(1).ToArray());
     }
 
     [Fact]
     public void Should_Throw_ArgumentNullException()
     {
         Assert.Throws<ArgumentNullException>(() => new CustomConfigurationProvider(null!, null!));
-        Assert.Throws<ArgumentNullException>(() => new CustomConfigurationProvider(new Mock<IDataProvider>().Object, null!));
+        Assert.Throws<ArgumentNullException>(() => new CustomConfigurationProvider(Substitute.For<IDataProvider>(), null!));
     }
 
     [Fact]
     public void Should_Throw_If_DataProvider_Error_Is_Not_Ignored()
     {
-        _dataProviderMoq.Setup(s => s.GetHashAsync(It.IsAny<CancellationToken>()))
-            .Throws(_getHashException);
+        _dataProviderMock.GetHashAsync(Arg.Any<CancellationToken>()).ThrowsAsync(_getHashException);
 
-        _configurationBuilder.AddCustomConfiguration(opt => opt.DataProvider = _dataProviderMoq.Object);
+        _configurationBuilder.AddCustomConfiguration(opt => opt.DataProvider = _dataProviderMock);
 
         Assert.Throws<ApplicationException>(() => _ = _configurationBuilder.Build());
     }
@@ -124,12 +133,11 @@ public class CustomConfigurationProviderSpecs
     public void Should_Not_Throw_If_DataProvider_Error_Is_Ignored()
     {
         Exception contextException = null;
-        _dataProviderMoq.Setup(s => s.GetHashAsync(It.IsAny<CancellationToken>()))
-            .Throws(_getHashException);
+        _dataProviderMock.GetHashAsync(Arg.Any<CancellationToken>()).ThrowsAsync(_getHashException);
 
         _configurationBuilder.AddCustomConfiguration(opt =>
         {
-            opt.DataProvider = _dataProviderMoq.Object;
+            opt.DataProvider = _dataProviderMock;
             opt.Options.HandleLoadException = ctx =>
             {
                 contextException = ctx.Exception;
@@ -145,11 +153,10 @@ public class CustomConfigurationProviderSpecs
     [Fact]
     public void Should_Load_Configuration()
     {
-        _dataProviderMoq.Setup(s => s.ReadDataAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<string, string>
-            {
-                { "hash", "0" }, { "data/foo", "foo" }, { "data/bar", "bar" }
-            });
+        _dataProviderMock.ReadDataAsync(Arg.Any<CancellationToken>()).ReturnsForAnyArgs(new Dictionary<string, string>
+        {
+            { "hash", "0" }, { "data/foo", "foo" }, { "data/bar", "bar" }
+        });
 
         SetupGetHashSequence(GetConstantHashValue, 1);
         var sp = BuildServiceProvider(opt =>
@@ -170,14 +177,14 @@ public class CustomConfigurationProviderSpecs
     [Fact]
     public void Should_Load_Configuration_From_JSON()
     {
-        _dataProviderMoq.Setup(s => s.ReadDataAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<string, string>
+        _dataProviderMock.ReadDataAsync(Arg.Any<CancellationToken>()).ReturnsForAnyArgs(new Dictionary<string, string>
+        {
             {
-                {
                     nameof(CustomConfigurationSection),
                     "{\"hash\": \"0\", \"data\": {\"foo\": \"foo\", \"bar\": \"bar\"}}"
                 }
-            });
+        });
+
         SetupGetHashSequence(GetConstantHashValue, 1);
 
         var sp = BuildServiceProvider(opt => opt.Options.ConfigurationParser = new JsonConfigurationParser(ConfigurationPath.KeyDelimiter),
@@ -188,8 +195,10 @@ public class CustomConfigurationProviderSpecs
     [Fact]
     public void Should_Load_Configuration_From_JSON_Null()
     {
-        _dataProviderMoq.Setup(s => s.ReadDataAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<string, string> { { nameof(CustomConfigurationSection), null } });
+        _dataProviderMock.ReadDataAsync(Arg.Any<CancellationToken>()).ReturnsForAnyArgs(new Dictionary<string, string>
+        {
+            { nameof(CustomConfigurationSection), null }
+        });
 
         SetupGetHashSequence(GetConstantHashValue, 1);
         var sp = BuildServiceProvider(opt => opt.Options.ConfigurationParser = new JsonConfigurationParser(ConfigurationPath.KeyDelimiter));
@@ -214,8 +223,8 @@ public class CustomConfigurationProviderSpecs
         await AssertConfigurationValuesPooling(customConfiguration, "2", true);
         await AssertConfigurationValuesPooling(customConfiguration, "3", true);
 
-        _dataProviderMoq.Verify(v => v.GetHashAsync(It.IsAny<CancellationToken>()), Times.Exactly(3));
-        _dataProviderMoq.Verify(v => v.ReadDataAsync(It.IsAny<CancellationToken>()), Times.Exactly(3));
+        await _dataProviderMock.Received(3).GetHashAsync(Arg.Any<CancellationToken>());
+        await _dataProviderMock.Received(3).ReadDataAsync(Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -230,8 +239,8 @@ public class CustomConfigurationProviderSpecs
         await AssertConfigurationValuesPooling(customConfiguration, "0", false);
         await AssertConfigurationValuesPooling(customConfiguration, "0", true);
 
-        _dataProviderMoq.Verify(v => v.GetHashAsync(It.IsAny<CancellationToken>()), Times.Exactly(2));
-        _dataProviderMoq.Verify(v => v.ReadDataAsync(It.IsAny<CancellationToken>()), Times.Exactly(1));
+        await _dataProviderMock.Received(2).GetHashAsync(Arg.Any<CancellationToken>());
+        await _dataProviderMock.Received(1).ReadDataAsync(Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -266,7 +275,7 @@ public class CustomConfigurationProviderSpecs
         Assert.NotEmpty(exceptions);
         Assert.True(exceptions[0] is ApplicationException);
 
-        _dataProviderMoq.Verify(v => v.GetHashAsync(It.IsAny<CancellationToken>()), Times.Exactly(3));
-        _dataProviderMoq.Verify(v => v.ReadDataAsync(It.IsAny<CancellationToken>()), Times.Exactly(2));
+        await _dataProviderMock.Received(3).GetHashAsync(Arg.Any<CancellationToken>());
+        await _dataProviderMock.Received(2).ReadDataAsync(Arg.Any<CancellationToken>());
     }
 }

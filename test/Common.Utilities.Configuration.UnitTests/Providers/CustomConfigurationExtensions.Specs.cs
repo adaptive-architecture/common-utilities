@@ -1,7 +1,7 @@
 ﻿using AdaptArch.Common.Utilities.Configuration.Contracts;
 using AdaptArch.Common.Utilities.Configuration.Providers;
 using Microsoft.Extensions.Configuration;
-using Moq;
+using NSubstitute;
 
 namespace AdaptArch.Common.Utilities.Configuration.UnitTests.Providers;
 
@@ -23,10 +23,10 @@ public class CustomConfigurationExtensionsSpecs
     public void Should_Add_The_DataProvider()
     {
         var builder = new ConfigurationBuilder();
-        var moq = new Mock<IDataProvider>().Object;
-        builder.AddCustomConfiguration(opt => opt.DataProvider = moq);
+        var mock = Substitute.For<IDataProvider>();
+        builder.AddCustomConfiguration(opt => opt.DataProvider = mock);
 
         Assert.NotEmpty(builder.Sources);
-        Assert.Same(moq, ((CustomConfigurationSource)builder.Sources[0]).DataProvider);
+        Assert.Same(mock, ((CustomConfigurationSource)builder.Sources[0]).DataProvider);
     }
 }

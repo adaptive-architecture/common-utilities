@@ -1,7 +1,8 @@
 ﻿using AdaptArch.Common.Utilities.PubSub.Contracts;
 using AdaptArch.Common.Utilities.Redis.PubSub;
 using AdaptArch.Common.Utilities.Redis.Utilities;
-using Moq;
+using NSubstitute;
+using NSubstitute.ReceivedExtensions;
 using StackExchange.Redis;
 
 namespace AdaptArch.Common.Utilities.Redis.UnitTests.PubSub;
@@ -15,55 +16,55 @@ public class RedisMessageHubSpecs
     private bool _shouldHaveRemovedHandler;
     private RedisValue _messageValue = RedisValue.EmptyString;
 
-    private readonly Mock<ISubscriber> _sub;
-    private readonly Mock<IConnectionMultiplexer> _cm;
+    private readonly ISubscriber _sub;
+    private readonly IConnectionMultiplexer _cm;
     private readonly RedisMessageHub _hub;
 
     public RedisMessageHubSpecs()
     {
-        _sub = new Mock<ISubscriber>();
+        _sub = Substitute.For<ISubscriber>();
 
-        _sub.Setup(s => s.Subscribe(It.IsAny<RedisChannel>(), It.IsAny<Action<RedisChannel, RedisValue>>(),
-                It.IsAny<CommandFlags>()))
-            .Callback(SubscribeCallback());
-        _sub.Setup(s => s.SubscribeAsync(It.IsAny<RedisChannel>(), It.IsAny<Action<RedisChannel, RedisValue>>(),
-                It.IsAny<CommandFlags>()))
-            .Callback(SubscribeCallback());
+        _sub.When(s => s.Subscribe(Arg.Any<RedisChannel>(), Arg.Any<Action<RedisChannel, RedisValue>>(),
+                Arg.Any<CommandFlags>()))
+            .Do(SubscribeCallback());
 
-        _sub.Setup(s => s.Unsubscribe(It.IsAny<RedisChannel>(), It.IsAny<Action<RedisChannel, RedisValue>>(),
-                It.IsAny<CommandFlags>()))
-            .Callback(UnsubscribeCallback());
-        _sub.Setup(s => s.UnsubscribeAsync(It.IsAny<RedisChannel>(), It.IsAny<Action<RedisChannel, RedisValue>>(),
-                It.IsAny<CommandFlags>()))
-            .Callback(UnsubscribeCallback());
+        _sub.When(s => s.SubscribeAsync(Arg.Any<RedisChannel>(), Arg.Any<Action<RedisChannel, RedisValue>>(),
+                Arg.Any<CommandFlags>()))
+            .Do(SubscribeCallback());
 
-        _sub.Setup(s => s.Publish(It.IsAny<RedisChannel>(), It.IsAny<RedisValue>(), It.IsAny<CommandFlags>()))
-            .Callback(PublishCallback());
-        _sub.Setup(s => s.PublishAsync(It.IsAny<RedisChannel>(), It.IsAny<RedisValue>(), It.IsAny<CommandFlags>()))
-            .Callback(PublishCallback());
+        _sub.When(s => s.Unsubscribe(Arg.Any<RedisChannel>(), Arg.Any<Action<RedisChannel, RedisValue>>(),
+                Arg.Any<CommandFlags>()))
+            .Do(UnsubscribeCallback());
+        _sub.When(s => s.UnsubscribeAsync(Arg.Any<RedisChannel>(), Arg.Any<Action<RedisChannel, RedisValue>>(),
+                Arg.Any<CommandFlags>()))
+            .Do(UnsubscribeCallback());
 
-        _cm = new Mock<IConnectionMultiplexer>();
-        _cm.Setup(s => s.GetSubscriber(It.Is<object>(arg => arg == null))).Returns(_sub.Object);
+        _sub.When(s => s.Publish(Arg.Any<RedisChannel>(), Arg.Any<RedisValue>(), Arg.Any<CommandFlags>()))
+            .Do(PublishCallback());
+        _sub.When(s => s.PublishAsync(Arg.Any<RedisChannel>(), Arg.Any<RedisValue>(), Arg.Any<CommandFlags>()))
+            .Do(PublishCallback());
 
-        _hub = new RedisMessageHub(_cm.Object, Options);
-        return;
+        _cm = Substitute.For<IConnectionMultiplexer>();
+        _cm.GetSubscriber(null).Returns(_sub);
 
-        Action<RedisChannel, Action<RedisChannel, RedisValue>, CommandFlags> SubscribeCallback()
+        _hub = new RedisMessageHub(_cm, Options);
+
+        Action<NSubstitute.Core.CallInfo> SubscribeCallback()
         {
-            return (_, h, _) => _handler = h;
+            return (args) => _handler = args.ArgAt<Action<RedisChannel, RedisValue>>(1);
         }
 
-        Action<RedisChannel, Action<RedisChannel, RedisValue>, CommandFlags> UnsubscribeCallback()
+        Action<NSubstitute.Core.CallInfo> UnsubscribeCallback()
         {
-            return (_, h, _) => _shouldHaveRemovedHandler = _handler == h;
+            return (args) => _shouldHaveRemovedHandler = _handler == args.ArgAt<Action<RedisChannel, RedisValue>>(1);
         }
 
-        Action<RedisChannel, RedisValue, CommandFlags> PublishCallback()
+        Action<NSubstitute.Core.CallInfo> PublishCallback()
         {
-            return (c, val, _) =>
+            return (args) =>
             {
-                _messageValue = val;
-                _handler!.Invoke(c, val);
+                _messageValue = args.ArgAt<RedisValue>(1);
+                _handler!.Invoke(args.ArgAt<RedisChannel>(0), _messageValue);
             };
         }
     }
@@ -83,7 +84,7 @@ public class RedisMessageHubSpecs
         return Task.CompletedTask;
     }
 
-    private void VerifySubscriberCalled(int times) => _cm.Verify(v => v.GetSubscriber(null), Times.Exactly(times));
+    private void VerifySubscriberCalled(int times) => _cm.ReceivedWithAnyArgs(times).GetSubscriber(null);
 
     [Fact]
     public void Should_Subscribe_And_Unsubscribe_MessageHandler()
@@ -95,7 +96,7 @@ public class RedisMessageHubSpecs
         Assert.NotNull(id);
 
         VerifySubscriberCalled(1);
-        _sub.Verify(v => v.Subscribe("topic_A".ToChannel(), _handler, CommandFlags.None), Times.Once);
+        _sub.Received(1).Subscribe("topic_A".ToChannel(), _handler, CommandFlags.None);
 
         Assert.Equal(0, _handlerReactions);
         _hub.Publish<object>("topic_A", "message");
@@ -103,26 +104,26 @@ public class RedisMessageHubSpecs
 
         // Check publish
         VerifySubscriberCalled(2);
-        _sub.Verify(v => v.Publish("topic_A".ToChannel(), _messageValue, CommandFlags.None), Times.Once);
+        _sub.Received(1).Publish("topic_A".ToChannel(), _messageValue, CommandFlags.None);
 
         // Unsubscribe in existent id
         _hub.Unsubscribe("not=a=valid=id");
 
         // Check unsubscribe
         VerifySubscriberCalled(2);
-        _sub.Verify(v => v.Unsubscribe("topic_A".ToChannel(), _handler, CommandFlags.None), Times.Never);
+        _sub.DidNotReceive().Unsubscribe("topic_A".ToChannel(), _handler, CommandFlags.None);
 
         // Unsubscribe
         _hub.Unsubscribe(id);
 
         // Check unsubscribe
         VerifySubscriberCalled(3);
-        _sub.Verify(v => v.Unsubscribe("topic_A".ToChannel(), _handler, CommandFlags.None), Times.Once);
+        _sub.Received(1).Unsubscribe("topic_A".ToChannel(), _handler, CommandFlags.None);
 
         Assert.True(_shouldHaveRemovedHandler);
 
-        _cm.VerifyNoOtherCalls();
-        _sub.VerifyNoOtherCalls();
+        Assert.Equal(3, _cm.ReceivedCalls().Count());
+        Assert.Equal(3, _sub.ReceivedCalls().Count());
     }
 
     [Fact]
@@ -135,7 +136,7 @@ public class RedisMessageHubSpecs
         Assert.NotNull(id);
 
         VerifySubscriberCalled(1);
-        _sub.Verify(v => v.SubscribeAsync("topic_A".ToChannel(), _handler, CommandFlags.None), Times.Once);
+        await _sub.Received(1).SubscribeAsync("topic_A".ToChannel(), _handler, CommandFlags.None);
 
         Assert.Equal(0, _handlerReactions);
         await _hub.PublishAsync<object>("topic_A", "message", CancellationToken.None);
@@ -143,25 +144,25 @@ public class RedisMessageHubSpecs
 
         // Check publish
         VerifySubscriberCalled(2);
-        _sub.Verify(v => v.PublishAsync("topic_A".ToChannel(), _messageValue, CommandFlags.None), Times.Once);
+        await _sub.Received(1).PublishAsync("topic_A".ToChannel(), _messageValue, CommandFlags.None);
 
         // Unsubscribe in existent id
         await _hub.UnsubscribeAsync("not=a=valid=id", CancellationToken.None);
 
         // Check unsubscribe
         VerifySubscriberCalled(2);
-        _sub.Verify(v => v.UnsubscribeAsync("topic_A".ToChannel(), _handler, CommandFlags.None), Times.Never);
+        await _sub.DidNotReceive().UnsubscribeAsync("topic_A".ToChannel(), _handler, CommandFlags.None);
 
         // Unsubscribe
         await _hub.UnsubscribeAsync(id, CancellationToken.None);
 
         // Check unsubscribe
         VerifySubscriberCalled(3);
-        _sub.Verify(v => v.UnsubscribeAsync("topic_A".ToChannel(), _handler, CommandFlags.None), Times.Once);
+        await _sub.Received(1).UnsubscribeAsync("topic_A".ToChannel(), _handler, CommandFlags.None);
 
         Assert.True(_shouldHaveRemovedHandler);
 
-        _cm.VerifyNoOtherCalls();
-        _sub.VerifyNoOtherCalls();
+        Assert.Equal(3, _cm.ReceivedCalls().Count());
+        Assert.Equal(3, _sub.ReceivedCalls().Count());
     }
 }
