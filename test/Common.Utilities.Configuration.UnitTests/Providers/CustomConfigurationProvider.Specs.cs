@@ -89,7 +89,7 @@ public class CustomConfigurationProviderSpecs
         {
             if (i == exceptionIndex)
             {
-                results.Add(_ => Task.FromException<TResult>(_getHashException));
+                results.Add(_ => throw _getHashException);
             }
             else
             {
@@ -260,7 +260,6 @@ public class CustomConfigurationProviderSpecs
                     return result;
 
                 result.DisablePooling = true;
-                result.IgnoreException = true;
 
                 return result;
             };
