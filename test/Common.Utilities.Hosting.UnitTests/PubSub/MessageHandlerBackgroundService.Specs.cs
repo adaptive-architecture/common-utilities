@@ -3,7 +3,6 @@ using AdaptArch.Common.Utilities.PubSub.Contracts;
 using AdaptArch.Common.Utilities.PubSub.Implementations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.ServiceCollection;
 using IServiceProvider = Microsoft.Extensions.DependencyInjection.ServiceProvider;
 
 namespace AdaptArch.Common.Utilities.Hosting.UnitTests.PubSub;

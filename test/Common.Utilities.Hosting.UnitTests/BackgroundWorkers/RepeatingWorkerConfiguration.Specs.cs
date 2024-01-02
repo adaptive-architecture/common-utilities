@@ -18,7 +18,7 @@ public class RepeatingWorkerConfigurationSpecs
         var result = configuration.GetConfiguration(WorkerName);
 
         Assert.True(result.Enabled);
-        Assert.Equal(TimeSpan.FromMinutes(60), result.Period);
+        Assert.Equal(TimeSpan.FromMinutes(60), result.Interval);
         Assert.Equal(TimeSpan.FromSeconds(30), result.InitialDelay);
     }
 
@@ -33,14 +33,14 @@ public class RepeatingWorkerConfigurationSpecs
                 {
                     Pattern = String.Empty,
                     Enabled = false,
-                    Period = TimeSpan.FromMinutes(1),
+                    Interval = TimeSpan.FromMinutes(1),
                     InitialDelay = TimeSpan.FromSeconds(10)
                 },
                 new()
                 {
                     Pattern = "NotATest",
                     Enabled = false,
-                    Period = TimeSpan.FromMinutes(1),
+                    Interval = TimeSpan.FromMinutes(1),
                     InitialDelay = TimeSpan.FromSeconds(10)
                 }
             ]
@@ -49,7 +49,7 @@ public class RepeatingWorkerConfigurationSpecs
         var result = configuration.GetConfiguration(String.Empty);
 
         Assert.True(result.Enabled);
-        Assert.Equal(TimeSpan.FromMinutes(60), result.Period);
+        Assert.Equal(TimeSpan.FromMinutes(60), result.Interval);
         Assert.Equal(TimeSpan.FromSeconds(30), result.InitialDelay);
     }
 
@@ -64,7 +64,7 @@ public class RepeatingWorkerConfigurationSpecs
                 {
                     Pattern = "Test",
                     Enabled = false,
-                    Period = TimeSpan.FromMinutes(1),
+                    Interval = TimeSpan.FromMinutes(1),
                     InitialDelay = TimeSpan.FromSeconds(10)
                 }
             ]
@@ -73,7 +73,7 @@ public class RepeatingWorkerConfigurationSpecs
         var result = configuration.GetConfiguration(WorkerName);
 
         Assert.False(result.Enabled);
-        Assert.Equal(TimeSpan.FromMinutes(1), result.Period);
+        Assert.Equal(TimeSpan.FromMinutes(1), result.Interval);
         Assert.Equal(TimeSpan.FromSeconds(10), result.InitialDelay);
     }
 
@@ -94,7 +94,7 @@ public class RepeatingWorkerConfigurationSpecs
         var result = configuration.GetConfiguration(WorkerName);
 
         Assert.Equal(configuration.Enabled, result.Enabled);
-        Assert.Equal(configuration.Period, result.Period);
+        Assert.Equal(configuration.Interval, result.Interval);
         Assert.Equal(configuration.InitialDelay, result.InitialDelay);
     }
 
@@ -104,7 +104,7 @@ public class RepeatingWorkerConfigurationSpecs
         var configuration = new RepeatingWorkerConfiguration
         {
             Enabled = true,
-            Period = TimeSpan.FromMinutes(60),
+            Interval = TimeSpan.FromMinutes(60),
             InitialDelay = TimeSpan.FromSeconds(30)
         };
 

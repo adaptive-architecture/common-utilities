@@ -17,7 +17,7 @@ public static class ServiceCollectionBackgroundJobsExtensions
     /// <summary>
     /// Add a periodic background service.
     /// </summary>
-    public interface IPeriodicBackgroundServiceBuilder
+    public interface IBackgroundJobServiceBuilder
     {
         /// <summary>
         /// The service collection.
@@ -25,9 +25,9 @@ public static class ServiceCollectionBackgroundJobsExtensions
         IServiceCollection Services { get; }
     }
 
-    class PeriodicBackgroundServiceBuilder : IPeriodicBackgroundServiceBuilder
+    class BackgroundJobServiceBuilder : IBackgroundJobServiceBuilder
     {
-        public PeriodicBackgroundServiceBuilder(IServiceCollection serviceCollection)
+        public BackgroundJobServiceBuilder(IServiceCollection serviceCollection)
         {
             Services = serviceCollection;
         }
@@ -36,27 +36,43 @@ public static class ServiceCollectionBackgroundJobsExtensions
     }
 
     /// <summary>
-    /// Add a periodic background service.
+    /// Add the dependencies for running background jobs.
     /// </summary>
     /// <param name="serviceCollection">The service collection.</param>
-    public static IPeriodicBackgroundServiceBuilder AddPeriodicBackgroundJobs(this IServiceCollection serviceCollection)
+    public static IBackgroundJobServiceBuilder AddBackgroundJobs(this IServiceCollection serviceCollection)
     {
         serviceCollection.TryAddSingleton(TimeProvider.System);
         serviceCollection.TryAddSingleton<IScopeFactory, ScopeFactory>();
-        return new PeriodicBackgroundServiceBuilder(serviceCollection);
+        return new BackgroundJobServiceBuilder(serviceCollection);
     }
 
     /// <summary>
     /// Add a periodic background job.
-    /// The job will be ran periodically and will re-execute immediately in case the job duration is longer than the repeat period.
+    /// The job will be ran periodically.
+    /// It will execute at the specified interval, as long as the job duration is shorter than the interval.
+    /// In case the job duration is longer than the interval, the job will be executed immediately.
     /// </summary>
     /// <typeparam name="TJob">The job type.</typeparam>
-    /// <param name="builder">The instance of <see cref="IPeriodicBackgroundServiceBuilder"/>.</param>
-    public static IPeriodicBackgroundServiceBuilder WithPeriodicJob<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TJob>(this IPeriodicBackgroundServiceBuilder builder)
+    /// <param name="builder">The instance of <see cref="IBackgroundJobServiceBuilder"/>.</param>
+    public static IBackgroundJobServiceBuilder WithPeriodicJob<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TJob>(this IBackgroundJobServiceBuilder builder)
         where TJob : class, IJob
     {
         builder.Services.TryAddScoped<TJob>();
         builder.Services.AddHostedService<PeriodicJobWorker<TJob>>();
+        return builder;
+    }
+
+    /// <summary>
+    /// Add a perpetual background job.
+    /// The job will be ran perpetually and always wait for the specified interval before executing again.
+    /// </summary>
+    /// <typeparam name="TJob">The job type.</typeparam>
+    /// <param name="builder">The instance of <see cref="IBackgroundJobServiceBuilder"/>.</param>
+    public static IBackgroundJobServiceBuilder WithPerpetualJob<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TJob>(this IBackgroundJobServiceBuilder builder)
+        where TJob : class, IJob
+    {
+        builder.Services.TryAddScoped<TJob>();
+        builder.Services.AddHostedService<PerpetualJobWorker<TJob>>();
         return builder;
     }
 }

@@ -13,9 +13,9 @@ public class RepeatingWorkerConfiguration
     public bool Enabled { get; set; } = true;
 
     /// <summary>
-    /// Gets or sets the repeat period.
+    /// Gets or sets the repeat/delay interval.
     /// </summary>
-    public TimeSpan Period { get; set; } = TimeSpan.FromMinutes(60);
+    public TimeSpan Interval { get; set; } = TimeSpan.FromMinutes(60);
 
     /// <summary>
     /// Gets or sets the initial delay.
@@ -58,9 +58,9 @@ public class RepeatingWorkerConfiguration
             result.Enabled = @override.Enabled.Value;
         }
 
-        if (@override.Period.HasValue)
+        if (@override.Interval.HasValue)
         {
-            result.Period = @override.Period.Value;
+            result.Interval = @override.Interval.Value;
         }
 
         if (@override.InitialDelay.HasValue)

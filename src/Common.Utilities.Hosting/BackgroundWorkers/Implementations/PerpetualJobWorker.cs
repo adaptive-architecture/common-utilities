@@ -8,44 +8,35 @@ using Microsoft.Extensions.Options;
 namespace AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Implementations;
 
 /// <summary>
-/// A background workers that run periodically.
+/// A background workers that run perpetually.
 /// </summary>
-internal class PeriodicJobWorker<T> : RepeatingJobWorker<T>
+internal class PerpetualJobWorker<T> : RepeatingJobWorker<T>
     where T : IJob
 {
-    private readonly PeriodicTimer _timer;
-    private readonly ILogger<PeriodicJobWorker<T>> _logger;
+    private readonly ILogger<PerpetualJobWorker<T>> _logger;
 
-    public PeriodicJobWorker(IScopeFactory scopeFactory, ILogger<PeriodicJobWorker<T>> logger,
+    public PerpetualJobWorker(IScopeFactory scopeFactory, ILogger<PerpetualJobWorker<T>> logger,
         IOptionsMonitor<RepeatingWorkerConfiguration> options, TimeProvider timeProvider)
         : base(scopeFactory, options)
     {
         _logger = logger;
-        _timer = new PeriodicTimer(TimeSpan.FromDays(1), timeProvider);
     }
 
-    /// <inheritdoc/>
-    public override Task StopAsync(CancellationToken cancellationToken)
+    protected override void HandleConfigurationChange()
     {
-        _timer.Dispose();
-        return base.StopAsync(cancellationToken);
+        // Nothing to do in case the configuration changes.
     }
 
     protected override async Task RepeatJobAsync(CancellationToken stoppingToken)
     {
         var isInitialCall = true;
-        _timer.Period = Configuration.InitialDelay;
+        var delayPeriod = Configuration.InitialDelay;
 
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                var continueRunning = await _timer.WaitForNextTickAsync(stoppingToken).ConfigureAwait(false);
-                if (!continueRunning)
-                {
-                    break;
-                }
-
+                await Task.Delay(delayPeriod, stoppingToken).ConfigureAwait(false);
                 if (Configuration.Enabled)
                 {
                     await ExecuteJobAsync(stoppingToken).ConfigureAwait(false);
@@ -55,7 +46,7 @@ internal class PeriodicJobWorker<T> : RepeatingJobWorker<T>
                 {
                     // Reset the period to the configured value after the initial call.
                     isInitialCall = false;
-                    _timer.Period = Configuration.Interval;
+                    delayPeriod = Configuration.Interval;
                 }
             }
             catch (Exception ex)
@@ -63,10 +54,5 @@ internal class PeriodicJobWorker<T> : RepeatingJobWorker<T>
                 _logger.LogError(ex, "Job {JobName} failed.", GetNamespacedName(typeof(T)));
             }
         }
-    }
-
-    protected override void HandleConfigurationChange()
-    {
-        _timer.Period = Configuration.Interval;
     }
 }

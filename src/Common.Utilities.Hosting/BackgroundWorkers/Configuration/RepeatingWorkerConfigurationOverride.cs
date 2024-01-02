@@ -16,9 +16,9 @@ public class RepeatingWorkerConfigurationOverride
     public bool? Enabled { get; set; }
 
     /// <summary>
-    /// Gets or sets the repeat period.
+    /// Gets or sets the repeat/delay interval.
     /// </summary>
-    public TimeSpan? Period { get; init; }
+    public TimeSpan? Interval { get; init; }
 
     /// <summary>
     /// Gets or sets the initial delay.

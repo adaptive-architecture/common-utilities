@@ -3,7 +3,8 @@
 rm -rf ./coverage
 rm -rf ./test/TestResults
 
-dotnet test \
+dotnet build
+dotnet test --no-build --no-restore \
   /p:CollectCoverage=\"true\" \
   /p:CoverletOutputFormat=\"json,lcov,opencover\"  \
   /p:CoverletOutput=\"../../coverage/\" \
