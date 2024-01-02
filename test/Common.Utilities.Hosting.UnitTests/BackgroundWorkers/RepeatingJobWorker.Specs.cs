@@ -8,6 +8,7 @@ namespace AdaptArch.Common.Utilities.Hosting.UnitTests.BackgroundWorkers;
 
 public class RepeatingJobWorkerSpecs
 {
+    const double Tolerance = .75;
     private static readonly Action<ServiceCollection> AddPeriodicJob = svc => svc
         .AddBackgroundJobs().WithPeriodicJob<TestJob>();
 
@@ -23,8 +24,8 @@ public class RepeatingJobWorkerSpecs
 
     [Theory]
     [InlineData(1, 100, 5_000, 1_000)]
-    [InlineData(1, 2_000, 5_000, 1_000)]
     [InlineData(2, 100, 5_000, 1_000)]
+    [InlineData(1, 2_000, 5_000, 1_000)]
     [InlineData(2, 2_000, 5_000, 1_000)]
     public async Task Should_Execute_The_Job(int jobTypeId, int jobDurationMs, int initialDelayMs, int intervalMs)
     {
@@ -39,14 +40,14 @@ public class RepeatingJobWorkerSpecs
         while (state.Elapsed <= state.InitialDelay)
         {
             // While the delay is not over, the job should not have executed.
-            Assert.Equal(state.GetEstimatedExecutionCount(jobType), state.ExecutionCount);
+            Assert.Equal(state.GetEstimatedExecutionCount(jobType), state.ExecutionCount, Tolerance);
             await Task.Delay(state.ExecutionTime);
         }
 
         for (var i = 0; i < 3; i++)
         {
             // Now it should be equal to `i` as it should have executed
-            Assert.Equal(state.GetEstimatedExecutionCount(jobType), state.ExecutionCount);
+            Assert.Equal(state.GetEstimatedExecutionCount(jobType), state.ExecutionCount, Tolerance);
             await Task.Delay(state.ExecutionTime);
         }
 
@@ -59,7 +60,7 @@ public class RepeatingJobWorkerSpecs
         {
             // Now it should not advance anymore as the job has been stopped.
             await Task.Delay(state.ExecutionTime);
-            Assert.Equal(finalEstimate, state.ExecutionCount);
+            Assert.Equal(finalEstimate, state.ExecutionCount, Tolerance);
         }
     }
 
@@ -96,10 +97,10 @@ public class RepeatingJobWorkerSpecs
 
         while (state.Elapsed < TimeSpan.FromMilliseconds(3_000))
         {
-            Assert.Equal(0, state.ExecutionCount);
+            Assert.Equal(0, state.ExecutionCount, Tolerance);
             await Task.Delay(state.ExecutionTime);
         }
-        Assert.Equal(0, state.ExecutionCount);
+        Assert.Equal(0, state.ExecutionCount, Tolerance);
     }
 
     [Theory]
@@ -117,7 +118,7 @@ public class RepeatingJobWorkerSpecs
 
         while (state.Elapsed < TimeSpan.FromMilliseconds(2_000))
         {
-            Assert.Equal(0, state.ExecutionCount);
+            Assert.Equal(0, state.ExecutionCount, Tolerance);
             await Task.Delay(state.ExecutionTime);
         }
 

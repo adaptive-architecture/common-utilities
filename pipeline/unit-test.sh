@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -rf ./coverage
+rm -rf ./coverage/*
 rm -rf ./test/TestResults
 
 dotnet test \

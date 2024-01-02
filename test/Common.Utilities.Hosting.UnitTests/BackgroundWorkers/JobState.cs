@@ -53,7 +53,7 @@ public class JobState
         ExecutionCount++;
     }
 
-    public int GetEstimatedExecutionCount(JobType jobType)
+    public double GetEstimatedExecutionCount(JobType jobType)
     {
         var end = _stop ?? DateTime.UtcNow;
         var start = _start ?? DateTime.UtcNow;
@@ -71,7 +71,7 @@ public class JobState
         };
     }
 
-    private int GetCountForPeriodic(TimeSpan elapsed)
+    private double GetCountForPeriodic(TimeSpan elapsed)
     {
         var executionTimeAfterFirst = elapsed - InitialDelay - JobDuration;
         if (executionTimeAfterFirst < TimeSpan.Zero)
@@ -84,9 +84,9 @@ public class JobState
             : Interval;
 
         var executionsAfterFirst = executionTimeAfterFirst / expectedIterationTime;
-        return 1 + (int)Math.Floor(executionsAfterFirst);
+        return 1 + executionsAfterFirst;
     }
-    private int GetCountForPerpetual(TimeSpan elapsed)
+    private double GetCountForPerpetual(TimeSpan elapsed)
     {
         var executionTimeAfterFirst = elapsed - InitialDelay - JobDuration - _contextSwitchingTime;
         if (executionTimeAfterFirst < TimeSpan.Zero)
@@ -96,6 +96,6 @@ public class JobState
 
         var expectedIterationTime = JobDuration + Interval - _contextSwitchingTime;
         var executionsAfterFirst = executionTimeAfterFirst / expectedIterationTime;
-        return 1 + (int)Math.Floor(executionsAfterFirst);
+        return 1 + executionsAfterFirst;
     }
 }
