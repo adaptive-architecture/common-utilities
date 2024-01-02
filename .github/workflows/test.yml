@@ -52,14 +52,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget
 
-      - id: branch_name
-        name: Get branch name
-        run: |
-          echo "SOURCE_NAME=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
-          echo "SOURCE_BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
-          echo "SOURCE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-          echo "SOURCE_TAG_TRIMMED=$(echo ${GITHUB_REF#refs/tags/} | sed 's/v//')" >> $GITHUB_OUTPUT
-
       - name: Install dependencies
         run: |
           dotnet restore
