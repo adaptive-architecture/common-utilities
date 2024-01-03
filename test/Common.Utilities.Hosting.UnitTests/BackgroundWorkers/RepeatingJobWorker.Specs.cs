@@ -1,4 +1,5 @@
 ﻿using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Configuration;
+using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Contracts;
 using Common.Utilities.Hosting.UnitTests.BackgroundWorkers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
@@ -110,6 +111,8 @@ public class RepeatingJobWorkerSpecs
     {
         var jobType = jobTypeId.ToJobType();
         using var cts = new CancellationTokenSource();
+
+        RepeatingJobWorker<TestJob>.SetCheckEnabledPollingInterval(TimeSpan.FromMilliseconds(10));
 
         var state = new JobState(TimeSpan.FromMilliseconds(100),
             TimeSpan.FromMilliseconds(500),

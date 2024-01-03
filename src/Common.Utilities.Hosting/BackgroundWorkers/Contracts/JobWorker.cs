@@ -21,7 +21,7 @@ internal abstract class JobWorker<T> : BackgroundService
     {
         var scope = _scopeFactory.CreateScope(GetNamespacedName(typeof(T)));
         var job = scope.ServiceProvider.GetRequiredService<T>();
-        await job.ExecuteAsync(cancellationToken).ConfigureAwait(false);
+        await job.ExecuteAsync(cancellationToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
         _scopeFactory.DisposeScope(scope);
     }
 }

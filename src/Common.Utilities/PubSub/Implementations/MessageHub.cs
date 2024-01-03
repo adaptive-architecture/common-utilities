@@ -62,7 +62,7 @@ public abstract class MessageHub<TOptions> : IMessageHub, IMessageHubAsync
     {
         try
         {
-            await handler.Invoke(message, cancellationToken).ConfigureAwait(false);
+            await handler.Invoke(message, cancellationToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
         }
         catch (Exception ex)
         {

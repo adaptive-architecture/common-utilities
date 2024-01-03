@@ -43,7 +43,7 @@ public class CustomConfigurationProvider : ConfigurationProvider
     {
         try
         {
-            await _loadingStateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+            await _loadingStateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
             var hash = await _dataProvider.GetHashAsync(cancellationToken).ConfigureAwait(false);
             if (String.Equals(hash, _dataHash))
                 return;
@@ -144,7 +144,7 @@ public class CustomConfigurationProvider : ConfigurationProvider
         {
             try
             {
-                await Task.Delay(_options.PoolingInterval, cancellationToken).ConfigureAwait(false);
+                await Task.Delay(_options.PoolingInterval, cancellationToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
                 await LoadAsyncCore(true, cancellationToken).ConfigureAwait(false);
             }
             catch

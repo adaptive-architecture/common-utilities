@@ -27,8 +27,8 @@ public static class TaskExtensions
     {
         try
         {
-            // No need to resume on the original SynchronizationContext, so use ConfigureAwait(false)
-            await task.ConfigureAwait(false);
+            // No need to resume on the original SynchronizationContext
+            await task.ConfigureAwait(ConfigureAwaitOptions.None);
         }
         catch
         {

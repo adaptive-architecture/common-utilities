@@ -5,10 +5,10 @@ namespace AdaptArch.Common.Utilities.Hosting.UnitTests.BackgroundWorkers;
 public class RepeatingWorkerConfigurationSpecs
 {
     private const string WorkerName = "TestWorker";
-    private readonly HashSet<string> ConfigurationIgnoredProperties = new()
-    {
+    private readonly HashSet<string> ConfigurationIgnoredProperties =
+    [
         nameof(RepeatingWorkerConfiguration.Overrides)
-    };
+    ];
 
     [Fact]
     public void Should_Return_Default_Values_When_No_Overrides()

@@ -25,7 +25,7 @@ public class RepeatingWorkerConfiguration
     /// <summary>
     /// Gets or sets the overrides for specific workers.
     /// </summary>
-    public List<RepeatingWorkerConfigurationOverride> Overrides { get; init; } = new();
+    public List<RepeatingWorkerConfigurationOverride> Overrides { get; init; } = [];
 
     /// <summary>
     /// Gets the configuration for a specific worker.

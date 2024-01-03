@@ -36,11 +36,9 @@ internal class PerpetualJobWorker<T> : RepeatingJobWorker<T>
         {
             try
             {
-                await Task.Delay(delayPeriod, stoppingToken).ConfigureAwait(false);
-                if (Configuration.Enabled)
-                {
-                    await ExecuteJobAsync(stoppingToken).ConfigureAwait(false);
-                }
+                await Task.Delay(delayPeriod, stoppingToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
+
+                await ExecuteJobAsync(stoppingToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
 
                 if (isInitialCall)
                 {

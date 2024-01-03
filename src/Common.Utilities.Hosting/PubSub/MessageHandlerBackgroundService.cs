@@ -11,7 +11,7 @@ namespace AdaptArch.Common.Utilities.Hosting.PubSub;
 internal class MessageHandlerBackgroundService : IHostedService
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly List<string> _subscriptionIds = new();
+    private readonly List<string> _subscriptionIds = [];
     private readonly IMessageHubAsync _messageHub;
     private readonly IReadOnlyCollection<HandlerDefinitions> _handlerDefinitions;
 

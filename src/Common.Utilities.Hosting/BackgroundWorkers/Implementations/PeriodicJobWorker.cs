@@ -46,10 +46,7 @@ internal class PeriodicJobWorker<T> : RepeatingJobWorker<T>
                     break;
                 }
 
-                if (Configuration.Enabled)
-                {
-                    await ExecuteJobAsync(stoppingToken).ConfigureAwait(false);
-                }
+                await ExecuteJobAsync(stoppingToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
 
                 if (isInitialCall)
                 {
