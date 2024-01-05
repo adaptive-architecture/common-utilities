@@ -20,10 +20,12 @@ builder.Services
     .AddBackgroundJobs()
     // This will cause the service to generate 2 random numbers per minute since it takes 15 seconds to generate a number
     // and there is a 15 second delay between each execution.
-    .WithPerpetualJob<RandomNumberGeneratorJob>()
+    .WithDelayedJob<RandomNumberGeneratorJob>()
+
     // This will cause the service to generate 4 random numbers per minute since it takes 15 seconds to generate a number
     // and the wait period will have already elapsed by the time the finishes.
     //.WithPeriodicJob<RandomNumberGeneratorJob>()
+
     .WithPeriodicJob<ReporterJob>();
 
 var host = builder.Build();

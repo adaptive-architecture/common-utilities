@@ -13,7 +13,7 @@ internal abstract class RepeatingJobWorker<T> : JobWorker<T>
 {
     private static TimeSpan s_checkEnabledPollingInterval = TimeSpan.FromHours(1);
     private readonly IOptionsMonitor<RepeatingWorkerConfiguration> _options;
-    private CancellationTokenSource? _cancellationTokenSource;
+    private CancellationTokenSource? _configurationChangeTokenSource;
     protected RepeatingWorkerConfiguration Configuration { get; private set; }
 
     protected RepeatingJobWorker(IScopeFactory scopeFactory, IOptionsMonitor<RepeatingWorkerConfiguration> options)
@@ -40,20 +40,20 @@ internal abstract class RepeatingJobWorker<T> : JobWorker<T>
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
+            _configurationChangeTokenSource = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
             while (!Configuration.Enabled)
             {
                 try
                 {
-                    await Task.Delay(s_checkEnabledPollingInterval, _cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
+                    await Task.Delay(s_checkEnabledPollingInterval, _configurationChangeTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
                 }
                 catch (TaskCanceledException)
                 {
                     // This is expected when the configuration changes.
                 }
             }
-            await RepeatJobAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
-            _cancellationTokenSource.Dispose();
+            await RepeatJobAsync(_configurationChangeTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
+            _configurationChangeTokenSource.Dispose();
         }
     }
     protected abstract Task RepeatJobAsync(CancellationToken stoppingToken);
@@ -68,6 +68,6 @@ internal abstract class RepeatingJobWorker<T> : JobWorker<T>
     {
         Configuration = GetConfiguration();
         HandleConfigurationChange();
-        _cancellationTokenSource?.Cancel();
+        _configurationChangeTokenSource?.Cancel();
     }
 }

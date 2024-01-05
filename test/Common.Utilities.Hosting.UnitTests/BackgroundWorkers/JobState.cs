@@ -3,7 +3,7 @@
 public enum JobType
 {
     Periodic = 1,
-    Perpetual = 2,
+    Delayed = 2,
 }
 
 public static class JobTypeExtensions
@@ -11,7 +11,7 @@ public static class JobTypeExtensions
     public static JobType ToJobType(this int jobType) => jobType switch
     {
         (int)JobType.Periodic => JobType.Periodic,
-        (int)JobType.Perpetual => JobType.Perpetual,
+        (int)JobType.Delayed => JobType.Delayed,
         _ => throw new ArgumentOutOfRangeException(nameof(jobType), jobType, "Invalid job type.")
     };
 }
@@ -66,7 +66,7 @@ public class JobState
         return jobType switch
         {
             JobType.Periodic => GetCountForPeriodic(elapsed),
-            JobType.Perpetual => GetCountForPerpetual(elapsed),
+            JobType.Delayed => GetCountForDelayed(elapsed),
             _ => -1,
         };
     }
@@ -86,7 +86,7 @@ public class JobState
         var executionsAfterFirst = executionTimeAfterFirst / expectedIterationTime;
         return 1 + executionsAfterFirst;
     }
-    private double GetCountForPerpetual(TimeSpan elapsed)
+    private double GetCountForDelayed(TimeSpan elapsed)
     {
         var executionTimeAfterFirst = elapsed - InitialDelay - JobDuration - _contextSwitchingTime;
         if (executionTimeAfterFirst < TimeSpan.Zero)

@@ -8,14 +8,14 @@ using Microsoft.Extensions.Options;
 namespace AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Implementations;
 
 /// <summary>
-/// A background workers that run perpetually.
+/// A background workers that run with a consistent delay.
 /// </summary>
-internal class PerpetualJobWorker<T> : RepeatingJobWorker<T>
+internal class DelayedJobWorker<T> : RepeatingJobWorker<T>
     where T : IJob
 {
-    private readonly ILogger<PerpetualJobWorker<T>> _logger;
+    private readonly ILogger<DelayedJobWorker<T>> _logger;
 
-    public PerpetualJobWorker(IScopeFactory scopeFactory, ILogger<PerpetualJobWorker<T>> logger,
+    public DelayedJobWorker(IScopeFactory scopeFactory, ILogger<DelayedJobWorker<T>> logger,
         IOptionsMonitor<RepeatingWorkerConfiguration> options, TimeProvider timeProvider)
         : base(scopeFactory, options)
     {

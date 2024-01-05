@@ -13,13 +13,13 @@ public class RepeatingJobWorkerSpecs
     private static readonly Action<ServiceCollection> AddPeriodicJob = svc => svc
         .AddBackgroundJobs().WithPeriodicJob<TestJob>();
 
-    private static readonly Action<ServiceCollection> AddPerpetualJob = svc => svc
-        .AddBackgroundJobs().WithPerpetualJob<TestJob>();
+    private static readonly Action<ServiceCollection> AddDelayedJob = svc => svc
+        .AddBackgroundJobs().WithDelayedJob<TestJob>();
 
     private static Action<ServiceCollection> GetServiceCollectionAction(JobType jobType) => jobType switch
     {
         JobType.Periodic => AddPeriodicJob,
-        JobType.Perpetual => AddPerpetualJob,
+        JobType.Delayed => AddDelayedJob,
         _ => throw new ArgumentOutOfRangeException(nameof(jobType))
     };
 
@@ -67,7 +67,7 @@ public class RepeatingJobWorkerSpecs
 
     [Theory]
     [InlineData((int)JobType.Periodic)]
-    [InlineData((int)JobType.Perpetual)]
+    [InlineData((int)JobType.Delayed)]
     public async Task Should_Support_Disabling_After_Starting(int jobTypeId)
     {
         var jobType = jobTypeId.ToJobType();
@@ -106,7 +106,7 @@ public class RepeatingJobWorkerSpecs
 
     [Theory]
     [InlineData((int)JobType.Periodic)]
-    [InlineData((int)JobType.Perpetual)]
+    [InlineData((int)JobType.Delayed)]
     public async Task Should_Support_Enabling_After_Starting(int jobTypeId)
     {
         var jobType = jobTypeId.ToJobType();

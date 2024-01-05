@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # dotnet tool update -g docfx
 # docfx --version
 

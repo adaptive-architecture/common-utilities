@@ -63,16 +63,16 @@ public static class ServiceCollectionBackgroundJobsExtensions
     }
 
     /// <summary>
-    /// Add a perpetual background job.
-    /// The job will be ran perpetually and always wait for the specified interval before executing again.
+    /// Add a delayed background job.
+    /// The job will be ran delayed and always wait for the specified interval before executing again.
     /// </summary>
     /// <typeparam name="TJob">The job type.</typeparam>
     /// <param name="builder">The instance of <see cref="IBackgroundJobServiceBuilder"/>.</param>
-    public static IBackgroundJobServiceBuilder WithPerpetualJob<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TJob>(this IBackgroundJobServiceBuilder builder)
+    public static IBackgroundJobServiceBuilder WithDelayedJob<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TJob>(this IBackgroundJobServiceBuilder builder)
         where TJob : class, IJob
     {
         builder.Services.TryAddScoped<TJob>();
-        builder.Services.AddHostedService<PerpetualJobWorker<TJob>>();
+        builder.Services.AddHostedService<DelayedJobWorker<TJob>>();
         return builder;
     }
 }

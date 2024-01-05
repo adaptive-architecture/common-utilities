@@ -7,6 +7,7 @@ public class RepeatingWorkerConfigurationOverride
 {
     /// <summary>
     /// Gets or sets the name of the worker to override.
+    /// This is a Regex pattern that will be matched against the worker implementation name (with namespace).
     /// </summary>
     public string Pattern { get; init; } = String.Empty;
 

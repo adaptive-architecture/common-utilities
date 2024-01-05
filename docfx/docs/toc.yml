@@ -4,3 +4,5 @@
   href: redis-message-bus.md
 - name: Custom Configuration Provider
   href: custom-configuration-provider.md
+- name: Background Jobs
+  href: background-jobs.md
