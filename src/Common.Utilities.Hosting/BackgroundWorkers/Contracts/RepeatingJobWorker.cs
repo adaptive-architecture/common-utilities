@@ -1,5 +1,6 @@
 ﻿using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Configuration;
 using AdaptArch.Common.Utilities.Hosting.DependencyInjection.Contracts;
+using AdaptArch.Common.Utilities.Hosting.Internals;
 using AdaptArch.Common.Utilities.Jobs.Contracts;
 using Microsoft.Extensions.Options;
 
@@ -11,7 +12,6 @@ namespace AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Contracts;
 internal abstract class RepeatingJobWorker<T> : JobWorker<T>
     where T : IJob
 {
-    private static TimeSpan s_checkEnabledPollingInterval = TimeSpan.FromHours(1);
     private readonly IOptionsMonitor<RepeatingWorkerConfiguration> _options;
     private CancellationTokenSource? _configurationChangeTokenSource;
     protected RepeatingWorkerConfiguration Configuration { get; private set; }
@@ -31,11 +31,6 @@ internal abstract class RepeatingJobWorker<T> : JobWorker<T>
         return base.StartAsync(cancellationToken);
     }
 
-    internal static void SetCheckEnabledPollingInterval(TimeSpan enabledPollingInterval)
-    {
-        s_checkEnabledPollingInterval = enabledPollingInterval;
-    }
-
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
@@ -45,7 +40,8 @@ internal abstract class RepeatingJobWorker<T> : JobWorker<T>
             {
                 try
                 {
-                    await Task.Delay(s_checkEnabledPollingInterval, _configurationChangeTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
+                    await Task.Delay(BackgroundServiceGlobals.CheckEnabledPollingInterval, _configurationChangeTokenSource.Token)
+                        .ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
                 }
                 catch (TaskCanceledException)
                 {
