@@ -16,7 +16,7 @@ internal class DelayedJobWorker<T> : RepeatingJobWorker<T>
     private readonly ILogger<DelayedJobWorker<T>> _logger;
 
     public DelayedJobWorker(IScopeFactory scopeFactory, ILogger<DelayedJobWorker<T>> logger,
-        IOptionsMonitor<RepeatingWorkerConfiguration> options, TimeProvider timeProvider)
+        IOptionsMonitor<RepeatingWorkerConfiguration> options)
         : base(scopeFactory, options)
     {
         _logger = logger;
