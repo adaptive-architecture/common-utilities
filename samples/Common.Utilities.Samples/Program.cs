@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Configuration;
-using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Samples;
 using AdaptArch.Common.Utilities.Jobs.Contracts;
+using AdaptArch.Common.Utilities.Samples.Hosting.BackgroundWorkers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -32,7 +32,7 @@ var host = builder.Build();
 host.Run();
 Console.WriteLine("Application started!");
 
-namespace AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Samples
+namespace AdaptArch.Common.Utilities.Samples.Hosting.BackgroundWorkers
 {
     internal class WorkersState
     {
