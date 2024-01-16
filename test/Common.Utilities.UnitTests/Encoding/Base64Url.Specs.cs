@@ -5,6 +5,21 @@ namespace AdaptArch.Common.Utilities.UnitTests.Encoding;
 
 public class Base64UrlSpecs
 {
+    private static readonly byte[] _testData = System.Text.Encoding.UTF8.GetBytes("lorem ipsum");
+    private const string _testDataEncoded = "bG9yZW0gaXBzdW0";
+
+    [Fact]
+    public void Simple_Encode_Test()
+    {
+        Assert.Equal(_testDataEncoded, Base64Url.Encode(_testData));
+    }
+
+    [Fact]
+    public void Simple_Encode_Span_Test()
+    {
+        Assert.Equal(_testDataEncoded, Base64Url.Encode(_testData.AsSpan()));
+    }
+
     [Theory]
     [InlineData("", 1, 0)]
     [InlineData("", 0, 1)]
@@ -132,6 +147,14 @@ public class Base64UrlSpecs
     public void Encode_Throws_Argument_Exception_4()
     {
         Assert.Throws<ArgumentException>(() => _ = Base64Url.Encode(Array.Empty<byte>(), 0, Array.Empty<char>(), 2, 0));
+    }
+
+    [Theory]
+    [InlineData("", 0)]
+    [InlineData("4", 4)]
+    public void GetArraySizeRequiredToEncode_Should_Compute_Value(string toEncode, int result)
+    {
+        Assert.Equal(result, Base64Url.GetArraySizeRequiredToEncode(toEncode.Length));
     }
 
     [Theory]
