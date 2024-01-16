@@ -250,18 +250,24 @@ public static class Base64Url
 
 #pragma warning disable S1121 // SONAR: Assignments should not be made from within sub-expressions
         char[]? bufferToReturnToPool = null;
-        var buffer = bufferSize <= stackAllocThreshold
-            ? stackalloc char[stackAllocThreshold]
-            : bufferToReturnToPool = ArrayPool<char>.Shared.Rent(bufferSize);
-#pragma warning restore S1121
-
-        var numBase64Chars = Encode(input, buffer);
-        var base64Url = new string(buffer[..numBase64Chars]);
-
-        if (bufferToReturnToPool != null)
+        string base64Url;
+        try
         {
-            ArrayPool<char>.Shared.Return(bufferToReturnToPool);
+            var buffer = bufferSize <= stackAllocThreshold
+                ? stackalloc char[stackAllocThreshold]
+                : bufferToReturnToPool = ArrayPool<char>.Shared.Rent(bufferSize);
+
+            var numBase64Chars = Encode(input, buffer);
+            base64Url = new string(buffer[..numBase64Chars]);
         }
+        finally
+        {
+            if (bufferToReturnToPool != null)
+            {
+                ArrayPool<char>.Shared.Return(bufferToReturnToPool);
+            }
+        }
+#pragma warning restore S1121
 
         return base64Url;
     }
