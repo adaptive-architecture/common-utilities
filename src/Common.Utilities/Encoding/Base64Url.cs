@@ -186,7 +186,7 @@ public static class Base64Url
     /// Throws <see cref="FormatException"/> if the input is malformed.
     /// </remarks>
     public static byte[] Decode(string input, int offset, char[] buffer, int bufferOffset, int count)
-        => s_helper.Decode(input, offset, buffer, bufferOffset, count);
+        => Base64UrlEncodingHelper.Decode(input, offset, buffer, bufferOffset, count);
 
     /// <summary>
     /// Gets the minimum <c>char[]</c> size required for decoding of <paramref name="count"/> characters
