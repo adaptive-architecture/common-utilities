@@ -4,7 +4,7 @@ internal class Base64UrlEncodingHelper : Base
 {
     private const string MalformedInput = "Malformed input: {0} is an invalid input length.";
 
-    internal byte[] Decode(string input, int offset, char[] buffer, int bufferOffset, int count)
+    internal static byte[] Decode(string input, int offset, char[] buffer, int bufferOffset, int count)
     {
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(buffer);
