@@ -7,6 +7,8 @@ namespace AdaptArch.Common.Utilities.UnitTests.Encoding;
 public class Base32Specs
 {
     private static readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
+    private static readonly byte[] _testData = System.Text.Encoding.UTF8.GetBytes("lorem ipsum");
+    private const string _testDataEncoded = "NRXXEZLNEBUXA43VNU======";
 
     [Fact]
     public void ConversionTest()
@@ -30,7 +32,13 @@ public class Base32Specs
     [Fact]
     public void Simple_Encode_Test()
     {
-        Assert.Equal("NRXXEZLNEBUXA43VNU======", Base32.Encode(System.Text.Encoding.UTF8.GetBytes("lorem ipsum")));
+        Assert.Equal(_testDataEncoded, Base32.Encode(_testData));
+    }
+
+    [Fact]
+    public void Simple_Encode_Span_Test()
+    {
+        Assert.Equal(_testDataEncoded, Base32.Encode(_testData.AsSpan()));
     }
 
     [Theory]
