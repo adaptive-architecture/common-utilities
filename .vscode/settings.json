@@ -13,7 +13,7 @@
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "sonarlint.connectedMode.project": {
-    "connectionId": "adaptive-architecture",
+    "connectionId": "VS Code",
     "projectKey": "adaptive-architecture_common-utilities"
   }
 }
