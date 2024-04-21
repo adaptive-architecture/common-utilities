@@ -18,7 +18,7 @@ public static class DictionaryExtensions
     /// <remarks>The returned value is the value found in the dictionary if this is not null or the default value if it is not present in the dictionary or it's null.</remarks>
     public static bool TryGetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> defaultValue, out TValue value)
     {
-        if (dictionary.TryGetValue(key, out var v) && EqualityComparer<TValue>.Default.Equals(v, default(TValue)))
+        if (dictionary.TryGetValue(key, out var v) && !EqualityComparer<TValue>.Default.Equals(v, default(TValue)))
         {
             value = v;
             return true;
@@ -42,7 +42,7 @@ public static class DictionaryExtensions
     /// <remarks>The returned value is the value found in the dictionary if this is not null or the default value if it is not present in the dictionary or it's null.</remarks>
     public static bool TryGetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> defaultValue, bool setDefault, out TValue value)
     {
-        if (dictionary.TryGetValue(key, out var v) && EqualityComparer<TValue>.Default.Equals(v, default(TValue)))
+        if (dictionary.TryGetValue(key, out var v) && !EqualityComparer<TValue>.Default.Equals(v, default(TValue)))
         {
             value = v;
             return true;
