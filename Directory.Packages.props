@@ -4,10 +4,10 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup Condition="'$(CONFIGURATION)' == 'Release' And '$(BuildDocFx)' != 'true'">
-    <PackageVersion Include="AdaptArch.Common.Utilities" Version="0.2.1.1" />
-    <PackageVersion Include="AdaptArch.Common.Utilities.Configuration" Version="0.2.1.1" />
+    <PackageVersion Include="AdaptArch.Common.Utilities" Version="0.4.1" />
+    <PackageVersion Include="AdaptArch.Common.Utilities.Configuration" Version="0.4.1" />
     <PackageVersion Include="AdaptArch.Common.Utilities.Hosting" Version="0.2.1.1" />
-    <PackageVersion Include="AdaptArch.Common.Utilities.Redis" Version="0.2.1.1" />
+    <PackageVersion Include="AdaptArch.Common.Utilities.Redis" Version="0.4.1" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
@@ -24,7 +24,7 @@
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.12.1" />
     <PackageVersion Include="StackExchange.Redis" Version="2.7.33" />
-    <PackageVersion Include="xunit" Version="2.7.1" />
+    <PackageVersion Include="xunit" Version="2.8.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.0" />
   </ItemGroup>
 </Project>
