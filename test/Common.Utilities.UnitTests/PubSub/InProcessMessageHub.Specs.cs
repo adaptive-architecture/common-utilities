@@ -122,7 +122,16 @@ public class InProcessMessageHubSpecs
 
         hub.Publish<object>(topic, null);
 
-        Thread.Sleep(TimeSpan.FromMilliseconds(100));
+        var attempts = 10;
+        while (attempts-- > 0)
+        {
+            Thread.Sleep(TimeSpan.FromMilliseconds(20));
+            if (reacted > 0)
+            {
+                break;
+            }
+        }
+
         Assert.Equal(1, reacted);
     }
 
