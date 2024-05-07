@@ -4,6 +4,8 @@ rm -rf ./coverage/*
 rm -rf ./test/TestResults
 
 dotnet test \
+  --nologo \
+  --verbosity quiet \
   --filter \"FullyQualifiedName!~AdaptArch.Common.Utilities.Samples\" \
   /p:CollectCoverage=\"true\" \
   /p:CoverletOutputFormat=\"json,lcov,opencover\"  \
