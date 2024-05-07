@@ -4,9 +4,9 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup Condition="'$(CONFIGURATION)' == 'Release' And '$(BuildDocFx)' != 'true'">
-    <PackageVersion Include="AdaptArch.Common.Utilities" Version="0.2.1.1" />
+    <PackageVersion Include="AdaptArch.Common.Utilities" Version="0.4.1" />
     <PackageVersion Include="AdaptArch.Common.Utilities.Configuration" Version="0.2.1.1" />
-    <PackageVersion Include="AdaptArch.Common.Utilities.Hosting" Version="0.2.1.1" />
+    <PackageVersion Include="AdaptArch.Common.Utilities.Hosting" Version="0.4.1" />
     <PackageVersion Include="AdaptArch.Common.Utilities.Redis" Version="0.2.1.1" />
   </ItemGroup>
   <ItemGroup>
