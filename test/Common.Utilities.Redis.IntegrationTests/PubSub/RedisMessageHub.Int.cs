@@ -1,8 +1,10 @@
-﻿using AdaptArch.Common.Utilities.Redis.PubSub;
+﻿using AdaptArch.Common.Utilities.Redis.IntegrationTests.Fixtures;
+using AdaptArch.Common.Utilities.Redis.PubSub;
 
 namespace AdaptArch.Common.Utilities.Redis.IntegrationTests.PubSub;
 #pragma warning disable S2925 // SONAR: Do not use 'Thread.Sleep()' in a test.
 
+[Collection(RedisCollection.CollectionName)]
 public class RedisMessageHubInt
 {
     private static readonly TimeSpan s_waitTime = TimeSpan.FromMilliseconds(100);
@@ -14,10 +16,9 @@ public class RedisMessageHubInt
     private readonly RedisMessageHub _messageHub;
     private readonly RedisMessageHub _messageHubAsync;
 
-    public RedisMessageHubInt()
+    public RedisMessageHubInt(RedisFixture fixture)
     {
-        var hub = new RedisMessageHub(Utilities.GetDefaultConnectionMultiplexer(),
-            new RedisMessageHubOptions());
+        var hub = new RedisMessageHub(fixture.Connection, new RedisMessageHubOptions());
         _messageHub = hub;
         _messageHubAsync = hub;
     }

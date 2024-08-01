@@ -8,7 +8,8 @@
     "opencover",
     "Qube",
     "sonarscanner",
-    "temurin"
+    "temurin",
+    "Testcontainers"
   ],
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
