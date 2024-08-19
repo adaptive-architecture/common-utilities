@@ -13,8 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference
-      Include="..\..\src\Common.Utilities.Configuration\Common.Utilities.Configuration.csproj" />
+    <ProjectReference Include="..\..\src\Common.Utilities.Configuration\Common.Utilities.Configuration.csproj" />
     <ProjectReference Include="..\..\src\Common.Utilities.Hosting\Common.Utilities.Hosting.csproj" />
     <ProjectReference Include="..\..\src\Common.Utilities.Redis\Common.Utilities.Redis.csproj" />
     <ProjectReference Include="..\..\src\Common.Utilities\Common.Utilities.csproj" />
@@ -23,6 +22,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
   </ItemGroup>

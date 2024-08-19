@@ -10,14 +10,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(CONFIGURATION)' == 'Debug' Or '$(BuildDocFx)' == 'true'">
     <ProjectReference Include="..\..\src\Common.Utilities\Common.Utilities.csproj" />
-    <ProjectReference
-      Include="..\..\src\Common.Utilities.Configuration\Common.Utilities.Configuration.csproj" />
+    <ProjectReference Include="..\..\src\Common.Utilities.Configuration\Common.Utilities.Configuration.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(CONFIGURATION)' == 'Release' And '$(BuildDocFx)' != 'true'">
