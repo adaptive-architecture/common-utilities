@@ -1,4 +1,6 @@
-﻿namespace AdaptArch.Common.Utilities.Extensions;
+﻿using System.Collections.Concurrent;
+
+namespace AdaptArch.Common.Utilities.Extensions;
 
 /// <summary>
 /// Extension methods for <see cref="Task"/>.
@@ -33,6 +35,112 @@ public static class TaskExtensions
         catch
         {
             // Nothing to do here
+        }
+    }
+
+    /// <summary>
+    /// Runs <paramref name="taskFactory"/> on the current thread.
+    /// </summary>
+    /// <param name="taskFactory">A method to create the task to run.</param>
+    /// <param name="cancellationToken">A cancellation token.</param>
+    public static void RunSync(this Func<Task?> taskFactory, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(taskFactory, nameof(taskFactory));
+        var previousContext = SynchronizationContext.Current;
+        var newContext = new SingleThreadSynchronizationContext();
+
+        try
+        {
+            SynchronizationContext.SetSynchronizationContext(newContext);
+            newContext.OperationStarted();
+            var task = taskFactory();
+            if (task == null)
+            {
+                newContext.OperationCompleted();
+            }
+            else
+            {
+                task.ContinueWith(_ => newContext.OperationCompleted(), cancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+                newContext.RunOnCurrentThread();
+                task.GetAwaiter().GetResult();
+            }
+        }
+        finally
+        {
+            newContext.Dispose();
+            SynchronizationContext.SetSynchronizationContext(previousContext);
+        }
+    }
+
+    /// <summary>
+    /// Runs <paramref name="taskFactory"/> on the current thread.
+    /// </summary>
+    /// <param name="taskFactory">A method to create the task to run.</param>
+    /// <param name="cancellationToken">A cancellation token.</param>
+    public static T? RunSync<T>(this Func<Task<T?>?> taskFactory, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(taskFactory, nameof(taskFactory));
+        var previousContext = SynchronizationContext.Current;
+        var newContext = new SingleThreadSynchronizationContext();
+
+        try
+        {
+            SynchronizationContext.SetSynchronizationContext(newContext);
+            newContext.OperationStarted();
+            var task = taskFactory();
+            if (task == null)
+            {
+                newContext.OperationCompleted();
+                return default;
+            }
+            else
+            {
+                task.ContinueWith(_ => newContext.OperationCompleted(), cancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+                newContext.RunOnCurrentThread();
+                return task.GetAwaiter().GetResult();
+            }
+        }
+        finally
+        {
+            newContext.Dispose();
+            SynchronizationContext.SetSynchronizationContext(previousContext);
+        }
+    }
+
+    internal sealed class SingleThreadSynchronizationContext : SynchronizationContext, IDisposable
+    {
+        private readonly BlockingCollection<KeyValuePair<SendOrPostCallback, object?>> _queue = [];
+
+        private int _operationCount;
+        public void Dispose() => _queue.Dispose();
+
+        public override SynchronizationContext CreateCopy() => this;
+
+        public override void OperationStarted() => Interlocked.Increment(ref _operationCount);
+
+        public override void OperationCompleted()
+        {
+            if (Interlocked.Decrement(ref _operationCount) == 0)
+            {
+                _queue.CompleteAdding();
+            }
+        }
+
+        public override void Post(SendOrPostCallback d, object? state)
+        {
+            ArgumentNullException.ThrowIfNull(d, nameof(d));
+            _queue.Add(new KeyValuePair<SendOrPostCallback, object?>(d, state));
+        }
+
+        public override void Send(SendOrPostCallback d, object? state)
+            => throw new NotSupportedException("Send is not supported.");
+
+        internal void RunOnCurrentThread()
+        {
+            foreach (var workItem in _queue.GetConsumingEnumerable())
+            {
+                workItem.Key(workItem.Value);
+            }
         }
     }
 }
