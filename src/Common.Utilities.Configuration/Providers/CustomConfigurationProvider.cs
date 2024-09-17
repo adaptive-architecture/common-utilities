@@ -1,5 +1,6 @@
 ﻿using AdaptArch.Common.Utilities.Configuration.Contracts;
 using Microsoft.Extensions.Configuration;
+using TaskExtensions = AdaptArch.Common.Utilities.Extensions.TaskExtensions;
 
 namespace AdaptArch.Common.Utilities.Configuration.Providers;
 
@@ -32,11 +33,7 @@ public class CustomConfigurationProvider : ConfigurationProvider
     /// <inheritdoc />
     public override void Load()
     {
-        // At the moment we are ok with this hack since it should not be used in any "HOT PATH" and should not rely on UI or user context interaction.
-        // Read more https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development#the-thread-pool-hack
-        // Also we might not want to capture the caller context by using `ThreadPool.UnsafeQueueUserWorkItem` or `using (ExecutionContext.SuppressFlow()) { }`.
-
-        Task.Run(() => LoadAsyncCore(false, CancellationToken.None)).GetAwaiter().GetResult();
+        TaskExtensions.RunSync(async delegate { await LoadAsyncCore(false, CancellationToken.None); }, CancellationToken.None);
     }
 
     private async Task LoadAsyncCore(bool reload, CancellationToken cancellationToken)
