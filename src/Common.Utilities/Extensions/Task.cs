@@ -45,7 +45,7 @@ public static class TaskExtensions
     /// <param name="cancellationToken">A cancellation token.</param>
     public static void RunSync(this Func<Task?> taskFactory, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(taskFactory, nameof(taskFactory));
+        ArgumentNullException.ThrowIfNull(taskFactory);
         var previousContext = SynchronizationContext.Current;
         var newContext = new SingleThreadSynchronizationContext();
 
@@ -79,7 +79,7 @@ public static class TaskExtensions
     /// <param name="cancellationToken">A cancellation token.</param>
     public static T? RunSync<T>(this Func<Task<T?>?> taskFactory, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(taskFactory, nameof(taskFactory));
+        ArgumentNullException.ThrowIfNull(taskFactory);
         var previousContext = SynchronizationContext.Current;
         var newContext = new SingleThreadSynchronizationContext();
 
@@ -128,7 +128,7 @@ public static class TaskExtensions
 
         public override void Post(SendOrPostCallback d, object? state)
         {
-            ArgumentNullException.ThrowIfNull(d, nameof(d));
+            ArgumentNullException.ThrowIfNull(d);
             _queue.Add(new KeyValuePair<SendOrPostCallback, object?>(d, state));
         }
 
