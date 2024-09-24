@@ -1,10 +1,13 @@
-﻿using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Configuration;
+﻿using System.Runtime.CompilerServices;
+using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Configuration;
 using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Contracts;
+using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Implementations;
 using AdaptArch.Common.Utilities.Hosting.Internals;
 using Common.Utilities.Hosting.UnitTests.BackgroundWorkers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace AdaptArch.Common.Utilities.Hosting.UnitTests.BackgroundWorkers;
 
@@ -143,4 +146,28 @@ public class RepeatingJobWorkerSpecs
 
         Assert.True(state.ExecutionCount > 0);
     }
+
+    [Fact]
+    public async Task Should_Not_Throw_When_Stopped_Running_After_Stopped()
+    {
+        using var cts = new CancellationTokenSource();
+        var state = new JobState(TimeSpan.FromMilliseconds(100),
+            TimeSpan.FromMilliseconds(500),
+            TimeSpan.FromMilliseconds(500));
+        var serviceProvider = await ServiceBuilder.BeginTestAsync(state, Boolean.TrueString, AddPeriodicJob, cts.Token);
+
+        var periodicJobWorker = serviceProvider.GetServices<IHostedService>()
+            .OfType<PeriodicJobWorker<TestJob>>()
+            .Single();
+
+        cts.Cancel();
+        await ServiceBuilder.EndTestAsync(state, serviceProvider, cts.Token);
+
+        // This should not throw
+        await PeriodicJobWorkerRepeatJobAsync(periodicJobWorker, cts.Token);
+        Assert.True(true);
+    }
+
+    [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "RepeatJobAsync")]
+    extern static Task PeriodicJobWorkerRepeatJobAsync(PeriodicJobWorker<TestJob> @this, CancellationToken stoppingToken);
 }

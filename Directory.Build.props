@@ -1,5 +1,6 @@
 <Project>
   <PropertyGroup>
+    <LangVersion>preview</LangVersion>
     <Authors>Adaptive Architecture Contributors</Authors>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>

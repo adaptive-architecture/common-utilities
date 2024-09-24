@@ -13,8 +13,9 @@ namespace AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Implementations;
 internal class PeriodicJobWorker<T> : RepeatingJobWorker<T>
     where T : IJob
 {
-    private readonly PeriodicTimer _timer;
+    private PeriodicTimer? _timer;
     private readonly ILogger<PeriodicJobWorker<T>> _logger;
+    private readonly object _lock = new();
 
     public PeriodicJobWorker(IScopeFactory scopeFactory, ILogger<PeriodicJobWorker<T>> logger,
         IOptionsMonitor<RepeatingWorkerConfiguration> options, TimeProvider timeProvider)
@@ -27,20 +28,24 @@ internal class PeriodicJobWorker<T> : RepeatingJobWorker<T>
     /// <inheritdoc/>
     public override Task StopAsync(CancellationToken cancellationToken)
     {
-        _timer.Dispose();
+        lock (_lock)
+        {
+            _timer!.Dispose();
+            _timer = null;
+        }
         return base.StopAsync(cancellationToken);
     }
 
     protected override async Task RepeatJobAsync(CancellationToken stoppingToken)
     {
         var isInitialCall = true;
-        _timer.Period = Configuration.InitialDelay;
+        SetTimerPeriod(Configuration.InitialDelay);
 
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                var continueRunning = await _timer.WaitForNextTickAsync(stoppingToken).ConfigureAwait(false);
+                var continueRunning = await _timer!.WaitForNextTickAsync(stoppingToken).ConfigureAwait(false);
                 if (!continueRunning)
                 {
                     break;
@@ -64,6 +69,18 @@ internal class PeriodicJobWorker<T> : RepeatingJobWorker<T>
 
     protected override void HandleConfigurationChange()
     {
-        _timer.Period = Configuration.Interval;
+        SetTimerPeriod(Configuration.Interval);
+    }
+
+    private void SetTimerPeriod(TimeSpan period)
+    {
+        lock (_lock)
+        {
+            if (_timer == null || _timer.Period == period)
+            {
+                return;
+            }
+            _timer.Period = period;
+        }
     }
 }
