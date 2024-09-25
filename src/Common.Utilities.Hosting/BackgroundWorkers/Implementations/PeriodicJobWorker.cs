@@ -51,14 +51,15 @@ internal class PeriodicJobWorker<T> : RepeatingJobWorker<T>
                     break;
                 }
 
-                await ExecuteJobAsync(stoppingToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
-
                 if (isInitialCall)
                 {
-                    // Reset the period to the configured value after the initial call.
+                    // Reset the period to the configured value before the initial call.
+                    // This is to avoid having another execution immediately after the initial one.
                     isInitialCall = false;
                     _timer.Period = Configuration.Interval;
                 }
+
+                await ExecuteJobAsync(stoppingToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
             }
             catch (Exception ex)
             {
