@@ -56,7 +56,7 @@ internal class PeriodicJobWorker<T> : RepeatingJobWorker<T>
                     // Reset the period to the configured value before the initial call.
                     // This is to avoid having another execution immediately after the initial one.
                     isInitialCall = false;
-                    _timer.Period = Configuration.Interval;
+                    SetTimerPeriod(Configuration.Interval);
                 }
 
                 await ExecuteJobAsync(stoppingToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
