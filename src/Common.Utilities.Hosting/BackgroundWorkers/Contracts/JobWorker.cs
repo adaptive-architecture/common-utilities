@@ -12,8 +12,6 @@ internal abstract class JobWorker<T> : BackgroundService
     private readonly IScopeFactory _scopeFactory;
     protected ILogger Logger;
 
-    private CancellationTokenSource? _cancellationTokenSource;
-
     protected JobWorker(IScopeFactory scopeFactory, ILogger logger)
     {
         _scopeFactory = scopeFactory;
@@ -24,12 +22,11 @@ internal abstract class JobWorker<T> : BackgroundService
 
     protected async Task ExecuteJobAsync(CancellationToken cancellationToken)
     {
-        _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         var scope = _scopeFactory.CreateScope(GetNamespacedName(typeof(T)));
         var job = scope.ServiceProvider.GetRequiredService<T>();
         try
         {
-            await job.ExecuteAsync(_cancellationTokenSource.Token)
+            await job.ExecuteAsync(cancellationToken)
                 .ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
         }
         catch (OperationCanceledException ex)

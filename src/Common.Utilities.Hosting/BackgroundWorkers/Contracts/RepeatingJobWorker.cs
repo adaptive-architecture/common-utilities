@@ -94,7 +94,8 @@ internal abstract class RepeatingJobWorker<T> : JobWorker<T>
 
             if (_configurationChangeTokenSource != null)
             {
-                _configurationChangeTokenSource.Cancel();
+                await _configurationChangeTokenSource.CancelAsync()
+                    .ConfigureAwait(ConfigureAwaitOptions.None);
                 _configurationChangeTokenSource.Dispose();
                 _configurationChangeTokenSource = null;
             }

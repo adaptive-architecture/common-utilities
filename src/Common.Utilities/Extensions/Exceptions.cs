@@ -14,7 +14,7 @@ public static class ExceptionExtensions
     /// <exception cref="NotSupportedException"></exception>
     public static void ThrowNotSupportedIfNull<T>(T? obj, string message)
     {
-        if (obj == null)
+        if (EqualityComparer<T>.Default.Equals(obj, default(T)))
         {
             throw new NotSupportedException(message);
         }
@@ -29,7 +29,7 @@ public static class ExceptionExtensions
     /// <exception cref="NotSupportedException"></exception>
     public static void ThrowNotSupportedIfNotNull<T>(T? obj, string message)
     {
-        if (obj != null)
+        if (!EqualityComparer<T>.Default.Equals(obj, default(T)))
         {
             throw new NotSupportedException(message);
         }

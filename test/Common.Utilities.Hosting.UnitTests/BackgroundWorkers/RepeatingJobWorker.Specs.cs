@@ -196,7 +196,7 @@ public class RepeatingJobWorkerSpecs
 
         var state = new JobState(TimeSpan.FromMilliseconds(1),
             TimeSpan.FromMilliseconds(3_000),
-            TimeSpan.FromMilliseconds(3_000));
+            TimeSpan.FromMilliseconds(1_000));
         var serviceProvider = await ServiceBuilder.BeginTestAsync(state, Boolean.TrueString, GetServiceCollectionAction(jobType), cts.Token);
 
         while (state.Elapsed <= state.InitialDelay / 2)
