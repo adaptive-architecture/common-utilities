@@ -58,11 +58,11 @@ public class RedisMessageHubInt
     {
         MyMessage receivedMessage = null;
         var subId = await _messageHubAsync.SubscribeAsync<MyMessage>(nameof(MyMessage),
-                (m, _) =>
-                {
-                    receivedMessage = m.Data;
-                    return Task.CompletedTask;
-                }, CancellationToken.None);
+            (m, _) =>
+            {
+                receivedMessage = m.Data;
+                return Task.CompletedTask;
+            }, CancellationToken.None);
 
         Assert.Null(receivedMessage);
 

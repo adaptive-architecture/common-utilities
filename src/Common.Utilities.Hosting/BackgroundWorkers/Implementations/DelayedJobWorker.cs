@@ -13,13 +13,10 @@ namespace AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Implementations;
 internal class DelayedJobWorker<T> : RepeatingJobWorker<T>
     where T : IJob
 {
-    private readonly ILogger<DelayedJobWorker<T>> _logger;
-
     public DelayedJobWorker(IScopeFactory scopeFactory, ILogger<DelayedJobWorker<T>> logger,
         IOptionsMonitor<RepeatingWorkerConfiguration> options)
-        : base(scopeFactory, options)
+        : base(scopeFactory, options, logger)
     {
-        _logger = logger;
     }
 
     protected override void HandleConfigurationChange()
@@ -49,7 +46,7 @@ internal class DelayedJobWorker<T> : RepeatingJobWorker<T>
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Job {JobName} failed.", GetNamespacedName(typeof(T)));
+                Logger.LogError(ex, "Job {JobName} failed.", GetNamespacedName(typeof(T)));
             }
         }
     }

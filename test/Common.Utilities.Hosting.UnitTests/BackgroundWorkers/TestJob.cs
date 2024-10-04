@@ -1,7 +1,7 @@
 ﻿using AdaptArch.Common.Utilities.Hosting.UnitTests.BackgroundWorkers;
 using AdaptArch.Common.Utilities.Jobs.Contracts;
 
-namespace Common.Utilities.Hosting.UnitTests.BackgroundWorkers;
+namespace AdaptArch.Common.Utilities.Hosting.UnitTests.BackgroundWorkers;
 
 public class TestJob : IJob
 {

@@ -12,12 +12,12 @@ internal static class ServiceBuilder
     public static async Task<IServiceProvider> BeginTestAsync(JobState state, string enabled, Action<ServiceCollection> configure, CancellationToken cancellationToken)
     {
         var configurationBuilder = new ConfigurationBuilder()
-        .AddInMemoryCollection(new Dictionary<string, string>
-        {
-            { $"periodicWorkers:{nameof(RepeatingWorkerConfiguration.Enabled)}", enabled },
-            { $"periodicWorkers:{nameof(RepeatingWorkerConfiguration.Interval)}", state.Interval.ToString("c") },
-            { $"periodicWorkers:{nameof(RepeatingWorkerConfiguration.InitialDelay)}", state.InitialDelay.ToString("c") },
-        });
+            .AddInMemoryCollection(new Dictionary<string, string>
+            {
+                { $"periodicWorkers:{nameof(RepeatingWorkerConfiguration.Enabled)}", enabled },
+                { $"periodicWorkers:{nameof(RepeatingWorkerConfiguration.Interval)}", state.Interval.ToString("c") },
+                { $"periodicWorkers:{nameof(RepeatingWorkerConfiguration.InitialDelay)}", state.InitialDelay.ToString("c") },
+            });
 
         var configuration = configurationBuilder.Build();
 

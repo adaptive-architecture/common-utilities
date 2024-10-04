@@ -14,26 +14,34 @@ internal class PeriodicJobWorker<T> : RepeatingJobWorker<T>
     where T : IJob
 {
     private PeriodicTimer? _timer;
-    private readonly ILogger<PeriodicJobWorker<T>> _logger;
-    private readonly object _lock = new();
+    private readonly SemaphoreSlim _lock = new(1);
+    private readonly TimeSpan _lockTimeout = TimeSpan.FromMilliseconds(10);
 
     public PeriodicJobWorker(IScopeFactory scopeFactory, ILogger<PeriodicJobWorker<T>> logger,
         IOptionsMonitor<RepeatingWorkerConfiguration> options, TimeProvider timeProvider)
-        : base(scopeFactory, options)
+        : base(scopeFactory, options, logger)
     {
-        _logger = logger;
-        _timer = new PeriodicTimer(TimeSpan.FromDays(1), timeProvider);
+        _timer = new PeriodicTimer(TimeSpan.FromHours(24), timeProvider);
     }
 
     /// <inheritdoc/>
-    public override Task StopAsync(CancellationToken cancellationToken)
+    public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        lock (_lock)
+        try
         {
+            await _lock.WaitAsync(cancellationToken)
+                .ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.SuppressThrowing);
+
             _timer!.Dispose();
             _timer = null;
         }
-        return base.StopAsync(cancellationToken);
+        finally
+        {
+            _lock.Release();
+        }
+
+        await base.StopAsync(cancellationToken)
+            .ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
     }
 
     protected override async Task RepeatJobAsync(CancellationToken stoppingToken)
@@ -45,10 +53,12 @@ internal class PeriodicJobWorker<T> : RepeatingJobWorker<T>
         {
             try
             {
-                var continueRunning = await _timer!.WaitForNextTickAsync(stoppingToken).ConfigureAwait(false);
+                var continueRunning = await _timer!.WaitForNextTickAsync(stoppingToken)
+                    .AsTask()
+                    .ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
                 if (!continueRunning)
                 {
-                    break;
+                    return;
                 }
 
                 if (isInitialCall)
@@ -63,7 +73,7 @@ internal class PeriodicJobWorker<T> : RepeatingJobWorker<T>
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Job {JobName} failed.", GetNamespacedName(typeof(T)));
+                Logger.LogError(ex, "Job {JobName} failed.", GetNamespacedName(typeof(T)));
             }
         }
     }
@@ -75,13 +85,17 @@ internal class PeriodicJobWorker<T> : RepeatingJobWorker<T>
 
     private void SetTimerPeriod(TimeSpan period)
     {
-        lock (_lock)
+        try
         {
-            if (_timer == null || _timer.Period == period)
+            _lock.Wait(_lockTimeout);
+            if (_timer != null && _timer.Period != period)
             {
-                return;
+                _timer.Period = period;
             }
-            _timer.Period = period;
+        }
+        finally
+        {
+            _lock.Release();
         }
     }
 }

@@ -59,7 +59,7 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
         where TMessageData : class
     {
         var message = SerializeMessage(topic, data);
-        _ = await GetSubscriber().PublishAsync(topic.ToChannel(), message).ConfigureAwait(false);
+        _ = await GetSubscriber().PublishAsync(topic.ToChannel(), message).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
     }
 
     /// <inheritdoc />
@@ -68,7 +68,7 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
     {
         var redisHandler = WrapAsRedisHandler(handler);
         var id = _registry.Add<TMessageData>(topic, redisHandler);
-        await GetSubscriber().SubscribeAsync(topic.ToChannel(), redisHandler).ConfigureAwait(false);
+        await GetSubscriber().SubscribeAsync(topic.ToChannel(), redisHandler).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
         return id;
     }
 
@@ -78,7 +78,7 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
         var registration = _registry.GetRegistration(id);
         if (registration is { Handler: Action<RedisChannel, RedisValue> redisHandler })
         {
-            await GetSubscriber().UnsubscribeAsync(registration.Topic.ToChannel(), redisHandler).ConfigureAwait(false);
+            await GetSubscriber().UnsubscribeAsync(registration.Topic.ToChannel(), redisHandler).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
         }
     }
 

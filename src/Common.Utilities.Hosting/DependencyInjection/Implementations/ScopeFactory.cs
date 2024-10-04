@@ -1,34 +1,33 @@
 ﻿using AdaptArch.Common.Utilities.Hosting.DependencyInjection.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AdaptArch.Common.Utilities.Hosting.DependencyInjection.Implementations
+namespace AdaptArch.Common.Utilities.Hosting.DependencyInjection.Implementations;
+
+/// <summary>
+/// The scope factory.
+/// </summary>
+public class ScopeFactory : IScopeFactory
 {
+    private readonly IServiceProvider _serviceProvider;
+
     /// <summary>
-    /// The scope factory.
+    /// Constructs a new instance of <see cref="ScopeFactory"/>.
     /// </summary>
-    public class ScopeFactory : IScopeFactory
+    /// <param name="serviceProvider">The service scope factory.</param>
+    public ScopeFactory(IServiceProvider serviceProvider)
     {
-        private readonly IServiceProvider _serviceProvider;
+        _serviceProvider = serviceProvider;
+    }
 
-        /// <summary>
-        /// Constructs a new instance of <see cref="ScopeFactory"/>.
-        /// </summary>
-        /// <param name="serviceProvider">The service scope factory.</param>
-        public ScopeFactory(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-        }
+    /// <inheritdoc/>
+    public IServiceScope CreateScope(string name)
+    {
+        return _serviceProvider.CreateScope();
+    }
 
-        /// <inheritdoc/>
-        public IServiceScope CreateScope(string name)
-        {
-            return _serviceProvider.CreateScope();
-        }
-
-        /// <inheritdoc/>
-        public void DisposeScope(IDisposable scope)
-        {
-            scope.Dispose();
-        }
+    /// <inheritdoc/>
+    public void DisposeScope(IDisposable scope)
+    {
+        scope.Dispose();
     }
 }

@@ -1,5 +1,4 @@
 ﻿using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks;
-using AdaptArch.Common.Utilities.PubSub.Contracts;
 using AdaptArch.Common.Utilities.PubSub.Implementations;
 
 namespace AdaptArch.Common.Utilities.UnitTests.PubSub;

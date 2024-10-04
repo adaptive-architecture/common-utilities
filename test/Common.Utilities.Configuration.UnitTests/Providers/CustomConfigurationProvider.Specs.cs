@@ -180,9 +180,9 @@ public class CustomConfigurationProviderSpecs
         _dataProviderMock.ReadDataAsync(Arg.Any<CancellationToken>()).ReturnsForAnyArgs(new Dictionary<string, string>
         {
             {
-                    nameof(CustomConfigurationSection),
-                    "{\"hash\": \"0\", \"data\": {\"foo\": \"foo\", \"bar\": \"bar\"}}"
-                }
+                nameof(CustomConfigurationSection),
+                "{\"hash\": \"0\", \"data\": {\"foo\": \"foo\", \"bar\": \"bar\"}}"
+            }
         });
 
         SetupGetHashSequence(GetConstantHashValue, 1);

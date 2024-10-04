@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Text.Json;
-using AdaptArch.Common.Utilities.Configuration.Contracts;
 using AdaptArch.Common.Utilities.Configuration.Implementation;
 
 namespace AdaptArch.Common.Utilities.UnitTests.Configuration;
