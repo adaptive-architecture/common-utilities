@@ -26,7 +26,7 @@ public sealed class ExclusiveAccess<T> : IDisposable
     /// <summary>
     /// Lock the resource.
     /// </summary>
-    public LockedResource Lock()
+    public ILockedResource<T> Lock()
     {
         return new LockedResource(_value, _semaphore, _waitTimeout);
     }
@@ -40,7 +40,7 @@ public sealed class ExclusiveAccess<T> : IDisposable
     /// <summary>
     /// A class to represent a locked resource.
     /// </summary>
-    public sealed class LockedResource : IDisposable
+    public sealed class LockedResource : ILockedResource<T>
     {
         private readonly SemaphoreSlim _semaphore;
         private T? _value;
@@ -51,7 +51,7 @@ public sealed class ExclusiveAccess<T> : IDisposable
         /// <param name="value">The value to wrap</param>
         /// <param name="semaphore">The semaphore used for locking.</param>
         /// <param name="timeout">The time to wait when trying to acquire the lock.</param>
-        public LockedResource(T value, SemaphoreSlim semaphore, TimeSpan timeout)
+        internal LockedResource(T value, SemaphoreSlim semaphore, TimeSpan timeout)
         {
             _value = value;
             _semaphore = semaphore;

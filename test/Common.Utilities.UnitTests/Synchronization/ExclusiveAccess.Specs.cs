@@ -22,5 +22,7 @@ public class ExclusiveAccessSpecs
 
         // Assert
         Assert.Same(value, thirdLock.Value); // We have access to the same value
+
+        GC.Collect();
     }
 }
