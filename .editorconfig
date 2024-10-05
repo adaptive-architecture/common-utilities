@@ -94,5 +94,10 @@ dotnet_diagnostic.RCS1090.severity = error
 # IDE0066: Convert switch statement to expression - Performance consideration.
 csharp_style_prefer_switch_expression = false
 
+# Disable "primary constructor"
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0290
+csharp_style_prefer_primary_constructors = false
+dotnet_diagnostic.IDE0290.severity = none
+
 [*.Generated.cs, *.generated.cs]
 generated_code = true
