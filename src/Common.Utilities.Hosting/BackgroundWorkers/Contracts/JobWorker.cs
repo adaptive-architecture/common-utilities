@@ -13,7 +13,6 @@ namespace AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Contracts;
 internal abstract class JobWorker<T> : BackgroundService
     where T : IJob
 {
-    private static readonly TimeSpan s_oneDay = TimeSpan.FromDays(1);
     private readonly IScopeFactory _scopeFactory;
     private readonly IOptionsMonitor<RepeatingWorkerConfiguration> _options;
     private readonly SemaphoreSlim _configurationChangeLock;
@@ -34,14 +33,15 @@ internal abstract class JobWorker<T> : BackgroundService
         _options.OnChange(_ => HandleConfigurationChange(false));
         Logger = logger;
         _timeProvider = timeProvider;
-        _timer = new PeriodicTimer(s_oneDay, timeProvider);
+        _timer = new PeriodicTimer(BackgroundServiceGlobals.OneDay, timeProvider);
         _nextExecutionTime = _timeProvider.GetUtcNow().DateTime;
         _configurationChangeLock = new SemaphoreSlim(1);
     }
 
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        _configurationChangeLock.Wait(cancellationToken);
+        await _configurationChangeLock.WaitAsync(cancellationToken)
+            .ConfigureAwait(BackgroundServiceGlobals.ConfigureAwaitOptions);
         _stopRequested = true;
         _configurationChangeLock.Release();
 
@@ -117,9 +117,15 @@ internal abstract class JobWorker<T> : BackgroundService
 
     private void SetTimerPeriodCore(bool useInitialDelay)
     {
-        var period = Configuration.Enabled ?
-                (useInitialDelay ? Configuration.InitialDelay : Configuration.Interval)
-                : s_oneDay;
+        TimeSpan period;
+        if (Configuration.Enabled)
+        {
+            period = useInitialDelay ? Configuration.InitialDelay : Configuration.Interval;
+        }
+        else
+        {
+            period = BackgroundServiceGlobals.OneDay;
+        }
 
         if (_timer.Period != period)
         {

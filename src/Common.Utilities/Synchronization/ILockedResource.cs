@@ -4,7 +4,7 @@ namespace AdaptArch.Common.Utilities.Synchronization;
 /// A locked resource.
 /// </summary>
 /// <typeparam name="T">The type of the resource.</typeparam>
-public interface ILockedResource<T> : IDisposable
+public interface ILockedResource<out T> : IDisposable
 {
     /// <summary>
     /// The value of the resource.
