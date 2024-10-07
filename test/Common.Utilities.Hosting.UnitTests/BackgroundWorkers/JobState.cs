@@ -26,7 +26,7 @@ public class JobState
 
     private DateTime? _start;
     private DateTime? _stop;
-    private readonly TimeSpan _contextSwitchingTime = TimeSpan.FromMilliseconds(37);
+    private readonly TimeSpan _contextSwitchingTime = TimeSpan.FromMilliseconds(50);
 
     public JobState(TimeSpan jobDuration, TimeSpan initialDelay, TimeSpan period)
     {
