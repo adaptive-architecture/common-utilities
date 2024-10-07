@@ -123,7 +123,7 @@ public class RepeatingJobWorkerSpecs
         var state = JobState.WithLongDurations();
         var serviceProvider = await ServiceBuilder.BeginTestAsync(state, Boolean.TrueString, GetServiceCollectionAction(jobType));
 
-        await state.Assert_NoExecution_WhileInitialDelay(jobType);
+        await state.Assert_NoExecution_WhileInitialDelay(jobType, state.InitialDelay.TotalMilliseconds * .66);
         await ServiceBuilder.EndTestAsync(state, serviceProvider);
         await state.Assert_No_FurtherIterations_After_Stopped(state.GetEstimatedExecutionCount(jobType));
     }

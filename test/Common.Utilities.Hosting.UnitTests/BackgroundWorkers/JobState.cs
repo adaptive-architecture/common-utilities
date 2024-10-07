@@ -99,9 +99,10 @@ public class JobState
         return 1 + executionsAfterFirst;
     }
 
-    public async Task Assert_NoExecution_WhileInitialDelay(JobType jobType, double tolerance = .75)
+    public async Task Assert_NoExecution_WhileInitialDelay(JobType jobType, double? delay = null, double tolerance = .75)
     {
-        using var cts = new CancellationTokenSource(InitialDelay);
+        var delayToUse = delay.HasValue ? TimeSpan.FromMilliseconds(delay.Value) : InitialDelay;
+        using var cts = new CancellationTokenSource(delayToUse);
         // While the delay is not over, the job should not have executed.
         while (Elapsed < InitialDelay)
         {
@@ -110,7 +111,7 @@ public class JobState
             {
                 await Task.Delay(ExecutionTime, cts.Token);
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 break;
             }
@@ -119,11 +120,19 @@ public class JobState
 
     public async Task Assert_Iterations_While_Running(JobType jobType, int iterationsToCheck = 3, double tolerance = .75)
     {
+        using var cts = new CancellationTokenSource(iterationsToCheck * ExecutionTime);
         for (var i = 0; i < iterationsToCheck; i++)
         {
             // Now it should be equal to `i` as it should have executed
             Assert.Equal(GetEstimatedExecutionCount(jobType), ExecutionCount, tolerance);
-            await Task.Delay(ExecutionTime);
+            try
+            {
+                await Task.Delay(ExecutionTime, cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                break;
+            }
         }
     }
 
@@ -151,7 +160,7 @@ public class JobState
             {
                 await Task.Delay(ExecutionTime, cts.Token);
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 break;
             }
