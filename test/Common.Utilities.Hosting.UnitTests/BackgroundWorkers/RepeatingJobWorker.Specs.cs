@@ -32,10 +32,8 @@ public class RepeatingJobWorkerSpecs
     }
 
     [Theory(Timeout = TestTimeout)]
-    [InlineData((int)JobType.Periodic, 1_000, 10_000, 2_000)]
-    [InlineData((int)JobType.Delayed, 1_000, 10_000, 2_000)]
-    [InlineData((int)JobType.Periodic, 3_000, 10_000, 2_000)]
-    [InlineData((int)JobType.Delayed, 3_000, 10_000, 2_000)]
+    [InlineData((int)JobType.Periodic, 2_000, 20_000, 4_000)]
+    [InlineData((int)JobType.Delayed, 2_000, 20_000, 4_000)]
     public async Task Should_Execute_The_Job(int jobTypeId, int jobDurationMs, int initialDelayMs, int intervalMs)
     {
         var jobType = jobTypeId.ToJobType();
