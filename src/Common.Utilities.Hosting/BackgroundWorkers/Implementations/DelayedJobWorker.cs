@@ -10,44 +10,19 @@ namespace AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Implementations;
 /// <summary>
 /// A background workers that run with a consistent delay.
 /// </summary>
-internal class DelayedJobWorker<T> : RepeatingJobWorker<T>
+internal class DelayedJobWorker<T> : JobWorker<T>
     where T : IJob
 {
     public DelayedJobWorker(IScopeFactory scopeFactory, ILogger<DelayedJobWorker<T>> logger,
-        IOptionsMonitor<RepeatingWorkerConfiguration> options)
-        : base(scopeFactory, options, logger)
+        IOptionsMonitor<RepeatingWorkerConfiguration> options, TimeProvider timeProvider)
+        : base(scopeFactory, options, timeProvider, logger)
     {
     }
 
-    protected override void HandleConfigurationChange()
+    protected override Task AfterJobExecution()
     {
-        // Nothing to do in case the configuration changes.
-    }
-
-    protected override async Task RepeatJobAsync(CancellationToken stoppingToken)
-    {
-        var isInitialCall = true;
-        var delayPeriod = Configuration.InitialDelay;
-
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            try
-            {
-                await Task.Delay(delayPeriod, stoppingToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
-
-                await ExecuteJobAsync(stoppingToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
-
-                if (isInitialCall)
-                {
-                    // Reset the period to the configured value after the initial call.
-                    isInitialCall = false;
-                    delayPeriod = Configuration.Interval;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Job {JobName} failed.", GetNamespacedName(typeof(T)));
-            }
-        }
+        // Set the period again to make sure we wait for the delay before executing the job again
+        SetTimerPeriod(false);
+        return base.AfterJobExecution();
     }
 }

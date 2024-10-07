@@ -1,5 +1,4 @@
-﻿using AdaptArch.Common.Utilities.Hosting.UnitTests.BackgroundWorkers;
-using AdaptArch.Common.Utilities.Jobs.Contracts;
+﻿using AdaptArch.Common.Utilities.Jobs.Contracts;
 
 namespace AdaptArch.Common.Utilities.Hosting.UnitTests.BackgroundWorkers;
 

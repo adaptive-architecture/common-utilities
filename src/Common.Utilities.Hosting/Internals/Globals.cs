@@ -2,5 +2,5 @@
 
 internal static class BackgroundServiceGlobals
 {
-    public static TimeSpan CheckEnabledPollingInterval { get; set; } = TimeSpan.FromHours(1);
+    public static ConfigureAwaitOptions ConfigureAwaitOptions { get; } = ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding;
 }

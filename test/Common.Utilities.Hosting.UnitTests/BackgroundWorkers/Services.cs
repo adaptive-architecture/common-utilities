@@ -9,7 +9,7 @@ namespace AdaptArch.Common.Utilities.Hosting.UnitTests.BackgroundWorkers;
 
 internal static class ServiceBuilder
 {
-    public static async Task<IServiceProvider> BeginTestAsync(JobState state, string enabled, Action<ServiceCollection> configure, CancellationToken cancellationToken)
+    public static async Task<IServiceProvider> BeginTestAsync(JobState state, string enabled, Action<ServiceCollection> configure, CancellationToken cancellationToken = default)
     {
         var configurationBuilder = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string>

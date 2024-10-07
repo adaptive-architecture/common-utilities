@@ -98,4 +98,54 @@ public class JobState
         var executionsAfterFirst = executionTimeAfterFirst / expectedIterationTime;
         return 1 + executionsAfterFirst;
     }
+
+    public async Task Assert_NoExecution_WhileInitialDelay(JobType jobType, double tolerance = .75)
+    {
+        // While the delay is not over, the job should not have executed.
+        while (Elapsed <= InitialDelay)
+        {
+            Assert.Equal(GetEstimatedExecutionCount(jobType), ExecutionCount, tolerance);
+            await Task.Delay(ExecutionTime);
+        }
+    }
+
+    public async Task Assert_Iterations_While_Running(JobType jobType, int iterationsToCheck = 3, double tolerance = .75)
+    {
+        for (var i = 0; i < iterationsToCheck; i++)
+        {
+            // Now it should be equal to `i` as it should have executed
+            Assert.Equal(GetEstimatedExecutionCount(jobType), ExecutionCount, tolerance);
+            await Task.Delay(ExecutionTime);
+        }
+    }
+
+    public async Task Assert_No_FurtherIterations_After_Stopped(double finalEstimate, int iterationsToCheck = 3, double tolerance = .75)
+    {
+        for (var i = 0; i < iterationsToCheck; i++)
+        {
+            // Now it should not advance anymore as the job has been stopped.
+            await Task.Delay(ExecutionTime);
+            Assert.Equal(finalEstimate, ExecutionCount, tolerance);
+        }
+    }
+
+    public async Task WaitForExecutionAsync(int minExecutionCount = 1, CancellationToken cancellationToken = default)
+    {
+        var maxWait = ExecutionTime * (3 + minExecutionCount);
+        while (Elapsed < maxWait)
+        {
+            if (ExecutionCount >= minExecutionCount)
+            {
+                break;
+            }
+            await Task.Delay(ExecutionTime, cancellationToken);
+        }
+    }
+
+    public static JobState New(int jobDurationMs, int initialDelayMs, int intervalMs) => new(
+        TimeSpan.FromMilliseconds(jobDurationMs), TimeSpan.FromMilliseconds(initialDelayMs),
+        TimeSpan.FromMilliseconds(intervalMs));
+
+    public static JobState WithShortDurations() => New(100, 500, 500);
+    public static JobState WithLongDurations() => New(1, 3_000, 1_000);
 }
