@@ -101,11 +101,19 @@ public class JobState
 
     public async Task Assert_NoExecution_WhileInitialDelay(JobType jobType, double tolerance = .75)
     {
+        using var cts = new CancellationTokenSource(InitialDelay);
         // While the delay is not over, the job should not have executed.
-        while (Elapsed <= InitialDelay)
+        while (Elapsed < InitialDelay)
         {
             Assert.Equal(GetEstimatedExecutionCount(jobType), ExecutionCount, tolerance);
-            await Task.Delay(ExecutionTime);
+            try
+            {
+                await Task.Delay(ExecutionTime, cts.Token);
+            }
+            catch (TaskCanceledException)
+            {
+                break;
+            }
         }
     }
 
@@ -132,13 +140,21 @@ public class JobState
     public async Task WaitForExecutionAsync(int minExecutionCount = 1, CancellationToken cancellationToken = default)
     {
         var maxWait = ExecutionTime * (3 + minExecutionCount);
+        using var cts = new CancellationTokenSource(maxWait);
         while (Elapsed < maxWait)
         {
             if (ExecutionCount >= minExecutionCount)
             {
                 break;
             }
-            await Task.Delay(ExecutionTime, cancellationToken);
+            try
+            {
+                await Task.Delay(ExecutionTime, cts.Token);
+            }
+            catch (TaskCanceledException)
+            {
+                break;
+            }
         }
     }
 
