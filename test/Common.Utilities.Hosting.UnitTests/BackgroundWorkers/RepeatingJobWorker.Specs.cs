@@ -32,11 +32,11 @@ public class RepeatingJobWorkerSpecs
     }
 
     [Theory(Timeout = TestTimeout)]
-    [InlineData((int)JobType.Periodic, 1_000, 8_000, 2_000)]
-    [InlineData((int)JobType.Delayed, 1_000, 8_000, 2_000)]
+    [InlineData((int)JobType.Periodic, 1_000, 12_000, 4_000)]
+    [InlineData((int)JobType.Delayed, 1_000, 12_000, 4_000)]
     // Jobs where the duration is higher than the repeat period.
-    [InlineData((int)JobType.Periodic, 3_000, 8_000, 2_000)]
-    [InlineData((int)JobType.Delayed, 3_000, 8_000, 2_000)]
+    [InlineData((int)JobType.Periodic, 5_000, 12_000, 4_000)]
+    [InlineData((int)JobType.Delayed, 5_000, 12_000, 4_000)]
     public async Task Should_Execute_The_Job(int jobTypeId, int jobDurationMs, int initialDelayMs, int intervalMs)
     {
         var jobType = jobTypeId.ToJobType();
