@@ -18,14 +18,6 @@ public static class JobTypeExtensions
 
 public class JobState
 {
-    static JobState()
-    {
-        // Increase the completion threads
-        const int multiplier = 10;
-        ThreadPool.GetMinThreads(out var workerThreads, out var completionPortThreads);
-        Console.WriteLine($"Worker threads: {workerThreads}, Completion port threads: {completionPortThreads}");
-        ThreadPool.SetMinThreads(workerThreads * multiplier, completionPortThreads * multiplier);
-    }
     public int ExecutionCount { get; private set; }
     public TimeSpan JobDuration { get; init; }
     public TimeSpan InitialDelay { get; init; }
@@ -34,7 +26,8 @@ public class JobState
 
     private DateTime? _start;
     private DateTime? _stop;
-    private static readonly TimeSpan s_contextSwitchingTime = TimeSpan.FromMilliseconds(37);
+    private static readonly TimeSpan s_contextSwitchingTime = TimeSpan.FromMilliseconds(3);
+    private static readonly double s_tolerance = .4;
 
     public JobState(TimeSpan jobDuration, TimeSpan initialDelay, TimeSpan period)
     {
@@ -61,7 +54,7 @@ public class JobState
         ExecutionCount++;
     }
 
-    public int GetEstimatedExecutionCount(JobType jobType)
+    public double GetEstimatedExecutionCount(JobType jobType)
     {
         var end = _stop ?? DateTime.UtcNow;
         var start = _start ?? DateTime.UtcNow;
@@ -71,13 +64,12 @@ public class JobState
             return 0;
         }
 
-        var res = jobType switch
+        return jobType switch
         {
             JobType.Periodic => GetCountForPeriodic(elapsed),
             JobType.Delayed => GetCountForDelayed(elapsed),
             _ => -1,
         };
-        return (int)Math.Floor(res);
     }
 
     private double GetCountForPeriodic(TimeSpan elapsed)
@@ -110,7 +102,7 @@ public class JobState
 
     public async Task Assert_NoExecution_WhileInitialDelay(JobType jobType)
     {
-        var delayToUse = InitialDelay - (2 * s_contextSwitchingTime);
+        var delayToUse = InitialDelay - s_contextSwitchingTime;
         if (delayToUse < TimeSpan.Zero)
         {
             return;
@@ -120,7 +112,7 @@ public class JobState
         // While the delay is not over, the job should not have executed.
         while (Elapsed < InitialDelay)
         {
-            Assert.Equal(GetEstimatedExecutionCount(jobType), ExecutionCount);
+            Assert.Equal(GetEstimatedExecutionCount(jobType), ExecutionCount, s_tolerance);
             try
             {
                 await Task.Delay(ExecutionTime, cts.Token);
@@ -138,7 +130,7 @@ public class JobState
         for (var i = 0; i < iterationsToCheck; i++)
         {
             // Now it should be equal to `i` as it should have executed
-            Assert.Equal(GetEstimatedExecutionCount(jobType), ExecutionCount);
+            Assert.Equal(GetEstimatedExecutionCount(jobType), ExecutionCount, s_tolerance);
             try
             {
                 await Task.Delay(ExecutionTime, cts.Token);
