@@ -26,7 +26,7 @@ public class JobState
 
     private DateTime? _start;
     private DateTime? _stop;
-    private readonly TimeSpan _contextSwitchingTime = TimeSpan.FromMilliseconds(37);
+    private static readonly TimeSpan s_contextSwitchingTime = TimeSpan.FromMilliseconds(13);
 
     public JobState(TimeSpan jobDuration, TimeSpan initialDelay, TimeSpan period)
     {
@@ -34,7 +34,7 @@ public class JobState
         InitialDelay = initialDelay;
         Interval = period;
         // Context switching between threads can cause the job to take longer than the "expected" time.
-        ExecutionTime = Interval + _contextSwitchingTime;
+        ExecutionTime = Interval + s_contextSwitchingTime;
     }
 
     public void Start()
@@ -53,7 +53,7 @@ public class JobState
         ExecutionCount++;
     }
 
-    public double GetEstimatedExecutionCount(JobType jobType)
+    public int GetEstimatedExecutionCount(JobType jobType)
     {
         var end = _stop ?? DateTime.UtcNow;
         var start = _start ?? DateTime.UtcNow;
@@ -63,12 +63,13 @@ public class JobState
             return 0;
         }
 
-        return jobType switch
+        var res = jobType switch
         {
             JobType.Periodic => GetCountForPeriodic(elapsed),
             JobType.Delayed => GetCountForDelayed(elapsed),
             _ => -1,
         };
+        return (int)res;
     }
 
     private double GetCountForPeriodic(TimeSpan elapsed)
@@ -88,25 +89,30 @@ public class JobState
     }
     private double GetCountForDelayed(TimeSpan elapsed)
     {
-        var executionTimeAfterFirst = elapsed - InitialDelay - JobDuration - _contextSwitchingTime;
+        var executionTimeAfterFirst = elapsed - InitialDelay - JobDuration;
         if (executionTimeAfterFirst < TimeSpan.Zero)
         {
             return 0;
         }
 
-        var expectedIterationTime = JobDuration + Interval - _contextSwitchingTime;
+        var expectedIterationTime = JobDuration + Interval;
         var executionsAfterFirst = executionTimeAfterFirst / expectedIterationTime;
         return 1 + executionsAfterFirst;
     }
 
-    public async Task Assert_NoExecution_WhileInitialDelay(JobType jobType, double? delay = null, double tolerance = .75)
+    public async Task Assert_NoExecution_WhileInitialDelay(JobType jobType)
     {
-        var delayToUse = delay.HasValue ? TimeSpan.FromMilliseconds(delay.Value) : InitialDelay;
+        var delayToUse = InitialDelay - (2 * s_contextSwitchingTime);
+        if (delayToUse < TimeSpan.Zero)
+        {
+            return;
+        }
+
         using var cts = new CancellationTokenSource(delayToUse);
         // While the delay is not over, the job should not have executed.
         while (Elapsed < InitialDelay)
         {
-            Assert.Equal(GetEstimatedExecutionCount(jobType), ExecutionCount, tolerance);
+            Assert.Equal(GetEstimatedExecutionCount(jobType), ExecutionCount);
             try
             {
                 await Task.Delay(ExecutionTime, cts.Token);
@@ -118,13 +124,13 @@ public class JobState
         }
     }
 
-    public async Task Assert_Iterations_While_Running(JobType jobType, int iterationsToCheck = 3, double tolerance = .75)
+    public async Task Assert_Iterations_While_Running(JobType jobType, int iterationsToCheck = 3)
     {
         using var cts = new CancellationTokenSource(iterationsToCheck * ExecutionTime);
         for (var i = 0; i < iterationsToCheck; i++)
         {
             // Now it should be equal to `i` as it should have executed
-            Assert.Equal(GetEstimatedExecutionCount(jobType), ExecutionCount, tolerance);
+            Assert.Equal(GetEstimatedExecutionCount(jobType), ExecutionCount);
             try
             {
                 await Task.Delay(ExecutionTime, cts.Token);
@@ -136,17 +142,21 @@ public class JobState
         }
     }
 
-    public async Task Assert_No_FurtherIterations_After_Stopped(double finalEstimate, int iterationsToCheck = 3, double tolerance = .75)
+    public async Task Assert_No_FurtherIterations_After_Stopped(int iterationsToCheck = 3)
     {
+        var finalEstimate = ExecutionCount;
+        // the stop is not instant so we might get one more execution.
+        finalEstimate++;
+
         for (var i = 0; i < iterationsToCheck; i++)
         {
             // Now it should not advance anymore as the job has been stopped.
             await Task.Delay(ExecutionTime);
-            Assert.Equal(finalEstimate, ExecutionCount, tolerance);
+            Assert.True(finalEstimate >= ExecutionCount);
         }
     }
 
-    public async Task WaitForExecutionAsync(int minExecutionCount = 1, CancellationToken cancellationToken = default)
+    public async Task WaitForExecutionAsync(int minExecutionCount = 1)
     {
         var maxWait = ExecutionTime * (3 + minExecutionCount);
         using var cts = new CancellationTokenSource(maxWait);

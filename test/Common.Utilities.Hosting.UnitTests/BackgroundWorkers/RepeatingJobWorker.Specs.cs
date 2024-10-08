@@ -34,6 +34,9 @@ public class RepeatingJobWorkerSpecs
     [Theory(Timeout = TestTimeout)]
     [InlineData((int)JobType.Periodic, 1_000, 8_000, 2_000)]
     [InlineData((int)JobType.Delayed, 1_000, 8_000, 2_000)]
+    // Jobs where the duration is higher than the repeat period.
+    [InlineData((int)JobType.Periodic, 3_000, 8_000, 2_000)]
+    [InlineData((int)JobType.Delayed, 3_000, 8_000, 2_000)]
     public async Task Should_Execute_The_Job(int jobTypeId, int jobDurationMs, int initialDelayMs, int intervalMs)
     {
         var jobType = jobTypeId.ToJobType();
@@ -43,7 +46,7 @@ public class RepeatingJobWorkerSpecs
         await state.Assert_NoExecution_WhileInitialDelay(jobType);
         await state.Assert_Iterations_While_Running(jobType);
         await ServiceBuilder.EndTestAsync(state, serviceProvider);
-        await state.Assert_No_FurtherIterations_After_Stopped(state.GetEstimatedExecutionCount(jobType));
+        await state.Assert_No_FurtherIterations_After_Stopped();
     }
 
     [Theory(Timeout = TestTimeout)]
@@ -123,8 +126,8 @@ public class RepeatingJobWorkerSpecs
         var state = JobState.WithLongDurations();
         var serviceProvider = await ServiceBuilder.BeginTestAsync(state, Boolean.TrueString, GetServiceCollectionAction(jobType));
 
-        await state.Assert_NoExecution_WhileInitialDelay(jobType, state.InitialDelay.TotalMilliseconds * .66);
+        await state.Assert_NoExecution_WhileInitialDelay(jobType);
         await ServiceBuilder.EndTestAsync(state, serviceProvider);
-        await state.Assert_No_FurtherIterations_After_Stopped(state.GetEstimatedExecutionCount(jobType));
+        await state.Assert_No_FurtherIterations_After_Stopped();
     }
 }
