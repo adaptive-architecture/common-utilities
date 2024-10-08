@@ -69,7 +69,7 @@ public class JobState
             JobType.Delayed => GetCountForDelayed(elapsed),
             _ => -1,
         };
-        return (int)res;
+        return (int)Math.Floor(res);
     }
 
     private double GetCountForPeriodic(TimeSpan elapsed)
