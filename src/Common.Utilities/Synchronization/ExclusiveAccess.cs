@@ -1,4 +1,4 @@
-namespace AdaptArch.Common.Utilities.Synchronization;
+﻿namespace AdaptArch.Common.Utilities.Synchronization;
 
 /// <summary>
 /// A class to provide exclusive access to a resource.

@@ -1,4 +1,4 @@
-namespace AdaptArch.Common.Utilities.Extensions;
+﻿namespace AdaptArch.Common.Utilities.Extensions;
 
 /// <summary>
 /// Extension methods for <see cref="Exception"/> handling and throwing.

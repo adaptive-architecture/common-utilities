@@ -1,4 +1,4 @@
-namespace AdaptArch.Common.Utilities.Synchronization;
+﻿namespace AdaptArch.Common.Utilities.Synchronization;
 
 public class ExclusiveAccessSpecs
 {
