@@ -26,8 +26,8 @@ public class JobState
 
     private DateTime? _start;
     private DateTime? _stop;
-    private static readonly TimeSpan s_contextSwitchingTime = TimeSpan.FromMilliseconds(3);
-    private static readonly double s_tolerance = .4;
+    private static readonly TimeSpan s_contextSwitchingTime = TimeSpan.FromMilliseconds(13);
+    private const double Tolerance = .1;
 
     public JobState(TimeSpan jobDuration, TimeSpan initialDelay, TimeSpan period)
     {
@@ -59,11 +59,6 @@ public class JobState
         var end = _stop ?? DateTime.UtcNow;
         var start = _start ?? DateTime.UtcNow;
         var elapsed = end - start;
-        if (elapsed < InitialDelay)
-        {
-            return 0;
-        }
-
         return jobType switch
         {
             JobType.Periodic => GetCountForPeriodic(elapsed),
@@ -83,6 +78,7 @@ public class JobState
         var expectedIterationTime = JobDuration > Interval
             ? JobDuration
             : Interval;
+        expectedIterationTime += s_contextSwitchingTime;
 
         var executionsAfterFirst = executionTimeAfterFirst / expectedIterationTime;
         return 1 + executionsAfterFirst;
@@ -96,6 +92,8 @@ public class JobState
         }
 
         var expectedIterationTime = JobDuration + Interval;
+        expectedIterationTime += s_contextSwitchingTime;
+
         var executionsAfterFirst = executionTimeAfterFirst / expectedIterationTime;
         return 1 + executionsAfterFirst;
     }
@@ -112,7 +110,7 @@ public class JobState
         // While the delay is not over, the job should not have executed.
         while (Elapsed < InitialDelay)
         {
-            Assert.Equal(GetEstimatedExecutionCount(jobType), ExecutionCount, s_tolerance);
+            Assert.Equal(GetEstimatedExecutionCount(jobType), ExecutionCount, Tolerance);
             try
             {
                 await Task.Delay(ExecutionTime, cts.Token);
@@ -130,7 +128,7 @@ public class JobState
         for (var i = 0; i < iterationsToCheck; i++)
         {
             // Now it should be equal to `i` as it should have executed
-            Assert.Equal(GetEstimatedExecutionCount(jobType), ExecutionCount, s_tolerance);
+            Assert.Equal(GetEstimatedExecutionCount(jobType), ExecutionCount, Tolerance);
             try
             {
                 await Task.Delay(ExecutionTime, cts.Token);
@@ -178,7 +176,8 @@ public class JobState
     }
 
     public static JobState New(int jobDurationMs, int initialDelayMs, int intervalMs) => new(
-        TimeSpan.FromMilliseconds(jobDurationMs), TimeSpan.FromMilliseconds(initialDelayMs),
+        TimeSpan.FromMilliseconds(jobDurationMs),
+        TimeSpan.FromMilliseconds(initialDelayMs),
         TimeSpan.FromMilliseconds(intervalMs));
 
     public static JobState WithShortDurations() => New(100, 500, 500);
