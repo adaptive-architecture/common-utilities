@@ -18,6 +18,14 @@ public static class JobTypeExtensions
 
 public class JobState
 {
+    static JobState()
+    {
+        // Increase the completion threads
+        const int multiplier = 10;
+        ThreadPool.GetMinThreads(out var workerThreads, out var completionPortThreads);
+        Console.WriteLine($"Worker threads: {workerThreads}, Completion port threads: {completionPortThreads}");
+        ThreadPool.SetMinThreads(workerThreads * multiplier, completionPortThreads * multiplier);
+    }
     public int ExecutionCount { get; private set; }
     public TimeSpan JobDuration { get; init; }
     public TimeSpan InitialDelay { get; init; }
