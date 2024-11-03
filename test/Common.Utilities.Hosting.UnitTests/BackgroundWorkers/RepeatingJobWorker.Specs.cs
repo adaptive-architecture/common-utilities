@@ -18,8 +18,8 @@ public class RepeatingJobWorkerSpecs
 
     private static Action<ServiceCollection> GetServiceCollectionAction_Failing(JobType jobType) => jobType switch
     {
-        JobType.Periodic => svc => svc.AddBackgroundJobs().WithPeriodicJob<FailingJob>(),
-        JobType.Delayed => svc => svc.AddBackgroundJobs().WithDelayedJob<FailingJob>(),
+        JobType.Periodic => svc => svc.AddBackgroundJobs().WithPeriodicJob<FailingJob>().WithPeriodicJob<CancelledJob>(),
+        JobType.Delayed => svc => svc.AddBackgroundJobs().WithDelayedJob<FailingJob>().WithPeriodicJob<CancelledJob>(),
         _ => throw new ArgumentOutOfRangeException(nameof(jobType))
     };
 
