@@ -34,4 +34,10 @@
     <InternalsVisibleTo Include="$(AssemblyName).Redis" />
   </ItemGroup>
 
+  <!-- Add the Microsoft.Bcl.Memory package if this is lower than .Net 9/ TODO: Clean this when
+  moving to .Net 10  -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageReference Include="Microsoft.Bcl.Memory" />
+  </ItemGroup>
+
 </Project>
