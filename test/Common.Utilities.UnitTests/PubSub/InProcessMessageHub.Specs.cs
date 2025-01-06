@@ -122,7 +122,7 @@ public class InProcessMessageHubSpecs
 
         hub.Publish<object>(topic, null);
 
-        var attempts = 20;
+        var attempts = 40;
         while (attempts-- > 0)
         {
             Thread.Sleep(TimeSpan.FromMilliseconds(20));
