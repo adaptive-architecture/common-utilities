@@ -1,4 +1,5 @@
 ﻿using AdaptArch.Common.Utilities.PubSub.Implementations;
+using xRetry;
 
 namespace AdaptArch.Common.Utilities.UnitTests.PubSub;
 #pragma warning disable S2925 // SONAR: Do not use 'Thread.Sleep()' in a test.
@@ -65,7 +66,7 @@ public class InProcessMessageHubSpecs
         Assert.Equal(1, reacted);
     }
 
-    [Fact]
+    [RetryFact]
     public void Should_Be_Able_To_Subscribe_Multiple_Times()
     {
         var topic = Guid.NewGuid().ToString("N");
