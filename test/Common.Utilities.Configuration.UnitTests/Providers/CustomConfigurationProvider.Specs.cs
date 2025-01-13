@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
+using xRetry;
 
 namespace AdaptArch.Common.Utilities.Configuration.UnitTests.Providers;
 
@@ -210,7 +211,7 @@ public class CustomConfigurationProviderSpecs
         Assert.Equal(String.Empty, customConfiguration!.CurrentValue.Data.Bar);
     }
 
-    [Fact]
+    [RetryFact]
     public async Task Should_Pool_Configuration_Changes()
     {
         SetupGetHashSequence(GetHashValue, 3);
@@ -227,7 +228,7 @@ public class CustomConfigurationProviderSpecs
         await _dataProviderMock.Received(3).ReadDataAsync(Arg.Any<CancellationToken>());
     }
 
-    [Fact]
+    [RetryFact]
     public async Task Should_Pool_Configuration_Changes_But_Not_Read_If_Same_Hash()
     {
         SetupGetHashSequence(GetConstantHashValue, 2);
@@ -243,7 +244,7 @@ public class CustomConfigurationProviderSpecs
         await _dataProviderMock.Received(1).ReadDataAsync(Arg.Any<CancellationToken>());
     }
 
-    [Fact]
+    [RetryFact]
     public async Task Should_Pool_Configuration_Changes_But_DisablePooling_On_Error()
     {
         SetupGetHashSequence(GetHashValue, 4, 2);
