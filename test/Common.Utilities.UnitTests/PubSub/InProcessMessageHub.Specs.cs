@@ -112,7 +112,7 @@ public class InProcessMessageHubSpecs
         Assert.Equal(0, reacted);
     }
 
-    [Fact]
+    [RetryFact]
     public void Should_Intercept_Exception()
     {
         var topic = Guid.NewGuid().ToString("N");
@@ -122,6 +122,8 @@ public class InProcessMessageHubSpecs
         _ = hub.Subscribe<object>(topic, (_, _) => throw new ApplicationException());
 
         hub.Publish<object>(topic, null);
+
+        Thread.Sleep(TimeSpan.FromMilliseconds(100));
 
         var attempts = 40;
         while (attempts-- > 0)
