@@ -1,4 +1,4 @@
-using AdaptArch.Common.Utilities.AspNetCore.UnitTests.Fixtures;
+﻿using AdaptArch.Common.Utilities.AspNetCore.UnitTests.Fixtures;
 using Xunit;
 
 namespace AdaptArch.Common.Utilities.AspNetCore.UnitTests.Middlewares.ResponseTransform;

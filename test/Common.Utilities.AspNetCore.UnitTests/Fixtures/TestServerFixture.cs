@@ -1,4 +1,4 @@
-using AdaptArch.Common.Utilities.AspNetCore.UnitTests.Middlewares.ResponseTransform;
+﻿using AdaptArch.Common.Utilities.AspNetCore.UnitTests.Middlewares.ResponseTransform;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

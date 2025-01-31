@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using AdaptArch.Common.Utilities.AspNetCore.Middlewares.ResponseTransform;
 using Microsoft.AspNetCore.Builder;
 
