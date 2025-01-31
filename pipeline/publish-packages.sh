@@ -24,6 +24,7 @@ fi
 
 projects=( \
   "Common.Utilities" \
+  "Common.Utilities.AspNetCore" \
   "Common.Utilities.Redis" \
   "Common.Utilities.Configuration" \
   "Common.Utilities.Hosting" \
