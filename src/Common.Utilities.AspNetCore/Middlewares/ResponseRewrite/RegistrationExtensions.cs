@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using AdaptArch.Common.Utilities.AspNetCore.Middlewares.ResponseTransform;
+using AdaptArch.Common.Utilities.AspNetCore.Middlewares.ResponseRewrite;
 using Microsoft.AspNetCore.Builder;
 
 // Keep this in the "Microsoft.Extensions.DependencyInjection" for easy access.
@@ -12,22 +12,22 @@ namespace Microsoft.Extensions.DependencyInjection;
 public static class RegistrationExtensions
 {
     /// <summary>
-    /// Add the response rewrite factory to the service collection.
+    /// Add the response rewriter factory to the service collection.
     /// </summary>
     /// <typeparam name="T">The type of the response rewrite factory.</typeparam>
     /// <param name="services">The service collection.</param>
-    public static IServiceCollection AddResponseTransformServiceFactory<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(this IServiceCollection services)
-        where T : class, IResponseTransformServiceFactory
+    public static IServiceCollection AddResponseRewriterFactory<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(this IServiceCollection services)
+        where T : class, IResponseRewriterFactory
     {
-        return services.AddSingleton<IResponseTransformServiceFactory, T>();
+        return services.AddSingleton<IResponseRewriterFactory, T>();
     }
 
     /// <summary>
     /// Add the response rewrite middleware to the application pipeline.
     /// </summary>
     /// <param name="builder">The application builder.</param>
-    public static IApplicationBuilder UseResponseTransformer(this IApplicationBuilder builder)
+    public static IApplicationBuilder UseResponseRewrite(this IApplicationBuilder builder)
     {
-        return builder.UseMiddleware<ResponseTransformMiddleware>();
+        return builder.UseMiddleware<ResponseRewriteMiddleware>();
     }
 }

@@ -1,4 +1,4 @@
-﻿using AdaptArch.Common.Utilities.AspNetCore.UnitTests.Middlewares.ResponseTransform;
+﻿using AdaptArch.Common.Utilities.AspNetCore.UnitTests.Middlewares.ResponseRewrite;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,18 +23,19 @@ public sealed class TestServerFixture : IDisposable
                     .ConfigureServices(services =>
                     {
                         services
-                            .AddResponseTransformServiceFactory<ResponseTransformServiceFactory>()
+                            .AddResponseRewriterFactory<ResponseRewriterFactory>()
                             .AddRouting();
                     })
                     .Configure(app =>
                     {
                         app
                             .UseRouting()
-                            .UseResponseTransformer()
+                            .UseResponseRewrite()
                             .UseEndpoints(endpoints =>
                             {
-                                endpoints.MapGet("/ping", async context => await context.Response.WriteAsync("pong"));
-                                endpoints.MapGet("/transformed", async context => await context.Response.WriteAsync("NOT transformed"));
+                                endpoints.MapGet("/ping", () => Results.Text("pong"));
+                                endpoints.MapGet("/transformed", () => Results.Text("NOT transformed"));
+                                endpoints.MapGet("/no-content", () => Results.NoContent());
                             });
                     });
             })
