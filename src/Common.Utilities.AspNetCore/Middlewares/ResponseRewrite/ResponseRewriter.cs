@@ -15,4 +15,10 @@ public interface IResponseRewriter : IDisposable
     /// <param name="originalStream">The original response stream.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
     public abstract Task RewriteAsync(ReadOnlyMemory<byte> buffer, HttpContext context, Stream originalStream, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Determines whether the response can be rewritten.
+    /// </summary>
+    /// <param name="context">The <see cref="HttpContext"/>.</param>
+    public bool CanRewrite(HttpContext context);
 }

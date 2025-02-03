@@ -74,7 +74,7 @@ internal sealed class ResponseStreamWrapper : Stream
 
         if (!rewrote)
         {
-            _originalStream?.Write(buffer, offset, count);
+            _originalStream!.Write(buffer, offset, count);
         }
     }
 
@@ -93,7 +93,7 @@ internal sealed class ResponseStreamWrapper : Stream
     private async Task<bool> TryRewriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken)
     {
         var rewriter = _rewriterFactory!.GetRewriter(_context!);
-        if (rewriter == null)
+        if (rewriter?.CanRewrite(_context!) != true)
         {
             return false;
         }

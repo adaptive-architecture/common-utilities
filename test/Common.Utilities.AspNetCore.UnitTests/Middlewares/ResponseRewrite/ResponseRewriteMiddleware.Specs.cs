@@ -56,4 +56,15 @@ public class ResponseRewriteMiddlewareSpecs
         Assert.Equal(0, response.Content.Headers.ContentLength);
         Assert.Equal(204, (int)response.StatusCode);
     }
+
+    [Fact]
+    public async Task It_Should_Not_Fail_When_Testing_Body_Methods()
+    {
+        var client = _fixture.GetClient();
+        var response = await client.GetAsync("/methods-tests");
+
+        response.EnsureSuccessStatusCode();
+        Assert.Equal(0, response.Content.Headers.ContentLength);
+        Assert.Equal(200, (int)response.StatusCode);
+    }
 }

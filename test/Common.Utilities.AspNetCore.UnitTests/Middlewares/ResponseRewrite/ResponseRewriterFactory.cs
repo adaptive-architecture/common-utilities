@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using AdaptArch.Common.Utilities.AspNetCore.Middlewares.ResponseRewrite;
 using Microsoft.AspNetCore.Http;
+using Xunit;
 
 namespace AdaptArch.Common.Utilities.AspNetCore.UnitTests.Middlewares.ResponseRewrite;
 
@@ -8,13 +9,13 @@ public class ResponseRewriterFactory : IResponseRewriterFactory
 {
     public IResponseRewriter GetRewriter(HttpContext context)
     {
-        if (context.Request.Path == "/transformed" && Utf8StringResponseRewriter.CanRewrite(context))
+        if (context.Request.Path == "/transformed" || context.Request.Path == "/no-content")
         {
             return new Utf8StringResponseRewriter();
         }
-        else if (context.Request.Path == "/no-content")
+        else if (context.Request.Path == "/methods-tests")
         {
-            return new Utf8StringResponseRewriter();
+            return new MethodsTestRewriter();
         }
 
         return null;
@@ -35,7 +36,7 @@ public sealed class Utf8StringResponseRewriter : IResponseRewriter
 
     public void Dispose() { }
 
-    public static bool CanRewrite(HttpContext context)
+    public bool CanRewrite(HttpContext context)
     {
         if (context.Response.StatusCode == StatusCodes.Status204NoContent)
         {
@@ -47,4 +48,24 @@ public sealed class Utf8StringResponseRewriter : IResponseRewriter
             && (contentType.Contains("text/", StringComparison.OrdinalIgnoreCase)
                 || contentType.Contains("/json", StringComparison.OrdinalIgnoreCase));
     }
+}
+
+public sealed class MethodsTestRewriter : IResponseRewriter
+{
+    public Task RewriteAsync(ReadOnlyMemory<byte> buffer, HttpContext context, Stream originalStream, CancellationToken cancellationToken)
+    {
+        Assert.False(context.Response.Body.CanRead);
+        Assert.False(context.Response.Body.CanSeek);
+        Assert.True(context.Response.Body.CanWrite);
+
+        Assert.Throws<NotSupportedException>(() => context.Response.Body.Length);
+        Assert.Throws<NotSupportedException>(() => context.Response.Body.Position);
+        Assert.Throws<NotSupportedException>(() => context.Response.Body.Position = 0);
+
+        return Task.CompletedTask;
+    }
+
+    public void Dispose() { }
+
+    public bool CanRewrite(HttpContext context) => true;
 }

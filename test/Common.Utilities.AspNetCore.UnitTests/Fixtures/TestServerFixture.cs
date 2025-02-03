@@ -29,12 +29,13 @@ public sealed class TestServerFixture : IDisposable
                     .Configure(app =>
                     {
                         app
-                            .UseRouting()
                             .UseResponseRewrite()
+                            .UseRouting()
                             .UseEndpoints(endpoints =>
                             {
                                 endpoints.MapGet("/ping", () => Results.Text("pong"));
                                 endpoints.MapGet("/transformed", () => Results.Text("NOT transformed"));
+                                endpoints.MapGet("/methods-tests", () => Results.Text("tests"));
                                 endpoints.MapGet("/no-content", () => Results.NoContent());
                             });
                     });
