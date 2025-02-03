@@ -11,11 +11,14 @@ A set of common utilities to be used across projects and reduce amount of time w
 |AdaptArch.Common.Utilities.Configuration|[![NuGet](https://img.shields.io/nuget/v/AdaptArch.Common.Utilities.Configuration.svg?style=flat-square)![Nuget](https://img.shields.io/nuget/dt/AdaptArch.Common.Utilities.Configuration?style=flat-square)][2]|
 |AdaptArch.Common.Utilities.Hosting|[![NuGet](https://img.shields.io/nuget/v/AdaptArch.Common.Utilities.Hosting.svg?style=flat-square)![Nuget](https://img.shields.io/nuget/dt/AdaptArch.Common.Utilities.Hosting?style=flat-square)][3]|
 |AdaptArch.Common.Utilities.Redis|[![NuGet](https://img.shields.io/nuget/v/AdaptArch.Common.Utilities.Redis.svg?style=flat-square)![Nuget](https://img.shields.io/nuget/dt/AdaptArch.Common.Utilities.Redis?style=flat-square)][4]|
+|AdaptArch.Common.Utilities.AspNetCore|[![NuGet](https://img.shields.io/nuget/v/AdaptArch.Common.Utilities.AspNetCore.svg?style=flat-square)![Nuget](https://img.shields.io/nuget/dt/AdaptArch.Common.Utilities.AspNetCore?style=flat-square)][5]| 
 
 [1]: https://www.nuget.org/packages/AdaptArch.Common.Utilities
 [2]: https://www.nuget.org/packages/AdaptArch.Common.Utilities.Configuration
 [3]: https://www.nuget.org/packages/AdaptArch.Common.Utilities.Hosting
 [4]: https://www.nuget.org/packages/AdaptArch.Common.Utilities.Redis
+[5]: https://www.nuget.org/packages/AdaptArch.Common.Utilities.AspNetCore
+
 
 ## Documentation
 
