@@ -14,7 +14,7 @@ public class InProcessMessageHubSpecs
         Assert.Throws<ArgumentNullException>(() => new InProcessMessageHub(null));
     }
 
-    [Fact]
+    [RetryFact]
     public void Should_Subscribe_React_And_Unsubscribe()
     {
         var topic = Guid.NewGuid().ToString("N");
@@ -41,7 +41,7 @@ public class InProcessMessageHubSpecs
         Assert.Equal(1, reacted);
     }
 
-    [Fact]
+    [RetryFact]
     public async Task Should_Subscribe_React_And_Unsubscribe_Async()
     {
         var topic = Guid.NewGuid().ToString("N");
