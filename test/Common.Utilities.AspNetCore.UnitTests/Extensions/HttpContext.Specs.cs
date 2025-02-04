@@ -63,6 +63,4 @@ public class HttpContextSpecs
 
         Assert.False(context.IsLocal());
     }
-
-
 }
