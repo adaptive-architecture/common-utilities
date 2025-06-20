@@ -17,6 +17,4 @@ namespace AdaptArch.Common.Utilities.PubSub.Implementations;
 /// by providing a minimal, do-nothing configuration implementation.
 /// </para>
 /// </remarks>
-public sealed class NullMessageHubOptions : MessageHubOptions
-{
-}
+public sealed class NullMessageHubOptions : MessageHubOptions;
