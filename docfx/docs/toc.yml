@@ -1,10 +1,26 @@
-- name: Handler Discovery
-  href: handler-discovery.md
-- name: Redis Message Bus
-  href: redis-message-bus.md
-- name: Custom Configuration Provider
-  href: custom-configuration-provider.md
-- name: Background Jobs
-  href: background-jobs.md
-- name: Asp.Net Response Rewrite
-  href: asp-dotnet-response-rewrite.md
+- name: Core Utilities
+  items:
+  - name: Extension Methods
+    href: extension-methods.md
+  - name: Encoding Utilities
+    href: encoding-utilities.md
+  - name: Global Abstractions
+    href: global-abstractions.md
+  - name: Delay and Jitter
+    href: delay-and-jitter.md
+  - name: Synchronization Utilities
+    href: synchronization-utilities.md
+  - name: In-Process PubSub
+    href: in-process-pubsub.md
+- name: Specialized Features
+  items:
+  - name: Handler Discovery
+    href: handler-discovery.md
+  - name: Redis Message Bus
+    href: redis-message-bus.md
+  - name: Custom Configuration Provider
+    href: custom-configuration-provider.md
+  - name: Background Jobs
+    href: background-jobs.md
+  - name: Asp.Net Response Rewrite
+    href: asp-dotnet-response-rewrite.md
