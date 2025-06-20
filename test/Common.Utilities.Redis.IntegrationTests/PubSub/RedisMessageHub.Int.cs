@@ -1,8 +1,18 @@
-﻿using AdaptArch.Common.Utilities.Redis.IntegrationTests.Fixtures;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using AdaptArch.Common.Utilities.PubSub.Contracts;
+using AdaptArch.Common.Utilities.PubSub.Implementations;
+using AdaptArch.Common.Utilities.Redis.IntegrationTests.Fixtures;
 using AdaptArch.Common.Utilities.Redis.PubSub;
+using AdaptArch.Common.Utilities.Redis.Serialization.Implementations;
 
 namespace AdaptArch.Common.Utilities.Redis.IntegrationTests.PubSub;
 #pragma warning disable S2925 // SONAR: Do not use 'Thread.Sleep()' in a test.
+
+[JsonSerializable(typeof(Message<RedisMessageHubInt.MyMessage>))]
+[JsonSerializable(typeof(IMessage<RedisMessageHubInt.MyMessage>))]
+public partial class RedisMessageHubIntJsonSerializerContext : JsonSerializerContext;
+
 
 [Collection(RedisCollection.CollectionName)]
 public class RedisMessageHubInt
@@ -18,7 +28,16 @@ public class RedisMessageHubInt
 
     public RedisMessageHubInt(RedisFixture fixture)
     {
-        var hub = new RedisMessageHub(fixture.Connection, new RedisMessageHubOptions());
+        var jsonSerializerOptions = new JsonSerializerOptions();
+        jsonSerializerOptions.TypeInfoResolverChain.Add(RedisMessageHubIntJsonSerializerContext.Default);
+        jsonSerializerOptions.TypeInfoResolverChain.Add(DefaultJsonSerializerContext.Default);
+
+        var jsonSerializer = new JsonDataSerializer(new RedisMessageHubIntJsonSerializerContext(jsonSerializerOptions));
+
+        var hub = new RedisMessageHub(fixture.Connection, new RedisMessageHubOptions
+        {
+            DataSerializer = jsonSerializer,
+        });
         _messageHub = hub;
         _messageHubAsync = hub;
     }

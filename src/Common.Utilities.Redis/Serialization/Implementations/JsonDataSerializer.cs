@@ -1,5 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.Json;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using AdaptArch.Common.Utilities.Redis.Serialization.Contracts;
 using StackExchange.Redis;
 
@@ -11,12 +11,18 @@ namespace AdaptArch.Common.Utilities.Redis.Serialization.Implementations;
 /// <remarks>
 /// Initializes a new instance of the <see cref="JsonDataSerializer"/> class.
 /// </remarks>
-[RequiresDynamicCode("The native code for this instantiation might not be available at runtime.")]
-[RequiresUnreferencedCode("Calls methods from the \"System.Reflection\" namespace.")]
 public class JsonDataSerializer : IDataSerializer
 {
+    private readonly JsonSerializerContext? _jsonSerializerContext;
+
     /// <inheritdoc />
-    public RedisValue Serialize<T>(T data) => JsonSerializer.Serialize(data);
+    public JsonDataSerializer(JsonSerializerContext? jsonSerializerContext = null)
+    {
+        _jsonSerializerContext = jsonSerializerContext ?? new DefaultJsonSerializerContext();
+    }
+
+    /// <inheritdoc />
+    public RedisValue Serialize<T>(T data) => JsonSerializer.Serialize(data, typeof(T), _jsonSerializerContext!);
 
     /// <inheritdoc />
     public T? Deserialize<T>(RedisValue data)
@@ -26,6 +32,18 @@ public class JsonDataSerializer : IDataSerializer
             throw new ArgumentNullException(nameof(data));
         }
 
-        return JsonSerializer.Deserialize<T?>(data.ToString());
+        if (data.IsNull)
+        {
+            return default;
+        }
+
+        using var ms = new MemoryStream(data!);
+        var obj = JsonSerializer.Deserialize(ms, typeof(T), _jsonSerializerContext!);
+        if (obj == default)
+        {
+            return default;
+        }
+
+        return (T)obj;
     }
 }

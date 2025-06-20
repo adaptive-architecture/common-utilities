@@ -1,11 +1,16 @@
-﻿using AdaptArch.Common.Utilities.Redis.Serialization.Implementations;
+﻿using System.Text.Json.Serialization;
+using AdaptArch.Common.Utilities.Redis.Serialization.Implementations;
 using StackExchange.Redis;
 
 namespace AdaptArch.Common.Utilities.Redis.UnitTests.Serialization;
 
+[JsonSerializable(typeof(JsonDataSerializerSpecs.SerializationDataObject))]
+public partial class UnitTestJsonSerializerContext : JsonSerializerContext;
+
+
 public class JsonDataSerializerSpecs
 {
-    private static readonly JsonDataSerializer s_serializer = new();
+    private static readonly JsonDataSerializer s_serializer = new(new UnitTestJsonSerializerContext());
 
     public record SerializationDataObject
     {

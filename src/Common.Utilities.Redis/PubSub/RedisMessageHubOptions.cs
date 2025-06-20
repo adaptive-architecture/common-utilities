@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using AdaptArch.Common.Utilities.PubSub.Implementations;
+﻿using AdaptArch.Common.Utilities.PubSub.Implementations;
 using AdaptArch.Common.Utilities.Redis.Serialization.Contracts;
 using AdaptArch.Common.Utilities.Redis.Serialization.Implementations;
 
@@ -8,8 +7,6 @@ namespace AdaptArch.Common.Utilities.Redis.PubSub;
 /// <summary>
 /// Configuration options for <see cref="RedisMessageHub"/>.
 /// </summary>
-[RequiresDynamicCode("The native code for this instantiation might not be available at runtime.")]
-[RequiresUnreferencedCode("Calls methods from the \"System.Reflection\" namespace.")]
 public class RedisMessageHubOptions : MessageHubOptions
 {
     /// <summary>
