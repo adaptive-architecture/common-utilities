@@ -13,7 +13,6 @@ namespace AdaptArch.Common.Utilities.Redis.IntegrationTests.PubSub;
 [JsonSerializable(typeof(IMessage<RedisMessageHubInt.MyMessage>))]
 public partial class RedisMessageHubIntJsonSerializerContext : JsonSerializerContext;
 
-
 [Collection(RedisCollection.CollectionName)]
 public class RedisMessageHubInt
 {

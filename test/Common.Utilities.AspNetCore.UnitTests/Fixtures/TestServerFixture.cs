@@ -29,6 +29,17 @@ public sealed class TestServerFixture : IDisposable
                     .Configure(app =>
                     {
                         app
+                            .Use(async (ctx, next) =>
+                            {
+                                try
+                                {
+                                    await next(ctx);
+                                }
+                                catch
+                                {
+                                    ctx.Response.StatusCode = 500;
+                                }
+                            })
                             .UseResponseRewrite()
                             .UseRouting()
                             .UseEndpoints(endpoints =>
@@ -37,6 +48,7 @@ public sealed class TestServerFixture : IDisposable
                                 endpoints.MapGet("/transformed", () => Results.Text("NOT transformed"));
                                 endpoints.MapGet("/methods-tests", () => Results.Text("tests"));
                                 endpoints.MapGet("/no-content", () => Results.NoContent());
+                                endpoints.MapGet("/failure", _ => throw new InvalidOperationException("This is a failure route"));
                             });
                     });
             })

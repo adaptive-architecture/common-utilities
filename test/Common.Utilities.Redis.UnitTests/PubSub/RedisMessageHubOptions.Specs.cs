@@ -22,4 +22,10 @@ public class RedisMessageHubOptionsSpecs
         options.DataSerializer = serializer;
         Assert.Same(serializer, options.DataSerializer);
     }
+
+    [Fact]
+    public void Should_Throw_When_Provided_Null_Argument()
+    {
+        Assert.Throws<ArgumentNullException>(() => new RedisMessageHubOptions(null));
+    }
 }

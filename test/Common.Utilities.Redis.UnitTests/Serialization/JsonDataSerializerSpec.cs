@@ -7,7 +7,6 @@ namespace AdaptArch.Common.Utilities.Redis.UnitTests.Serialization;
 [JsonSerializable(typeof(JsonDataSerializerSpecs.SerializationDataObject))]
 public partial class UnitTestJsonSerializerContext : JsonSerializerContext;
 
-
 public class JsonDataSerializerSpecs
 {
     private static readonly JsonDataSerializer s_serializer = new(new UnitTestJsonSerializerContext());
