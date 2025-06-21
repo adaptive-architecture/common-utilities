@@ -1,15 +1,24 @@
 # Background jobs
 
-Sometimes in your application you might need to execute jobs in the background to achieve certain goals.
+Execute jobs in the background to perform long-running tasks asynchronously without blocking your application's main operations.
 
-## Usage
+## Overview
 
-For the purpose of this sample we will assume we need to run 2 jobs:
+Background jobs enable you to:
+
+- ✅ **Decouple heavy operations** from request-response cycles
+- ✅ **Improve application responsiveness** by offloading work to background threads
+- ✅ **Schedule periodic tasks** with configurable intervals
+- ✅ **Share state between jobs** using dependency injection
+
+## Basic Usage
+
+This example demonstrates running two background jobs:
 - One job to execute continuously and perform some heavy computations, like generating some hashes. We will simulate this by waiting for some time and then returning a random number.
 - One job to periodically report the results of the heavy computations. We will simulate this by printing to the console the generated numbers.
 
 
-To use the background jobs feature we will define two classes that implement he `IJob` interface.
+Define two classes that implement the `IJob` interface:
 
 ``` csharp
 
@@ -57,7 +66,7 @@ To use the background jobs feature we will define two classes that implement he 
 
 ```
 
-The configuration for the application would look like:
+Configure the application settings:
 
 ``` json
 
@@ -80,7 +89,7 @@ The configuration for the application would look like:
 
 ```
 
-The sample application would look like the the following
+Register the background jobs with dependency injection:
 
 ``` csharp
 

@@ -1,22 +1,28 @@
-# Asp.Net Response Rewrite
+# ASP.NET Response Rewrite
 
-Sometimes in your application you might need to rewrite the response of the API.
+Modify HTTP response content before it reaches the client using customizable rewriter implementations.
 
-## Word of caution
-Processing the response is going to be a resource intensive operation and should be done carefully.
+## Overview
 
-When doing this in a production application benchmark your implementation as it can have a detrimental impact on performance.
+Response rewriting enables you to:
 
-## Usage
+- ✅ **Transform response content** dynamically based on request context
+- ✅ **Apply conditional modifications** using custom logic
+- ✅ **Maintain performance** through selective processing
+- ✅ **Support multiple content types** with different rewriters
 
-In order to rewrite the response of the API you need to perform the following steps.
+> **Warning**: Response processing is resource-intensive and can impact performance. Always benchmark your implementation in production environments.
+
+## Basic Usage
+
+Implement response rewriting by following these steps:
 
 ### Define the `IResponseRewriter`
 
-Let's assume you want to uppercase all the instances of `foo` in the response.
+This example demonstrates uppercasing all instances of `foo` in the response.
 
-To achieve this we will implement a `IResponseRewriter`. Our naive implementation will read the entire original response, look for the word `foo` and replace it with `FOO`.
-Since we are reading the string from what we assume is a UTF8 encoded byte stream we will place this constrain in the `CanRewrite` method.
+Create an `IResponseRewriter` implementation that reads the response, finds the word `foo`, and replaces it with `FOO`.
+The `CanRewrite` method ensures we only process UTF-8 encoded text responses:
 
 ``` csharp
 public class UppercaseFooRewriter : IResponseRewriter
@@ -42,9 +48,10 @@ public class UppercaseFooRewriter : IResponseRewriter
 
 ### Define the `IResponseRewriterFactory`
 
-Depending on the needs you might have multiple responses you are looking at rewriting, each with it's own particularities. To keep things as simple as possible need to implement a `IResponseRewriterFactory` to is responsible for the following:
-* Determine if the request might be rewritten. The `MightRewrite` method will be called before the actual response gets processed and this way it can reduce the unnecessary resource usage caused by the middleware. At this point no response will be available on the `HttpContext` object.
-* Creating the `IResponseRewriter` correct for the request. In case we do not want to rewrite a response we should just return `null`.
+Create an `IResponseRewriterFactory` to manage multiple rewriter types and optimize performance. The factory handles:
+
+- **Early filtering**: The `MightRewrite` method determines if a request might need rewriting before processing the response
+- **Rewriter selection**: Creates the appropriate `IResponseRewriter` for each request, or returns `null` to skip rewriting
 
 ``` csharp
 public class ResponseRewriterFactory : IResponseRewriterFactory
@@ -74,9 +81,9 @@ public class ResponseRewriterFactory : IResponseRewriterFactory
 
 ```
 
-### Register the dependencies with the application
+### Register Dependencies
 
-In you application configuration register the necessary dependencies.
+Configure the application to use response rewriting:
 
 ``` csharp
 

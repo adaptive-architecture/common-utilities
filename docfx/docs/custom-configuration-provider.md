@@ -1,10 +1,21 @@
-# Custom configuration provider
+# Custom Configuration Provider
 
-Provide a simple way to implement your own configuration provider to without the hassle of knowing the internal workings of `Microsoft.Extensions.Configuration.ConfigurationProvider`.
+Implement custom configuration providers without the complexity of understanding Microsoft.Extensions.Configuration internals.
 
-## Defining your configuration provider
+## Overview
 
-The following code samples assume you are using a database to store the configuration values in a table called `configuration_values` similar to:
+Custom configuration providers enable you to:
+
+- ✅ **Load configuration from any source** (databases, APIs, custom files)
+- ✅ **Integrate seamlessly** with the .NET configuration system
+- ✅ **Support configuration reloading** and change notifications
+- ✅ **Simplify implementation** using the built-in data provider abstraction
+
+## Basic Usage
+
+### Database Configuration Example
+
+This example demonstrates loading configuration from a database table called `configuration_values`:
 
 |key|value|modified_date|
 |:--- |:--- | ---:|

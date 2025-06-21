@@ -1,19 +1,31 @@
 # Handler Discovery
 
-In order to facilitate the registration and reduce the boilerplate needed the `AdaptArch.Common.Utilities.Hosting` package provides a set of helper methods.
+Automatically discover and register message handlers using attribute-based registration to reduce boilerplate code and simplify dependency injection setup.
 
-## Usage
+## Overview
 
-To use the new method all you need to do is:
-- Define your handler class containing a ***public*** method that ***satisfies*** the contract of the `MessageHandler` delegate. In your class declaration you add whatever dependencies you need, these will be resolved in a ***scoped*** context.
-- Decorate the handler method with the `MessageHandlerAttribute` marker attribute (or any other attribute). You can add the `MessageHandlerAttribute` multiple times to the same method to register the handler multiple time for multiple topic.
-- In your service configuration register the necessary dependencies and the `IMessageHubAsync` implementation.
-- Call the `AddPubSubMessageHandlers` method specifying the assembly containing yor message handler and a function to determine the messages to handle based on the marker attribute. You can call this method multiple times to add handlers from multiple assemblies or using different marker attributes.
+Handler discovery enables you to:
 
+- ✅ **Reduce boilerplate** by automatically registering message handlers
+- ✅ **Use dependency injection** with scoped handler resolution
+- ✅ **Support multiple topics** per handler method
+- ✅ **Organize handlers** across multiple assemblies
+
+## Basic Usage
+
+Configure automatic handler discovery by following these steps:
+
+1. **Define handler classes** with public methods that match the `MessageHandler` delegate signature
+2. **Decorate handler methods** with `MessageHandlerAttribute` or custom attributes
+3. **Register dependencies** and the `IMessageHubAsync` implementation
+4. **Call `AddPubSubMessageHandlers`** to enable automatic discovery
+
+
+### Service Registration
+
+Configure the service container with handler discovery:
 
 ``` csharp
-// Example
-
 serviceCollection
   // Register any dependency your handler class has.
   .AddSingleton<HandlerDependency>()
@@ -26,10 +38,13 @@ serviceCollection
   .AddSingleton<IMessageHubAsync, InProcessMessageHub>()
   // Wire-up the service host and discovery configuration.
   .AddPubSubMessageHandlers<MessageHandlerAttribute>(GetType().Assembly, att => att.Topic);
+```
 
+### Handler Implementation
 
-// The class implementation
+Create handler classes with decorated methods:
 
+``` csharp
 public class MyHandler
 {
   private readonly HandlerDependency _dependency;

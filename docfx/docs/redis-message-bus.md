@@ -1,11 +1,20 @@
 # Redis message bus
 
-For some simple `pub/sub` workload it might be enough to use a Redis based implementation of `IMessageHub` or `IMessageHubAsync`.
+Implement pub/sub messaging patterns using Redis as the message broker for distributed communication between application components.
 
-## Service registration
+## Overview
+
+Redis message bus enables you to:
+
+- ✅ **Distribute messages** across multiple application instances
+- ✅ **Decouple components** through async pub/sub patterns  
+- ✅ **Scale horizontally** using Redis as a shared message broker
+- ✅ **Support AoT compilation** with configurable serialization
+
+## Service Registration
 
 ### Common Scenarios (Default Setup)
-For common scenarios, use the parameterless constructor which uses `ReflectionJsonDataSerializer`:
+Configure Redis message bus using the parameterless constructor with `ReflectionJsonDataSerializer`:
 
 ``` csharp
 // Minimal API example for common scenarios
@@ -19,7 +28,7 @@ builder.Services.AddSingleton(new RedisMessageHubOptions());
 ```
 
 ### AoT Scenarios
-For AoT scenarios, use the constructor that accepts an `IDataSerializer` with `JsonDataSerializer`:
+Configure Redis message bus for AoT compilation using the constructor that accepts an `IDataSerializer` with `JsonDataSerializer`:
 
 ``` csharp
 // AoT-compatible example
@@ -28,7 +37,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost:6379"));
 
-// Configure JSON serialization for AOT compatibility
+// Configure JSON serialization for AoT compatibility
 var jsonSerializerOptions = new JsonSerializerOptions();
 jsonSerializerOptions.TypeInfoResolverChain.Add(MyAppJsonSerializerContext.Default);
 jsonSerializerOptions.TypeInfoResolverChain.Add(DefaultJsonSerializerContext.Default);
@@ -42,7 +51,7 @@ builder.Services.AddSingleton(new RedisMessageHubOptions(jsonSerializer));
 ```
 
 ### Service Registration Options
-Regardless of which constructor you use, register the message hub service:
+Register the message hub service using your preferred approach:
 
 ``` csharp
 // Preferred way.
@@ -87,20 +96,20 @@ The Redis message bus supports two data serializers:
 ### ReflectionJsonDataSerializer (Default)
 - **Usage**: Common scenarios with runtime reflection
 - **Constructor**: `new RedisMessageHubOptions()` (parameterless)
-- **AOT Compatible**: ❌ No (requires runtime reflection)
+- **AoT Compatible**: ❌ No (requires runtime reflection)
 - **Performance**: Good for most use cases
 - **Setup**: No additional configuration required
 
 ### JsonDataSerializer  
 - **Usage**: AoT scenarios and high-performance applications
 - **Constructor**: `new RedisMessageHubOptions(IDataSerializer dataSerializer)`
-- **AOT Compatible**: ✅ Yes (with proper JsonSerializerContext)
+- **AoT Compatible**: ✅ Yes (with proper JsonSerializerContext)
 - **Performance**: Optimized for AoT compilation
 - **Setup**: Requires JsonSerializerContext configuration
 
-## AOT Compatibility and Custom JsonSerializerContext
+## AoT Compatibility and Custom JsonSerializerContext
 
-When using Native AOT compilation, the default JSON serialization behavior requires reflection which is not compatible with AOT. To support AOT scenarios, you need to provide a custom `JsonSerializerContext` that includes all the types you plan to serialize.
+When using Native AoT compilation, the default JSON serialization behavior requires reflection which is not compatible with AoT. To support AoT scenarios, you need to provide a custom `JsonSerializerContext` that includes all the types you plan to serialize.
 
 ### Creating a Custom JsonSerializerContext
 
@@ -146,9 +155,9 @@ builder.Services.AddSingleton(new RedisMessageHubOptions {
 builder.Services.AddSingleton<IMessageHubAsync, RedisMessageHub>();
 ```
 
-### Complete AOT-Compatible Example
+### Complete AoT-Compatible Example
 
-Here's a complete example showing AOT-compatible Redis message bus setup:
+Here's a complete example showing AoT-compatible Redis message bus setup:
 
 ``` csharp
 using System.Text.Json;
@@ -171,7 +180,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IConnectionMultiplexer>(
     ConnectionMultiplexer.Connect("localhost:6379"));
 
-// Configure JSON serialization for AOT compatibility
+// Configure JSON serialization for AoT compatibility
 var jsonSerializerOptions = new JsonSerializerOptions();
 jsonSerializerOptions.TypeInfoResolverChain.Add(MyAppJsonSerializerContext.Default);
 jsonSerializerOptions.TypeInfoResolverChain.Add(DefaultJsonSerializerContext.Default);
@@ -190,7 +199,7 @@ services.AddSingleton<MyMessageHandler>();
 var app = builder.Build();
 ```
 
-### Important Notes for AOT Compatibility
+### Important Notes for AoT Compatibility
 
 1. **Include All Message Types**: Every type you plan to serialize must be declared in your `JsonSerializerContext` with `[JsonSerializable]`.
 
@@ -198,7 +207,7 @@ var app = builder.Build();
 
 3. **Chain TypeInfoResolvers**: Always chain your custom context with the `DefaultJsonSerializerContext` to ensure built-in types are supported.
 
-4. **Project Configuration**: Add AOT properties to your project file:
+4. **Project Configuration**: Add AoT properties to your project file:
    ``` xml
    <PropertyGroup>
      <PublishAot>true</PublishAot>
