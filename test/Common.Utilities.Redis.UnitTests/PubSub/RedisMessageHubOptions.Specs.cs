@@ -6,10 +6,10 @@ namespace AdaptArch.Common.Utilities.Redis.UnitTests.PubSub;
 public class RedisMessageHubOptionsSpecs
 {
     [Fact]
-    public void Should_Have_A_JsonSerialize_By_Default()
+    public void Should_Have_A_ReflectionJsonSerialize_By_Default()
     {
         var options = new RedisMessageHubOptions();
-        Assert.IsType<JsonDataSerializer>(options.DataSerializer);
+        Assert.IsType<ReflectionJsonDataSerializer>(options.DataSerializer);
     }
 
     [Fact]

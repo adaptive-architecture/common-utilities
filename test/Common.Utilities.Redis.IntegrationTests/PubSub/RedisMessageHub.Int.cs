@@ -34,10 +34,7 @@ public class RedisMessageHubInt
 
         var jsonSerializer = new JsonDataSerializer(new RedisMessageHubIntJsonSerializerContext(jsonSerializerOptions));
 
-        var hub = new RedisMessageHub(fixture.Connection, new RedisMessageHubOptions
-        {
-            DataSerializer = jsonSerializer,
-        });
+        var hub = new RedisMessageHub(fixture.Connection, new RedisMessageHubOptions(jsonSerializer));
         _messageHub = hub;
         _messageHubAsync = hub;
     }

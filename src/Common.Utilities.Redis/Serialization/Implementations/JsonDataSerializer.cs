@@ -32,11 +32,6 @@ public class JsonDataSerializer : IDataSerializer
             throw new ArgumentNullException(nameof(data));
         }
 
-        if (data.IsNull)
-        {
-            return default;
-        }
-
         using var ms = new MemoryStream(data!);
         var obj = JsonSerializer.Deserialize(ms, typeof(T), _jsonSerializerContext!);
         if (obj == default)

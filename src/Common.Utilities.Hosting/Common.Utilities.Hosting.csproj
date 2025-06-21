@@ -3,7 +3,6 @@
   <PropertyGroup>
     <PackageTags>Common Utilities Hosting</PackageTags>
     <Description>Hosting integrations for the Common.Utilities contracts.</Description>
-    <IsAotCompatible>false</IsAotCompatible>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(CONFIGURATION)' == 'Debug' Or '$(BuildDocFx)' == 'true'">

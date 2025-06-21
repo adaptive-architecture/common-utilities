@@ -3,22 +3,48 @@
 For some simple `pub/sub` workload it might be enough to use a Redis based implementation of `IMessageHub` or `IMessageHubAsync`.
 
 ## Service registration
-To get to run using Redis all you need to do is:
-* Register a `IConnectionMultiplexer` instance with the dependency container.
-* Register the `RedisMessageHubOptions` with the dependency container.
-* Register the `RedisMessageHub` or `IMessageHubAsync` with the dependency container.
+
+### Common Scenarios (Default Setup)
+For common scenarios, use the parameterless constructor which uses `ReflectionJsonDataSerializer`:
 
 ``` csharp
-// Minimal API example.
+// Minimal API example for common scenarios
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost:6379"));
 
-builder.Services.AddSingleton(new RedisMessageHubOptions {
-  // DataSerializer = new CustomDataSerializer() -- You can override the default serializer (JsonDataSerializer) if you wish to.
-});
+// Uses ReflectionJsonDataSerializer by default (requires runtime reflection)
+builder.Services.AddSingleton(new RedisMessageHubOptions());
+```
 
+### AoT Scenarios
+For AoT scenarios, use the constructor that accepts an `IDataSerializer` with `JsonDataSerializer`:
+
+``` csharp
+// AoT-compatible example
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost:6379"));
+
+// Configure JSON serialization for AOT compatibility
+var jsonSerializerOptions = new JsonSerializerOptions();
+jsonSerializerOptions.TypeInfoResolverChain.Add(MyAppJsonSerializerContext.Default);
+jsonSerializerOptions.TypeInfoResolverChain.Add(DefaultJsonSerializerContext.Default);
+
+var jsonSerializer = new JsonDataSerializer(
+    new MyAppJsonSerializerContext(jsonSerializerOptions));
+
+// Use JsonDataSerializer for AoT scenarios
+builder.Services.AddSingleton(new RedisMessageHubOptions(jsonSerializer));
+
+```
+
+### Service Registration Options
+Regardless of which constructor you use, register the message hub service:
+
+``` csharp
 // Preferred way.
 builder.Services.AddSingleton<IMessageHubAsync, RedisMessageHub>();
 // OR
@@ -28,8 +54,6 @@ builder.Services
   .AddSingleton<RedisMessageHub>()
   .AddSingleton<IMessageHub>(svc => svc.GetService<RedisMessageHub>())
   .AddSingleton<IMessageHubAsync>(svc => svc.GetService<RedisMessageHub>())
-
-
 
 services.AddSingleton<MyMessageHandler>();
 
@@ -55,6 +79,24 @@ app.MapGet("/publish", static async (MyMessageHandler handler, CancellationToken
 
 app.Run();
 ```
+
+## Data Serializers
+
+The Redis message bus supports two data serializers:
+
+### ReflectionJsonDataSerializer (Default)
+- **Usage**: Common scenarios with runtime reflection
+- **Constructor**: `new RedisMessageHubOptions()` (parameterless)
+- **AOT Compatible**: ❌ No (requires runtime reflection)
+- **Performance**: Good for most use cases
+- **Setup**: No additional configuration required
+
+### JsonDataSerializer  
+- **Usage**: AoT scenarios and high-performance applications
+- **Constructor**: `new RedisMessageHubOptions(IDataSerializer dataSerializer)`
+- **AOT Compatible**: ✅ Yes (with proper JsonSerializerContext)
+- **Performance**: Optimized for AoT compilation
+- **Setup**: Requires JsonSerializerContext configuration
 
 ## AOT Compatibility and Custom JsonSerializerContext
 
