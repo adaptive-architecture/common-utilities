@@ -1,60 +1,61 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace AdaptArch.Common.Utilities.AspNetCore.Middlewares.ResponseRewrite;
 
 internal sealed class ResponseStreamWrapper : Stream
 {
-    private Stream? _originalStream;
+    private IHttpResponseBodyFeature? _originalBodyFeature;
     private HttpContext? _context;
 
     private IResponseRewriterFactory? _rewriterFactory;
 
-    public ResponseStreamWrapper(Stream originalStream, HttpContext context, IResponseRewriterFactory rewriterFactory)
+    public ResponseStreamWrapper(IHttpResponseBodyFeature originalStream, HttpContext context, IResponseRewriterFactory rewriterFactory)
     {
-        _originalStream = originalStream;
+        _originalBodyFeature = originalStream;
         _context = context;
         _rewriterFactory = rewriterFactory;
     }
 
-    public override bool CanRead => _originalStream!.CanRead;
-    public override bool CanSeek => _originalStream!.CanSeek;
+    public override bool CanRead => _originalBodyFeature!.Stream.CanRead;
+    public override bool CanSeek => _originalBodyFeature!.Stream.CanSeek;
     public override bool CanWrite => true;
-    public override long Length => _originalStream!.Length;
+    public override long Length => _originalBodyFeature!.Stream.Length;
     public override long Position
     {
         get
         {
-            return _originalStream!.Position;
+            return _originalBodyFeature!.Stream.Position;
         }
         set
         {
-            _originalStream!.Position = value;
+            _originalBodyFeature!.Stream.Position = value;
         }
     }
 
-    public override void Flush() => _originalStream!.Flush();
+    public override void Flush() => _originalBodyFeature!.Stream.Flush();
 
     public override Task FlushAsync(CancellationToken cancellationToken)
     {
         UpdateResponseContentLength();
-        return _originalStream!.FlushAsync(cancellationToken);
+        return _originalBodyFeature!.Stream.FlushAsync(cancellationToken);
     }
 
     public override int Read(byte[] buffer, int offset, int count) =>
-        _originalStream!.Read(buffer, offset, count);
+        _originalBodyFeature!.Stream.Read(buffer, offset, count);
 
     public override long Seek(long offset, SeekOrigin origin) =>
-        _originalStream!.Seek(offset, origin);
+        _originalBodyFeature!.Stream.Seek(offset, origin);
 
     public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) =>
-        _originalStream!.ReadAsync(buffer, offset, count, cancellationToken);
+        _originalBodyFeature!.Stream.ReadAsync(buffer, offset, count, cancellationToken);
 
     public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default) =>
-        _originalStream!.ReadAsync(buffer, cancellationToken);
+        _originalBodyFeature!.Stream.ReadAsync(buffer, cancellationToken);
 
     public override void SetLength(long value)
     {
-        _originalStream!.SetLength(value);
+        _originalBodyFeature!.Stream.SetLength(value);
         UpdateResponseContentLength();
     }
 
@@ -74,7 +75,7 @@ internal sealed class ResponseStreamWrapper : Stream
 
         if (!rewrote)
         {
-            _originalStream!.Write(buffer, offset, count);
+            _originalBodyFeature!.Stream.Write(buffer, offset, count);
         }
     }
 
@@ -84,9 +85,9 @@ internal sealed class ResponseStreamWrapper : Stream
     public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
     {
         var rewrote = await TryRewriteAsync(buffer, cancellationToken);
-        if (!rewrote && _originalStream != null)
+        if (!rewrote && _originalBodyFeature != null)
         {
-            await _originalStream!.WriteAsync(buffer, cancellationToken);
+            await _originalBodyFeature!.Stream.WriteAsync(buffer, cancellationToken);
         }
     }
 
@@ -100,7 +101,7 @@ internal sealed class ResponseStreamWrapper : Stream
 
         try
         {
-            await rewriter.RewriteAsync(buffer, _context!, _originalStream!, cancellationToken);
+            await rewriter.RewriteAsync(buffer, _context!, _originalBodyFeature!.Stream, cancellationToken);
         }
         finally
         {
@@ -125,8 +126,8 @@ internal sealed class ResponseStreamWrapper : Stream
 
     private void CoreDisposeLogic()
     {
-        // Should we also call the `Dispose()`  method on the _originalStream ?
-        _originalStream = null;
+        // Should we also call the `Dispose()`  method on the _originalBodyFeature ?
+        _originalBodyFeature = null;
         _context = null;
         _rewriterFactory = null;
     }

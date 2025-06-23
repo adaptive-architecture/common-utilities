@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Logging;
 
 namespace AdaptArch.Common.Utilities.AspNetCore.Middlewares.ResponseRewrite;
 
@@ -31,12 +32,14 @@ public class ResponseRewriteMiddleware
     public async Task Invoke(HttpContext context)
     {
         ResponseStreamWrapper? filteredResponse = null;
+        IHttpResponseBodyFeature? originalBodyFeature = null;
 
         try
         {
             if (_responseRewriterFactory.MightRewrite(context))
             {
-                filteredResponse = new ResponseStreamWrapper(context.Response.Body, context, _responseRewriterFactory);
+                originalBodyFeature = context.Features.GetRequiredFeature<IHttpResponseBodyFeature>();
+                filteredResponse = new ResponseStreamWrapper(originalBodyFeature, context, _responseRewriterFactory);
                 context.Features.Set<IHttpResponseBodyFeature>(new StreamResponseBodyFeature(filteredResponse));
             }
 
@@ -47,6 +50,7 @@ public class ResponseRewriteMiddleware
             if (filteredResponse != null)
             {
                 await filteredResponse.DisposeAsync();
+                context.Features.Set(originalBodyFeature);
             }
         }
     }

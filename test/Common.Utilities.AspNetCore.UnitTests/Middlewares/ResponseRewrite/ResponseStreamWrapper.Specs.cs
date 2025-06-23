@@ -1,5 +1,7 @@
 using AdaptArch.Common.Utilities.AspNetCore.Middlewares.ResponseRewrite;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using NSubstitute;
 using Xunit;
 #pragma warning disable CA1835 // Prefer the 'Memory'-based overloads for 'ReadAsync' and 'WriteAsync'
 
@@ -12,9 +14,11 @@ public class ResponseStreamWrapperSpecs
     [Fact]
     public async Task It_Supports_Writing_AndReading()
     {
-        var memorySteam = new MemoryStream();
+        await using var memorySteam = new MemoryStream();
+        var responseBodyFeature = Substitute.For<IHttpResponseBodyFeature>();
+        responseBodyFeature.Stream.Returns(memorySteam);
         var context = new DefaultHttpContext();
-        var responseStreamWrapper = new ResponseStreamWrapper(memorySteam,
+        var responseStreamWrapper = new ResponseStreamWrapper(responseBodyFeature,
             context, _rewriterFactory);
 
         Assert.Equal(memorySteam.CanRead, responseStreamWrapper.CanRead);

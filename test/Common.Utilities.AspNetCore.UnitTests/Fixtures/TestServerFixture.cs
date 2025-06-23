@@ -38,6 +38,8 @@ public sealed class TestServerFixture : IDisposable
                                 catch
                                 {
                                     ctx.Response.StatusCode = 500;
+                                    ctx.Response.ContentType = "text/plain";
+                                    await ctx.Response.WriteAsync("An error occurred while processing your request.");
                                 }
                             })
                             .UseResponseRewrite()
