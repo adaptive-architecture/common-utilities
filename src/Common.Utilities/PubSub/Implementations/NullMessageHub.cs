@@ -1,4 +1,4 @@
-using AdaptArch.Common.Utilities.PubSub.Contracts;
+﻿using AdaptArch.Common.Utilities.PubSub.Contracts;
 
 namespace AdaptArch.Common.Utilities.PubSub.Implementations;
 

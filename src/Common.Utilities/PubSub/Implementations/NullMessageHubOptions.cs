@@ -1,4 +1,4 @@
-namespace AdaptArch.Common.Utilities.PubSub.Implementations;
+﻿namespace AdaptArch.Common.Utilities.PubSub.Implementations;
 
 /// <summary>
 /// Configuration options for <see cref="NullMessageHub"/>.
