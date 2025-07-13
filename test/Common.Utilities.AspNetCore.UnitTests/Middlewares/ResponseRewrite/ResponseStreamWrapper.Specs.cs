@@ -41,15 +41,15 @@ public class ResponseStreamWrapperSpecs
 
         var buffer = new byte[1];
         responseStreamWrapper.Seek(0, SeekOrigin.Begin);
-        responseStreamWrapper.Read(buffer, 0, 1);
+        responseStreamWrapper.ReadExactly(buffer, 0, 1);
         Assert.Equal(1, buffer[0]);
 
         responseStreamWrapper.Seek(0, SeekOrigin.Begin);
-        await responseStreamWrapper.ReadAsync(buffer, 0, 1);
+        await responseStreamWrapper.ReadExactlyAsync(buffer, 0, 1);
         Assert.Equal(1, buffer[0]);
 
         responseStreamWrapper.Seek(0, SeekOrigin.Begin);
-        await responseStreamWrapper.ReadAsync((Memory<byte>)buffer);
+        await responseStreamWrapper.ReadExactlyAsync((Memory<byte>)buffer);
         Assert.Equal(1, buffer[0]);
 
         responseStreamWrapper.Flush();
