@@ -10,6 +10,15 @@
     href: delay-and-jitter.md
   - name: Synchronization Utilities
     href: synchronization-utilities.md
+  - name: Leader Election
+    href: leader-election.md
+    items:
+    - name: Getting Started
+      href: leader-election-getting-started.md
+    - name: Advanced Configuration
+      href: leader-election-advanced.md
+    - name: Troubleshooting
+      href: leader-election-troubleshooting.md
   - name: In-Process PubSub
     href: in-process-pubsub.md
 - name: Specialized Features

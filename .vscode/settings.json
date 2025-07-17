@@ -3,6 +3,7 @@
     "configfile",
     "coverallsapp",
     "docfx",
+    "finalizer",
     "lcov",
     "nupkg",
     "opencover",
