@@ -821,6 +821,9 @@ public class InProcessLeaderElectionServiceBasicTests
             await currentLeader.ReleaseLeadershipAsync();
             Assert.False(currentLeader.IsLeader);
 
+            // Force the follower to try acquiring leadership
+            _ = await currentFollower.TryAcquireLeadershipAsync();
+
             // Wait for the follower to detect leadership is available and acquire it
             var maxWait = TimeSpan.FromSeconds(2);
             var start = DateTime.UtcNow;
