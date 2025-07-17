@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageTags>Common Utilities Redis</PackageTags>
+    <Description>Redis integrations for the Common.Utilities contracts.</Description>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(CONFIGURATION)' == 'Debug' Or '$(BuildDocFx)' == 'true'">
+    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(CONFIGURATION)' == 'Release' And '$(BuildDocFx)' != 'true'">
+    <PackageReference Include="AdaptArch.Common.Utilities" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Npgsql" />
+  </ItemGroup>
+
+</Project>

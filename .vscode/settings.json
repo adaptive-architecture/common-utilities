@@ -5,6 +5,7 @@
     "docfx",
     "finalizer",
     "lcov",
+    "Npgsql",
     "nupkg",
     "opencover",
     "Qube",

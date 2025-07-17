@@ -28,6 +28,7 @@ projects=( \
   "Common.Utilities.Redis" \
   "Common.Utilities.Configuration" \
   "Common.Utilities.Hosting" \
+  "Common.Utilities.Postgres" \
 )
 
 rm -rf ./.nuget/*.nupkg
