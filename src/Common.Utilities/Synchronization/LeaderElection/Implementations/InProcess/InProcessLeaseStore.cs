@@ -276,14 +276,10 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
     /// <param name="disposing">Indicates whether the method is being called from the Dispose method (true) or from the finalizer (false).</param>
     protected virtual void Dispose(bool disposing)
     {
-        if (disposing)
+        if (disposing && !_disposed)
         {
-            // Dispose managed resources
-            if (!_disposed)
-            {
-                _semaphore.Dispose();
-                _disposed = true;
-            }
+            _semaphore.Dispose();
+            _disposed = true;
         }
     }
 
