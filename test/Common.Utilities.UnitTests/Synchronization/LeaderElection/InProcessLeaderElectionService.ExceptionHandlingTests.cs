@@ -102,7 +102,7 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
 
         var options = new LeaderElectionOptions
         {
-            AutoStart = true,
+            EnableContinuousCheck = true,
             RetryInterval = TimeSpan.FromMilliseconds(50),
             RenewalInterval = TimeSpan.FromMilliseconds(50)
         };
@@ -136,7 +136,7 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
 
         var options = new LeaderElectionOptions
         {
-            AutoStart = true,
+            EnableContinuousCheck = true,
             RetryInterval = TimeSpan.FromMilliseconds(25),
             RenewalInterval = TimeSpan.FromMilliseconds(25)
         };
@@ -199,7 +199,7 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
 
         var options = new LeaderElectionOptions
         {
-            AutoStart = true,
+            EnableContinuousCheck = true,
             RetryInterval = TimeSpan.FromMilliseconds(50)
         };
 
@@ -232,7 +232,7 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
 
         var options = new LeaderElectionOptions
         {
-            AutoStart = true,
+            EnableContinuousCheck = true,
             RetryInterval = TimeSpan.FromMilliseconds(50)
         };
 
@@ -270,7 +270,7 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
 
         var options = new LeaderElectionOptions
         {
-            AutoStart = true,
+            EnableContinuousCheck = true,
             RetryInterval = TimeSpan.FromMilliseconds(50)
         };
 
@@ -338,7 +338,7 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
 
         var options = new LeaderElectionOptions
         {
-            AutoStart = true,
+            EnableContinuousCheck = true,
             RetryInterval = TimeSpan.FromMilliseconds(30),
             RenewalInterval = TimeSpan.FromMilliseconds(30)
         };
@@ -381,7 +381,7 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
         {
             LeaseDuration = TimeSpan.FromMilliseconds(200),
             RenewalInterval = TimeSpan.FromMilliseconds(50),
-            AutoStart = true
+            EnableContinuousCheck = true
         };
 
         await using var service = new InProcessLeaderElectionService(
@@ -432,7 +432,7 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
         {
             LeaseDuration = TimeSpan.FromMilliseconds(200),
             RenewalInterval = TimeSpan.FromMilliseconds(50),
-            AutoStart = true
+            EnableContinuousCheck = true
         };
 
         await using var service = new InProcessLeaderElectionService(
@@ -476,7 +476,7 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
             LeaseDuration = TimeSpan.FromMilliseconds(200),
             RenewalInterval = TimeSpan.FromMilliseconds(30),
             RetryInterval = TimeSpan.FromMilliseconds(30),
-            AutoStart = true
+            EnableContinuousCheck = true
         };
 
         await using var service = new InProcessLeaderElectionService(

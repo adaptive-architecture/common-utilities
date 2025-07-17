@@ -41,7 +41,7 @@ public class InProcessLeaderElectionServiceProviderSpecs
             LeaseDuration = TimeSpan.FromMinutes(10),
             RenewalInterval = TimeSpan.FromMinutes(3),
             RetryInterval = TimeSpan.FromSeconds(30),
-            AutoStart = false
+            EnableContinuousCheck = false
         };
 
         // Act

@@ -36,7 +36,7 @@ public class InProcessLeaderElectionServiceBasicTests
             LeaseDuration = TimeSpan.FromMinutes(10),
             RenewalInterval = TimeSpan.FromMinutes(3),
             RetryInterval = TimeSpan.FromSeconds(30),
-            AutoStart = false
+            EnableContinuousCheck = false
         };
 
         // Act
@@ -246,7 +246,7 @@ public class InProcessLeaderElectionServiceBasicTests
     public async Task StartAsync_ShouldInitializeElectionLoop()
     {
         // Arrange
-        var options = new LeaderElectionOptions { AutoStart = false };
+        var options = new LeaderElectionOptions { EnableContinuousCheck = false };
         await using var service = new InProcessLeaderElectionService(
             DefaultElectionName,
             DefaultParticipantId,
@@ -259,7 +259,7 @@ public class InProcessLeaderElectionServiceBasicTests
         await Task.Delay(100);
 
         // Assert - Should not throw and service should be initialized
-        // With AutoStart = false, the election loop starts but may acquire leadership immediately
+        // With EnableContinuousCheck = false, the election loop starts but may acquire leadership immediately
         Assert.Equal(DefaultElectionName, service.ElectionName);
         Assert.Equal(DefaultParticipantId, service.ParticipantId);
         // IsLeader can be true or false depending on timing, so we don't assert on it
@@ -527,7 +527,7 @@ public class InProcessLeaderElectionServiceBasicTests
             LeaseDuration = TimeSpan.FromSeconds(30),
             RenewalInterval = TimeSpan.FromSeconds(10),
             RetryInterval = TimeSpan.FromSeconds(5),
-            AutoStart = false,
+            EnableContinuousCheck = false,
             Metadata = new Dictionary<string, string> { ["test"] = "value" }
         };
 
@@ -595,7 +595,7 @@ public class InProcessLeaderElectionServiceBasicTests
         await using var service = new InProcessLeaderElectionService(
             DefaultElectionName,
             DefaultParticipantId,
-            new LeaderElectionOptions { AutoStart = autoStart });
+            new LeaderElectionOptions { EnableContinuousCheck = autoStart });
 
         // Act & Assert - Should not throw
         await service.StartAsync();
@@ -615,7 +615,7 @@ public class InProcessLeaderElectionServiceBasicTests
         await using var service = new InProcessLeaderElectionService(
             DefaultElectionName,
             DefaultParticipantId,
-            new LeaderElectionOptions { AutoStart = autoStart });
+            new LeaderElectionOptions { EnableContinuousCheck = autoStart });
 
         // Act & Assert - Should not throw
         await service.StopAsync();
@@ -630,7 +630,7 @@ public class InProcessLeaderElectionServiceBasicTests
     public async Task StartStop_InterleavedCalls_ShouldNotThrow()
     {
         // Arrange
-        var options = new LeaderElectionOptions { AutoStart = false };
+        var options = new LeaderElectionOptions { EnableContinuousCheck = false };
         await using var service = new InProcessLeaderElectionService(
             DefaultElectionName,
             DefaultParticipantId,
@@ -654,7 +654,7 @@ public class InProcessLeaderElectionServiceBasicTests
     public async Task StartStop_ConcurrentCalls_ShouldNotThrow()
     {
         // Arrange
-        var options = new LeaderElectionOptions { AutoStart = false };
+        var options = new LeaderElectionOptions { EnableContinuousCheck = false };
         await using var service = new InProcessLeaderElectionService(
             DefaultElectionName,
             DefaultParticipantId,
@@ -687,7 +687,7 @@ public class InProcessLeaderElectionServiceBasicTests
     public async Task StartStop_WithCancellationTokens_ShouldNotThrow()
     {
         // Arrange
-        var options = new LeaderElectionOptions { AutoStart = false };
+        var options = new LeaderElectionOptions { EnableContinuousCheck = false };
         await using var service = new InProcessLeaderElectionService(
             DefaultElectionName,
             DefaultParticipantId,
@@ -713,7 +713,7 @@ public class InProcessLeaderElectionServiceBasicTests
     {
         // Arrange
         var dateTimeProvider = new DateTimeMockProvider([_baseTime]);
-        var options = new LeaderElectionOptions { AutoStart = false };
+        var options = new LeaderElectionOptions { EnableContinuousCheck = false };
         await using var service = new InProcessLeaderElectionService(
             DefaultElectionName,
             DefaultParticipantId,
@@ -746,7 +746,7 @@ public class InProcessLeaderElectionServiceBasicTests
         // Arrange
         var options = new LeaderElectionOptions
         {
-            AutoStart = false,
+            EnableContinuousCheck = false,
             RetryInterval = TimeSpan.FromMilliseconds(10),
             RenewalInterval = TimeSpan.FromMilliseconds(10)
         };
@@ -768,7 +768,7 @@ public class InProcessLeaderElectionServiceBasicTests
     }
 
     [Fact]
-    public async Task AutoStart_LeadershipHandover_ShouldWorkCorrectly()
+    public async Task EnableContinuousCheck_LeadershipHandover_ShouldWorkCorrectly()
     {
         // Arrange
         var dateTimeProvider = new DateTimeProvider(); // Use real provider for timing-based test
@@ -776,7 +776,7 @@ public class InProcessLeaderElectionServiceBasicTests
 
         var options = new LeaderElectionOptions
         {
-            AutoStart = true,
+            EnableContinuousCheck = true,
             LeaseDuration = TimeSpan.FromSeconds(1),
             RenewalInterval = TimeSpan.FromMilliseconds(200),
             RetryInterval = TimeSpan.FromMilliseconds(100)
@@ -803,7 +803,7 @@ public class InProcessLeaderElectionServiceBasicTests
 
         try
         {
-            // Act - Start both services with AutoStart=true
+            // Act - Start both services with EnableContinuousCheck=true
             await service1.StartAsync();
             await service2.StartAsync();
 
@@ -841,7 +841,7 @@ public class InProcessLeaderElectionServiceBasicTests
             await currentFollower.ReleaseLeadershipAsync();
             Assert.False(currentFollower.IsLeader);
 
-            // Wait a bit and stop services to prevent re-acquisition due to AutoStart
+            // Wait a bit and stop services to prevent re-acquisition due to EnableContinuousCheck
             await service1.StopAsync();
             await service2.StopAsync();
 

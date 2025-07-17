@@ -360,7 +360,7 @@ public class RedisLeaderElectionIntegrationTests
         var electionName = $"test-election-{Guid.NewGuid()}";
         var options = new LeaderElectionOptions
         {
-            AutoStart = true,
+            EnableContinuousCheck = true,
             LeaseDuration = TimeSpan.FromSeconds(10),
             RenewalInterval = TimeSpan.FromSeconds(3),
             RetryInterval = TimeSpan.FromSeconds(2)

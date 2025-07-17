@@ -263,7 +263,7 @@ public class RedisLeaderElectionServiceSpecs
         var serializer = new ReflectionJsonDataSerializer();
         const string electionName = "test-election";
         const string participantId = "participant-1";
-        var options = new LeaderElectionOptions { AutoStart = false };
+        var options = new LeaderElectionOptions { EnableContinuousCheck = false };
 
         await using var service = new RedisLeaderElectionService(_connectionMultiplexer, serializer, electionName, participantId, options);
 
@@ -333,7 +333,7 @@ public class RedisLeaderElectionServiceSpecs
         {
             LeaseDuration = TimeSpan.FromMinutes(10),
             RenewalInterval = TimeSpan.FromMinutes(3),
-            AutoStart = false
+            EnableContinuousCheck = false
         };
 
         // Act

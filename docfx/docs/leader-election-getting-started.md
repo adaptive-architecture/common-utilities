@@ -133,7 +133,7 @@ await leaderService.TryAcquireLeadershipAsync();
 ```csharp
 var options = new LeaderElectionOptions
 {
-    AutoStart = true,                           // Enable automatic management
+    EnableContinuousCheck = true,                           // Enable automatic management
     LeaseDuration = TimeSpan.FromMinutes(2),    // Leadership lasts 2 minutes
     RenewalInterval = TimeSpan.FromSeconds(30), // Renew every 30 seconds
     RetryInterval = TimeSpan.FromSeconds(10)    // Retry every 10 seconds if not leader
@@ -191,7 +191,7 @@ public class LeaderElectedBackgroundService : BackgroundService
             Environment.MachineName,
             new LeaderElectionOptions
             {
-                AutoStart = true,
+                EnableContinuousCheck = true,
                 LeaseDuration = TimeSpan.FromMinutes(3),
                 RenewalInterval = TimeSpan.FromMinutes(1)
             });
@@ -259,7 +259,7 @@ public class DataMigrationService
             $"{Environment.MachineName}-{Environment.ProcessId}",
             new LeaderElectionOptions
             {
-                AutoStart = false,  // Manual control
+                EnableContinuousCheck = false,  // Manual control
                 LeaseDuration = TimeSpan.FromMinutes(10),
                 OperationTimeout = TimeSpan.FromMinutes(2)
             });
@@ -322,7 +322,7 @@ public class HealthMonitoringService
             Environment.MachineName,
             new LeaderElectionOptions
             {
-                AutoStart = true,
+                EnableContinuousCheck = true,
                 LeaseDuration = TimeSpan.FromMinutes(2),
                 RenewalInterval = TimeSpan.FromSeconds(30),
                 // Add metadata to identify this instance
@@ -407,7 +407,7 @@ public static async Task TestMultipleParticipantsAsync()
                 $"participant-{i}",
                 new LeaderElectionOptions
                 {
-                    AutoStart = true,
+                    EnableContinuousCheck = true,
                     LeaseDuration = TimeSpan.FromSeconds(30),
                     RenewalInterval = TimeSpan.FromSeconds(10),
                     RetryInterval = TimeSpan.FromSeconds(5)

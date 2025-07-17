@@ -82,7 +82,7 @@ public abstract class LeaderElectionServiceBase : ILeaderElectionService
         var combinedToken = CancellationTokenSource.CreateLinkedTokenSource(
             cancellationToken, _cancellationTokenSource.Token).Token;
 
-        if (_options.AutoStart)
+        if (_options.EnableContinuousCheck)
         {
             _electionTask = RunElectionLoopAsync(combinedToken);
         }

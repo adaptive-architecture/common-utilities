@@ -110,7 +110,7 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
         var options = new LeaderElectionOptions
         {
             RetryInterval = TimeSpan.FromMilliseconds(50),
-            AutoStart = true
+            EnableContinuousCheck = true
         };
 
         await using var service = new InProcessLeaderElectionService(
@@ -139,7 +139,7 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
         var options = new LeaderElectionOptions
         {
             RetryInterval = TimeSpan.FromMilliseconds(100),
-            AutoStart = false
+            EnableContinuousCheck = false
         };
 
         await using var service = new InProcessLeaderElectionService(
@@ -191,7 +191,7 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
         var options = new LeaderElectionOptions
         {
             RetryInterval = TimeSpan.FromMilliseconds(50),
-            AutoStart = true
+            EnableContinuousCheck = true
         };
 
         await using var service = new InProcessLeaderElectionService(

@@ -73,13 +73,11 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
                 Metadata = metadata
             };
 
-            var leaseEntry = new LeaseEntry
+            _leases[electionName] = new LeaseEntry
             {
                 LeaderInfo = leaderInfo,
                 ExpiresAt = expiresAt
             };
-
-            _leases[electionName] = leaseEntry;
             return leaderInfo;
         }
         finally
@@ -141,13 +139,11 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
                 Metadata = metadata ?? existingLease.LeaderInfo.Metadata
             };
 
-            var leaseEntry = new LeaseEntry
+            _leases[electionName] = new LeaseEntry
             {
                 LeaderInfo = leaderInfo,
                 ExpiresAt = expiresAt
             };
-
-            _leases[electionName] = leaseEntry;
             return leaderInfo;
         }
         finally

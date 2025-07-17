@@ -35,10 +35,10 @@ public sealed record LeaderElectionOptions
     public IReadOnlyDictionary<string, string>? Metadata { get; init; }
 
     /// <summary>
-    /// Gets a value indicating whether to automatically start the election process.
+    /// Gets a value indicating whether to enable continuous checking for leadership opportunities.
     /// Default is true.
     /// </summary>
-    public bool AutoStart { get; init; } = true;
+    public bool EnableContinuousCheck { get; init; } = true;
 
     /// <summary>
     /// Validates the options and returns a new instance with corrected values if needed.

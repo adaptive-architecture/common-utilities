@@ -72,7 +72,7 @@ var options = new LeaderElectionOptions
     LeaseDuration = TimeSpan.FromMinutes(2),      // How long leadership lasts
     RenewalInterval = TimeSpan.FromSeconds(30),   // How often to renew leadership
     RetryInterval = TimeSpan.FromSeconds(15),     // How often to retry when not leader
-    AutoStart = true                              // Automatically start election loop
+    EnableContinuousCheck = true                              // Automatically start election loop
 };
 
 await using var leaderService = new InProcessLeaderElectionService(
@@ -106,18 +106,18 @@ Console.ReadKey();
 await leaderService.StopAsync();
 ```
 
-## AutoStart vs Manual Control
+## EnableContinuousCheck vs Manual Control
 
-The `AutoStart` option in `LeaderElectionOptions` controls whether the service automatically manages leadership through a background election loop.
+The `EnableContinuousCheck` option in `LeaderElectionOptions` controls whether the service automatically manages leadership through a background election loop.
 
-### When to Use AutoStart = true (Default)
+### When to Use EnableContinuousCheck = true (Default)
 
-**AutoStart = true** is ideal for most scenarios where you want continuous leadership management:
+**EnableContinuousCheck = true** is ideal for most scenarios where you want continuous leadership management:
 
 ```csharp
 var options = new LeaderElectionOptions
 {
-    AutoStart = true,  // Automatically manage leadership
+    EnableContinuousCheck = true,  // Automatically manage leadership
     LeaseDuration = TimeSpan.FromMinutes(5),
     RenewalInterval = TimeSpan.FromMinutes(1)
 };
@@ -136,20 +136,20 @@ await service.StartAsync();
 // - Handle failures and retry automatically
 ```
 
-**Use AutoStart = true for:**
+**Use EnableContinuousCheck = true for:**
 - Background services that should always try to be active
 - Long-running processes that need continuous coordination
 - Services where you want "set it and forget it" behavior
 - Scenarios where leadership changes are handled purely through events
 
-### When to Use AutoStart = false
+### When to Use EnableContinuousCheck = false
 
-**AutoStart = false** gives you complete control over when leadership operations occur:
+**EnableContinuousCheck = false** gives you complete control over when leadership operations occur:
 
 ```csharp
 var options = new LeaderElectionOptions
 {
-    AutoStart = false,  // Manual control
+    EnableContinuousCheck = false,  // Manual control
     LeaseDuration = TimeSpan.FromMinutes(10)
 };
 
@@ -175,7 +175,7 @@ if (becameLeader)
 }
 ```
 
-**Use AutoStart = false for:**
+**Use EnableContinuousCheck = false for:**
 - **Task-based coordination**: When you need leadership for specific operations only
 - **Resource-intensive operations**: When continuous leadership monitoring is too expensive
 - **Custom retry logic**: When you want to implement your own retry and timing logic
@@ -188,7 +188,7 @@ if (becameLeader)
 You can also start with manual control and then enable automatic management:
 
 ```csharp
-var options = new LeaderElectionOptions { AutoStart = false };
+var options = new LeaderElectionOptions { EnableContinuousCheck = false };
 await using var service = new InProcessLeaderElectionService("hybrid", "instance-01", options);
 
 // First, manually acquire leadership for initial setup
@@ -198,7 +198,7 @@ if (await service.TryAcquireLeadershipAsync())
 }
 
 // Now enable automatic management for ongoing operations
-await service.StartAsync();  // Even with AutoStart=false, this enables monitoring
+await service.StartAsync();  // Even with EnableContinuousCheck=false, this enables monitoring
 ```
 
 ## Redis-Based Distributed Leader Election
@@ -264,7 +264,7 @@ var options = new LeaderElectionOptions
     LeaseDuration = TimeSpan.FromMinutes(3),      // Distributed lease duration
     RenewalInterval = TimeSpan.FromSeconds(45),   // Frequent renewal for network reliability
     RetryInterval = TimeSpan.FromSeconds(20),     // Network-aware retry interval
-    AutoStart = true,
+    EnableContinuousCheck = true,
     Metadata = new Dictionary<string, string>
     {
         ["hostname"] = Environment.MachineName,
@@ -454,7 +454,7 @@ public class MultiRegionJobProcessor
 
         var options = new LeaderElectionOptions
         {
-            AutoStart = true,
+            EnableContinuousCheck = true,
             LeaseDuration = TimeSpan.FromMinutes(2),
             RenewalInterval = TimeSpan.FromSeconds(30),
             Metadata = metadata
@@ -551,7 +551,7 @@ public class DistributedBackgroundService : BackgroundService
         var serializer = new ReflectionJsonDataSerializer();
         var options = new LeaderElectionOptions
         {
-            AutoStart = true,
+            EnableContinuousCheck = true,
             LeaseDuration = TimeSpan.FromMinutes(2),
             RenewalInterval = TimeSpan.FromSeconds(30),
             RetryInterval = TimeSpan.FromSeconds(15),
@@ -902,7 +902,7 @@ public class LeaderElectionOptions
     /// <summary>
     /// Whether to automatically start the election loop (default: true)
     /// </summary>
-    public bool AutoStart { get; set; } = true;
+    public bool EnableContinuousCheck { get; set; } = true;
 
     /// <summary>
     /// Custom metadata to attach to the lease
@@ -1082,7 +1082,7 @@ public class BackgroundJobProcessor : IHostedService
             {
                 LeaseDuration = TimeSpan.FromMinutes(3),
                 RenewalInterval = TimeSpan.FromMinutes(1),
-                AutoStart = true
+                EnableContinuousCheck = true
             });
 
         _leaderService.LeadershipChanged += OnLeadershipChanged;
@@ -1166,7 +1166,7 @@ public class DistributedCacheWarmer
             {
                 LeaseDuration = TimeSpan.FromMinutes(5),
                 RenewalInterval = TimeSpan.FromMinutes(1),
-                AutoStart = false // Manual control for this scenario
+                EnableContinuousCheck = false // Manual control for this scenario
             });
     }
 
@@ -1277,7 +1277,7 @@ await using var service = new InProcessLeaderElectionService(
 3. **Handle leadership transitions gracefully**: Always clean up resources when losing leadership
 4. **Monitor leadership status**: Use events to track leadership changes
 5. **Use service properties for reliable information**: Don't rely solely on event arguments for leader information, as they may be incomplete during error conditions
-6. **Consider AutoStart settings**: Choose based on your specific use case requirements
+6. **Consider EnableContinuousCheck settings**: Choose based on your specific use case requirements
 7. **Test failover scenarios**: Ensure your application handles leadership transitions correctly
 8. **Use unique participant IDs**: Avoid conflicts by using machine names or process IDs
 9. **Handle exceptions properly**: Implement robust error handling for network issues

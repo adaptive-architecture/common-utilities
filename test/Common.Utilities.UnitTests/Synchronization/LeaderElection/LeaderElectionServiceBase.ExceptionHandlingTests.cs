@@ -17,7 +17,7 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
     public async Task StopAsync_WithOperationCanceledException_ShouldHandleGracefully()
     {
         // Arrange
-        var options = new LeaderElectionOptions { AutoStart = false };
+        var options = new LeaderElectionOptions { EnableContinuousCheck = false };
         await using var service = new InProcessLeaderElectionService(
             DefaultElectionName,
             DefaultParticipantId,
@@ -41,7 +41,7 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
         var faultyLeaseStore = new FaultyLeaseStore(new InvalidOperationException("Election task error"));
         var options = new LeaderElectionOptions
         {
-            AutoStart = false,
+            EnableContinuousCheck = false,
             RetryInterval = TimeSpan.FromMilliseconds(50)
         };
 
@@ -88,8 +88,8 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
     [Fact]
     public async Task StopAsync_WithNoElectionTask_ShouldReturnImmediately()
     {
-        // Arrange - Service with AutoStart = false and never started
-        var options = new LeaderElectionOptions { AutoStart = false };
+        // Arrange - Service with EnableContinuousCheck = false and never started
+        var options = new LeaderElectionOptions { EnableContinuousCheck = false };
         await using var service = new InProcessLeaderElectionService(
             DefaultElectionName,
             DefaultParticipantId,
@@ -128,7 +128,7 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
         var options = new LeaderElectionOptions
         {
             RetryInterval = TimeSpan.FromMilliseconds(20),
-            AutoStart = false
+            EnableContinuousCheck = false
         };
 
         await using var service = new InProcessLeaderElectionService(
@@ -158,7 +158,7 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
         var options = new LeaderElectionOptions
         {
             RetryInterval = TimeSpan.FromMilliseconds(50),
-            AutoStart = false
+            EnableContinuousCheck = false
         };
 
         await using var service = new InProcessLeaderElectionService(
@@ -191,7 +191,7 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
         var options = new LeaderElectionOptions
         {
             RetryInterval = TimeSpan.FromMilliseconds(50),
-            AutoStart = false
+            EnableContinuousCheck = false
         };
 
         await using var service = new InProcessLeaderElectionService(

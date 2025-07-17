@@ -102,7 +102,7 @@ public class RedisLeaderElectionServiceProviderSpecs
             LeaseDuration = TimeSpan.FromMinutes(10),
             RenewalInterval = TimeSpan.FromMinutes(3),
             RetryInterval = TimeSpan.FromSeconds(30),
-            AutoStart = false
+            EnableContinuousCheck = false
         };
 
         // Act
@@ -252,7 +252,7 @@ public class RedisLeaderElectionServiceProviderSpecs
             RenewalInterval = TimeSpan.FromMinutes(5),
             RetryInterval = TimeSpan.FromSeconds(45),
             OperationTimeout = TimeSpan.FromSeconds(10),
-            AutoStart = true,
+            EnableContinuousCheck = true,
             Metadata = metadata
         };
 

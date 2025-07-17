@@ -24,7 +24,7 @@ public class InProcessLeaderElectionServiceRenewalTests
         {
             LeaseDuration = TimeSpan.FromSeconds(1),
             RenewalInterval = TimeSpan.FromMilliseconds(100),
-            AutoStart = false
+            EnableContinuousCheck = false
         };
 
         await using var service = new InProcessLeaderElectionService(
@@ -175,7 +175,7 @@ public class InProcessLeaderElectionServiceRenewalTests
         {
             LeaseDuration = TimeSpan.FromMinutes(5),
             RenewalInterval = TimeSpan.FromMilliseconds(50),
-            AutoStart = true
+            EnableContinuousCheck = true
         };
 
         await using var service = new InProcessLeaderElectionService(
@@ -215,7 +215,7 @@ public class InProcessLeaderElectionServiceRenewalTests
             LeaseDuration = TimeSpan.FromMilliseconds(300), // Short lease for faster test
             RenewalInterval = TimeSpan.FromMilliseconds(80), // Renewal every 80ms
             RetryInterval = TimeSpan.FromMilliseconds(40), // Retry every 40ms for non-leader
-            AutoStart = true
+            EnableContinuousCheck = true
         };
 
         var options2 = new LeaderElectionOptions
@@ -223,7 +223,7 @@ public class InProcessLeaderElectionServiceRenewalTests
             LeaseDuration = TimeSpan.FromMilliseconds(300),
             RenewalInterval = TimeSpan.FromMilliseconds(80),
             RetryInterval = TimeSpan.FromMilliseconds(40),
-            AutoStart = true
+            EnableContinuousCheck = true
         };
 
         await using var service1 = new InProcessLeaderElectionService(
@@ -303,7 +303,7 @@ public class InProcessLeaderElectionServiceRenewalTests
         {
             LeaseDuration = TimeSpan.FromMilliseconds(200),
             RenewalInterval = TimeSpan.FromMilliseconds(50), // Renew every 50ms
-            AutoStart = true
+            EnableContinuousCheck = true
         };
 
         await using var service = new InProcessLeaderElectionService(
@@ -340,7 +340,7 @@ public class InProcessLeaderElectionServiceRenewalTests
     [Fact]
     public async Task LeadershipRenewal_StartWithCancellationDuringSlowRenewal_ShouldHandleCancellationGracefully()
     {
-        // Arrange - Test the specific scenario from user: AutoStart=true + slow lease store + cancellation token
+        // Arrange - Test the specific scenario from user: EnableContinuousCheck=true + slow lease store + cancellation token
         var slowLeaseStore = new SlowLeaseStore(TimeSpan.FromSeconds(10)); // Responds after 10s
 
         var options = new LeaderElectionOptions
@@ -348,7 +348,7 @@ public class InProcessLeaderElectionServiceRenewalTests
             LeaseDuration = TimeSpan.FromSeconds(30),
             RenewalInterval = TimeSpan.FromMilliseconds(100), // Frequent renewals
             OperationTimeout = TimeSpan.FromSeconds(15), // Longer than lease store delay
-            AutoStart = true
+            EnableContinuousCheck = true
         };
 
         await using var service = new InProcessLeaderElectionService(
@@ -375,5 +375,91 @@ public class InProcessLeaderElectionServiceRenewalTests
         Assert.Null(stopException);
 
         slowLeaseStore.Dispose();
+    }
+
+    [Fact]
+    public async Task LeadershipRenewal_ShouldRecoverAfterStateLoss()
+    {
+        /* This simulates the scenario where the central authority (lease store) loses state,
+           and the leader election service should recover gracefully.
+           The steps are:
+           1. Service 1 acquires leadership.
+           2. Lease store is cleared (simulating state loss).
+           3. Service 2 manages to acquire leadership.
+           4. For a short time (maximum 2 retry intervals) both services believe they are leaders.
+           5. Service 1 should detect it is no longer leader.
+        */
+
+        // Arrange
+        var dateTimeProvider = new DateTimeProvider();
+        var leaseStore = new InProcessLeaseStore(dateTimeProvider);
+        var options = new LeaderElectionOptions
+        {
+            LeaseDuration = TimeSpan.FromSeconds(1),
+            RenewalInterval = TimeSpan.FromMilliseconds(100),
+            OperationTimeout = TimeSpan.FromMilliseconds(1),
+            RetryInterval = TimeSpan.FromMilliseconds(70),
+            EnableContinuousCheck = true
+        };
+
+        await using var service1 = new InProcessLeaderElectionService(
+            leaseStore,
+            DefaultElectionName,
+            "service-1",
+            options
+        );
+        await service1.StartAsync();
+
+        // Force service1 to acquire leadership
+        var isLeader = await service1.TryAcquireLeadershipAsync();
+        Assert.True(isLeader);
+
+        await using var service2 = new InProcessLeaderElectionService(
+            leaseStore,
+            DefaultElectionName,
+            "service-2",
+            options
+        );
+
+        await service2.StartAsync();
+
+        isLeader = await service2.TryAcquireLeadershipAsync();
+        Assert.False(isLeader);
+
+        // Act - Simulate state loss by clearing the lease store
+        var released = await leaseStore.ReleaseLeaseAsync(DefaultElectionName, "service-1");
+        Assert.True(released);
+        var failureStateStart = DateTime.UtcNow;
+
+        // Now service2 should be able to acquire leadership
+        isLeader = await service2.TryAcquireLeadershipAsync();
+        Assert.True(isLeader);
+
+        // Assert - Service1 still thinks it is leader for a short time
+        Assert.True(service1.IsLeader);
+        var maxWaitTime = options.LeaseDuration * 2;
+        var service1Lease = await leaseStore.TryAcquireLeaseAsync(
+            DefaultElectionName,
+            "service-1",
+            options.LeaseDuration
+        );
+        Assert.Null(service1Lease); // Service1 should not have a valid lease after state loss
+
+        while (service1.IsLeader && service2.IsLeader)
+        {
+            await Task.Delay(options.RetryInterval / 3);
+            if (DateTime.UtcNow - failureStateStart > maxWaitTime)
+            {
+                break;
+            }
+        }
+        var failureStateEnd = DateTime.UtcNow;
+
+        Assert.False(service1.IsLeader); // Service1 should no longer be leader after lease store state loss
+        Assert.True(service2.IsLeader); // Service2 should have taken over leadership
+
+        var failureStateDuration = failureStateEnd - failureStateStart;
+        Assert.True(failureStateDuration < options.RetryInterval * 2,
+            $"Service1 should have detected it is no longer leader within 2 retry intervals({2 * options.RetryInterval}) after state loss but it took {failureStateDuration}.");
     }
 }

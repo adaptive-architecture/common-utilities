@@ -306,7 +306,7 @@ public static class StabilitySettings
             // Generous timeout for network operations
             OperationTimeout = TimeSpan.FromMinutes(2),
             
-            AutoStart = true
+            EnableContinuousCheck = true
         };
     }
 }

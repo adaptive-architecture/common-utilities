@@ -17,7 +17,7 @@ var highAvailabilityOptions = new LeaderElectionOptions
     RenewalInterval = TimeSpan.FromSeconds(15),   // Renew every 15 seconds
     RetryInterval = TimeSpan.FromSeconds(5),      // Quick retry for followers
     OperationTimeout = TimeSpan.FromSeconds(10),  // Fast timeout detection
-    AutoStart = true
+    EnableContinuousCheck = true
 };
 
 // This configuration provides:
@@ -35,7 +35,7 @@ var lowTrafficOptions = new LeaderElectionOptions
     RenewalInterval = TimeSpan.FromMinutes(5),    // Renew every 5 minutes
     RetryInterval = TimeSpan.FromMinutes(2),      // Slow retry for followers
     OperationTimeout = TimeSpan.FromMinutes(1),   // Longer timeout
-    AutoStart = true
+    EnableContinuousCheck = true
 };
 
 // This configuration provides:
@@ -53,7 +53,7 @@ var performanceOptions = new LeaderElectionOptions
     RenewalInterval = TimeSpan.FromMinutes(2),    // Infrequent renewal
     RetryInterval = TimeSpan.FromSeconds(30),     // Moderate retry frequency
     OperationTimeout = TimeSpan.FromSeconds(15),  // Quick operation timeout
-    AutoStart = false                             // Manual control for performance
+    EnableContinuousCheck = false                             // Manual control for performance
 };
 
 // This configuration provides:
@@ -115,7 +115,7 @@ public static class LeaderElectionConfiguration
                 RenewalInterval = TimeSpan.FromSeconds(30),
                 RetryInterval = TimeSpan.FromSeconds(10),
                 OperationTimeout = TimeSpan.FromSeconds(15),
-                AutoStart = true
+                EnableContinuousCheck = true
             },
             "staging" => new LeaderElectionOptions
             {
@@ -123,7 +123,7 @@ public static class LeaderElectionConfiguration
                 RenewalInterval = TimeSpan.FromMinutes(1),
                 RetryInterval = TimeSpan.FromSeconds(30),
                 OperationTimeout = TimeSpan.FromSeconds(30),
-                AutoStart = true
+                EnableContinuousCheck = true
             },
             "production" => new LeaderElectionOptions
             {
@@ -131,7 +131,7 @@ public static class LeaderElectionConfiguration
                 RenewalInterval = TimeSpan.FromMinutes(3),
                 RetryInterval = TimeSpan.FromMinutes(1),
                 OperationTimeout = TimeSpan.FromMinutes(1),
-                AutoStart = true
+                EnableContinuousCheck = true
             },
             _ => new LeaderElectionOptions() // Default
         };
@@ -429,7 +429,7 @@ var options = new RedisLeaderElectionOptions
     LeaseDuration = TimeSpan.FromMinutes(5),
     RenewalInterval = TimeSpan.FromMinutes(2),
     RetryInterval = TimeSpan.FromSeconds(30),
-    AutoStart = true
+    EnableContinuousCheck = true
 };
 
 var service = new RedisLeaderElectionService(
@@ -531,7 +531,7 @@ public static class RedisLeaderElectionTimingProfiles
         RenewalInterval = TimeSpan.FromSeconds(30),   // Frequent renewal
         RetryInterval = TimeSpan.FromSeconds(10),     // Quick retry
         OperationTimeout = TimeSpan.FromSeconds(5),   // Fast timeout
-        AutoStart = true,
+        EnableContinuousCheck = true,
         KeyPrefix = "leader-election"
     };
 
@@ -544,7 +544,7 @@ public static class RedisLeaderElectionTimingProfiles
         RenewalInterval = TimeSpan.FromMinutes(3),    // Less frequent renewal
         RetryInterval = TimeSpan.FromMinutes(1),      // Slower retry
         OperationTimeout = TimeSpan.FromSeconds(30),  // Longer timeout
-        AutoStart = true,
+        EnableContinuousCheck = true,
         KeyPrefix = "leader-election"
     };
 
@@ -557,7 +557,7 @@ public static class RedisLeaderElectionTimingProfiles
         RenewalInterval = TimeSpan.FromMinutes(10),   // Infrequent renewal
         RetryInterval = TimeSpan.FromMinutes(5),      // Slow retry
         OperationTimeout = TimeSpan.FromSeconds(15),  // Reasonable timeout
-        AutoStart = true,
+        EnableContinuousCheck = true,
         KeyPrefix = "leader-election"
     };
 }
@@ -575,7 +575,7 @@ var options = new RedisLeaderElectionOptions
     LeaseDuration = TimeSpan.FromMinutes(5),
     RenewalInterval = TimeSpan.FromMinutes(2),
     RetryInterval = TimeSpan.FromSeconds(30),
-    AutoStart = true
+    EnableContinuousCheck = true
 };
 
 // This will create keys like: "myapp:leader-election:service-name"
@@ -754,7 +754,7 @@ public static class TimingOptimizations
         RenewalInterval = TimeSpan.FromSeconds(45),   // Frequent enough to detect failures
         RetryInterval = TimeSpan.FromSeconds(15),     // Quick retry for new instances
         OperationTimeout = TimeSpan.FromSeconds(20),  // Reasonable timeout for network operations
-        AutoStart = true
+        EnableContinuousCheck = true
     };
 
     /// <summary>
@@ -766,7 +766,7 @@ public static class TimingOptimizations
         RenewalInterval = TimeSpan.FromMinutes(10),   // Infrequent renewal
         RetryInterval = TimeSpan.FromMinutes(5),      // Slow retry for batch systems
         OperationTimeout = TimeSpan.FromMinutes(2),   // Longer timeout for batch operations
-        AutoStart = false                             // Manual control for batch jobs
+        EnableContinuousCheck = false                             // Manual control for batch jobs
     };
 
     /// <summary>
@@ -778,7 +778,7 @@ public static class TimingOptimizations
         RenewalInterval = TimeSpan.FromSeconds(10),   // Very frequent renewal
         RetryInterval = TimeSpan.FromSeconds(3),      // Immediate retry
         OperationTimeout = TimeSpan.FromSeconds(5),   // Quick timeout
-        AutoStart = true
+        EnableContinuousCheck = true
     };
 
     /// <summary>
@@ -790,7 +790,7 @@ public static class TimingOptimizations
         RenewalInterval = TimeSpan.FromMinutes(6),    // Infrequent renewal
         RetryInterval = TimeSpan.FromMinutes(3),      // Slow retry
         OperationTimeout = TimeSpan.FromMinutes(1),   // Reasonable timeout
-        AutoStart = true
+        EnableContinuousCheck = true
     };
 }
 ```
@@ -831,7 +831,7 @@ public class OptimizedLeaderElectionServiceProvider : ILeaderElectionServiceProv
                     LeaseDuration = TimeSpan.FromMinutes(5),
                     RenewalInterval = TimeSpan.FromMinutes(1),
                     RetryInterval = TimeSpan.FromSeconds(30),
-                    AutoStart = true
+                    EnableContinuousCheck = true
                 });
         });
     }
@@ -892,7 +892,7 @@ public class RedisLeaderElectionIntegrationTests : IDisposable
                     LeaseDuration = TimeSpan.FromSeconds(10),
                     RenewalInterval = TimeSpan.FromSeconds(3),
                     RetryInterval = TimeSpan.FromSeconds(1),
-                    AutoStart = true
+                    EnableContinuousCheck = true
                 });
             services.Add(service);
         }
@@ -1133,7 +1133,7 @@ public class LeaderElectionLoadTest
                         LeaseDuration = TimeSpan.FromSeconds(30),
                         RenewalInterval = TimeSpan.FromSeconds(10),
                         RetryInterval = TimeSpan.FromSeconds(3),
-                        AutoStart = true
+                        EnableContinuousCheck = true
                     });
 
                 participant.LeadershipChanged += (sender, args) =>
