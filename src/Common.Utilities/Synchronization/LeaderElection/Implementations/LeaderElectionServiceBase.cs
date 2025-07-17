@@ -9,6 +9,7 @@ namespace AdaptArch.Common.Utilities.Synchronization.LeaderElection.Implementati
 /// </summary>
 public abstract class LeaderElectionServiceBase : ILeaderElectionService
 {
+    internal const string ElectionNameExceptionMessage = "Election name cannot be null or whitespace.";
     private readonly ILeaseStore _leaseStore;
     private readonly ILogger _logger;
     private readonly LeaderElectionOptions _options;
@@ -39,7 +40,7 @@ public abstract class LeaderElectionServiceBase : ILeaderElectionService
 
         ElectionName = !String.IsNullOrWhiteSpace(electionName)
             ? electionName
-            : throw new ArgumentException("Election name cannot be null or whitespace.", nameof(electionName));
+            : throw new ArgumentException(ElectionNameExceptionMessage, nameof(electionName));
 
         ParticipantId = !String.IsNullOrWhiteSpace(participantId)
             ? participantId
@@ -106,7 +107,7 @@ public abstract class LeaderElectionServiceBase : ILeaderElectionService
             _logger.LogInformation("Stopping leader election for {ElectionName}:{ParticipantId}",
                 ElectionName, ParticipantId);
 
-            _cancellationTokenSource.Cancel();
+            await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
 
             await _electionTask.ConfigureAwait(false);
         }

@@ -34,7 +34,7 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
         CancellationToken cancellationToken = default)
     {
         if (String.IsNullOrWhiteSpace(electionName))
-            throw new ArgumentException("Election name cannot be null or whitespace.", nameof(electionName));
+            throw new ArgumentException(LeaderElectionServiceBase.ElectionNameExceptionMessage, nameof(electionName));
 
         if (String.IsNullOrWhiteSpace(participantId))
             throw new ArgumentException("Participant ID cannot be null or whitespace.", nameof(participantId));
@@ -95,7 +95,7 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
         CancellationToken cancellationToken = default)
     {
         if (String.IsNullOrWhiteSpace(electionName))
-            throw new ArgumentException("Election name cannot be null or whitespace.", nameof(electionName));
+            throw new ArgumentException(LeaderElectionServiceBase.ElectionNameExceptionMessage, nameof(electionName));
 
         if (String.IsNullOrWhiteSpace(participantId))
             throw new ArgumentException("Participant ID cannot be null or whitespace.", nameof(participantId));
@@ -159,7 +159,7 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
         CancellationToken cancellationToken = default)
     {
         if (String.IsNullOrWhiteSpace(electionName))
-            throw new ArgumentException("Election name cannot be null or whitespace.", nameof(electionName));
+            throw new ArgumentException(LeaderElectionServiceBase.ElectionNameExceptionMessage, nameof(electionName));
 
         if (String.IsNullOrWhiteSpace(participantId))
             throw new ArgumentException("Participant ID cannot be null or whitespace.", nameof(participantId));
@@ -195,7 +195,7 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
         CancellationToken cancellationToken = default)
     {
         if (String.IsNullOrWhiteSpace(electionName))
-            throw new ArgumentException("Election name cannot be null or whitespace.", nameof(electionName));
+            throw new ArgumentException(LeaderElectionServiceBase.ElectionNameExceptionMessage, nameof(electionName));
 
         ObjectDisposedException.ThrowIf(_disposed, this);
         cancellationToken.ThrowIfCancellationRequested();
@@ -230,7 +230,7 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
         CancellationToken cancellationToken = default)
     {
         if (String.IsNullOrWhiteSpace(electionName))
-            throw new ArgumentException("Election name cannot be null or whitespace.", nameof(electionName));
+            throw new ArgumentException(LeaderElectionServiceBase.ElectionNameExceptionMessage, nameof(electionName));
 
         ObjectDisposedException.ThrowIf(_disposed, this);
         cancellationToken.ThrowIfCancellationRequested();
@@ -278,6 +278,7 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
     {
         if (disposing)
         {
+            // Dispose managed resources
             if (!_disposed)
             {
                 _semaphore.Dispose();

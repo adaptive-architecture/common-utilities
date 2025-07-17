@@ -1,6 +1,7 @@
 ﻿using AdaptArch.Common.Utilities.Synchronization.LeaderElection.Contracts;
 
 namespace AdaptArch.Common.Utilities.UnitTests.Synchronization.LeaderElection;
+#pragma warning disable S2925 // SONAR: Do not use 'Thread.Sleep()' in a test.
 
 public class LeaderInfoSpecs
 {

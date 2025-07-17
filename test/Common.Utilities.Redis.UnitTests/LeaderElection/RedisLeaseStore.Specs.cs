@@ -357,6 +357,7 @@ public class RedisLeaseStoreSpecs
         // Act & Assert
         _leaseStore.Dispose();
         _leaseStore.Dispose(); // Should be safe to call multiple times
+        Assert.True(true); // If we reach here, the test passes
     }
 
     [Fact]

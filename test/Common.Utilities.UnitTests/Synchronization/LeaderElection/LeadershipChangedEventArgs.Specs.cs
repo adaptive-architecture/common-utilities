@@ -268,7 +268,7 @@ public class LeadershipChangedEventArgsSpecs
         var eventArgs = new LeadershipChangedEventArgs(false, null, null);
 
         // Act & Assert
-        Assert.IsAssignableFrom<EventArgs>(eventArgs);
+        Assert.IsType<EventArgs>(eventArgs, exactMatch: false);
     }
 
     [Theory]

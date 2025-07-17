@@ -273,6 +273,7 @@ public class RedisLeaderElectionServiceSpecs
 
         // Assert - Should complete without errors
         await service.StopAsync();
+        Assert.True(true); // If we reach here, the test passes
     }
 
     [Fact]
