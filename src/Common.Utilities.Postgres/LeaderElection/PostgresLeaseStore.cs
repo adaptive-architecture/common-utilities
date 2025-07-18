@@ -51,17 +51,15 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
             var acquiredAt = DateTime.UtcNow;
             var expiresAt = acquiredAt.Add(leaseDuration);
 
-            var leaderInfo = new LeaderInfo
-            {
-                ParticipantId = participantId,
-                AcquiredAt = acquiredAt,
-                ExpiresAt = expiresAt,
-                Metadata = metadata
-            };
-
             await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken).ConfigureAwait(false);
 
             // Use INSERT ... ON CONFLICT DO NOTHING for atomic lease acquisition
+            /*
+            Possible Outcomes:
+              * Lease acquired from new lease created: If no lease exists for this election_name, a new record is inserted and its details are returned.
+              * Lease acquired from expired holder: If a lease exists but has expired, it gets updated with the new participant's information and returns the new lease details.
+              * Lease NOT acquired: If a lease exists and hasn't expired yet, the WHERE condition fails, no update occurs, and the query returns nothing (no rows).
+            */
             const string sql = """
                 INSERT INTO {0} (election_name, participant_id, acquired_at, expires_at, metadata)
                 VALUES (@election_name, @participant_id, @acquired_at, @expires_at, @metadata_json)
@@ -88,18 +86,25 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
 
             await using var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
 
+            // If the lease was acquired, the reader will have a row
+            // If the lease was not acquired, the reader will be empty
             if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
             {
-                var returnedParticipantId = reader.GetString(0);
-                if (returnedParticipantId == participantId)
+                _logger.LogDebug("Acquired lease for election {ElectionName} by participant {ParticipantId}",
+                    electionName, participantId);
+                return new LeaderInfo
                 {
-                    _logger.LogDebug("Acquired lease for election {ElectionName} by participant {ParticipantId}",
-                        electionName, participantId);
-                    return leaderInfo;
-                }
+                    ParticipantId = participantId,
+                    AcquiredAt = acquiredAt,
+                    ExpiresAt = expiresAt,
+                    Metadata = metadata
+                };
             }
-
-            return null;
+            else
+            {
+                _logger.LogDebug("Failed to acquire lease for election {ElectionName} by participant {ParticipantId} - already held by another participant",
+                    electionName, participantId);
+            }
         }
         catch (Exception ex)
         {
@@ -107,6 +112,8 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
                 electionName, participantId);
             throw;
         }
+
+        return null;
     }
 
     /// <inheritdoc/>
@@ -153,22 +160,19 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
 
             if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
             {
-                var leaderInfo = new LeaderInfo
+                _logger.LogTrace("Renewed lease for election {ElectionName} by participant {ParticipantId}",
+                    electionName, participantId);
+                return new LeaderInfo
                 {
                     ParticipantId = participantId,
                     AcquiredAt = acquiredAt,
                     ExpiresAt = expiresAt,
                     Metadata = metadata
                 };
-
-                _logger.LogTrace("Renewed lease for election {ElectionName} by participant {ParticipantId}",
-                    electionName, participantId);
-                return leaderInfo;
             }
 
             _logger.LogDebug("Failed to renew lease for election {ElectionName} by participant {ParticipantId} - not current holder",
                 electionName, participantId);
-            return null;
         }
         catch (Exception ex)
         {
@@ -176,6 +180,7 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
                 electionName, participantId);
             throw;
         }
+        return null;
     }
 
     /// <inheritdoc/>
@@ -185,7 +190,7 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
         CancellationToken cancellationToken = default)
     {
         ThrowIfDisposed();
-
+        bool wasReleased;
         try
         {
             await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken).ConfigureAwait(false);
@@ -204,19 +209,18 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
             _ = command.Parameters.AddWithValue("participant_id", participantId);
 #pragma warning restore S1192 // Define a constant instead of using this literal
             var rowsAffected = await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
-            var wasReleased = rowsAffected > 0;
+            wasReleased = rowsAffected > 0;
 
             _logger.LogDebug("Released lease result is {WasReleased} for election {ElectionName} by participant {ParticipantId}",
                 wasReleased, electionName, participantId);
-
-            return wasReleased;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to release lease for election {ElectionName} by participant {ParticipantId}",
                 electionName, participantId);
-            return false;
+            wasReleased = false;
         }
+        return wasReleased;
     }
 
     /// <inheritdoc/>
@@ -270,8 +274,6 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
                     Metadata = metadata
                 };
             }
-
-            return null;
         }
         catch (Exception ex)
         {
@@ -279,6 +281,8 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
                 electionName);
             throw;
         }
+
+        return null;
     }
 
     /// <inheritdoc/>
@@ -347,7 +351,7 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
     public async Task<int> CleanupExpiredLeasesAsync(CancellationToken cancellationToken = default)
     {
         ThrowIfDisposed();
-
+        int rowsAffected;
         try
         {
             await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken).ConfigureAwait(false);
@@ -362,20 +366,20 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
             await using var command = new NpgsqlCommand(formattedSql, connection);
             _ = command.Parameters.AddWithValue("now", DateTime.UtcNow);
 
-            var rowsAffected = await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+            rowsAffected = await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
 
             if (rowsAffected > 0)
             {
                 _logger.LogDebug("Cleaned up {Count} expired leases from table {TableName}", rowsAffected, _tableName);
             }
-
-            return rowsAffected;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to cleanup expired leases from table {TableName}", _tableName);
             throw;
         }
+
+        return rowsAffected;
     }
 
     private void ThrowIfDisposed()

@@ -37,6 +37,9 @@ public class PostgresLeaderElectionIntegrationTests
         {
             // Ensure table exists
             await leaseStore.EnsureTableExistsAsync();
+            // Verify lease does not exists
+            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
+            Assert.Null(currentLease);
 
             // Act - Acquire lease
             var lease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, metadata);
@@ -49,7 +52,7 @@ public class PostgresLeaderElectionIntegrationTests
             Assert.True(lease.TimeToExpiry > TimeSpan.FromSeconds(25)); // Should be close to 30 seconds
 
             // Verify lease exists
-            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
+            currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
             Assert.NotNull(currentLease);
             Assert.Equal(participantId, currentLease.ParticipantId);
 
@@ -845,6 +848,7 @@ public class PostgresLeaderElectionIntegrationTests
         _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.EnsureTableExistsAsync());
         _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.TryRenewLeaseAsync("test-election", "participant-1", TimeSpan.FromSeconds(30)));
         _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.TryAcquireLeaseAsync("test-election", "participant-1", TimeSpan.FromSeconds(30)));
+        _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.CleanupExpiredLeasesAsync());
         var released = await leaseStore.ReleaseLeaseAsync("test-election", "participant-1");
         Assert.False(released); // Should return false on connection failure
     }
