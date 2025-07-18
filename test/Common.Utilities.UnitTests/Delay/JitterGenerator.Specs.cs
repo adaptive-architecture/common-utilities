@@ -10,13 +10,13 @@ public class JitterGeneratorSpecs
     [Fact]
     public void Should_Throw_ArgumentOutOfRange_Exceptions()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => _ = _jitterGenerator.New(TimeSpan.Zero, -0.01f, 0.99f));
-        Assert.Throws<ArgumentOutOfRangeException>(() => _ = _jitterGenerator.New(TimeSpan.Zero, 1.01f, 0.99f));
+        _ = Assert.Throws<ArgumentOutOfRangeException>(() => _ = _jitterGenerator.New(TimeSpan.Zero, -0.01f, 0.99f));
+        _ = Assert.Throws<ArgumentOutOfRangeException>(() => _ = _jitterGenerator.New(TimeSpan.Zero, 1.01f, 0.99f));
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => _ = _jitterGenerator.New(TimeSpan.Zero, 0.01f, -0.01f));
-        Assert.Throws<ArgumentOutOfRangeException>(() => _ = _jitterGenerator.New(TimeSpan.Zero, 0.01f, 1.01f));
+        _ = Assert.Throws<ArgumentOutOfRangeException>(() => _ = _jitterGenerator.New(TimeSpan.Zero, 0.01f, -0.01f));
+        _ = Assert.Throws<ArgumentOutOfRangeException>(() => _ = _jitterGenerator.New(TimeSpan.Zero, 0.01f, 1.01f));
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => _ = _jitterGenerator.New(TimeSpan.Zero, 0.05f, 0.01f));
+        _ = Assert.Throws<ArgumentOutOfRangeException>(() => _ = _jitterGenerator.New(TimeSpan.Zero, 0.05f, 0.01f));
     }
 
     [Fact]

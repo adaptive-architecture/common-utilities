@@ -37,7 +37,7 @@ public class JsonDataSerializerSpecs
     {
         var serializer = new JsonDataSerializer();
 
-        Assert.Throws<ArgumentNullException>(() => serializer.Deserialize<object>(RedisValue.Null));
+        _ = Assert.Throws<ArgumentNullException>(() => serializer.Deserialize<object>(RedisValue.Null));
     }
 
     [Fact]

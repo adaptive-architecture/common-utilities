@@ -12,7 +12,7 @@ public class JsonConfigurationParser : IConfigurationParser
     private readonly Dictionary<string, string?> _data = new(StringComparer.OrdinalIgnoreCase);
     private readonly Stack<string> _paths = new();
     private readonly string _keyDelimiter;
-    private readonly object _parseLock = new();
+    private readonly Lock _parseLock = new();
 
     /// <summary>
     /// Constructor.

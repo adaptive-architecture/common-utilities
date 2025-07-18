@@ -40,7 +40,7 @@ public static class ServiceCollectionPubSubExtensions
         var handlerDefinitions = GetHandlerDefinitions(handlerAssembly, handlerTopicAccessor);
         foreach (var handlerDefinition in handlerDefinitions)
         {
-            services.AddScoped(handlerDefinition.HandlerMethod.DeclaringType!);
+            _ = services.AddScoped(handlerDefinition.HandlerMethod.DeclaringType!);
         }
 
         // See https://github.com/dotnet/runtime/issues/38751

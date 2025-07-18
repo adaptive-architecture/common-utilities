@@ -9,7 +9,7 @@ public class RedisMessageHubOptionsSpecs
     public void Should_Have_A_ReflectionJsonSerialize_By_Default()
     {
         var options = new RedisMessageHubOptions();
-        Assert.IsType<ReflectionJsonDataSerializer>(options.DataSerializer);
+        _ = Assert.IsType<ReflectionJsonDataSerializer>(options.DataSerializer);
     }
 
     [Fact]
@@ -26,6 +26,6 @@ public class RedisMessageHubOptionsSpecs
     [Fact]
     public void Should_Throw_When_Provided_Null_Argument()
     {
-        Assert.Throws<ArgumentNullException>(() => new RedisMessageHubOptions(null));
+        _ = Assert.Throws<ArgumentNullException>(() => new RedisMessageHubOptions(null));
     }
 }

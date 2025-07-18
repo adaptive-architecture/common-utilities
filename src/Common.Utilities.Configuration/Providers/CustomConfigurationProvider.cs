@@ -9,7 +9,7 @@ public class CustomConfigurationProvider : ConfigurationProvider
 {
     private readonly IDataProvider _dataProvider;
     private readonly CustomConfigurationProviderOptions _options;
-    private readonly object _poolingStateLock = new();
+    private readonly Lock _poolingStateLock = new();
     private readonly SemaphoreSlim _loadingStateSemaphore = new(1, 1);
 
     private string _dataHash = String.Empty;
@@ -70,7 +70,7 @@ public class CustomConfigurationProvider : ConfigurationProvider
         }
         finally
         {
-            _loadingStateSemaphore.Release();
+            _ = _loadingStateSemaphore.Release();
         }
     }
 

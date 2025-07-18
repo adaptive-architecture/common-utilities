@@ -10,13 +10,13 @@ public class CustomConfigurationExtensionsSpecs
     [Fact]
     public void Should_Throw_If_Null_Configuration_Action()
     {
-        Assert.Throws<ArgumentNullException>(() => _ = new ConfigurationBuilder().AddCustomConfiguration(null!));
+        _ = Assert.Throws<ArgumentNullException>(() => _ = new ConfigurationBuilder().AddCustomConfiguration(null!));
     }
 
     [Fact]
     public void Should_Throw_If_Null_Data_Provider()
     {
-        Assert.Throws<NullReferenceException>(() => _ = new ConfigurationBuilder().AddCustomConfiguration(_ => { }));
+        _ = Assert.Throws<NullReferenceException>(() => _ = new ConfigurationBuilder().AddCustomConfiguration(_ => { }));
     }
 
     [Fact]
@@ -24,7 +24,7 @@ public class CustomConfigurationExtensionsSpecs
     {
         var builder = new ConfigurationBuilder();
         var mock = Substitute.For<IDataProvider>();
-        builder.AddCustomConfiguration(opt => opt.DataProvider = mock);
+        _ = builder.AddCustomConfiguration(opt => opt.DataProvider = mock);
 
         Assert.NotEmpty(builder.Sources);
         Assert.Same(mock, ((CustomConfigurationSource)builder.Sources[0]).DataProvider);

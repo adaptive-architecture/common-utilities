@@ -17,6 +17,6 @@ public class TimeProviderWrapperSpecs
     [Fact]
     public void Should_Throw_If_Null_Argument_Passed_To_Constructor()
     {
-        Assert.Throws<ArgumentNullException>(() => new TimeProviderWrapper(null!));
+        _ = Assert.Throws<ArgumentNullException>(() => new TimeProviderWrapper(null!));
     }
 }

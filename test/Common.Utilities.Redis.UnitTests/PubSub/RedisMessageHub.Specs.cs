@@ -45,7 +45,7 @@ public class RedisMessageHubSpecs
             .Do(PublishCallback());
 
         _cm = Substitute.For<IConnectionMultiplexer>();
-        _cm.GetSubscriber(null).Returns(_sub);
+        _ = _cm.GetSubscriber(null).Returns(_sub);
 
         _hub = new RedisMessageHub(_cm, Options);
 
@@ -73,8 +73,8 @@ public class RedisMessageHubSpecs
     public void Should_Throw_If_Arguments_Are_Null()
     {
         // ReSharper disable AssignNullToNotNullAttribute
-        Assert.Throws<ArgumentNullException>(() => new RedisMessageHub(null, Options));
-        Assert.Throws<ArgumentNullException>(() => new RedisMessageHub(null, null));
+        _ = Assert.Throws<ArgumentNullException>(() => new RedisMessageHub(null, Options));
+        _ = Assert.Throws<ArgumentNullException>(() => new RedisMessageHub(null, null));
         // ReSharper restore AssignNullToNotNullAttribute
     }
 
@@ -104,7 +104,7 @@ public class RedisMessageHubSpecs
 
         // Check publish
         VerifySubscriberCalled(2);
-        _sub.Received(1).Publish("topic_A".ToChannel(), _messageValue, CommandFlags.None);
+        _ = _sub.Received(1).Publish("topic_A".ToChannel(), _messageValue, CommandFlags.None);
 
         // Unsubscribe in existent id
         _hub.Unsubscribe("not=a=valid=id");
@@ -144,7 +144,7 @@ public class RedisMessageHubSpecs
 
         // Check publish
         VerifySubscriberCalled(2);
-        await _sub.Received(1).PublishAsync("topic_A".ToChannel(), _messageValue, CommandFlags.None);
+        _ = await _sub.Received(1).PublishAsync("topic_A".ToChannel(), _messageValue, CommandFlags.None);
 
         // Unsubscribe in existent id
         await _hub.UnsubscribeAsync("not=a=valid=id", CancellationToken.None);

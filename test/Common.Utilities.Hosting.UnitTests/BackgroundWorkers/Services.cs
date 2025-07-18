@@ -23,12 +23,12 @@ internal static class ServiceBuilder
 
         var serviceCollection = new ServiceCollection();
 
-        serviceCollection
+        _ = serviceCollection
             .AddSingleton(configuration)
             .AddSingleton<IConfiguration>(configuration)
             .AddOptions<RepeatingWorkerConfiguration>().BindConfiguration("periodicWorkers");
 
-        serviceCollection
+        _ = serviceCollection
             .AddSingleton<ILoggerFactory, NullLoggerFactory>()
             .AddSingleton(typeof(ILogger<>), typeof(NullLogger<>))
             .AddSingleton(state);

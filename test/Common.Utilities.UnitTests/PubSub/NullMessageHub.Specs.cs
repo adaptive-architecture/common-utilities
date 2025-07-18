@@ -46,7 +46,7 @@ public class NullMessageHubSpecs
         const string topic = "test-topic";
         var handlerInvoked = false;
 
-        hub.Subscribe<TestMessage>(topic, (_, _) =>
+        _ = hub.Subscribe<TestMessage>(topic, (_, _) =>
         {
             handlerInvoked = true;
             return Task.CompletedTask;
@@ -117,7 +117,7 @@ public class NullMessageHubSpecs
         const string topic = "test-topic";
         var handlerInvoked = false;
 
-        await hub.SubscribeAsync<TestMessage>(topic, (_, _) =>
+        _ = await hub.SubscribeAsync<TestMessage>(topic, (_, _) =>
         {
             handlerInvoked = true;
             return Task.CompletedTask;
@@ -182,8 +182,8 @@ public class NullMessageHubSpecs
         var message = new TestMessage { Content = "test" };
 
         // Should not throw for null/empty topics
-        hub.Subscribe<TestMessage>(null!, (_, _) => Task.CompletedTask);
-        hub.Subscribe<TestMessage>(String.Empty, (_, _) => Task.CompletedTask);
+        _ = hub.Subscribe<TestMessage>(null!, (_, _) => Task.CompletedTask);
+        _ = hub.Subscribe<TestMessage>(String.Empty, (_, _) => Task.CompletedTask);
         hub.Publish(null!, message);
         hub.Publish(String.Empty, message);
 
@@ -197,8 +197,8 @@ public class NullMessageHubSpecs
         var message = new TestMessage { Content = "test" };
 
         // Should not throw for null/empty topics
-        await hub.SubscribeAsync<TestMessage>(null!, (_, _) => Task.CompletedTask, CancellationToken.None);
-        await hub.SubscribeAsync<TestMessage>(String.Empty, (_, _) => Task.CompletedTask, CancellationToken.None);
+        _ = await hub.SubscribeAsync<TestMessage>(null!, (_, _) => Task.CompletedTask, CancellationToken.None);
+        _ = await hub.SubscribeAsync<TestMessage>(String.Empty, (_, _) => Task.CompletedTask, CancellationToken.None);
         await hub.PublishAsync(null!, message, CancellationToken.None);
         await hub.PublishAsync(String.Empty, message, CancellationToken.None);
 

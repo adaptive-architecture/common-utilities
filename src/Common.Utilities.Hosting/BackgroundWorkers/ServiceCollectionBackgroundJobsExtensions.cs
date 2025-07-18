@@ -58,7 +58,7 @@ public static class ServiceCollectionBackgroundJobsExtensions
         where TJob : class, IJob
     {
         builder.Services.TryAddScoped<TJob>();
-        builder.Services.AddHostedService<PeriodicJobWorker<TJob>>();
+        _ = builder.Services.AddHostedService<PeriodicJobWorker<TJob>>();
         return builder;
     }
 
@@ -72,7 +72,7 @@ public static class ServiceCollectionBackgroundJobsExtensions
         where TJob : class, IJob
     {
         builder.Services.TryAddScoped<TJob>();
-        builder.Services.AddHostedService<DelayedJobWorker<TJob>>();
+        _ = builder.Services.AddHostedService<DelayedJobWorker<TJob>>();
         return builder;
     }
 }

@@ -12,7 +12,7 @@ public class ExceptionExtensionsSpecs
         ExceptionExtensions.ThrowNotSupportedIfNotNull(nullObject, "null");
         ExceptionExtensions.ThrowNotSupportedIfNull(notNullObject, "null");
 
-        Assert.Throws<NotSupportedException>(() => ExceptionExtensions.ThrowNotSupportedIfNull<object>(null, "null"));
-        Assert.Throws<NotSupportedException>(() => ExceptionExtensions.ThrowNotSupportedIfNotNull(new object(), "null"));
+        _ = Assert.Throws<NotSupportedException>(() => ExceptionExtensions.ThrowNotSupportedIfNull<object>(null, "null"));
+        _ = Assert.Throws<NotSupportedException>(() => ExceptionExtensions.ThrowNotSupportedIfNotNull(new object(), "null"));
     }
 }
