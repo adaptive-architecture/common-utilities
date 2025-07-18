@@ -69,6 +69,7 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
                     RETURNING participant_id, acquired_at, expires_at, metadata;
                     """;
 
+#pragma warning disable S1192 // Define a constant instead of using this literal
                 var parameters = new Dictionary<string, object>
                 {
                     ["election_name"] = electionName,
@@ -77,30 +78,28 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
                     ["expires_at"] = expiresAt,
                     ["now"] = DateTime.UtcNow
                 };
-
+#pragma warning restore S1192 // Define a constant instead of using this literal
                 await using var reader = await ExecuteReaderAsync(sql, parameters, metadata, cancellationToken).ConfigureAwait(false);
 
                 // If the lease was acquired, the reader will have a row
                 // If the lease was not acquired, the reader will be empty
-                if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
-                {
-                    _logger.LogDebug("Acquired lease for election {ElectionName} by participant {ParticipantId}",
-                        electionName, participantId);
-                    return new LeaderInfo
-                    {
-                        ParticipantId = participantId,
-                        AcquiredAt = acquiredAt,
-                        ExpiresAt = expiresAt,
-                        Metadata = metadata
-                    };
-                }
-                else
+                if (!await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
                 {
                     _logger.LogDebug("Failed to acquire lease for election {ElectionName} by participant {ParticipantId} - already held by another participant",
                         electionName, participantId);
+                    return null;
                 }
 
-                return null;
+                _logger.LogDebug("Acquired lease for election {ElectionName} by participant {ParticipantId}",
+                        electionName, participantId);
+
+                return new LeaderInfo
+                {
+                    ParticipantId = participantId,
+                    AcquiredAt = acquiredAt,
+                    ExpiresAt = expiresAt,
+                    Metadata = metadata
+                };
             },
             ex => _logger.LogError(ex, "Failed to acquire lease for election {ElectionName} by participant {ParticipantId}",
                 electionName, participantId)
@@ -132,6 +131,7 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
                     RETURNING participant_id, acquired_at, expires_at, metadata;
                     """;
 
+#pragma warning disable S1192 // Define a constant instead of using this literal
                 var parameters = new Dictionary<string, object>
                 {
                     ["election_name"] = electionName,
@@ -140,25 +140,27 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
                     ["expires_at"] = expiresAt,
                     ["now"] = DateTime.UtcNow
                 };
+#pragma warning restore S1192 // Define a constant instead of using this literal
 
                 await using var reader = await ExecuteReaderAsync(sql, parameters, metadata, cancellationToken).ConfigureAwait(false);
 
-                if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+                if (!await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
                 {
-                    _logger.LogTrace("Renewed lease for election {ElectionName} by participant {ParticipantId}",
+                    _logger.LogDebug("Failed to renew lease for election {ElectionName} by participant {ParticipantId} - not current holder",
                         electionName, participantId);
-                    return new LeaderInfo
-                    {
-                        ParticipantId = participantId,
-                        AcquiredAt = acquiredAt,
-                        ExpiresAt = expiresAt,
-                        Metadata = metadata
-                    };
+                    return null;
                 }
 
-                _logger.LogDebug("Failed to renew lease for election {ElectionName} by participant {ParticipantId} - not current holder",
+                _logger.LogTrace("Renewed lease for election {ElectionName} by participant {ParticipantId}",
                     electionName, participantId);
-                return null;
+
+                return new LeaderInfo
+                {
+                    ParticipantId = participantId,
+                    AcquiredAt = acquiredAt,
+                    ExpiresAt = expiresAt,
+                    Metadata = metadata
+                };
             },
             ex => _logger.LogError(ex, "Failed to renew lease for election {ElectionName} by participant {ParticipantId}",
                 electionName, participantId)
@@ -182,11 +184,13 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
                   AND participant_id = @participant_id;
                 """;
 
+#pragma warning disable S1192 // Define a constant instead of using this literal
             var parameters = new Dictionary<string, object>
             {
                 ["election_name"] = electionName,
                 ["participant_id"] = participantId
             };
+#pragma warning restore S1192 // Define a constant instead of using this literal
 
             var rowsAffected = await ExecuteNonQueryAsync(sql, parameters, cancellationToken).ConfigureAwait(false);
             wasReleased = rowsAffected > 0;
@@ -219,40 +223,42 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
                       AND expires_at > @now;
                     """;
 
+#pragma warning disable S1192 // Define a constant instead of using this literal
                 var parameters = new Dictionary<string, object>
                 {
                     ["election_name"] = electionName,
                     ["now"] = DateTime.UtcNow
                 };
+#pragma warning restore S1192 // Define a constant instead of using this literal
 
                 await using var reader = await ExecuteReaderAsync(sql, parameters, null, cancellationToken).ConfigureAwait(false);
 
-                if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+                if (!await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
                 {
-                    var participantId = reader.GetString(0);
-                    var acquiredAt = reader.GetDateTime(1);
-                    var expiresAt = reader.GetDateTime(2);
-                    var metadataJson = await reader.IsDBNullAsync(3, cancellationToken)
-                        .ConfigureAwait(false)
-                        ? null
-                        : reader.GetString(3);
-
-                    IReadOnlyDictionary<string, string>? metadata = null;
-                    if (!String.IsNullOrEmpty(metadataJson))
-                    {
-                        metadata = _serializer.Deserialize<Dictionary<string, string>>(metadataJson);
-                    }
-
-                    return new LeaderInfo
-                    {
-                        ParticipantId = participantId,
-                        AcquiredAt = acquiredAt,
-                        ExpiresAt = expiresAt,
-                        Metadata = metadata
-                    };
+                    return null;
                 }
 
-                return null;
+                var participantId = reader.GetString(0);
+                var acquiredAt = reader.GetDateTime(1);
+                var expiresAt = reader.GetDateTime(2);
+                var metadataJson = await reader.IsDBNullAsync(3, cancellationToken)
+                    .ConfigureAwait(false)
+                    ? null
+                    : reader.GetString(3);
+
+                IReadOnlyDictionary<string, string>? metadata = null;
+                if (!String.IsNullOrEmpty(metadataJson))
+                {
+                    metadata = _serializer.Deserialize<Dictionary<string, string>>(metadataJson);
+                }
+
+                return new LeaderInfo
+                {
+                    ParticipantId = participantId,
+                    AcquiredAt = acquiredAt,
+                    ExpiresAt = expiresAt,
+                    Metadata = metadata
+                };
             },
             ex => _logger.LogError(ex, "Failed to get current lease for election {ElectionName}", electionName)
         );
@@ -294,7 +300,7 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
                     CREATE INDEX IF NOT EXISTS idx_{0}_expires_at ON {0}(expires_at);
                     """;
 
-                _ = await ExecuteNonQueryAsync(sql, new Dictionary<string, object>(), cancellationToken).ConfigureAwait(false);
+                _ = await ExecuteNonQueryAsync(sql, [], cancellationToken).ConfigureAwait(false);
                 _logger.LogDebug("Ensured lease table {TableName} exists", _tableName);
             },
             ex => _logger.LogError(ex, "Failed to ensure lease table {TableName} exists", _tableName)
