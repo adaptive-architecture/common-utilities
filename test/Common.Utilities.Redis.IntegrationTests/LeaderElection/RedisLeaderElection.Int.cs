@@ -3,6 +3,7 @@ using AdaptArch.Common.Utilities.Redis.IntegrationTests.Fixtures;
 using AdaptArch.Common.Utilities.Redis.LeaderElection;
 using AdaptArch.Common.Utilities.Redis.Serialization.Implementations;
 using AdaptArch.Common.Utilities.Synchronization.LeaderElection.Contracts;
+using StackExchange.Redis;
 
 namespace AdaptArch.Common.Utilities.Redis.IntegrationTests.LeaderElection;
 
@@ -442,6 +443,62 @@ public class RedisLeaderElectionIntegrationTests
             var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
 
             // Assert - Expired lease should be cleaned up
+            Assert.Null(currentLease);
+
+            var hasValidLease = await leaseStore.HasValidLeaseAsync(electionName);
+            Assert.False(hasValidLease);
+
+            // Another participant should be able to acquire the lease now
+            var newLease = await leaseStore.TryAcquireLeaseAsync(electionName, "participant-2", TimeSpan.FromMinutes(1));
+            Assert.NotNull(newLease);
+            Assert.Equal("participant-2", newLease.ParticipantId);
+        }
+        finally
+        {
+            leaseStore.Dispose();
+        }
+    }
+
+    [Fact]
+    public async Task RedisLeaseStore_Should_Handle_Expired_Leases_That_Were_Not_Cleaned()
+    {
+        // Arrange
+        var serializer = new ReflectionJsonDataSerializer();
+        var leaseStore = new RedisLeaseStore(_fixture.Connection, serializer, NullLogger.Instance);
+
+        var electionName = $"test-election-{Guid.NewGuid()}";
+        const string participantId = "participant-1";
+        var shortLeaseDuration = TimeSpan.FromSeconds(2); // Very short lease
+
+        try
+        {
+            // Act - Simulate a lease that was not cleaned up properly
+            var database = _fixture.Connection.GetDatabase();
+            var leaseKey = $"leader_election:lease:{electionName}";
+            var acquiredAt = DateTime.UtcNow.AddMinutes(-1);
+            var expiresAt = acquiredAt.Add(shortLeaseDuration);
+
+            var leaderInfo = new LeaderInfo
+            {
+                ParticipantId = participantId,
+                AcquiredAt = acquiredAt,
+                ExpiresAt = expiresAt,
+            };
+            var serializedLease = serializer.Serialize(leaderInfo);
+
+            // Use SET with NX (only if not exists) and EX (expiration) for atomic operation
+            var acquired = await database.StringSetAsync(
+                leaseKey,
+                serializedLease,
+                shortLeaseDuration,
+                When.NotExists);
+
+            Assert.True(acquired);
+
+            // Act - Try to get current lease (should handle expired lease)
+            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
+
+            // Assert - Expired lease that were not cleaned up should be ignored
             Assert.Null(currentLease);
 
             var hasValidLease = await leaseStore.HasValidLeaseAsync(electionName);
