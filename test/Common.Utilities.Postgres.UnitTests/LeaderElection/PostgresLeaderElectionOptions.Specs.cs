@@ -125,7 +125,7 @@ public class PostgresLeaderElectionOptionsSpecs
 
         // Act & Assert
         var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
-        Assert.Contains("TableName cannot be null or whitespace", exception.Message);
+        Assert.Contains("TableName cannot be null or empty", exception.Message);
     }
 
     [Fact]
@@ -141,23 +141,7 @@ public class PostgresLeaderElectionOptionsSpecs
 
         // Act & Assert
         var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
-        Assert.Contains("TableName cannot be null or whitespace", exception.Message);
-    }
-
-    [Fact]
-    public void Validate_WithWhitespaceTableName_ShouldThrowInvalidOperationException()
-    {
-        // Arrange
-        var options = new PostgresLeaderElectionOptions
-        {
-            DataSource = _mockDataSource,
-            Serializer = _mockSerializer,
-            TableName = "   "
-        };
-
-        // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
-        Assert.Contains("TableName cannot be null or whitespace", exception.Message);
+        Assert.Contains("TableName cannot be null or empty", exception.Message);
     }
 
     [Theory]
@@ -182,6 +166,7 @@ public class PostgresLeaderElectionOptionsSpecs
     }
 
     [Theory]
+    [InlineData(" ")]
     [InlineData("123invalid")]
     [InlineData("table@name")]
     [InlineData("table name")]
@@ -206,7 +191,6 @@ public class PostgresLeaderElectionOptionsSpecs
 
     [Theory]
     [InlineData("")]
-    [InlineData(" ")]
     public void Validate_WithInvalidTableNames_ShouldThrowInvalidOperationException_Whitespace(string tableName)
     {
         // Arrange
@@ -219,7 +203,7 @@ public class PostgresLeaderElectionOptionsSpecs
 
         // Act & Assert
         var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
-        Assert.Contains("TableName cannot be null or whitespace.", exception.Message);
+        Assert.Contains("TableName cannot be null or empty.", exception.Message);
     }
 
     [Fact]

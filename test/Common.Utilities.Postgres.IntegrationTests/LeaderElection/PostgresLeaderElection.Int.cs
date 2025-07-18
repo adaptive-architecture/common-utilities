@@ -678,7 +678,7 @@ public class PostgresLeaderElectionIntegrationTests
         // Arrange
         var mockSerializer = Substitute.For<IStringDataSerializer>();
         _ = mockSerializer.Serialize(Arg.Any<IReadOnlyDictionary<string, string>>())
-            .Returns(x => throw new InvalidOperationException("Serialization failed"));
+            .Returns(_ => throw new InvalidOperationException("Serialization failed"));
 
         var tableName = $"test_leases_{Guid.NewGuid():N}";
         var leaseStore = new PostgresLeaseStore(_fixture.DataSource, mockSerializer, tableName, NullLogger.Instance);
@@ -710,7 +710,7 @@ public class PostgresLeaderElectionIntegrationTests
         _ = mockSerializer.Serialize(Arg.Any<IReadOnlyDictionary<string, string>>())
             .Returns("{\"key\":\"value\"}");
         _ = mockSerializer.Deserialize<Dictionary<string, string>>(Arg.Any<string>())
-            .Returns(x => throw new InvalidOperationException("Deserialization failed"));
+            .Returns(_ => throw new InvalidOperationException("Deserialization failed"));
 
         var tableName = $"test_leases_{Guid.NewGuid():N}";
         var leaseStore = new PostgresLeaseStore(_fixture.DataSource, mockSerializer, tableName, NullLogger.Instance);

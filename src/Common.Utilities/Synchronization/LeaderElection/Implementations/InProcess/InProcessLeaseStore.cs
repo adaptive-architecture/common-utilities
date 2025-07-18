@@ -269,6 +269,14 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
     }
 
     /// <summary>
+    /// Finalizer.
+    /// </summary>
+    ~InProcessLeaseStore()
+    {
+        Dispose(false);
+    }
+
+    /// <summary>
     /// Disposes the resources used by the <see cref="InProcessLeaseStore"/>.
     /// This method can be overridden in derived classes to release additional resources.
     /// It is called by the Dispose method and can be called directly if needed.

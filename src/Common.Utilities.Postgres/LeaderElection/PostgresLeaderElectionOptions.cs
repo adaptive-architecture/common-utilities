@@ -67,9 +67,9 @@ public class PostgresLeaderElectionOptions
             throw new InvalidOperationException("Serializer is required for PostgreSQL leader election.");
         }
 
-        if (String.IsNullOrWhiteSpace(TableName))
+        if (String.IsNullOrEmpty(TableName))
         {
-            throw new InvalidOperationException("TableName cannot be null or whitespace.");
+            throw new InvalidOperationException("TableName cannot be null or empty.");
         }
 
         // Validate table name to prevent SQL injection

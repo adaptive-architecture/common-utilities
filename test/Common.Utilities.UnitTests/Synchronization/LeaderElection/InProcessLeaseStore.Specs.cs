@@ -719,6 +719,7 @@ public class InProcessLeaseStoreSpecs
         store.Dispose();
         store.Dispose();
         store.Dispose();
+        GC.Collect();
         Assert.True(true); // If we reach here, the test passes
     }
 

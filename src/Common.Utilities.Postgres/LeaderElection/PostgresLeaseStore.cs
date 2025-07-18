@@ -77,11 +77,13 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
             var formattedSql = String.Format(sql, _tableName);
 
             await using var command = new NpgsqlCommand(formattedSql, connection);
+#pragma warning disable S1192 // Define a constant instead of using this literal
             _ = command.Parameters.AddWithValue("election_name", electionName);
             _ = command.Parameters.AddWithValue("participant_id", participantId);
             _ = command.Parameters.AddWithValue("acquired_at", acquiredAt);
             _ = command.Parameters.AddWithValue("expires_at", expiresAt);
             _ = command.Parameters.AddWithValue("now", DateTime.UtcNow);
+#pragma warning restore S1192 // Define a constant instead of using this literal
             AddMetadataParameter(command, "metadata_json", metadata, _serializer);
 
             await using var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
@@ -138,11 +140,13 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
             var formattedSql = String.Format(sql, _tableName);
 
             await using var command = new NpgsqlCommand(formattedSql, connection);
+#pragma warning disable S1192 // Define a constant instead of using this literal
             _ = command.Parameters.AddWithValue("election_name", electionName);
             _ = command.Parameters.AddWithValue("participant_id", participantId);
             _ = command.Parameters.AddWithValue("acquired_at", acquiredAt);
             _ = command.Parameters.AddWithValue("expires_at", expiresAt);
             _ = command.Parameters.AddWithValue("now", DateTime.UtcNow);
+#pragma warning restore S1192 // Define a constant instead of using this literal
             AddMetadataParameter(command, "metadata_json", metadata, _serializer);
 
             await using var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
@@ -195,9 +199,10 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
             var formattedSql = String.Format(sql, _tableName);
 
             await using var command = new NpgsqlCommand(formattedSql, connection);
+#pragma warning disable S1192 // Define a constant instead of using this literal
             _ = command.Parameters.AddWithValue("election_name", electionName);
             _ = command.Parameters.AddWithValue("participant_id", participantId);
-
+#pragma warning restore S1192 // Define a constant instead of using this literal
             var rowsAffected = await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
             var wasReleased = rowsAffected > 0;
 
@@ -235,9 +240,10 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
             var formattedSql = String.Format(sql, _tableName);
 
             await using var command = new NpgsqlCommand(formattedSql, connection);
+#pragma warning disable S1192 // Define a constant instead of using this literal
             _ = command.Parameters.AddWithValue("election_name", electionName);
             _ = command.Parameters.AddWithValue("now", DateTime.UtcNow);
-
+#pragma warning restore S1192 // Define a constant instead of using this literal
             await using var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
 
             if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
