@@ -37,150 +37,132 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
     }
 
     /// <inheritdoc/>
-    public async Task<LeaderInfo?> TryAcquireLeaseAsync(
+    public Task<LeaderInfo?> TryAcquireLeaseAsync(
         string electionName,
         string participantId,
         TimeSpan leaseDuration,
         IReadOnlyDictionary<string, string>? metadata = null,
         CancellationToken cancellationToken = default)
     {
-        ThrowIfDisposed();
-
-        try
-        {
-            var acquiredAt = DateTime.UtcNow;
-            var expiresAt = acquiredAt.Add(leaseDuration);
-
-            await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken).ConfigureAwait(false);
-
-            // Use INSERT ... ON CONFLICT DO NOTHING for atomic lease acquisition
-            /*
-            Possible Outcomes:
-              * Lease acquired from new lease created: If no lease exists for this election_name, a new record is inserted and its details are returned.
-              * Lease acquired from expired holder: If a lease exists but has expired, it gets updated with the new participant's information and returns the new lease details.
-              * Lease NOT acquired: If a lease exists and hasn't expired yet, the WHERE condition fails, no update occurs, and the query returns nothing (no rows).
-            */
-            const string sql = """
-                INSERT INTO {0} (election_name, participant_id, acquired_at, expires_at, metadata)
-                VALUES (@election_name, @participant_id, @acquired_at, @expires_at, @metadata_json)
-                ON CONFLICT (election_name) DO UPDATE SET
-                    participant_id = @participant_id,
-                    acquired_at = @acquired_at,
-                    expires_at = @expires_at,
-                    metadata = @metadata_json
-                WHERE {0}.expires_at < @now
-                RETURNING participant_id, acquired_at, expires_at, metadata;
-                """;
-
-            var formattedSql = String.Format(sql, _tableName);
-
-            await using var command = new NpgsqlCommand(formattedSql, connection);
-#pragma warning disable S1192 // Define a constant instead of using this literal
-            _ = command.Parameters.AddWithValue("election_name", electionName);
-            _ = command.Parameters.AddWithValue("participant_id", participantId);
-            _ = command.Parameters.AddWithValue("acquired_at", acquiredAt);
-            _ = command.Parameters.AddWithValue("expires_at", expiresAt);
-            _ = command.Parameters.AddWithValue("now", DateTime.UtcNow);
-#pragma warning restore S1192 // Define a constant instead of using this literal
-            AddMetadataParameter(command, "metadata_json", metadata, _serializer);
-
-            await using var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
-
-            // If the lease was acquired, the reader will have a row
-            // If the lease was not acquired, the reader will be empty
-            if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+        return ExecuteWithExceptionHandlingAsync(
+            async () =>
             {
-                _logger.LogDebug("Acquired lease for election {ElectionName} by participant {ParticipantId}",
-                    electionName, participantId);
-                return new LeaderInfo
+                var acquiredAt = DateTime.UtcNow;
+                var expiresAt = acquiredAt.Add(leaseDuration);
+
+                // Use INSERT ... ON CONFLICT DO NOTHING for atomic lease acquisition
+                /*
+                Possible Outcomes:
+                  * Lease acquired from new lease created: If no lease exists for this election_name, a new record is inserted and its details are returned.
+                  * Lease acquired from expired holder: If a lease exists but has expired, it gets updated with the new participant's information and returns the new lease details.
+                  * Lease NOT acquired: If a lease exists and hasn't expired yet, the WHERE condition fails, no update occurs, and the query returns nothing (no rows).
+                */
+                const string sql = """
+                    INSERT INTO {0} (election_name, participant_id, acquired_at, expires_at, metadata)
+                    VALUES (@election_name, @participant_id, @acquired_at, @expires_at, @metadata_json)
+                    ON CONFLICT (election_name) DO UPDATE SET
+                        participant_id = @participant_id,
+                        acquired_at = @acquired_at,
+                        expires_at = @expires_at,
+                        metadata = @metadata_json
+                    WHERE {0}.expires_at < @now
+                    RETURNING participant_id, acquired_at, expires_at, metadata;
+                    """;
+
+                var parameters = new Dictionary<string, object>
                 {
-                    ParticipantId = participantId,
-                    AcquiredAt = acquiredAt,
-                    ExpiresAt = expiresAt,
-                    Metadata = metadata
+                    ["election_name"] = electionName,
+                    ["participant_id"] = participantId,
+                    ["acquired_at"] = acquiredAt,
+                    ["expires_at"] = expiresAt,
+                    ["now"] = DateTime.UtcNow
                 };
-            }
-            else
-            {
-                _logger.LogDebug("Failed to acquire lease for election {ElectionName} by participant {ParticipantId} - already held by another participant",
-                    electionName, participantId);
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to acquire lease for election {ElectionName} by participant {ParticipantId}",
-                electionName, participantId);
-            throw;
-        }
 
-        return null;
+                await using var reader = await ExecuteReaderAsync(sql, parameters, metadata, cancellationToken).ConfigureAwait(false);
+
+                // If the lease was acquired, the reader will have a row
+                // If the lease was not acquired, the reader will be empty
+                if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    _logger.LogDebug("Acquired lease for election {ElectionName} by participant {ParticipantId}",
+                        electionName, participantId);
+                    return new LeaderInfo
+                    {
+                        ParticipantId = participantId,
+                        AcquiredAt = acquiredAt,
+                        ExpiresAt = expiresAt,
+                        Metadata = metadata
+                    };
+                }
+                else
+                {
+                    _logger.LogDebug("Failed to acquire lease for election {ElectionName} by participant {ParticipantId} - already held by another participant",
+                        electionName, participantId);
+                }
+
+                return null;
+            },
+            ex => _logger.LogError(ex, "Failed to acquire lease for election {ElectionName} by participant {ParticipantId}",
+                electionName, participantId)
+        );
     }
 
     /// <inheritdoc/>
-    public async Task<LeaderInfo?> TryRenewLeaseAsync(
+    public Task<LeaderInfo?> TryRenewLeaseAsync(
         string electionName,
         string participantId,
         TimeSpan leaseDuration,
         IReadOnlyDictionary<string, string>? metadata = null,
         CancellationToken cancellationToken = default)
     {
-        ThrowIfDisposed();
-
-        try
-        {
-            var acquiredAt = DateTime.UtcNow;
-            var expiresAt = acquiredAt.Add(leaseDuration);
-
-            await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken).ConfigureAwait(false);
-
-            const string sql = """
-                UPDATE {0} SET
-                    acquired_at = @acquired_at,
-                    expires_at = @expires_at,
-                    metadata = @metadata_json
-                WHERE election_name = @election_name
-                  AND participant_id = @participant_id
-                  AND expires_at > @now
-                RETURNING participant_id, acquired_at, expires_at, metadata;
-                """;
-
-            var formattedSql = String.Format(sql, _tableName);
-
-            await using var command = new NpgsqlCommand(formattedSql, connection);
-#pragma warning disable S1192 // Define a constant instead of using this literal
-            _ = command.Parameters.AddWithValue("election_name", electionName);
-            _ = command.Parameters.AddWithValue("participant_id", participantId);
-            _ = command.Parameters.AddWithValue("acquired_at", acquiredAt);
-            _ = command.Parameters.AddWithValue("expires_at", expiresAt);
-            _ = command.Parameters.AddWithValue("now", DateTime.UtcNow);
-#pragma warning restore S1192 // Define a constant instead of using this literal
-            AddMetadataParameter(command, "metadata_json", metadata, _serializer);
-
-            await using var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
-
-            if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+        return ExecuteWithExceptionHandlingAsync(
+            async () =>
             {
-                _logger.LogTrace("Renewed lease for election {ElectionName} by participant {ParticipantId}",
-                    electionName, participantId);
-                return new LeaderInfo
-                {
-                    ParticipantId = participantId,
-                    AcquiredAt = acquiredAt,
-                    ExpiresAt = expiresAt,
-                    Metadata = metadata
-                };
-            }
+                var acquiredAt = DateTime.UtcNow;
+                var expiresAt = acquiredAt.Add(leaseDuration);
 
-            _logger.LogDebug("Failed to renew lease for election {ElectionName} by participant {ParticipantId} - not current holder",
-                electionName, participantId);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to renew lease for election {ElectionName} by participant {ParticipantId}",
-                electionName, participantId);
-            throw;
-        }
-        return null;
+                const string sql = """
+                    UPDATE {0} SET
+                        acquired_at = @acquired_at,
+                        expires_at = @expires_at,
+                        metadata = @metadata_json
+                    WHERE election_name = @election_name
+                      AND participant_id = @participant_id
+                      AND expires_at > @now
+                    RETURNING participant_id, acquired_at, expires_at, metadata;
+                    """;
+
+                var parameters = new Dictionary<string, object>
+                {
+                    ["election_name"] = electionName,
+                    ["participant_id"] = participantId,
+                    ["acquired_at"] = acquiredAt,
+                    ["expires_at"] = expiresAt,
+                    ["now"] = DateTime.UtcNow
+                };
+
+                await using var reader = await ExecuteReaderAsync(sql, parameters, metadata, cancellationToken).ConfigureAwait(false);
+
+                if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    _logger.LogTrace("Renewed lease for election {ElectionName} by participant {ParticipantId}",
+                        electionName, participantId);
+                    return new LeaderInfo
+                    {
+                        ParticipantId = participantId,
+                        AcquiredAt = acquiredAt,
+                        ExpiresAt = expiresAt,
+                        Metadata = metadata
+                    };
+                }
+
+                _logger.LogDebug("Failed to renew lease for election {ElectionName} by participant {ParticipantId} - not current holder",
+                    electionName, participantId);
+                return null;
+            },
+            ex => _logger.LogError(ex, "Failed to renew lease for election {ElectionName} by participant {ParticipantId}",
+                electionName, participantId)
+        );
     }
 
     /// <inheritdoc/>
@@ -189,26 +171,24 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
         string participantId,
         CancellationToken cancellationToken = default)
     {
-        ThrowIfDisposed();
+        ObjectDisposedException.ThrowIf(_disposed, nameof(PostgresLeaseStore));
         bool wasReleased;
+
         try
         {
-            await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken).ConfigureAwait(false);
-
             const string sql = """
                 DELETE FROM {0}
                 WHERE election_name = @election_name
                   AND participant_id = @participant_id;
                 """;
 
-            var formattedSql = String.Format(sql, _tableName);
+            var parameters = new Dictionary<string, object>
+            {
+                ["election_name"] = electionName,
+                ["participant_id"] = participantId
+            };
 
-            await using var command = new NpgsqlCommand(formattedSql, connection);
-#pragma warning disable S1192 // Define a constant instead of using this literal
-            _ = command.Parameters.AddWithValue("election_name", electionName);
-            _ = command.Parameters.AddWithValue("participant_id", participantId);
-#pragma warning restore S1192 // Define a constant instead of using this literal
-            var rowsAffected = await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+            var rowsAffected = await ExecuteNonQueryAsync(sql, parameters, cancellationToken).ConfigureAwait(false);
             wasReleased = rowsAffected > 0;
 
             _logger.LogDebug("Released lease result is {WasReleased} for election {ElectionName} by participant {ParticipantId}",
@@ -220,127 +200,105 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
                 electionName, participantId);
             wasReleased = false;
         }
+
         return wasReleased;
     }
 
     /// <inheritdoc/>
-    public async Task<LeaderInfo?> GetCurrentLeaseAsync(
+    public Task<LeaderInfo?> GetCurrentLeaseAsync(
         string electionName,
         CancellationToken cancellationToken = default)
     {
-        ThrowIfDisposed();
-
-        try
-        {
-            await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken).ConfigureAwait(false);
-
-            const string sql = """
-                SELECT participant_id, acquired_at, expires_at, metadata
-                FROM {0}
-                WHERE election_name = @election_name
-                  AND expires_at > @now;
-                """;
-
-            var formattedSql = String.Format(sql, _tableName);
-
-            await using var command = new NpgsqlCommand(formattedSql, connection);
-#pragma warning disable S1192 // Define a constant instead of using this literal
-            _ = command.Parameters.AddWithValue("election_name", electionName);
-            _ = command.Parameters.AddWithValue("now", DateTime.UtcNow);
-#pragma warning restore S1192 // Define a constant instead of using this literal
-            await using var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
-
-            if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+        return ExecuteWithExceptionHandlingAsync(
+            async () =>
             {
-                var participantId = reader.GetString(0);
-                var acquiredAt = reader.GetDateTime(1);
-                var expiresAt = reader.GetDateTime(2);
-                var metadataJson = await reader.IsDBNullAsync(3, cancellationToken)
-                    .ConfigureAwait(false)
-                    ? null
-                    : reader.GetString(3);
+                const string sql = """
+                    SELECT participant_id, acquired_at, expires_at, metadata
+                    FROM {0}
+                    WHERE election_name = @election_name
+                      AND expires_at > @now;
+                    """;
 
-                IReadOnlyDictionary<string, string>? metadata = null;
-                if (!String.IsNullOrEmpty(metadataJson))
+                var parameters = new Dictionary<string, object>
                 {
-                    metadata = _serializer.Deserialize<Dictionary<string, string>>(metadataJson);
+                    ["election_name"] = electionName,
+                    ["now"] = DateTime.UtcNow
+                };
+
+                await using var reader = await ExecuteReaderAsync(sql, parameters, null, cancellationToken).ConfigureAwait(false);
+
+                if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    var participantId = reader.GetString(0);
+                    var acquiredAt = reader.GetDateTime(1);
+                    var expiresAt = reader.GetDateTime(2);
+                    var metadataJson = await reader.IsDBNullAsync(3, cancellationToken)
+                        .ConfigureAwait(false)
+                        ? null
+                        : reader.GetString(3);
+
+                    IReadOnlyDictionary<string, string>? metadata = null;
+                    if (!String.IsNullOrEmpty(metadataJson))
+                    {
+                        metadata = _serializer.Deserialize<Dictionary<string, string>>(metadataJson);
+                    }
+
+                    return new LeaderInfo
+                    {
+                        ParticipantId = participantId,
+                        AcquiredAt = acquiredAt,
+                        ExpiresAt = expiresAt,
+                        Metadata = metadata
+                    };
                 }
 
-                return new LeaderInfo
-                {
-                    ParticipantId = participantId,
-                    AcquiredAt = acquiredAt,
-                    ExpiresAt = expiresAt,
-                    Metadata = metadata
-                };
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to get current lease for election {ElectionName}",
-                electionName);
-            throw;
-        }
-
-        return null;
+                return null;
+            },
+            ex => _logger.LogError(ex, "Failed to get current lease for election {ElectionName}", electionName)
+        );
     }
 
     /// <inheritdoc/>
-    public async Task<bool> HasValidLeaseAsync(
+    public Task<bool> HasValidLeaseAsync(
         string electionName,
         CancellationToken cancellationToken = default)
     {
-        ThrowIfDisposed();
-
-        try
-        {
-            var currentLease = await GetCurrentLeaseAsync(electionName, cancellationToken).ConfigureAwait(false);
-            return currentLease?.IsValid == true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to check valid lease for election {ElectionName}",
-                electionName);
-            throw;
-        }
+        return ExecuteWithExceptionHandlingAsync(
+            async () =>
+            {
+                var currentLease = await GetCurrentLeaseAsync(electionName, cancellationToken).ConfigureAwait(false);
+                return currentLease?.IsValid == true;
+            },
+            ex => _logger.LogError(ex, "Failed to check valid lease for election {ElectionName}", electionName)
+        );
     }
 
     /// <summary>
     /// Ensures the lease table exists in the database.
     /// </summary>
     /// <param name="cancellationToken">Cancellation token for the operation.</param>
-    public async Task EnsureTableExistsAsync(CancellationToken cancellationToken = default)
+    public Task EnsureTableExistsAsync(CancellationToken cancellationToken = default)
     {
-        ThrowIfDisposed();
+        return ExecuteWithExceptionHandlingAsync(
+            async () =>
+            {
+                const string sql = """
+                    CREATE TABLE IF NOT EXISTS {0} (
+                        election_name VARCHAR(255) PRIMARY KEY,
+                        participant_id VARCHAR(255) NOT NULL,
+                        acquired_at TIMESTAMP WITH TIME ZONE NOT NULL,
+                        expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+                        metadata JSONB
+                    );
 
-        try
-        {
-            await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken).ConfigureAwait(false);
+                    CREATE INDEX IF NOT EXISTS idx_{0}_expires_at ON {0}(expires_at);
+                    """;
 
-            const string sql = """
-                CREATE TABLE IF NOT EXISTS {0} (
-                    election_name VARCHAR(255) PRIMARY KEY,
-                    participant_id VARCHAR(255) NOT NULL,
-                    acquired_at TIMESTAMP WITH TIME ZONE NOT NULL,
-                    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
-                    metadata JSONB
-                );
-
-                CREATE INDEX IF NOT EXISTS idx_{0}_expires_at ON {0}(expires_at);
-                """;
-
-            var formattedSql = String.Format(sql, _tableName);
-
-            await using var command = new NpgsqlCommand(formattedSql, connection);
-            _ = await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
-
-            _logger.LogDebug("Ensured lease table {TableName} exists", _tableName);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to ensure lease table {TableName} exists", _tableName);
-            throw;
-        }
+                _ = await ExecuteNonQueryAsync(sql, new Dictionary<string, object>(), cancellationToken).ConfigureAwait(false);
+                _logger.LogDebug("Ensured lease table {TableName} exists", _tableName);
+            },
+            ex => _logger.LogError(ex, "Failed to ensure lease table {TableName} exists", _tableName)
+        );
     }
 
     /// <summary>
@@ -348,43 +306,32 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
     /// </summary>
     /// <param name="cancellationToken">Cancellation token for the operation.</param>
     /// <returns>The number of expired leases that were cleaned up.</returns>
-    public async Task<int> CleanupExpiredLeasesAsync(CancellationToken cancellationToken = default)
+    public Task<int> CleanupExpiredLeasesAsync(CancellationToken cancellationToken = default)
     {
-        ThrowIfDisposed();
-        int rowsAffected;
-        try
-        {
-            await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken).ConfigureAwait(false);
-
-            const string sql = """
-                DELETE FROM {0}
-                WHERE expires_at < @now;
-                """;
-
-            var formattedSql = String.Format(sql, _tableName);
-
-            await using var command = new NpgsqlCommand(formattedSql, connection);
-            _ = command.Parameters.AddWithValue("now", DateTime.UtcNow);
-
-            rowsAffected = await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
-
-            if (rowsAffected > 0)
+        return ExecuteWithExceptionHandlingAsync(
+            async () =>
             {
-                _logger.LogDebug("Cleaned up {Count} expired leases from table {TableName}", rowsAffected, _tableName);
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to cleanup expired leases from table {TableName}", _tableName);
-            throw;
-        }
+                const string sql = """
+                    DELETE FROM {0}
+                    WHERE expires_at < @now;
+                    """;
 
-        return rowsAffected;
-    }
+                var parameters = new Dictionary<string, object>
+                {
+                    ["now"] = DateTime.UtcNow
+                };
 
-    private void ThrowIfDisposed()
-    {
-        ObjectDisposedException.ThrowIf(_disposed, nameof(PostgresLeaseStore));
+                var rowsAffected = await ExecuteNonQueryAsync(sql, parameters, cancellationToken).ConfigureAwait(false);
+
+                if (rowsAffected > 0)
+                {
+                    _logger.LogDebug("Cleaned up {Count} expired leases from table {TableName}", rowsAffected, _tableName);
+                }
+
+                return rowsAffected;
+            },
+            ex => _logger.LogError(ex, "Failed to cleanup expired leases from table {TableName}", _tableName)
+        );
     }
 
     /// <inheritdoc/>
@@ -405,6 +352,78 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
             // Note: We don't dispose the data source as it's typically shared
             // and owned by the DI container or application lifetime
             _disposed = true;
+        }
+    }
+
+    private async Task<T> ExecuteWithExceptionHandlingAsync<T>(
+        Func<Task<T>> operation,
+        Action<Exception> logError)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, nameof(PostgresLeaseStore));
+
+        try
+        {
+            return await operation().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            logError(ex);
+            throw;
+        }
+    }
+
+    private async Task ExecuteWithExceptionHandlingAsync(
+        Func<Task> operation,
+        Action<Exception> logError)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, nameof(PostgresLeaseStore));
+
+        try
+        {
+            await operation().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            logError(ex);
+            throw;
+        }
+    }
+
+    private async Task<NpgsqlDataReader> ExecuteReaderAsync(
+        string sql,
+        Dictionary<string, object> parameters,
+        IReadOnlyDictionary<string, string>? metadata,
+        CancellationToken cancellationToken)
+    {
+        var connection = await _dataSource.OpenConnectionAsync(cancellationToken).ConfigureAwait(false);
+        var formattedSql = String.Format(sql, _tableName);
+        var command = new NpgsqlCommand(formattedSql, connection);
+
+        AddParameters(command, parameters);
+        AddMetadataParameter(command, "metadata_json", metadata, _serializer);
+
+        return await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    private async Task<int> ExecuteNonQueryAsync(
+        string sql,
+        Dictionary<string, object> parameters,
+        CancellationToken cancellationToken)
+    {
+        await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken).ConfigureAwait(false);
+        var formattedSql = String.Format(sql, _tableName);
+        await using var command = new NpgsqlCommand(formattedSql, connection);
+
+        AddParameters(command, parameters);
+
+        return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    private static void AddParameters(NpgsqlCommand command, Dictionary<string, object> parameters)
+    {
+        foreach (var (key, value) in parameters)
+        {
+            _ = command.Parameters.AddWithValue(key, value);
         }
     }
 

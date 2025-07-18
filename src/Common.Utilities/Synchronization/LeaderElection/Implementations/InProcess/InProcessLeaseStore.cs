@@ -33,17 +33,8 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
         IReadOnlyDictionary<string, string>? metadata = null,
         CancellationToken cancellationToken = default)
     {
-        if (String.IsNullOrWhiteSpace(electionName))
-            throw new ArgumentException(LeaderElectionServiceBase.ElectionNameExceptionMessage, nameof(electionName));
-
-        if (String.IsNullOrWhiteSpace(participantId))
-            throw new ArgumentException("Participant ID cannot be null or whitespace.", nameof(participantId));
-
-        if (leaseDuration <= TimeSpan.Zero)
-            throw new ArgumentException("Lease duration must be positive.", nameof(leaseDuration));
-
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        cancellationToken.ThrowIfCancellationRequested();
+        ValidateParameters(electionName, participantId, leaseDuration);
+        ValidateState(cancellationToken);
 
         await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
@@ -94,17 +85,8 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
         IReadOnlyDictionary<string, string>? metadata = null,
         CancellationToken cancellationToken = default)
     {
-        if (String.IsNullOrWhiteSpace(electionName))
-            throw new ArgumentException(LeaderElectionServiceBase.ElectionNameExceptionMessage, nameof(electionName));
-
-        if (String.IsNullOrWhiteSpace(participantId))
-            throw new ArgumentException("Participant ID cannot be null or whitespace.", nameof(participantId));
-
-        if (leaseDuration <= TimeSpan.Zero)
-            throw new ArgumentException("Lease duration must be positive.", nameof(leaseDuration));
-
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        cancellationToken.ThrowIfCancellationRequested();
+        ValidateParameters(electionName, participantId, leaseDuration);
+        ValidateState(cancellationToken);
 
         await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
@@ -158,14 +140,8 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
         string participantId,
         CancellationToken cancellationToken = default)
     {
-        if (String.IsNullOrWhiteSpace(electionName))
-            throw new ArgumentException(LeaderElectionServiceBase.ElectionNameExceptionMessage, nameof(electionName));
-
-        if (String.IsNullOrWhiteSpace(participantId))
-            throw new ArgumentException("Participant ID cannot be null or whitespace.", nameof(participantId));
-
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        cancellationToken.ThrowIfCancellationRequested();
+        ValidateParameters(electionName, participantId);
+        ValidateState(cancellationToken);
 
         await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
@@ -194,29 +170,14 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
         string electionName,
         CancellationToken cancellationToken = default)
     {
-        if (String.IsNullOrWhiteSpace(electionName))
-            throw new ArgumentException(LeaderElectionServiceBase.ElectionNameExceptionMessage, nameof(electionName));
-
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        cancellationToken.ThrowIfCancellationRequested();
+        ValidateParameters(electionName);
+        ValidateState(cancellationToken);
 
         await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
-            var now = _dateTimeProvider.UtcNow;
-
-            if (!_leases.TryGetValue(electionName, out var existingLease))
-            {
-                return null;
-            }
-
-            if (existingLease.ExpiresAt <= now)
-            {
-                _ = _leases.TryRemove(electionName, out _);
-                return null;
-            }
-
-            return existingLease.LeaderInfo;
+            var lease = GetValidLease(electionName);
+            return lease?.LeaderInfo;
         }
         finally
         {
@@ -229,29 +190,13 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
         string electionName,
         CancellationToken cancellationToken = default)
     {
-        if (String.IsNullOrWhiteSpace(electionName))
-            throw new ArgumentException(LeaderElectionServiceBase.ElectionNameExceptionMessage, nameof(electionName));
-
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        cancellationToken.ThrowIfCancellationRequested();
+        ValidateParameters(electionName);
+        ValidateState(cancellationToken);
 
         await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
-            var now = _dateTimeProvider.UtcNow;
-
-            if (!_leases.TryGetValue(electionName, out var existingLease))
-            {
-                return false;
-            }
-
-            if (existingLease.ExpiresAt <= now)
-            {
-                _ = _leases.TryRemove(electionName, out _);
-                return false;
-            }
-
-            return true;
+            return GetValidLease(electionName) is not null;
         }
         finally
         {
@@ -289,6 +234,50 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
             _semaphore.Dispose();
             _disposed = true;
         }
+    }
+
+    private static void ValidateParameters(string electionName)
+    {
+        if (String.IsNullOrWhiteSpace(electionName))
+            throw new ArgumentException(LeaderElectionServiceBase.ElectionNameExceptionMessage, nameof(electionName));
+    }
+
+    private static void ValidateParameters(string electionName, string participantId)
+    {
+        ValidateParameters(electionName);
+        if (String.IsNullOrWhiteSpace(participantId))
+            throw new ArgumentException("Participant ID cannot be null or whitespace.", nameof(participantId));
+    }
+
+    private static void ValidateParameters(string electionName, string participantId, TimeSpan leaseDuration)
+    {
+        ValidateParameters(electionName, participantId);
+        if (leaseDuration <= TimeSpan.Zero)
+            throw new ArgumentException("Lease duration must be positive.", nameof(leaseDuration));
+    }
+
+    private void ValidateState(CancellationToken cancellationToken)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        cancellationToken.ThrowIfCancellationRequested();
+    }
+
+    private LeaseEntry? GetValidLease(string electionName)
+    {
+        var now = _dateTimeProvider.UtcNow;
+
+        if (!_leases.TryGetValue(electionName, out var existingLease))
+        {
+            return null;
+        }
+
+        if (existingLease.ExpiresAt <= now)
+        {
+            _ = _leases.TryRemove(electionName, out _);
+            return null;
+        }
+
+        return existingLease;
     }
 
     private sealed class LeaseEntry
