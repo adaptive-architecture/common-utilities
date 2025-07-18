@@ -83,7 +83,7 @@ public class RedisLeaderElectionServiceProviderSpecs
 
         // Assert
         Assert.NotNull(election);
-        Assert.IsType<RedisLeaderElectionService>(election);
+        _ = Assert.IsType<RedisLeaderElectionService>(election);
         Assert.Equal(electionName, election.ElectionName);
         Assert.Equal(participantId, election.ParticipantId);
         Assert.False(election.IsLeader);
@@ -110,7 +110,7 @@ public class RedisLeaderElectionServiceProviderSpecs
 
         // Assert
         Assert.NotNull(election);
-        Assert.IsType<RedisLeaderElectionService>(election);
+        _ = Assert.IsType<RedisLeaderElectionService>(election);
         Assert.Equal(electionName, election.ElectionName);
         Assert.Equal(participantId, election.ParticipantId);
     }
@@ -172,7 +172,7 @@ public class RedisLeaderElectionServiceProviderSpecs
 
         // Assert
         Assert.NotNull(election);
-        Assert.IsType<RedisLeaderElectionService>(election);
+        _ = Assert.IsType<RedisLeaderElectionService>(election);
         Assert.Equal("real-election", election.ElectionName);
         Assert.Equal("real-participant", election.ParticipantId);
     }
@@ -195,7 +195,7 @@ public class RedisLeaderElectionServiceProviderSpecs
         if (String.IsNullOrWhiteSpace(electionName))
         {
             // ElectionName validation happens in the RedisLeaderElectionService constructor
-            Assert.Throws<ArgumentException>(() =>
+            _ = Assert.Throws<ArgumentException>(() =>
                 provider.CreateElection(electionName, "participant-1"));
         }
         else
@@ -224,7 +224,7 @@ public class RedisLeaderElectionServiceProviderSpecs
         if (String.IsNullOrWhiteSpace(participantId))
         {
             // ParticipantId validation happens in the RedisLeaderElectionService constructor
-            Assert.Throws<ArgumentException>(() =>
+            _ = Assert.Throws<ArgumentException>(() =>
                 provider.CreateElection("test-election", participantId));
         }
         else
@@ -261,7 +261,7 @@ public class RedisLeaderElectionServiceProviderSpecs
 
         // Assert
         Assert.NotNull(election);
-        Assert.IsType<RedisLeaderElectionService>(election);
+        _ = Assert.IsType<RedisLeaderElectionService>(election);
 
         // We can't directly verify the options were passed since they're private,
         // but this test ensures the service is created without errors
@@ -278,7 +278,7 @@ public class RedisLeaderElectionServiceProviderSpecs
 
         // Assert
         Assert.NotNull(election);
-        Assert.IsType<RedisLeaderElectionService>(election);
+        _ = Assert.IsType<RedisLeaderElectionService>(election);
         Assert.Equal("test-election", election.ElectionName);
         Assert.Equal("test-participant", election.ParticipantId);
     }

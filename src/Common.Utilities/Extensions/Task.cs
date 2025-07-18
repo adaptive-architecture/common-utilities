@@ -60,7 +60,7 @@ public static class TaskExtensions
             }
             else
             {
-                task.ContinueWith(_ => newContext.OperationCompleted(), cancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+                _ = task.ContinueWith(_ => newContext.OperationCompleted(), cancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
                 newContext.RunOnCurrentThread();
                 task.GetAwaiter().GetResult();
             }
@@ -95,7 +95,7 @@ public static class TaskExtensions
             }
             else
             {
-                task.ContinueWith(_ => newContext.OperationCompleted(), cancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+                _ = task.ContinueWith(_ => newContext.OperationCompleted(), cancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
                 newContext.RunOnCurrentThread();
                 return task.GetAwaiter().GetResult();
             }

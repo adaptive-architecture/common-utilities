@@ -180,7 +180,7 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
         service.LeadershipChanged += (sender, args) => leadershipEvents.Add(args);
 
         // Act
-        await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync();
 
         // Assert - No leadership events should be fired for failed operations
         Assert.Empty(leadershipEvents);

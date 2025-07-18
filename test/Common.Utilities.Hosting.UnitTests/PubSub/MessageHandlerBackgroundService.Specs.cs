@@ -14,7 +14,7 @@ public class UnitMessageHandlerBackgroundServiceSpecs
     public UnitMessageHandlerBackgroundServiceSpecs()
     {
         _serviceCollection = new ServiceCollection();
-        _serviceCollection
+        _ = _serviceCollection
             .AddSingleton<HandlerDependency>()
             .AddSingleton(new InProcessMessageHubOptions
             {
@@ -74,7 +74,7 @@ public class UnitMessageHandlerBackgroundServiceSpecs
     [Fact]
     public async Task Should_Discover_Handlers_And_Call_Them_With_Custom_Attributes()
     {
-        _serviceCollection
+        _ = _serviceCollection
             .AddPubSubMessageHandlers<CustomAttribute>(GetType().Assembly, att => att.Topic);
 
         var topic = KnownTopics.MyCustomTopic.ToString("G");

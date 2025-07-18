@@ -22,7 +22,7 @@ public class InProcessLeaderElectionServiceProviderSpecs
 
         // Assert
         Assert.NotNull(service);
-        Assert.IsType<InProcessLeaderElectionService>(service);
+        _ = Assert.IsType<InProcessLeaderElectionService>(service);
         Assert.Equal(DefaultElectionName, service.ElectionName);
         Assert.Equal(DefaultParticipantId, service.ParticipantId);
         Assert.False(service.IsLeader);
@@ -49,7 +49,7 @@ public class InProcessLeaderElectionServiceProviderSpecs
 
         // Assert
         Assert.NotNull(service);
-        Assert.IsType<InProcessLeaderElectionService>(service);
+        _ = Assert.IsType<InProcessLeaderElectionService>(service);
         Assert.Equal(DefaultElectionName, service.ElectionName);
         Assert.Equal(DefaultParticipantId, service.ParticipantId);
 
@@ -69,7 +69,7 @@ public class InProcessLeaderElectionServiceProviderSpecs
 
         // Assert
         Assert.NotNull(service);
-        Assert.IsType<InProcessLeaderElectionService>(service);
+        _ = Assert.IsType<InProcessLeaderElectionService>(service);
         Assert.Equal(DefaultElectionName, service.ElectionName);
         Assert.Equal(DefaultParticipantId, service.ParticipantId);
 
@@ -87,7 +87,7 @@ public class InProcessLeaderElectionServiceProviderSpecs
 
         // Assert
         Assert.NotNull(service);
-        Assert.IsType<InProcessLeaderElectionService>(service);
+        _ = Assert.IsType<InProcessLeaderElectionService>(service);
 
         await service.DisposeAsync();
     }
@@ -103,7 +103,7 @@ public class InProcessLeaderElectionServiceProviderSpecs
 
         // Assert
         Assert.NotNull(service);
-        Assert.IsType<InProcessLeaderElectionService>(service);
+        _ = Assert.IsType<InProcessLeaderElectionService>(service);
 
         await service.DisposeAsync();
     }
@@ -187,7 +187,7 @@ public class InProcessLeaderElectionServiceProviderSpecs
         var provider = new InProcessLeaderElectionServiceProvider();
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() =>
+        _ = Assert.Throws<ArgumentException>(() =>
             provider.CreateElection(electionName, DefaultParticipantId));
     }
 
@@ -201,7 +201,7 @@ public class InProcessLeaderElectionServiceProviderSpecs
         var provider = new InProcessLeaderElectionServiceProvider();
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() =>
+        _ = Assert.Throws<ArgumentException>(() =>
             provider.CreateElection(DefaultElectionName, participantId));
     }
 
@@ -223,7 +223,7 @@ public class InProcessLeaderElectionServiceProviderSpecs
 
         // Assert
         Assert.NotNull(service);
-        Assert.IsType<InProcessLeaderElectionService>(service);
+        _ = Assert.IsType<InProcessLeaderElectionService>(service);
 
         await service.DisposeAsync();
     }
@@ -241,7 +241,7 @@ public class InProcessLeaderElectionServiceProviderSpecs
 
         // Assert
         Assert.NotNull(service);
-        Assert.IsType<InProcessLeaderElectionService>(service);
+        _ = Assert.IsType<InProcessLeaderElectionService>(service);
 
         await service.DisposeAsync();
     }

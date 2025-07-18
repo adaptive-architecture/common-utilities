@@ -40,7 +40,7 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
         cts.Cancel();
 
         // Act & Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(() =>
+        _ = await Assert.ThrowsAsync<OperationCanceledException>(() =>
             service.TryAcquireLeadershipAsync(cts.Token));
     }
 
@@ -81,7 +81,7 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
             DefaultParticipantId);
 
         // First acquire leadership
-        await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync();
         Assert.True(service.IsLeader);
 
         // Replace with faulty store
@@ -226,7 +226,7 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
 
         // Assert - Should propagate the exception from the faulty store
         Assert.NotNull(exception);
-        Assert.IsType<InvalidOperationException>(exception);
+        _ = Assert.IsType<InvalidOperationException>(exception);
         Assert.Equal("Renewal error", exception.Message);
 
         faultyLeaseStore.Dispose();
@@ -242,7 +242,7 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
             DefaultElectionName,
             DefaultParticipantId);
 
-        await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync();
 
         // Act & Assert - Should not throw despite StopAsync exception
         var exception = await Record.ExceptionAsync(() => service.DisposeAsync().AsTask());
@@ -262,7 +262,7 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
         await service.DisposeAsync();
 
         // Act & Assert
-        await Assert.ThrowsAsync<ObjectDisposedException>(() => service.TryAcquireLeadershipAsync());
-        await Assert.ThrowsAsync<ObjectDisposedException>(() => service.StartAsync());
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() => service.TryAcquireLeadershipAsync());
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() => service.StartAsync());
     }
 }

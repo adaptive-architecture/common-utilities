@@ -30,7 +30,7 @@ public class ReflectionStringJsonDataSerializer : IStringDataSerializer
     /// <inheritdoc />
     public string? Serialize<T>(T data)
     {
-        if (data == null)
+        if (EqualityComparer<T>.Default.Equals(data, default(T)))
         {
             return null;
         }

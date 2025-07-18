@@ -16,7 +16,7 @@ public class ResponseStreamWrapperSpecs
     {
         await using var memorySteam = new MemoryStream();
         var responseBodyFeature = Substitute.For<IHttpResponseBodyFeature>();
-        responseBodyFeature.Stream.Returns(memorySteam);
+        _ = responseBodyFeature.Stream.Returns(memorySteam);
         var context = new DefaultHttpContext();
         var responseStreamWrapper = new ResponseStreamWrapper(responseBodyFeature,
             context, _rewriterFactory);
@@ -40,16 +40,16 @@ public class ResponseStreamWrapperSpecs
         Assert.Equal(1, memorySteam.Length);
 
         var buffer = new byte[1];
-        responseStreamWrapper.Seek(0, SeekOrigin.Begin);
+        _ = responseStreamWrapper.Seek(0, SeekOrigin.Begin);
         responseStreamWrapper.ReadExactly(buffer, 0, 1);
         Assert.Equal(1, buffer[0]);
 #pragma warning disable CA2022  // Avoid inexact read with 'System.IO.Stream.ReadAsync(byte[], int, int)'
-        responseStreamWrapper.Seek(0, SeekOrigin.Begin);
-        await responseStreamWrapper.ReadAsync(buffer, 0, 1);
+        _ = responseStreamWrapper.Seek(0, SeekOrigin.Begin);
+        _ = await responseStreamWrapper.ReadAsync(buffer, 0, 1);
         Assert.Equal(1, buffer[0]);
 
-        responseStreamWrapper.Seek(0, SeekOrigin.Begin);
-        await responseStreamWrapper.ReadAsync((Memory<byte>)buffer);
+        _ = responseStreamWrapper.Seek(0, SeekOrigin.Begin);
+        _ = await responseStreamWrapper.ReadAsync((Memory<byte>)buffer);
         Assert.Equal(1, buffer[0]);
 #pragma warning restore CA2022
 

@@ -11,7 +11,7 @@ public class InProcessMessageHubSpecs
     [Fact]
     public void Constructor_Should_Throw_If_Null_Options()
     {
-        Assert.Throws<ArgumentNullException>(() => new InProcessMessageHub(null));
+        _ = Assert.Throws<ArgumentNullException>(() => new InProcessMessageHub(null));
     }
 
     [RetryFact]

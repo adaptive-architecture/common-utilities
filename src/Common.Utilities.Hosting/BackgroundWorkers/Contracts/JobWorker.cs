@@ -30,7 +30,7 @@ internal abstract class JobWorker<T> : BackgroundService
         _options = options;
 
         Configuration = GetConfiguration();
-        _options.OnChange(_ => HandleConfigurationChange(false));
+        _ = _options.OnChange(_ => HandleConfigurationChange(false));
         Logger = logger;
         _timeProvider = timeProvider;
         _timer = new PeriodicTimer(BackgroundServiceGlobals.OneDay, timeProvider);
@@ -43,7 +43,7 @@ internal abstract class JobWorker<T> : BackgroundService
         await _configurationChangeLock.WaitAsync(cancellationToken)
             .ConfigureAwait(BackgroundServiceGlobals.ConfigureAwaitOptions);
         _stopRequested = true;
-        _configurationChangeLock.Release();
+        _ = _configurationChangeLock.Release();
 
         await base.StopAsync(cancellationToken)
             .ConfigureAwait(BackgroundServiceGlobals.ConfigureAwaitOptions);
@@ -101,14 +101,14 @@ internal abstract class JobWorker<T> : BackgroundService
 
     protected void SetTimerPeriod(bool useInitialDelay)
     {
-        _configurationChangeLock.Wait(TimeSpan.FromSeconds(5));
+        _ = _configurationChangeLock.Wait(TimeSpan.FromSeconds(5));
         try
         {
             SetTimerPeriodCore(useInitialDelay);
         }
         finally
         {
-            _configurationChangeLock.Release();
+            _ = _configurationChangeLock.Release();
         }
     }
 
@@ -136,7 +136,7 @@ internal abstract class JobWorker<T> : BackgroundService
 
     private void HandleConfigurationChange(bool useInitialDelay)
     {
-        _configurationChangeLock.Wait(TimeSpan.FromSeconds(5));
+        _ = _configurationChangeLock.Wait(TimeSpan.FromSeconds(5));
         try
         {
             if (_stopRequested)
@@ -150,7 +150,7 @@ internal abstract class JobWorker<T> : BackgroundService
         }
         finally
         {
-            _configurationChangeLock.Release();
+            _ = _configurationChangeLock.Release();
         }
     }
 
@@ -166,13 +166,13 @@ internal abstract class JobWorker<T> : BackgroundService
         }
         finally
         {
-            _configurationChangeLock.Release();
+            _ = _configurationChangeLock.Release();
         }
     }
 
     private void DisposeConfigurationCts()
     {
-        _configurationChangeLock.Wait(TimeSpan.FromSeconds(1));
+        _ = _configurationChangeLock.Wait(TimeSpan.FromSeconds(1));
         try
         {
             if (_configurationChangeTokenSource!.IsCancellationRequested)
@@ -182,7 +182,7 @@ internal abstract class JobWorker<T> : BackgroundService
         }
         finally
         {
-            _configurationChangeLock.Release();
+            _ = _configurationChangeLock.Release();
         }
     }
 

@@ -178,7 +178,7 @@ public class PostgresLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        options.Validate(); // Should not throw
+        _ = options.Validate(); // Should not throw
     }
 
     [Theory]
@@ -330,7 +330,7 @@ public class PostgresLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        options.Validate(); // Should not throw
+        _ = options.Validate(); // Should not throw
     }
 
     [Fact]

@@ -19,7 +19,7 @@ public class ResponseRewriteMiddlewareSpecs
         var client = _fixture.GetClient();
         var response = await client.GetAsync("/ping");
 
-        response.EnsureSuccessStatusCode();
+        _ = response.EnsureSuccessStatusCode();
         var responseContent = await response.Content.ReadAsStringAsync();
         Assert.Equal("pong", responseContent);
     }
@@ -30,7 +30,7 @@ public class ResponseRewriteMiddlewareSpecs
         var client = _fixture.GetClient();
         var response = await client.GetAsync("/transformed");
 
-        response.EnsureSuccessStatusCode();
+        _ = response.EnsureSuccessStatusCode();
         var responseContent = await response.Content.ReadAsStringAsync();
         Assert.Equal("transformed", responseContent);
     }
@@ -41,7 +41,7 @@ public class ResponseRewriteMiddlewareSpecs
         var client = _fixture.GetClient();
         var response = await client.GetAsync("/transformed?skip-rewrite");
 
-        response.EnsureSuccessStatusCode();
+        _ = response.EnsureSuccessStatusCode();
         var responseContent = await response.Content.ReadAsStringAsync();
         Assert.Equal("NOT transformed", responseContent.Trim());
     }
@@ -52,7 +52,7 @@ public class ResponseRewriteMiddlewareSpecs
         var client = _fixture.GetClient();
         var response = await client.GetAsync("/no-content");
 
-        response.EnsureSuccessStatusCode();
+        _ = response.EnsureSuccessStatusCode();
         Assert.Equal(0, response.Content.Headers.ContentLength);
         Assert.Equal(204, (int)response.StatusCode);
     }
@@ -63,7 +63,7 @@ public class ResponseRewriteMiddlewareSpecs
         var client = _fixture.GetClient();
         var response = await client.GetAsync("/methods-tests");
 
-        response.EnsureSuccessStatusCode();
+        _ = response.EnsureSuccessStatusCode();
         Assert.Equal(0, response.Content.Headers.ContentLength);
         Assert.Equal(200, (int)response.StatusCode);
     }

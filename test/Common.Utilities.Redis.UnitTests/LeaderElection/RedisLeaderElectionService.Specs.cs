@@ -16,7 +16,7 @@ public class RedisLeaderElectionServiceSpecs
     {
         _database = Substitute.For<IDatabase>();
         _connectionMultiplexer = Substitute.For<IConnectionMultiplexer>();
-        _connectionMultiplexer.GetDatabase(-1, null).Returns(_database);
+        _ = _connectionMultiplexer.GetDatabase(-1, null).Returns(_database);
 
         SetupDatabaseMocks();
     }
@@ -30,7 +30,7 @@ public class RedisLeaderElectionServiceSpecs
     private void SetupDatabaseMocks()
     {
         // Mock StringSetAsync for lease acquisition (4-parameter overload)
-        _database.StringSetAsync(Arg.Any<RedisKey>(), Arg.Any<RedisValue>(), Arg.Any<TimeSpan?>(), Arg.Any<When>())
+        _ = _database.StringSetAsync(Arg.Any<RedisKey>(), Arg.Any<RedisValue>(), Arg.Any<TimeSpan?>(), Arg.Any<When>())
             .Returns(callInfo =>
             {
                 var key = callInfo.ArgAt<RedisKey>(0);
@@ -47,7 +47,7 @@ public class RedisLeaderElectionServiceSpecs
             });
 
         // Mock StringGetAsync for getting current lease
-        _database.StringGetAsync(Arg.Any<RedisKey>(), Arg.Any<CommandFlags>())
+        _ = _database.StringGetAsync(Arg.Any<RedisKey>(), Arg.Any<CommandFlags>())
             .Returns(callInfo =>
             {
                 var key = callInfo.ArgAt<RedisKey>(0);
@@ -55,7 +55,7 @@ public class RedisLeaderElectionServiceSpecs
             });
 
         // Mock ScriptEvaluateAsync for Lua scripts
-        _database.ScriptEvaluateAsync(Arg.Any<string>(), Arg.Any<RedisKey[]>(), Arg.Any<RedisValue[]>(), Arg.Any<CommandFlags>())
+        _ = _database.ScriptEvaluateAsync(Arg.Any<string>(), Arg.Any<RedisKey[]>(), Arg.Any<RedisValue[]>(), Arg.Any<CommandFlags>())
             .Returns(callInfo =>
             {
                 var script = callInfo.ArgAt<string>(0);
@@ -93,7 +93,7 @@ public class RedisLeaderElectionServiceSpecs
 
                     if (currentLease.ToString().Contains($"\"ParticipantId\":\"{participantId}\""))
                     {
-                        _redisStorage.Remove(key!);
+                        _ = _redisStorage.Remove(key!);
                         return Task.FromResult(RedisResult.Create(1));
                     }
 
@@ -109,16 +109,16 @@ public class RedisLeaderElectionServiceSpecs
     {
         var serializer = new ReflectionJsonDataSerializer();
 
-        Assert.Throws<ArgumentNullException>(() =>
+        _ = Assert.Throws<ArgumentNullException>(() =>
             new RedisLeaderElectionService(null!, serializer, "election", "participant"));
 
-        Assert.Throws<ArgumentNullException>(() =>
+        _ = Assert.Throws<ArgumentNullException>(() =>
             new RedisLeaderElectionService(_connectionMultiplexer, null!, "election", "participant"));
 
-        Assert.Throws<ArgumentException>(() =>
+        _ = Assert.Throws<ArgumentException>(() =>
             new RedisLeaderElectionService(_connectionMultiplexer, serializer, "", "participant"));
 
-        Assert.Throws<ArgumentException>(() =>
+        _ = Assert.Throws<ArgumentException>(() =>
             new RedisLeaderElectionService(_connectionMultiplexer, serializer, "election", ""));
     }
 
@@ -164,7 +164,7 @@ public class RedisLeaderElectionServiceSpecs
         Assert.Equal(participantId, service.CurrentLeader.ParticipantId);
 
         // Check events
-        Assert.Single(leadershipChangedEvents);
+        _ = Assert.Single(leadershipChangedEvents);
         var eventArgs = leadershipChangedEvents[0];
         Assert.True(eventArgs.IsLeader);
         Assert.True(eventArgs.LeadershipGained);
@@ -182,7 +182,7 @@ public class RedisLeaderElectionServiceSpecs
         await using var service2 = new RedisLeaderElectionService(_connectionMultiplexer, serializer, electionName, "participant-2");
 
         // First service acquires leadership
-        await service1.TryAcquireLeadershipAsync();
+        _ = await service1.TryAcquireLeadershipAsync();
 
         var leadershipChangedEvents = new List<LeadershipChangedEventArgs>();
         service2.LeadershipChanged += (_, args) => leadershipChangedEvents.Add(args);
@@ -211,7 +211,7 @@ public class RedisLeaderElectionServiceSpecs
         await using var service = new RedisLeaderElectionService(_connectionMultiplexer, serializer, electionName, participantId);
 
         // First acquire leadership
-        await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync();
         Assert.True(service.IsLeader);
 
         var leadershipChangedEvents = new List<LeadershipChangedEventArgs>();
@@ -225,7 +225,7 @@ public class RedisLeaderElectionServiceSpecs
         Assert.Null(service.CurrentLeader);
 
         // Check events (only the release event, as we registered after acquire)
-        Assert.Single(leadershipChangedEvents);
+        _ = Assert.Single(leadershipChangedEvents);
         var eventArgs = leadershipChangedEvents[0];
         Assert.False(eventArgs.IsLeader);
         Assert.False(eventArgs.LeadershipGained);
@@ -287,7 +287,7 @@ public class RedisLeaderElectionServiceSpecs
         await using var service = new RedisLeaderElectionService(_connectionMultiplexer, serializer, electionName, participantId);
 
         // Acquire leadership
-        await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync();
         Assert.True(service.IsLeader);
 
         var leadershipChangedEvents = new List<LeadershipChangedEventArgs>();
@@ -300,7 +300,7 @@ public class RedisLeaderElectionServiceSpecs
         Assert.False(service.IsLeader);
 
         // Should have fired leadership lost event
-        Assert.Single(leadershipChangedEvents);
+        _ = Assert.Single(leadershipChangedEvents);
         var eventArgs = leadershipChangedEvents[0];
         Assert.True(eventArgs.LeadershipLost);
     }
@@ -372,6 +372,6 @@ public class RedisLeaderElectionServiceSpecs
 
         // Verify only one is leader
         var leaders = new[] { service1, service2, service3 }.Where(s => s.IsLeader).ToList();
-        Assert.Single(leaders);
+        _ = Assert.Single(leaders);
     }
 }

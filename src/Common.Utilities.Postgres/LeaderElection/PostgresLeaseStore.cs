@@ -64,12 +64,12 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
             // Use INSERT ... ON CONFLICT DO NOTHING for atomic lease acquisition
             const string sql = """
                 INSERT INTO {0} (election_name, participant_id, acquired_at, expires_at, metadata)
-                VALUES (@electionName, @participantId, @acquiredAt, @expiresAt, @metadata)
+                VALUES (@election_name, @participant_id, @acquired_at, @expires_at, @metadata_json)
                 ON CONFLICT (election_name) DO UPDATE SET
-                    participant_id = @participantId,
-                    acquired_at = @acquiredAt,
-                    expires_at = @expiresAt,
-                    metadata = @metadata
+                    participant_id = @participant_id,
+                    acquired_at = @acquired_at,
+                    expires_at = @expires_at,
+                    metadata = @metadata_json
                 WHERE {0}.expires_at < @now
                 RETURNING participant_id, acquired_at, expires_at, metadata;
                 """;
@@ -77,12 +77,12 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
             var formattedSql = String.Format(sql, _tableName);
 
             await using var command = new NpgsqlCommand(formattedSql, connection);
-            command.Parameters.AddWithValue("electionName", electionName);
-            command.Parameters.AddWithValue("participantId", participantId);
-            command.Parameters.AddWithValue("acquiredAt", acquiredAt);
-            command.Parameters.AddWithValue("expiresAt", expiresAt);
-            command.Parameters.AddWithValue("now", DateTime.UtcNow);
-            AddMetadataParameter(command, "metadata", metadata, _serializer);
+            _ = command.Parameters.AddWithValue("election_name", electionName);
+            _ = command.Parameters.AddWithValue("participant_id", participantId);
+            _ = command.Parameters.AddWithValue("acquired_at", acquiredAt);
+            _ = command.Parameters.AddWithValue("expires_at", expiresAt);
+            _ = command.Parameters.AddWithValue("now", DateTime.UtcNow);
+            AddMetadataParameter(command, "metadata_json", metadata, _serializer);
 
             await using var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
 
@@ -126,11 +126,11 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
 
             const string sql = """
                 UPDATE {0} SET
-                    acquired_at = @acquiredAt,
-                    expires_at = @expiresAt,
-                    metadata = @metadata
-                WHERE election_name = @electionName
-                  AND participant_id = @participantId
+                    acquired_at = @acquired_at,
+                    expires_at = @expires_at,
+                    metadata = @metadata_json
+                WHERE election_name = @election_name
+                  AND participant_id = @participant_id
                   AND expires_at > @now
                 RETURNING participant_id, acquired_at, expires_at, metadata;
                 """;
@@ -138,12 +138,12 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
             var formattedSql = String.Format(sql, _tableName);
 
             await using var command = new NpgsqlCommand(formattedSql, connection);
-            command.Parameters.AddWithValue("electionName", electionName);
-            command.Parameters.AddWithValue("participantId", participantId);
-            command.Parameters.AddWithValue("acquiredAt", acquiredAt);
-            command.Parameters.AddWithValue("expiresAt", expiresAt);
-            command.Parameters.AddWithValue("now", DateTime.UtcNow);
-            AddMetadataParameter(command, "metadata", metadata, _serializer);
+            _ = command.Parameters.AddWithValue("election_name", electionName);
+            _ = command.Parameters.AddWithValue("participant_id", participantId);
+            _ = command.Parameters.AddWithValue("acquired_at", acquiredAt);
+            _ = command.Parameters.AddWithValue("expires_at", expiresAt);
+            _ = command.Parameters.AddWithValue("now", DateTime.UtcNow);
+            AddMetadataParameter(command, "metadata_json", metadata, _serializer);
 
             await using var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
 
@@ -188,15 +188,15 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
 
             const string sql = """
                 DELETE FROM {0}
-                WHERE election_name = @electionName
-                  AND participant_id = @participantId;
+                WHERE election_name = @election_name
+                  AND participant_id = @participant_id;
                 """;
 
             var formattedSql = String.Format(sql, _tableName);
 
             await using var command = new NpgsqlCommand(formattedSql, connection);
-            command.Parameters.AddWithValue("electionName", electionName);
-            command.Parameters.AddWithValue("participantId", participantId);
+            _ = command.Parameters.AddWithValue("election_name", electionName);
+            _ = command.Parameters.AddWithValue("participant_id", participantId);
 
             var rowsAffected = await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
             var wasReleased = rowsAffected > 0;
@@ -228,15 +228,15 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
             const string sql = """
                 SELECT participant_id, acquired_at, expires_at, metadata
                 FROM {0}
-                WHERE election_name = @electionName
+                WHERE election_name = @election_name
                   AND expires_at > @now;
                 """;
 
             var formattedSql = String.Format(sql, _tableName);
 
             await using var command = new NpgsqlCommand(formattedSql, connection);
-            command.Parameters.AddWithValue("electionName", electionName);
-            command.Parameters.AddWithValue("now", DateTime.UtcNow);
+            _ = command.Parameters.AddWithValue("election_name", electionName);
+            _ = command.Parameters.AddWithValue("now", DateTime.UtcNow);
 
             await using var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
 
@@ -245,7 +245,10 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
                 var participantId = reader.GetString(0);
                 var acquiredAt = reader.GetDateTime(1);
                 var expiresAt = reader.GetDateTime(2);
-                var metadataJson = reader.IsDBNull(3) ? null : reader.GetString(3);
+                var metadataJson = await reader.IsDBNullAsync(3, cancellationToken)
+                    .ConfigureAwait(false)
+                    ? null
+                    : reader.GetString(3);
 
                 IReadOnlyDictionary<string, string>? metadata = null;
                 if (!String.IsNullOrEmpty(metadataJson))
@@ -319,7 +322,7 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
             var formattedSql = String.Format(sql, _tableName);
 
             await using var command = new NpgsqlCommand(formattedSql, connection);
-            await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+            _ = await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
 
             _logger.LogDebug("Ensured lease table {TableName} exists", _tableName);
         }
@@ -351,7 +354,7 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
             var formattedSql = String.Format(sql, _tableName);
 
             await using var command = new NpgsqlCommand(formattedSql, connection);
-            command.Parameters.AddWithValue("now", DateTime.UtcNow);
+            _ = command.Parameters.AddWithValue("now", DateTime.UtcNow);
 
             var rowsAffected = await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
 
@@ -409,7 +412,7 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
         }
         else
         {
-            command.Parameters.AddWithValue(parameterName, DBNull.Value);
+            _ = command.Parameters.AddWithValue(parameterName, DBNull.Value);
         }
     }
 }

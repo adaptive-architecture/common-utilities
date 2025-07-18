@@ -74,7 +74,7 @@ public sealed class ExclusiveAccess<T> : IDisposable
             if (disposing)
             {
                 _value = null;
-                _semaphore.Release();
+                _ = _semaphore.Release();
             }
         }
 

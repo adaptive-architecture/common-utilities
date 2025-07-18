@@ -58,9 +58,9 @@ public sealed class MethodsTestRewriter : IResponseRewriter
         Assert.False(context.Response.Body.CanSeek);
         Assert.True(context.Response.Body.CanWrite);
 
-        Assert.Throws<NotSupportedException>(() => context.Response.Body.Length);
-        Assert.Throws<NotSupportedException>(() => context.Response.Body.Position);
-        Assert.Throws<NotSupportedException>(() => context.Response.Body.Position = 0);
+        _ = Assert.Throws<NotSupportedException>(() => context.Response.Body.Length);
+        _ = Assert.Throws<NotSupportedException>(() => context.Response.Body.Position);
+        _ = Assert.Throws<NotSupportedException>(() => context.Response.Body.Position = 0);
 
         return Task.CompletedTask;
     }

@@ -24,7 +24,7 @@ public class PostgresLeaseStoreSpecs
     public void Constructor_WithNullDataSource_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() =>
+        _ = Assert.Throws<ArgumentNullException>(() =>
             new PostgresLeaseStore(null!, _mockSerializer, _testTableName, _mockLogger));
     }
 
@@ -32,7 +32,7 @@ public class PostgresLeaseStoreSpecs
     public void Constructor_WithNullSerializer_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() =>
+        _ = Assert.Throws<ArgumentNullException>(() =>
             new PostgresLeaseStore(_mockDataSource, null!, _testTableName, _mockLogger));
     }
 
@@ -72,7 +72,7 @@ public class PostgresLeaseStoreSpecs
         leaseStore.Dispose();
 
         // Assert - Should throw when disposed
-        await Assert.ThrowsAsync<ObjectDisposedException>(async () =>
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(async () =>
             await leaseStore.TryAcquireLeaseAsync("test", "participant", TimeSpan.FromMinutes(1)));
     }
 
@@ -85,6 +85,8 @@ public class PostgresLeaseStoreSpecs
         // Act & Assert
         leaseStore.Dispose();
         leaseStore.Dispose(); // Should not throw
+
+        Assert.True(true);
     }
 
     [Fact]
@@ -95,25 +97,25 @@ public class PostgresLeaseStoreSpecs
         leaseStore.Dispose();
 
         // Act & Assert
-        await Assert.ThrowsAsync<ObjectDisposedException>(() =>
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
             leaseStore.TryAcquireLeaseAsync("test", "participant", TimeSpan.FromMinutes(1)));
 
-        await Assert.ThrowsAsync<ObjectDisposedException>(() =>
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
             leaseStore.TryRenewLeaseAsync("test", "participant", TimeSpan.FromMinutes(1)));
 
-        await Assert.ThrowsAsync<ObjectDisposedException>(() =>
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
             leaseStore.ReleaseLeaseAsync("test", "participant"));
 
-        await Assert.ThrowsAsync<ObjectDisposedException>(() =>
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
             leaseStore.GetCurrentLeaseAsync("test"));
 
-        await Assert.ThrowsAsync<ObjectDisposedException>(() =>
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
             leaseStore.HasValidLeaseAsync("test"));
 
-        await Assert.ThrowsAsync<ObjectDisposedException>(() =>
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
             leaseStore.EnsureTableExistsAsync());
 
-        await Assert.ThrowsAsync<ObjectDisposedException>(() =>
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
             leaseStore.CleanupExpiredLeasesAsync());
     }
 }

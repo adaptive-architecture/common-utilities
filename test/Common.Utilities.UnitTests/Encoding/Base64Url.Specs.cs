@@ -29,7 +29,7 @@ public class Base64UrlSpecs
     [InlineData("0123456789", -1, -1)]
     public void Base64UrlDecode_BadOffsets(string input, int offset, int count)
     {
-        Assert.ThrowsAny<ArgumentException>(() => _ = Base64Url.Decode(input, offset, count));
+        _ = Assert.ThrowsAny<ArgumentException>(() => _ = Base64Url.Decode(input, offset, count));
     }
 
     [Theory]
@@ -42,7 +42,7 @@ public class Base64UrlSpecs
     {
         var input = new byte[inputLength];
 
-        Assert.ThrowsAny<ArgumentException>(() => _ = Base64Url.Encode(input, offset, count));
+        _ = Assert.ThrowsAny<ArgumentException>(() => _ = Base64Url.Encode(input, offset, count));
     }
 
     [Fact]
@@ -74,6 +74,6 @@ public class Base64UrlSpecs
     [Fact]
     public void Encode_Throws_ArgumentOutOfRange_Exception_4()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => _ = Base64Url.Encode(Array.Empty<byte>(), 0, Array.Empty<char>(), -1, 0));
+        _ = Assert.Throws<ArgumentOutOfRangeException>(() => _ = Base64Url.Encode(Array.Empty<byte>(), 0, Array.Empty<char>(), -1, 0));
     }
 }

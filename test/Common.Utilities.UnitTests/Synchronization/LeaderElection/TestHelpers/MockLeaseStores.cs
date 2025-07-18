@@ -22,7 +22,7 @@ internal class FaultyLeaseStore : ILeaseStore, IDisposable
 
     public Task<LeaderInfo> TryAcquireLeaseAsync(string electionName, string participantId, TimeSpan leaseDuration, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _callCount);
+        _ = Interlocked.Increment(ref _callCount);
         if (_callCount <= _failCount)
             throw _exception;
         return Task.FromResult<LeaderInfo>(null);
@@ -30,7 +30,7 @@ internal class FaultyLeaseStore : ILeaseStore, IDisposable
 
     public Task<LeaderInfo> TryRenewLeaseAsync(string electionName, string participantId, TimeSpan leaseDuration, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _callCount);
+        _ = Interlocked.Increment(ref _callCount);
         if (_callCount <= _failCount)
             throw _exception;
         return Task.FromResult<LeaderInfo>(null);
@@ -38,7 +38,7 @@ internal class FaultyLeaseStore : ILeaseStore, IDisposable
 
     public Task<bool> ReleaseLeaseAsync(string electionName, string participantId, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _callCount);
+        _ = Interlocked.Increment(ref _callCount);
         if (_callCount <= _failCount)
             throw _exception;
         return Task.FromResult(false);
@@ -46,7 +46,7 @@ internal class FaultyLeaseStore : ILeaseStore, IDisposable
 
     public Task<LeaderInfo> GetCurrentLeaseAsync(string electionName, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _callCount);
+        _ = Interlocked.Increment(ref _callCount);
         if (_callCount <= _failCount)
             throw _exception;
         return Task.FromResult<LeaderInfo>(null);
@@ -54,7 +54,7 @@ internal class FaultyLeaseStore : ILeaseStore, IDisposable
 
     public Task<bool> HasValidLeaseAsync(string electionName, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _callCount);
+        _ = Interlocked.Increment(ref _callCount);
         if (_callCount <= _failCount)
             throw _exception;
         return Task.FromResult(false);
@@ -126,26 +126,26 @@ internal class IntermittentFaultyLeaseStore : ILeaseStore, IDisposable
 
     public Task<LeaderInfo> TryAcquireLeaseAsync(string electionName, string participantId, TimeSpan leaseDuration, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _totalCallCount);
+        _ = Interlocked.Increment(ref _totalCallCount);
         return Task.FromResult<LeaderInfo>(null);
     }
 
     public Task<LeaderInfo> TryRenewLeaseAsync(string electionName, string participantId, TimeSpan leaseDuration, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _totalCallCount);
+        _ = Interlocked.Increment(ref _totalCallCount);
         return Task.FromResult<LeaderInfo>(null);
     }
 
     public Task<bool> ReleaseLeaseAsync(string electionName, string participantId, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _totalCallCount);
+        _ = Interlocked.Increment(ref _totalCallCount);
         return Task.FromResult(false);
     }
 
     public Task<LeaderInfo> GetCurrentLeaseAsync(string electionName, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _getCurrentLeaseCallCount);
-        Interlocked.Increment(ref _totalCallCount);
+        _ = Interlocked.Increment(ref _getCurrentLeaseCallCount);
+        _ = Interlocked.Increment(ref _totalCallCount);
 
         // Fail every other call
         if (_totalCallCount % 2 == 0)
@@ -156,7 +156,7 @@ internal class IntermittentFaultyLeaseStore : ILeaseStore, IDisposable
 
     public Task<bool> HasValidLeaseAsync(string electionName, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _totalCallCount);
+        _ = Interlocked.Increment(ref _totalCallCount);
         return Task.FromResult(false);
     }
 
@@ -180,31 +180,31 @@ internal class ExceptionLeaseStore : ILeaseStore, IDisposable
 
     public Task<LeaderInfo> TryAcquireLeaseAsync(string electionName, string participantId, TimeSpan leaseDuration, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _callCount);
+        _ = Interlocked.Increment(ref _callCount);
         return Task.FromException<LeaderInfo>(_exception);
     }
 
     public Task<LeaderInfo> TryRenewLeaseAsync(string electionName, string participantId, TimeSpan leaseDuration, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _callCount);
+        _ = Interlocked.Increment(ref _callCount);
         return Task.FromException<LeaderInfo>(_exception);
     }
 
     public Task<bool> ReleaseLeaseAsync(string electionName, string participantId, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _callCount);
+        _ = Interlocked.Increment(ref _callCount);
         return Task.FromException<bool>(_exception);
     }
 
     public Task<LeaderInfo> GetCurrentLeaseAsync(string electionName, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _callCount);
+        _ = Interlocked.Increment(ref _callCount);
         return Task.FromException<LeaderInfo>(_exception);
     }
 
     public Task<bool> HasValidLeaseAsync(string electionName, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _callCount);
+        _ = Interlocked.Increment(ref _callCount);
         return Task.FromException<bool>(_exception);
     }
 
@@ -234,7 +234,7 @@ internal class AcquireSuccessRenewalFailLeaseStore : ILeaseStore, IDisposable
 
     public Task<LeaderInfo> TryAcquireLeaseAsync(string electionName, string participantId, TimeSpan leaseDuration, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _acquireCallCount);
+        _ = Interlocked.Increment(ref _acquireCallCount);
 
         if (!_hasAcquired)
         {
@@ -255,7 +255,7 @@ internal class AcquireSuccessRenewalFailLeaseStore : ILeaseStore, IDisposable
 
     public Task<LeaderInfo> TryRenewLeaseAsync(string electionName, string participantId, TimeSpan leaseDuration, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
     {
-        Interlocked.Increment(ref _renewCallCount);
+        _ = Interlocked.Increment(ref _renewCallCount);
         return Task.FromException<LeaderInfo>(_renewalException);
     }
 

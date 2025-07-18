@@ -13,7 +13,7 @@ public class DelayGeneratorSpecs
             DelayType = DelayType.Unknown
         });
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => _ = delayGenerator.GetDelays().First());
+        _ = Assert.Throws<ArgumentOutOfRangeException>(() => _ = delayGenerator.GetDelays().First());
     }
 
     [Fact]

@@ -101,7 +101,7 @@ public class RedisLeaderElectionIntegrationTests
         }
         finally
         {
-            await leaseStore1.ReleaseLeaseAsync(electionName, participant1);
+            _ = await leaseStore1.ReleaseLeaseAsync(electionName, participant1);
             leaseStore1.Dispose();
             leaseStore2.Dispose();
         }
@@ -145,7 +145,7 @@ public class RedisLeaderElectionIntegrationTests
         }
         finally
         {
-            await leaseStore.ReleaseLeaseAsync(electionName, participantId);
+            _ = await leaseStore.ReleaseLeaseAsync(electionName, participantId);
             leaseStore.Dispose();
         }
     }
@@ -182,7 +182,7 @@ public class RedisLeaderElectionIntegrationTests
         }
         finally
         {
-            await leaseStore1.ReleaseLeaseAsync(electionName, participant1);
+            _ = await leaseStore1.ReleaseLeaseAsync(electionName, participant1);
             leaseStore1.Dispose();
             leaseStore2.Dispose();
         }
@@ -217,7 +217,7 @@ public class RedisLeaderElectionIntegrationTests
             Assert.Equal(participantId, service.CurrentLeader.ParticipantId);
 
             // Check events
-            Assert.Single(leadershipEvents);
+            _ = Assert.Single(leadershipEvents);
             var acquiredEvent = leadershipEvents[0];
             Assert.True(acquiredEvent.IsLeader);
             Assert.True(acquiredEvent.LeadershipGained);
@@ -283,7 +283,7 @@ public class RedisLeaderElectionIntegrationTests
 
             // Identify the leader
             var leaders = new[] { service1, service2, service3 }.Where(s => s.IsLeader).ToList();
-            Assert.Single(leaders);
+            _ = Assert.Single(leaders);
             var leaderService = leaders[0];
 
             // Verify all services see the same current leader
@@ -302,7 +302,7 @@ public class RedisLeaderElectionIntegrationTests
                 if (!service.IsLeader)
                 {
                     // Trigger a check for current leader
-                    await service.TryAcquireLeadershipAsync();
+                    _ = await service.TryAcquireLeadershipAsync();
                 }
             }
 
@@ -388,7 +388,7 @@ public class RedisLeaderElectionIntegrationTests
 
             // Assert - One service should have become leader
             var leaders = new[] { service1, service2 }.Where(s => s.IsLeader).ToList();
-            Assert.Single(leaders);
+            _ = Assert.Single(leaders);
             var currentLeader = leaders[0];
             var follower = new[] { service1, service2 }.First(s => s != currentLeader);
 

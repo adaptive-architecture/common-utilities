@@ -102,7 +102,7 @@ public class InProcessLeaderElectionServiceBasicTests
     public void Constructor_WithInvalidElectionName_ShouldThrowArgumentException(string electionName)
     {
         // Act & Assert
-        Assert.Throws<ArgumentException>(() =>
+        _ = Assert.Throws<ArgumentException>(() =>
             new InProcessLeaderElectionService(electionName, DefaultParticipantId));
     }
 
@@ -113,7 +113,7 @@ public class InProcessLeaderElectionServiceBasicTests
     public void Constructor_WithInvalidParticipantId_ShouldThrowArgumentException(string participantId)
     {
         // Act & Assert
-        Assert.Throws<ArgumentException>(() =>
+        _ = Assert.Throws<ArgumentException>(() =>
             new InProcessLeaderElectionService(DefaultElectionName, participantId));
     }
 
@@ -121,7 +121,7 @@ public class InProcessLeaderElectionServiceBasicTests
     public void Constructor_WithNullLeaseStore_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() =>
+        _ = Assert.Throws<ArgumentNullException>(() =>
             new InProcessLeaderElectionService(null!, DefaultElectionName, DefaultParticipantId));
     }
 
@@ -185,7 +185,7 @@ public class InProcessLeaderElectionServiceBasicTests
         var cancellationToken = new CancellationToken(true);
 
         // Act & Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(() =>
+        _ = await Assert.ThrowsAsync<OperationCanceledException>(() =>
             service.TryAcquireLeadershipAsync(cancellationToken));
     }
 
@@ -202,7 +202,7 @@ public class InProcessLeaderElectionServiceBasicTests
             dateTimeProvider);
 
         // Act
-        await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync();
         Assert.True(service.IsLeader);
 
         await service.ReleaseLeadershipAsync();
@@ -332,7 +332,7 @@ public class InProcessLeaderElectionServiceBasicTests
         service.LeadershipChanged += (sender, args) => eventArgs = args;
 
         // Act
-        await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync();
 
         // Assert
         Assert.NotNull(eventArgs);
@@ -359,7 +359,7 @@ public class InProcessLeaderElectionServiceBasicTests
         service.LeadershipChanged += (sender, args) => eventArgs = args;
 
         // Act
-        await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync();
         eventArgs = null; // Reset for the next event
 
         await service.ReleaseLeadershipAsync();
@@ -451,13 +451,13 @@ public class InProcessLeaderElectionServiceBasicTests
             AlternateParticipantId);
 
         // Act
-        await service1.TryAcquireLeadershipAsync();
+        _ = await service1.TryAcquireLeadershipAsync();
         Assert.True(service1.IsLeader);
 
         await service1.ReleaseLeadershipAsync();
         Assert.False(service1.IsLeader);
 
-        await service2.TryAcquireLeadershipAsync();
+        _ = await service2.TryAcquireLeadershipAsync();
 
         // Assert
         Assert.False(service1.IsLeader);
@@ -475,7 +475,7 @@ public class InProcessLeaderElectionServiceBasicTests
             DefaultElectionName,
             DefaultParticipantId);
 
-        await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync();
         Assert.True(service.IsLeader);
 
         // Act
@@ -483,7 +483,7 @@ public class InProcessLeaderElectionServiceBasicTests
 
         // Assert
         // After disposal, service should be unusable
-        await Assert.ThrowsAsync<ObjectDisposedException>(() =>
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
             service.TryAcquireLeadershipAsync());
     }
 
@@ -499,7 +499,7 @@ public class InProcessLeaderElectionServiceBasicTests
             DefaultElectionName,
             DefaultParticipantId);
 
-        await service1.TryAcquireLeadershipAsync();
+        _ = await service1.TryAcquireLeadershipAsync();
         Assert.True(service1.IsLeader);
         await service1.DisposeAsync();
 
@@ -537,7 +537,7 @@ public class InProcessLeaderElectionServiceBasicTests
             options);
 
         // Act
-        await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync();
 
         // Assert
         Assert.True(service.IsLeader);
@@ -722,7 +722,7 @@ public class InProcessLeaderElectionServiceBasicTests
             dateTimeProvider);
 
         // Act - Acquire leadership then do start/stop cycles
-        await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync();
         Assert.True(service.IsLeader);
 
         // Multiple start/stop cycles while being leader

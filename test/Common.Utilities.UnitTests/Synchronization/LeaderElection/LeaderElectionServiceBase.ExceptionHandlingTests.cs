@@ -227,7 +227,7 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
             dateTimeProvider);
 
         // Acquire leadership first
-        await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync();
         Assert.True(service.IsLeader);
 
         // Act
@@ -249,7 +249,7 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
             DefaultParticipantId);
 
         // Try to acquire leadership (will fail but that's ok for this test)
-        await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync();
 
         // Act & Assert - StopAsync should not throw even if release fails
         var exception = await Record.ExceptionAsync(() => service.StopAsync());

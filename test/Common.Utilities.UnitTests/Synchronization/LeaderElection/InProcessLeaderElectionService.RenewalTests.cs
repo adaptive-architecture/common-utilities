@@ -37,7 +37,7 @@ public class InProcessLeaderElectionServiceRenewalTests
         service.LeadershipChanged += (sender, args) => leadershipEvents.Add(args);
 
         // Act - Test that the election loop can start and stop without errors
-        await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync();
         Assert.True(service.IsLeader);
 
         await service.StartAsync();
@@ -108,12 +108,12 @@ public class InProcessLeaderElectionServiceRenewalTests
             AlternateParticipantId);
 
         // Act - Service1 gets leadership, then service2 takes it
-        await service1.TryAcquireLeadershipAsync();
+        _ = await service1.TryAcquireLeadershipAsync();
         Assert.True(service1.IsLeader);
 
         // Service2 takes leadership
         await service1.ReleaseLeadershipAsync();
-        await service2.TryAcquireLeadershipAsync();
+        _ = await service2.TryAcquireLeadershipAsync();
         Assert.True(service2.IsLeader);
 
         // Now service1 should fail to renew
@@ -185,7 +185,7 @@ public class InProcessLeaderElectionServiceRenewalTests
             options);
 
         // Act
-        await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync();
         Assert.True(service.IsLeader);
 
         await service.StartAsync();
@@ -317,7 +317,7 @@ public class InProcessLeaderElectionServiceRenewalTests
         service.LeadershipChanged += (sender, args) => leadershipEvents.Add(args);
 
         // Act
-        await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync();
         Assert.True(service.IsLeader);
 
         await service.StartAsync();

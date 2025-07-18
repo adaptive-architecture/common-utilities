@@ -211,7 +211,7 @@ public abstract class LeaderElectionServiceBase : ILeaderElectionService
                 }
                 else
                 {
-                    await TryAcquireLeadershipAsync(cancellationToken).ConfigureAwait(false);
+                    _ = await TryAcquireLeadershipAsync(cancellationToken).ConfigureAwait(false);
                     await CheckCurrentLeaderAsync(cancellationToken).ConfigureAwait(false);
                     await Task.Delay(_options.RetryInterval, cancellationToken).ConfigureAwait(false);
                 }

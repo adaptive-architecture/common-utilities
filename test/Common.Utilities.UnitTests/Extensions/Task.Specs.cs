@@ -33,7 +33,7 @@ public class TaskSpecs
         taskFactory.RunSync();
 
         taskFactory = () => ThrowExceptionAsync(TimeSpan.FromMilliseconds(2));
-        Assert.Throws<ApplicationException>(() => taskFactory.RunSync());
+        _ = Assert.Throws<ApplicationException>(() => taskFactory.RunSync());
 
         Assert.True(true);
     }
@@ -63,7 +63,7 @@ public class TaskSpecs
             await ThrowExceptionAsync(TimeSpan.FromMilliseconds(2));
             return true;
         };
-        Assert.Throws<ApplicationException>(() => taskFactory.RunSync());
+        _ = Assert.Throws<ApplicationException>(() => taskFactory.RunSync());
 
         Assert.True(true);
     }
@@ -80,7 +80,7 @@ public class TaskSpecs
     public void SingleThreadSynchronizationContext_Should_Throw_When_Sending()
     {
         var context = new SingleThreadSynchronizationContext();
-        Assert.Throws<NotSupportedException>(() => context.Send(_ => { }, null));
+        _ = Assert.Throws<NotSupportedException>(() => context.Send(_ => { }, null));
     }
 
     private static async Task ThrowExceptionAsync(TimeSpan delay)

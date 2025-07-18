@@ -113,7 +113,7 @@ public class PostgresLeaderElectionIntegrationTests
         }
         finally
         {
-            await leaseStore1.ReleaseLeaseAsync(electionName, participant1);
+            _ = await leaseStore1.ReleaseLeaseAsync(electionName, participant1);
             leaseStore1.Dispose();
             leaseStore2.Dispose();
         }
@@ -161,7 +161,7 @@ public class PostgresLeaderElectionIntegrationTests
         }
         finally
         {
-            await leaseStore.ReleaseLeaseAsync(electionName, participantId);
+            _ = await leaseStore.ReleaseLeaseAsync(electionName, participantId);
             leaseStore.Dispose();
         }
     }
@@ -202,7 +202,7 @@ public class PostgresLeaderElectionIntegrationTests
         }
         finally
         {
-            await leaseStore1.ReleaseLeaseAsync(electionName, participant1);
+            _ = await leaseStore1.ReleaseLeaseAsync(electionName, participant1);
             leaseStore1.Dispose();
             leaseStore2.Dispose();
         }
@@ -244,7 +244,7 @@ public class PostgresLeaderElectionIntegrationTests
             Assert.Equal(participantId, service.CurrentLeader.ParticipantId);
 
             // Check events
-            Assert.Single(leadershipEvents);
+            _ = Assert.Single(leadershipEvents);
             var acquiredEvent = leadershipEvents[0];
             Assert.True(acquiredEvent.IsLeader);
             Assert.True(acquiredEvent.LeadershipGained);
@@ -316,7 +316,7 @@ public class PostgresLeaderElectionIntegrationTests
 
             // Identify the leader
             var leaders = new[] { service1, service2, service3 }.Where(s => s.IsLeader).ToList();
-            Assert.Single(leaders);
+            _ = Assert.Single(leaders);
             var leaderService = leaders[0];
 
             // Verify all services see the same current leader
@@ -335,7 +335,7 @@ public class PostgresLeaderElectionIntegrationTests
                 if (!service.IsLeader)
                 {
                     // Trigger a check for current leader
-                    await service.TryAcquireLeadershipAsync();
+                    _ = await service.TryAcquireLeadershipAsync();
                 }
             }
 
@@ -427,7 +427,7 @@ public class PostgresLeaderElectionIntegrationTests
 
             // Assert - One service should have become leader
             var leaders = new[] { service1, service2 }.Where(s => s.IsLeader).ToList();
-            Assert.Single(leaders);
+            _ = Assert.Single(leaders);
             var currentLeader = leaders[0];
             var follower = new[] { service1, service2 }.First(s => s != currentLeader);
 
@@ -529,7 +529,7 @@ public class PostgresLeaderElectionIntegrationTests
             await Task.Delay(2000);
 
             // Act - Clean up expired leases
-            await leaseStore.CleanupExpiredLeasesAsync();
+            _ = await leaseStore.CleanupExpiredLeasesAsync();
 
             // Assert - Both leases should be cleaned up
             var currentLease1 = await leaseStore.GetCurrentLeaseAsync(electionName1);
@@ -593,7 +593,7 @@ public class PostgresLeaderElectionIntegrationTests
         }
         finally
         {
-            await leaseStore.ReleaseLeaseAsync(electionName, participantId);
+            _ = await leaseStore.ReleaseLeaseAsync(electionName, participantId);
             leaseStore.Dispose();
         }
     }
@@ -635,7 +635,7 @@ public class PostgresLeaderElectionIntegrationTests
         }
         finally
         {
-            await leaseStore.ReleaseLeaseAsync(electionName, participantId);
+            _ = await leaseStore.ReleaseLeaseAsync(electionName, participantId);
             leaseStore.Dispose();
         }
     }
@@ -657,9 +657,9 @@ public class PostgresLeaderElectionIntegrationTests
         try
         {
             // Act & Assert - Should throw exceptions on connection failure
-            await Assert.ThrowsAsync<SocketException>(() => leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration));
-            await Assert.ThrowsAsync<SocketException>(() => leaseStore.GetCurrentLeaseAsync(electionName));
-            await Assert.ThrowsAsync<SocketException>(() => leaseStore.HasValidLeaseAsync(electionName));
+            _ = await Assert.ThrowsAsync<SocketException>(() => leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration));
+            _ = await Assert.ThrowsAsync<SocketException>(() => leaseStore.GetCurrentLeaseAsync(electionName));
+            _ = await Assert.ThrowsAsync<SocketException>(() => leaseStore.HasValidLeaseAsync(electionName));
 
             // ReleaseLeaseAsync should return false on connection failure (not throw)
             var released = await leaseStore.ReleaseLeaseAsync(electionName, participantId);
@@ -677,7 +677,7 @@ public class PostgresLeaderElectionIntegrationTests
     {
         // Arrange
         var mockSerializer = Substitute.For<IStringDataSerializer>();
-        mockSerializer.Serialize(Arg.Any<IReadOnlyDictionary<string, string>>())
+        _ = mockSerializer.Serialize(Arg.Any<IReadOnlyDictionary<string, string>>())
             .Returns(x => throw new InvalidOperationException("Serialization failed"));
 
         var tableName = $"test_leases_{Guid.NewGuid():N}";
@@ -694,7 +694,7 @@ public class PostgresLeaderElectionIntegrationTests
             await leaseStore.EnsureTableExistsAsync();
 
             // Act & Assert - Should throw exception on serialization failure
-            await Assert.ThrowsAsync<InvalidOperationException>(() => leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, metadata));
+            _ = await Assert.ThrowsAsync<InvalidOperationException>(() => leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, metadata));
         }
         finally
         {
@@ -707,9 +707,9 @@ public class PostgresLeaderElectionIntegrationTests
     {
         // Arrange
         var mockSerializer = Substitute.For<IStringDataSerializer>();
-        mockSerializer.Serialize(Arg.Any<IReadOnlyDictionary<string, string>>())
+        _ = mockSerializer.Serialize(Arg.Any<IReadOnlyDictionary<string, string>>())
             .Returns("{\"key\":\"value\"}");
-        mockSerializer.Deserialize<Dictionary<string, string>>(Arg.Any<string>())
+        _ = mockSerializer.Deserialize<Dictionary<string, string>>(Arg.Any<string>())
             .Returns(x => throw new InvalidOperationException("Deserialization failed"));
 
         var tableName = $"test_leases_{Guid.NewGuid():N}";
@@ -733,7 +733,7 @@ public class PostgresLeaderElectionIntegrationTests
             realLeaseStore.Dispose();
 
             // Now try to get the lease with the mocked serializer that fails deserialization
-            await Assert.ThrowsAsync<InvalidOperationException>(() => leaseStore.GetCurrentLeaseAsync(electionName));
+            _ = await Assert.ThrowsAsync<InvalidOperationException>(() => leaseStore.GetCurrentLeaseAsync(electionName));
         }
         finally
         {
@@ -756,9 +756,9 @@ public class PostgresLeaderElectionIntegrationTests
         try
         {
             // Act & Assert - Should throw exceptions on SQL syntax error
-            await Assert.ThrowsAsync<PostgresException>(() => leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration));
-            await Assert.ThrowsAsync<PostgresException>(() => leaseStore.GetCurrentLeaseAsync(electionName));
-            await Assert.ThrowsAsync<PostgresException>(() => leaseStore.HasValidLeaseAsync(electionName));
+            _ = await Assert.ThrowsAsync<PostgresException>(() => leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration));
+            _ = await Assert.ThrowsAsync<PostgresException>(() => leaseStore.GetCurrentLeaseAsync(electionName));
+            _ = await Assert.ThrowsAsync<PostgresException>(() => leaseStore.HasValidLeaseAsync(electionName));
         }
         finally
         {
@@ -825,8 +825,8 @@ public class PostgresLeaderElectionIntegrationTests
         await service.DisposeAsync();
 
         // Act & Assert - Should handle disposed state as per base class behavior
-        await Assert.ThrowsAsync<ObjectDisposedException>(() => service.TryAcquireLeadershipAsync());
-        await Assert.ThrowsAsync<ObjectDisposedException>(() => service.StartAsync());
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() => service.TryAcquireLeadershipAsync());
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() => service.StartAsync());
 
         // ReleaseLeadershipAsync and StopAsync don't call ThrowIfDisposed(), so they don't throw
         await service.ReleaseLeadershipAsync(); // Should not throw (returns early if not leader)
@@ -842,9 +842,9 @@ public class PostgresLeaderElectionIntegrationTests
         var npgDataSource = NpgsqlDataSource.Create("Host=invalid-host;Database=invalid;Username=invalid;Password=invalid");
         var leaseStore = new PostgresLeaseStore(npgDataSource, mockSerializer, tableName, NullLogger.Instance);
 
-        await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.EnsureTableExistsAsync());
-        await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.TryRenewLeaseAsync("test-election", "participant-1", TimeSpan.FromSeconds(30)));
-        await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.TryAcquireLeaseAsync("test-election", "participant-1", TimeSpan.FromSeconds(30)));
+        _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.EnsureTableExistsAsync());
+        _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.TryRenewLeaseAsync("test-election", "participant-1", TimeSpan.FromSeconds(30)));
+        _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.TryAcquireLeaseAsync("test-election", "participant-1", TimeSpan.FromSeconds(30)));
         var released = await leaseStore.ReleaseLeaseAsync("test-election", "participant-1");
         Assert.False(released); // Should return false on connection failure
     }

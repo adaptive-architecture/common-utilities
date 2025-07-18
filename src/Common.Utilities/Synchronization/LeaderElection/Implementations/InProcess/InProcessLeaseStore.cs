@@ -60,7 +60,7 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
                 }
 
                 // Lease has expired, remove it
-                _leases.TryRemove(electionName, out _);
+                _ = _leases.TryRemove(electionName, out _);
             }
 
             // Create new lease
@@ -82,7 +82,7 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
         }
         finally
         {
-            _semaphore.Release();
+            _ = _semaphore.Release();
         }
     }
 
@@ -125,7 +125,7 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
             // Check if lease has expired
             if (existingLease.ExpiresAt <= now)
             {
-                _leases.TryRemove(electionName, out _);
+                _ = _leases.TryRemove(electionName, out _);
                 return null;
             }
 
@@ -148,7 +148,7 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
         }
         finally
         {
-            _semaphore.Release();
+            _ = _semaphore.Release();
         }
     }
 
@@ -180,12 +180,12 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
                 return false;
             }
 
-            _leases.TryRemove(electionName, out _);
+            _ = _leases.TryRemove(electionName, out _);
             return true;
         }
         finally
         {
-            _semaphore.Release();
+            _ = _semaphore.Release();
         }
     }
 
@@ -212,7 +212,7 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
 
             if (existingLease.ExpiresAt <= now)
             {
-                _leases.TryRemove(electionName, out _);
+                _ = _leases.TryRemove(electionName, out _);
                 return null;
             }
 
@@ -220,7 +220,7 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
         }
         finally
         {
-            _semaphore.Release();
+            _ = _semaphore.Release();
         }
     }
 
@@ -247,7 +247,7 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
 
             if (existingLease.ExpiresAt <= now)
             {
-                _leases.TryRemove(electionName, out _);
+                _ = _leases.TryRemove(electionName, out _);
                 return false;
             }
 
@@ -255,7 +255,7 @@ public class InProcessLeaseStore : ILeaseStore, IDisposable
         }
         finally
         {
-            _semaphore.Release();
+            _ = _semaphore.Release();
         }
     }
 

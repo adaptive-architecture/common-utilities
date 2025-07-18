@@ -19,7 +19,7 @@ public class RedisLeaseStoreSpecs
     {
         _database = Substitute.For<IDatabase>();
         _connectionMultiplexer = Substitute.For<IConnectionMultiplexer>();
-        _connectionMultiplexer.GetDatabase(-1, null).Returns(_database);
+        _ = _connectionMultiplexer.GetDatabase(-1, null).Returns(_database);
 
         var serializer = new ReflectionJsonDataSerializer();
         _leaseStore = new RedisLeaseStore(_connectionMultiplexer, serializer, NullLogger.Instance);
@@ -36,7 +36,7 @@ public class RedisLeaseStoreSpecs
     private void SetupDatabaseMocks()
     {
         // Mock StringSetAsync for lease acquisition (4-parameter overload)
-        _database.StringSetAsync(Arg.Any<RedisKey>(), Arg.Any<RedisValue>(), Arg.Any<TimeSpan?>(), Arg.Any<When>())
+        _ = _database.StringSetAsync(Arg.Any<RedisKey>(), Arg.Any<RedisValue>(), Arg.Any<TimeSpan?>(), Arg.Any<When>())
             .Returns(callInfo =>
             {
                 var key = callInfo.ArgAt<RedisKey>(0);
@@ -53,7 +53,7 @@ public class RedisLeaseStoreSpecs
             });
 
         // Mock StringGetAsync for getting current lease
-        _database.StringGetAsync(Arg.Any<RedisKey>(), Arg.Any<CommandFlags>())
+        _ = _database.StringGetAsync(Arg.Any<RedisKey>(), Arg.Any<CommandFlags>())
             .Returns(callInfo =>
             {
                 var key = callInfo.ArgAt<RedisKey>(0);
@@ -61,7 +61,7 @@ public class RedisLeaseStoreSpecs
             });
 
         // Mock ScriptEvaluateAsync for Lua scripts (renewal and release)
-        _database.ScriptEvaluateAsync(Arg.Any<string>(), Arg.Any<RedisKey[]>(), Arg.Any<RedisValue[]>(), Arg.Any<CommandFlags>())
+        _ = _database.ScriptEvaluateAsync(Arg.Any<string>(), Arg.Any<RedisKey[]>(), Arg.Any<RedisValue[]>(), Arg.Any<CommandFlags>())
             .Returns(callInfo =>
             {
                 var script = callInfo.ArgAt<string>(0);
@@ -101,7 +101,7 @@ public class RedisLeaseStoreSpecs
                     // Simulate parsing JSON to check participant ID
                     if (currentLease.ToString().Contains($"\"ParticipantId\":\"{participantId}\""))
                     {
-                        _redisStorage.Remove(key!);
+                        _ = _redisStorage.Remove(key!);
                         return Task.FromResult(RedisResult.Create(1)); // Successfully deleted
                     }
 
@@ -112,7 +112,7 @@ public class RedisLeaseStoreSpecs
             });
 
         // Mock KeyDeleteAsync for cleanup
-        _database.KeyDeleteAsync(Arg.Any<RedisKey>(), Arg.Any<CommandFlags>())
+        _ = _database.KeyDeleteAsync(Arg.Any<RedisKey>(), Arg.Any<CommandFlags>())
             .Returns(callInfo =>
             {
                 var key = callInfo.ArgAt<RedisKey>(0);
@@ -125,8 +125,8 @@ public class RedisLeaseStoreSpecs
     {
         var serializer = new ReflectionJsonDataSerializer();
 
-        Assert.Throws<ArgumentNullException>(() => new RedisLeaseStore(null!, serializer));
-        Assert.Throws<ArgumentNullException>(() => new RedisLeaseStore(_connectionMultiplexer, null!));
+        _ = Assert.Throws<ArgumentNullException>(() => new RedisLeaseStore(null!, serializer));
+        _ = Assert.Throws<ArgumentNullException>(() => new RedisLeaseStore(_connectionMultiplexer, null!));
     }
 
     [Fact]
@@ -160,7 +160,7 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         // First participant acquires lease
-        await _leaseStore.TryAcquireLeaseAsync(electionName, participant1, leaseDuration);
+        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participant1, leaseDuration);
 
         // Act - Second participant tries to acquire
         var result = await _leaseStore.TryAcquireLeaseAsync(electionName, participant2, leaseDuration);
@@ -201,7 +201,7 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         // First participant acquires lease
-        await _leaseStore.TryAcquireLeaseAsync(electionName, participant1, leaseDuration);
+        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participant1, leaseDuration);
 
         // Act - Second participant tries to renew
         var result = await _leaseStore.TryRenewLeaseAsync(electionName, participant2, leaseDuration);
@@ -234,7 +234,7 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         // First acquire lease
-        await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration);
+        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration);
 
         // Act - Release lease
         var result = await _leaseStore.ReleaseLeaseAsync(electionName, participantId);
@@ -257,7 +257,7 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         // First participant acquires lease
-        await _leaseStore.TryAcquireLeaseAsync(electionName, participant1, leaseDuration);
+        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participant1, leaseDuration);
 
         // Act - Second participant tries to release
         var result = await _leaseStore.ReleaseLeaseAsync(electionName, participant2);
@@ -329,7 +329,7 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         // First acquire lease
-        await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration);
+        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration);
 
         // Act
         var hasValidLease = await _leaseStore.HasValidLeaseAsync(electionName);
@@ -367,19 +367,19 @@ public class RedisLeaseStoreSpecs
         _leaseStore.Dispose();
 
         // Act & Assert
-        await Assert.ThrowsAsync<ObjectDisposedException>(() =>
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
             _leaseStore.TryAcquireLeaseAsync("test", "participant", TimeSpan.FromMinutes(1)));
 
-        await Assert.ThrowsAsync<ObjectDisposedException>(() =>
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
             _leaseStore.TryRenewLeaseAsync("test", "participant", TimeSpan.FromMinutes(1)));
 
-        await Assert.ThrowsAsync<ObjectDisposedException>(() =>
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
             _leaseStore.ReleaseLeaseAsync("test", "participant"));
 
-        await Assert.ThrowsAsync<ObjectDisposedException>(() =>
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
             _leaseStore.GetCurrentLeaseAsync("test"));
 
-        await Assert.ThrowsAsync<ObjectDisposedException>(() =>
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
             _leaseStore.HasValidLeaseAsync("test"));
     }
 
@@ -394,7 +394,7 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         var redisException = new RedisException("Redis connection failed");
-        _database.StringSetAsync(Arg.Any<RedisKey>(), Arg.Any<RedisValue>(), Arg.Any<TimeSpan?>(), Arg.Any<When>())
+        _ = _database.StringSetAsync(Arg.Any<RedisKey>(), Arg.Any<RedisValue>(), Arg.Any<TimeSpan?>(), Arg.Any<When>())
             .Returns<Task<bool>>(_ => throw redisException);
 
         // Act & Assert
@@ -413,7 +413,7 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         var redisException = new RedisException("Redis script execution failed");
-        _database.ScriptEvaluateAsync(Arg.Any<string>(), Arg.Any<RedisKey[]>(), Arg.Any<RedisValue[]>(), Arg.Any<CommandFlags>())
+        _ = _database.ScriptEvaluateAsync(Arg.Any<string>(), Arg.Any<RedisKey[]>(), Arg.Any<RedisValue[]>(), Arg.Any<CommandFlags>())
             .Returns<Task<RedisResult>>(_ => throw redisException);
 
         // Act & Assert
@@ -431,7 +431,7 @@ public class RedisLeaseStoreSpecs
         const string participantId = "participant-1";
 
         var redisException = new RedisException("Redis script execution failed");
-        _database.ScriptEvaluateAsync(Arg.Any<string>(), Arg.Any<RedisKey[]>(), Arg.Any<RedisValue[]>(), Arg.Any<CommandFlags>())
+        _ = _database.ScriptEvaluateAsync(Arg.Any<string>(), Arg.Any<RedisKey[]>(), Arg.Any<RedisValue[]>(), Arg.Any<CommandFlags>())
             .Returns<Task<RedisResult>>(_ => throw redisException);
 
         // Act
@@ -448,7 +448,7 @@ public class RedisLeaseStoreSpecs
         const string electionName = "test-election";
 
         var redisException = new RedisException("Redis get operation failed");
-        _database.StringGetAsync(Arg.Any<RedisKey>(), Arg.Any<CommandFlags>())
+        _ = _database.StringGetAsync(Arg.Any<RedisKey>(), Arg.Any<CommandFlags>())
             .Returns<Task<RedisValue>>(_ => throw redisException);
 
         // Act & Assert
@@ -465,7 +465,7 @@ public class RedisLeaseStoreSpecs
         const string electionName = "test-election";
 
         var redisException = new RedisException("Redis get operation failed");
-        _database.StringGetAsync(Arg.Any<RedisKey>(), Arg.Any<CommandFlags>())
+        _ = _database.StringGetAsync(Arg.Any<RedisKey>(), Arg.Any<CommandFlags>())
             .Returns<Task<RedisValue>>(_ => throw redisException);
 
         // Act & Assert
@@ -484,7 +484,7 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         var mockSerializer = Substitute.For<IDataSerializer>();
-        mockSerializer.Serialize(Arg.Any<LeaderInfo>())
+        _ = mockSerializer.Serialize(Arg.Any<LeaderInfo>())
             .Returns(_ => throw new InvalidOperationException("Serialization failed"));
 
         using var leaseStore = new RedisLeaseStore(_connectionMultiplexer, mockSerializer, NullLogger.Instance);
@@ -527,7 +527,7 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         var timeoutException = new RedisTimeoutException("Operation timed out", CommandStatus.Unknown);
-        _database.StringSetAsync(Arg.Any<RedisKey>(), Arg.Any<RedisValue>(), Arg.Any<TimeSpan?>(), Arg.Any<When>())
+        _ = _database.StringSetAsync(Arg.Any<RedisKey>(), Arg.Any<RedisValue>(), Arg.Any<TimeSpan?>(), Arg.Any<When>())
             .Returns<Task<bool>>(_ => throw timeoutException);
 
         // Act & Assert
@@ -546,7 +546,7 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         var connectionException = new RedisConnectionException(ConnectionFailureType.SocketFailure, "Connection lost");
-        _database.ScriptEvaluateAsync(Arg.Any<string>(), Arg.Any<RedisKey[]>(), Arg.Any<RedisValue[]>(), Arg.Any<CommandFlags>())
+        _ = _database.ScriptEvaluateAsync(Arg.Any<string>(), Arg.Any<RedisKey[]>(), Arg.Any<RedisValue[]>(), Arg.Any<CommandFlags>())
             .Returns<Task<RedisResult>>(_ => throw connectionException);
 
         // Act & Assert
@@ -572,7 +572,7 @@ public class RedisLeaseStoreSpecs
         Assert.Null(result1);
 
         // Test with null value (key doesn't exist)
-        _redisStorage.Remove("leader_election:lease:test-election");
+        _ = _redisStorage.Remove("leader_election:lease:test-election");
 
         // Act
         var result2 = await _leaseStore.GetCurrentLeaseAsync(electionName);
@@ -590,7 +590,7 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         var mockConnectionMultiplexer = Substitute.For<IConnectionMultiplexer>();
-        mockConnectionMultiplexer.GetDatabase(-1, null)
+        _ = mockConnectionMultiplexer.GetDatabase(-1, null)
             .Returns(_ => throw new InvalidOperationException("Database unavailable"));
 
         var serializer = new ReflectionJsonDataSerializer();
@@ -611,7 +611,7 @@ public class RedisLeaseStoreSpecs
         const string participantId = "participant-1";
 
         // Setup script to return unexpected result type
-        _database.ScriptEvaluateAsync(Arg.Any<string>(), Arg.Any<RedisKey[]>(), Arg.Any<RedisValue[]>(), Arg.Any<CommandFlags>())
+        _ = _database.ScriptEvaluateAsync(Arg.Any<string>(), Arg.Any<RedisKey[]>(), Arg.Any<RedisValue[]>(), Arg.Any<CommandFlags>())
             .Returns(Task.FromResult(RedisResult.Create((RedisValue)"unexpected_string")));
 
         // Act & Assert - Should handle gracefully and return false
@@ -629,7 +629,7 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         // First acquire a lease
-        await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration);
+        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration);
 
         // Modify the lease to be expired (hack the stored JSON)
         var expiredTime = DateTime.UtcNow.AddMinutes(-10);
@@ -644,7 +644,7 @@ public class RedisLeaseStoreSpecs
         _redisStorage["leader_election:lease:test-election"] = serializer.Serialize(expiredLease);
 
         // Setup KeyDeleteAsync to throw an exception
-        _database.KeyDeleteAsync(Arg.Any<RedisKey>(), Arg.Any<CommandFlags>())
+        _ = _database.KeyDeleteAsync(Arg.Any<RedisKey>(), Arg.Any<CommandFlags>())
             .Returns(Task.FromException<bool>(new RedisException("Delete operation failed")));
 
         // Act & Assert - Should propagate the exception from KeyDeleteAsync

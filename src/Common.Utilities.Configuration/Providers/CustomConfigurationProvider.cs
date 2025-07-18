@@ -70,7 +70,7 @@ public class CustomConfigurationProvider : ConfigurationProvider
         }
         finally
         {
-            _loadingStateSemaphore.Release();
+            _ = _loadingStateSemaphore.Release();
         }
     }
 

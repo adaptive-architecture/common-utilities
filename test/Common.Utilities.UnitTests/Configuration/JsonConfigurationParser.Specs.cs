@@ -23,23 +23,23 @@ public class JsonConfigurationParserSpecs
     [Fact]
     public void Should_Throw_If_Delimiter_Is_Null()
     {
-        Assert.Throws<ArgumentNullException>(() => _ = new JsonConfigurationParser(null!));
+        _ = Assert.Throws<ArgumentNullException>(() => _ = new JsonConfigurationParser(null!));
     }
 
     [Fact]
     public void Should_Throw_If_Top_Level_Is_Not_Object()
     {
-        Assert.Throws<FormatException>(() => _ = _parser.Parse("[]"));
+        _ = Assert.Throws<FormatException>(() => _ = _parser.Parse("[]"));
     }
 
     [Fact]
     public void Should_Throw_If_Value_Is_Undefined()
     {
-        Assert.Throws<FormatException>(() =>
+        _ = Assert.Throws<FormatException>(() =>
         {
             try
             {
-                _parser.GetType()
+                _ = _parser.GetType()
                     !.GetMethod("VisitValue", BindingFlags.Instance | BindingFlags.NonPublic)!
                     .Invoke(_parser, [new JsonElement()]);
             }
@@ -53,7 +53,7 @@ public class JsonConfigurationParserSpecs
     [Fact]
     public void Should_Throw_If_Duplicate_Key()
     {
-        Assert.Throws<FormatException>(() => _ = _parser.Parse("{\"key\": 1, \"key\": 2}"));
+        _ = Assert.Throws<FormatException>(() => _ = _parser.Parse("{\"key\": 1, \"key\": 2}"));
     }
 
     [Fact]

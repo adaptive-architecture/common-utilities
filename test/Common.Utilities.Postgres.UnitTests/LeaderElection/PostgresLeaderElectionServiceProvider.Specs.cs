@@ -39,7 +39,7 @@ public class PostgresLeaderElectionServiceProviderSpecs
     public void Constructor_WithNullDataSource_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() =>
+        _ = Assert.Throws<ArgumentNullException>(() =>
             new PostgresLeaderElectionServiceProvider(
                 null!,
                 _mockSerializer,
@@ -51,7 +51,7 @@ public class PostgresLeaderElectionServiceProviderSpecs
     public void Constructor_WithNullSerializer_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() =>
+        _ = Assert.Throws<ArgumentNullException>(() =>
             new PostgresLeaderElectionServiceProvider(
                 _mockDataSource,
                 null!,
@@ -104,7 +104,7 @@ public class PostgresLeaderElectionServiceProviderSpecs
 
         // Assert
         Assert.NotNull(service);
-        Assert.IsType<PostgresLeaderElectionService>(service);
+        _ = Assert.IsType<PostgresLeaderElectionService>(service);
         Assert.Equal(electionName, service.ElectionName);
         Assert.Equal(participantId, service.ParticipantId);
 
@@ -134,7 +134,7 @@ public class PostgresLeaderElectionServiceProviderSpecs
 
         // Assert
         Assert.NotNull(service);
-        Assert.IsType<PostgresLeaderElectionService>(service);
+        _ = Assert.IsType<PostgresLeaderElectionService>(service);
         Assert.Equal(electionName, service.ElectionName);
         Assert.Equal(participantId, service.ParticipantId);
 
@@ -159,7 +159,7 @@ public class PostgresLeaderElectionServiceProviderSpecs
 
         // Assert
         Assert.NotNull(service);
-        Assert.IsType<PostgresLeaderElectionService>(service);
+        _ = Assert.IsType<PostgresLeaderElectionService>(service);
         Assert.Equal(electionName, service.ElectionName);
         Assert.Equal(participantId, service.ParticipantId);
 
@@ -179,7 +179,7 @@ public class PostgresLeaderElectionServiceProviderSpecs
         const string participantId = "participant-1";
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() =>
+        _ = Assert.Throws<ArgumentException>(() =>
             provider.CreateElection(null!, participantId));
     }
 
@@ -195,7 +195,7 @@ public class PostgresLeaderElectionServiceProviderSpecs
         const string electionName = "test-election";
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() =>
+        _ = Assert.Throws<ArgumentException>(() =>
             provider.CreateElection(electionName, null!));
     }
 
@@ -211,7 +211,7 @@ public class PostgresLeaderElectionServiceProviderSpecs
         const string participantId = "participant-1";
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() =>
+        _ = Assert.Throws<ArgumentException>(() =>
             provider.CreateElection("", participantId));
     }
 
@@ -227,7 +227,7 @@ public class PostgresLeaderElectionServiceProviderSpecs
         const string electionName = "test-election";
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() =>
+        _ = Assert.Throws<ArgumentException>(() =>
             provider.CreateElection(electionName, ""));
     }
 

@@ -18,17 +18,17 @@ public sealed class TestServerFixture : IDisposable
         _testServer = new HostBuilder()
             .ConfigureWebHost(webBuilder =>
             {
-                webBuilder
+                _ = webBuilder
                     .UseTestServer()
                     .ConfigureServices(services =>
                     {
-                        services
+                        _ = services
                             .AddResponseRewriterFactory<ResponseRewriterFactory>()
                             .AddRouting();
                     })
                     .Configure(app =>
                     {
-                        app
+                        _ = app
                             .Use(async (ctx, next) =>
                             {
                                 try
@@ -46,11 +46,11 @@ public sealed class TestServerFixture : IDisposable
                             .UseRouting()
                             .UseEndpoints(endpoints =>
                             {
-                                endpoints.MapGet("/ping", () => Results.Text("pong"));
-                                endpoints.MapGet("/transformed", () => Results.Text("NOT transformed"));
-                                endpoints.MapGet("/methods-tests", () => Results.Text("tests"));
-                                endpoints.MapGet("/no-content", () => Results.NoContent());
-                                endpoints.MapGet("/failure", _ => throw new InvalidOperationException("This is a failure route"));
+                                _ = endpoints.MapGet("/ping", () => Results.Text("pong"));
+                                _ = endpoints.MapGet("/transformed", () => Results.Text("NOT transformed"));
+                                _ = endpoints.MapGet("/methods-tests", () => Results.Text("tests"));
+                                _ = endpoints.MapGet("/no-content", () => Results.NoContent());
+                                _ = endpoints.MapGet("/failure", _ => throw new InvalidOperationException("This is a failure route"));
                             });
                     });
             })

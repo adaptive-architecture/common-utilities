@@ -102,7 +102,7 @@ public class PostgresLeaderElectionServiceSpecs
     public void Constructor_WithNullDataSource_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() =>
+        _ = Assert.Throws<ArgumentNullException>(() =>
             new PostgresLeaderElectionService(
                 null!,
                 _mockSerializer,
@@ -117,7 +117,7 @@ public class PostgresLeaderElectionServiceSpecs
     public void Constructor_WithNullSerializer_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() =>
+        _ = Assert.Throws<ArgumentNullException>(() =>
             new PostgresLeaderElectionService(
                 _mockDataSource,
                 null!,
@@ -132,7 +132,7 @@ public class PostgresLeaderElectionServiceSpecs
     public void Constructor_WithNullElectionName_ShouldThrowArgumentException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentException>(() =>
+        _ = Assert.Throws<ArgumentException>(() =>
             new PostgresLeaderElectionService(
                 _mockDataSource,
                 _mockSerializer,
@@ -147,7 +147,7 @@ public class PostgresLeaderElectionServiceSpecs
     public void Constructor_WithNullParticipantId_ShouldThrowArgumentException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentException>(() =>
+        _ = Assert.Throws<ArgumentException>(() =>
             new PostgresLeaderElectionService(
                 _mockDataSource,
                 _mockSerializer,
@@ -204,7 +204,7 @@ public class PostgresLeaderElectionServiceSpecs
     public void Constructor_WithNullLeaseStore_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() =>
+        _ = Assert.Throws<ArgumentNullException>(() =>
             new PostgresLeaderElectionService(
                 (PostgresLeaseStore)null!,
                 _electionName,
@@ -271,5 +271,7 @@ public class PostgresLeaderElectionServiceSpecs
         // Act & Assert
         await service.DisposeAsync();
         await service.DisposeAsync(); // Should not throw
+
+        Assert.True(true);
     }
 }

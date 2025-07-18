@@ -9,7 +9,7 @@ public class CustomConfigurationSourceSpecs
     [Fact]
     public void Should_Throw_If_No_Data_Provider_Is_Set()
     {
-        Assert.Throws<NullReferenceException>(() => _ = new CustomConfigurationSource().Build(new ConfigurationBuilder()));
+        _ = Assert.Throws<NullReferenceException>(() => _ = new CustomConfigurationSource().Build(new ConfigurationBuilder()));
     }
 
     [Fact]

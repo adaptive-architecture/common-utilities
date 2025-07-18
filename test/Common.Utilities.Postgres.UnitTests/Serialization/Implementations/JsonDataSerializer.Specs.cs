@@ -227,7 +227,7 @@ public partial class JsonDataSerializerSpecs
         const string malformedJson = "{\"id\":42,\"name\":\"Test\""; // Missing closing brace
 
         // Act & Assert
-        Assert.Throws<JsonException>(() =>
+        _ = Assert.Throws<JsonException>(() =>
             _serializer.Deserialize<TestClass>(malformedJson));
     }
 

@@ -50,7 +50,7 @@ public class Base32Specs
     [InlineData("0123456789", -1, -1)]
     public void Base32Decode_BadOffsets(string input, int offset, int count)
     {
-        Assert.ThrowsAny<ArgumentException>(() => _ = Base32.Decode(input, offset, count));
+        _ = Assert.ThrowsAny<ArgumentException>(() => _ = Base32.Decode(input, offset, count));
     }
 
     [Theory]
@@ -63,7 +63,7 @@ public class Base32Specs
     {
         var input = new byte[inputLength];
 
-        Assert.ThrowsAny<ArgumentException>(() => _ = Base32.Encode(input, offset, count));
+        _ = Assert.ThrowsAny<ArgumentException>(() => _ = Base32.Encode(input, offset, count));
     }
 
     [Fact]
@@ -94,13 +94,13 @@ public class Base32Specs
     [Fact]
     public void Decode_Throws_ArgumentNull_Exception_1()
     {
-        Assert.Throws<ArgumentNullException>(() => _ = Base32.Decode(null));
+        _ = Assert.Throws<ArgumentNullException>(() => _ = Base32.Decode(null));
     }
 
     [Fact]
     public void Decode_Throws_ArgumentNull_Exception_2()
     {
-        Assert.Throws<ArgumentNullException>(() => _ = Base32.Decode(null, 0, 0));
+        _ = Assert.Throws<ArgumentNullException>(() => _ = Base32.Decode(null, 0, 0));
     }
 
     [Fact]
@@ -112,43 +112,43 @@ public class Base32Specs
     [Fact]
     public void Encode_Throws_ArgumentNull_Exception_1()
     {
-        Assert.Throws<ArgumentNullException>(() => _ = Base32.Encode(null));
+        _ = Assert.Throws<ArgumentNullException>(() => _ = Base32.Encode(null));
     }
 
     [Fact]
     public void Encode_Throws_ArgumentNull_Exception_2()
     {
-        Assert.Throws<ArgumentNullException>(() => _ = Base32.Encode(null, 0, 0));
+        _ = Assert.Throws<ArgumentNullException>(() => _ = Base32.Encode(null, 0, 0));
     }
 
     [Fact]
     public void Encode_Throws_ArgumentNull_Exception_3()
     {
-        Assert.Throws<ArgumentNullException>(() => _ = Base32.Encode(null, 0, Array.Empty<char>(), 0, 0));
+        _ = Assert.Throws<ArgumentNullException>(() => _ = Base32.Encode(null, 0, Array.Empty<char>(), 0, 0));
     }
 
     [Fact]
     public void Encode_Throws_ArgumentNull_Exception_4()
     {
-        Assert.Throws<ArgumentNullException>(() => _ = Base32.Encode(Array.Empty<byte>(), 0, null, 0, 0));
+        _ = Assert.Throws<ArgumentNullException>(() => _ = Base32.Encode(Array.Empty<byte>(), 0, null, 0, 0));
     }
 
     [Fact]
     public void Encode_Throws_ArgumentOutOfRange_Exception_4()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => _ = Base32.Encode(Array.Empty<byte>(), 0, Array.Empty<char>(), -1, 0));
+        _ = Assert.Throws<ArgumentOutOfRangeException>(() => _ = Base32.Encode(Array.Empty<byte>(), 0, Array.Empty<char>(), -1, 0));
     }
 
     [Fact]
     public void Encode_Throws_Argument_Exception_4()
     {
-        Assert.Throws<ArgumentException>(() => _ = Base32.Encode(Array.Empty<byte>(), 0, Array.Empty<char>(), 2, 0));
+        _ = Assert.Throws<ArgumentException>(() => _ = Base32.Encode(Array.Empty<byte>(), 0, Array.Empty<char>(), 2, 0));
     }
 
     [Fact]
     public void Decode_Throws_Format_Exception()
     {
-        Assert.Throws<FormatException>(() => _ = Base32.Decode("ORSXG1A="));
+        _ = Assert.Throws<FormatException>(() => _ = Base32.Decode("ORSXG1A="));
     }
 
     private static byte[] GetRandomByteArray(int length)

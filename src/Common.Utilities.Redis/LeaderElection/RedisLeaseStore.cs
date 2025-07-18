@@ -239,7 +239,7 @@ public class RedisLeaseStore : ILeaseStore, IDisposable
             if (leaderInfo?.IsValid == false)
             {
                 // Clean up expired lease
-                await database.KeyDeleteAsync(leaseKey).ConfigureAwait(false);
+                _ = await database.KeyDeleteAsync(leaseKey).ConfigureAwait(false);
                 return null;
             }
 

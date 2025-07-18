@@ -23,7 +23,7 @@ public sealed class HandlerRegistry
     {
         var registration = new HandlerRegistration(_uuidProvider.New(), topic, handler, typeof(T));
 
-        _handlers.AddOrUpdate(topic,
+        _ = _handlers.AddOrUpdate(topic,
             _ =>
             {
                 var topicHandlers = new ConcurrentDictionary<string, HandlerRegistration>();
@@ -48,7 +48,7 @@ public sealed class HandlerRegistry
     {
         foreach (var topicHandlers in _handlers.Values)
         {
-            topicHandlers.TryRemove(registrationId, out _);
+            _ = topicHandlers.TryRemove(registrationId, out _);
         }
     }
 
