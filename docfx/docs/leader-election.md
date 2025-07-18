@@ -880,24 +880,24 @@ static void LogLeaderInfo(LeaderInfo? leader, string prefix)
 public class LeaderElectionOptions
 {
     /// <summary>
-    /// How long a lease lasts before it expires (default: 5 minutes)
+    /// How long a lease lasts before it expires (default: 30 seconds)
     /// </summary>
-    public TimeSpan LeaseDuration { get; set; } = TimeSpan.FromMinutes(5);
+    public TimeSpan LeaseDuration { get; set; } = TimeSpan.FromSeconds(30);
 
     /// <summary>
-    /// How often the leader renews its lease (default: 1 minute)
+    /// How often the leader renews its lease (default: 10 seconds)
     /// </summary>
-    public TimeSpan RenewalInterval { get; set; } = TimeSpan.FromMinutes(1);
+    public TimeSpan RenewalInterval { get; set; } = TimeSpan.FromSeconds(10);
 
     /// <summary>
-    /// How often non-leaders retry to acquire leadership (default: 30 seconds)
+    /// How often non-leaders retry to acquire leadership (default: 5 seconds)
     /// </summary>
-    public TimeSpan RetryInterval { get; set; } = TimeSpan.FromSeconds(30);
+    public TimeSpan RetryInterval { get; set; } = TimeSpan.FromSeconds(5);
 
     /// <summary>
-    /// Maximum time to wait for lease operations (default: 30 seconds)
+    /// Maximum time to wait for lease operations (default: 5 seconds)
     /// </summary>
-    public TimeSpan OperationTimeout { get; set; } = TimeSpan.FromSeconds(30);
+    public TimeSpan OperationTimeout { get; set; } = TimeSpan.FromSeconds(5);
 
     /// <summary>
     /// Whether to automatically start the election loop (default: true)
@@ -909,6 +909,88 @@ public class LeaderElectionOptions
     /// </summary>
     public IReadOnlyDictionary<string, string>? Metadata { get; set; }
 }
+```
+
+### Creating Options with the Create Method
+
+The `LeaderElectionOptions.Create` static method provides a convenient way to create properly configured options with mathematically sound timing relationships:
+
+```csharp
+// Create options with 2-minute lease duration and automatic timing calculation
+var options = LeaderElectionOptions.Create(
+    leaseDuration: TimeSpan.FromMinutes(2),
+    metadata: new Dictionary<string, string>
+    {
+        ["hostname"] = Environment.MachineName,
+        ["process_id"] = Environment.ProcessId.ToString(),
+        ["version"] = "1.0.0"
+    });
+
+// The Create method automatically calculates:
+// - RenewalInterval: 2 minutes / 3 = 40 seconds
+// - RetryInterval: 2 minutes / 6 = 20 seconds  
+// - OperationTimeout: 2 minutes / 6 = 20 seconds
+```
+
+#### Automatic Timing Relationships
+
+The `Create` method ensures optimal timing relationships by automatically calculating:
+
+- **Renewal Interval**: 1/3 of lease duration (ensures multiple renewal attempts before expiration)
+- **Retry Interval**: 1/6 of lease duration (allows several retry attempts within renewal window)
+- **Operation Timeout**: 1/6 of lease duration (prevents operations from blocking too long)
+
+```csharp
+// Example: 3-minute lease duration
+var options = LeaderElectionOptions.Create(TimeSpan.FromMinutes(3), null);
+
+// Results in:
+// - LeaseDuration: 3 minutes
+// - RenewalInterval: 1 minute (3 min / 3)
+// - RetryInterval: 30 seconds (3 min / 6)
+// - OperationTimeout: 30 seconds (3 min / 6)
+```
+
+#### Validation and Correction
+
+The `Create` method calls `Validate()` to ensure all timing values are within acceptable ranges:
+
+```csharp
+// Very short lease durations are corrected to minimum 30 seconds
+var options = LeaderElectionOptions.Create(TimeSpan.FromSeconds(2), null);
+
+// Results in:
+// - LeaseDuration: 30 seconds (corrected from 2 seconds)
+// - RenewalInterval: 0.67 seconds (calculated from original 2 seconds)
+// - RetryInterval: 0.33 seconds (calculated from original 2 seconds)
+// - OperationTimeout: 0.33 seconds (calculated from original 2 seconds)
+```
+
+#### Usage Examples
+
+```csharp
+// High-frequency leader election (fast failover)
+var highFrequencyOptions = LeaderElectionOptions.Create(
+    TimeSpan.FromSeconds(30),
+    new Dictionary<string, string> { ["type"] = "high-frequency" });
+
+// Low-frequency leader election (resource efficiency)
+var lowFrequencyOptions = LeaderElectionOptions.Create(
+    TimeSpan.FromMinutes(10),
+    new Dictionary<string, string> { ["type"] = "low-frequency" });
+
+// Production configuration with detailed metadata
+var productionOptions = LeaderElectionOptions.Create(
+    TimeSpan.FromMinutes(5),
+    new Dictionary<string, string>
+    {
+        ["environment"] = "production",
+        ["datacenter"] = "us-east-1",
+        ["hostname"] = Environment.MachineName,
+        ["process_id"] = Environment.ProcessId.ToString(),
+        ["start_time"] = DateTime.UtcNow.ToString("O"),
+        ["version"] = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown"
+    });
 ```
 
 ### Timing Configuration Examples

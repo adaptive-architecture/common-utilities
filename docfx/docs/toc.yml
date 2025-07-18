@@ -17,6 +17,8 @@
       href: leader-election-getting-started.md
     - name: Advanced Configuration
       href: leader-election-advanced.md
+    - name: PostgreSQL Implementation
+      href: leader-election-postgresql.md
     - name: Troubleshooting
       href: leader-election-troubleshooting.md
   - name: In-Process PubSub

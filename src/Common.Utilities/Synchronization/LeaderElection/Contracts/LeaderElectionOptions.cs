@@ -70,4 +70,34 @@ public sealed record LeaderElectionOptions
             OperationTimeout = operationTimeout
         };
     }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="LeaderElectionOptions"/> with specified lease duration and optional metadata.
+    /// The other properties will be set to default values based on the lease duration:
+    /// <list type="bullet">
+    ///   <item>
+    ///     <description>The renewal interval will be set to one-third of the lease duration.</description>
+    ///   </item>
+    ///   <item>
+    ///     <description>The retry interval will be set to one-sixth of the lease duration.</description>
+    ///   </item>
+    ///   <item>
+    ///     <description>The operation timeout will also be set to one-sixth of the lease duration.</description>
+    ///   </item>
+    /// </list>
+    /// </summary>
+    /// <param name="leaseDuration"> The duration of the leadership lease.</param>
+    /// <param name="metadata">The optional metadata to associate with leadership.</param>
+    /// <returns>A new instance of <see cref="LeaderElectionOptions"/> with the specified lease duration and metadata.</returns>
+    public static LeaderElectionOptions Create(TimeSpan leaseDuration, IReadOnlyDictionary<string, string>? metadata)
+    {
+        return new LeaderElectionOptions
+        {
+            LeaseDuration = leaseDuration,
+            RenewalInterval = TimeSpan.FromMilliseconds(leaseDuration.TotalMilliseconds / 3),
+            RetryInterval = TimeSpan.FromMilliseconds(leaseDuration.TotalMilliseconds / 6),
+            OperationTimeout = TimeSpan.FromMilliseconds(leaseDuration.TotalMilliseconds / 6),
+            Metadata = metadata
+        }.Validate();
+    }
 }
