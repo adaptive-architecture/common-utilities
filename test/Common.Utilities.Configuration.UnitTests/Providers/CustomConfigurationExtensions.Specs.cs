@@ -1,4 +1,5 @@
 ﻿using AdaptArch.Common.Utilities.Configuration.Contracts;
+using AdaptArch.Common.Utilities.Configuration.Implementation;
 using AdaptArch.Common.Utilities.Configuration.Providers;
 using Microsoft.Extensions.Configuration;
 using NSubstitute;
@@ -28,5 +29,29 @@ public class CustomConfigurationExtensionsSpecs
 
         Assert.NotEmpty(builder.Sources);
         Assert.Same(mock, ((CustomConfigurationSource)builder.Sources[0]).DataProvider);
+    }
+
+    [Fact]
+    public void Should_Add_The_ReLoadableDataProvider_Parameterless()
+    {
+        var builder = new ConfigurationBuilder();
+        _ = builder.AddReLoadableMemoryDataProvider();
+
+        Assert.NotEmpty(builder.Sources);
+        Assert.IsType<ReLoadableMemoryDataProvider>(((CustomConfigurationSource)builder.Sources[0]).DataProvider);
+    }
+
+    [Fact]
+    public void Should_Add_The_ReLoadableDataProvider_WithData()
+    {
+        var builder = new ConfigurationBuilder();
+        _ = builder.AddReLoadableMemoryDataProvider(new Dictionary<string, string>
+        {
+            { "key1", "value1" },
+            { "key2", "value2" }
+        });
+
+        Assert.NotEmpty(builder.Sources);
+        Assert.IsType<ReLoadableMemoryDataProvider>(((CustomConfigurationSource)builder.Sources[0]).DataProvider);
     }
 }

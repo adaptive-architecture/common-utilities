@@ -36,6 +36,11 @@ public class CustomConfigurationProvider : ConfigurationProvider
         TaskExtensions.RunSync(async delegate { await LoadAsyncCore(false, CancellationToken.None); }, CancellationToken.None);
     }
 
+    /// <summary>
+    /// Gets the data provider used by this configuration provider.
+    /// </summary>
+    public IDataProvider GetDataProvider() => _dataProvider;
+
     private async Task LoadAsyncCore(bool reload, CancellationToken cancellationToken)
     {
         try

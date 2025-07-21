@@ -1,4 +1,5 @@
-﻿using AdaptArch.Common.Utilities.Configuration.Providers;
+﻿using AdaptArch.Common.Utilities.Configuration.Implementation;
+using AdaptArch.Common.Utilities.Configuration.Providers;
 
 // Keep this in the "Microsoft.Extensions.Configuration" for easy access.
 // ReSharper disable once CheckNamespace
@@ -30,5 +31,19 @@ public static class CustomConfigurationExtensions
 #pragma warning restore S112 // General exceptions should never be thrown
 
         return builder.Add(source);
+    }
+
+    /// <summary>
+    /// Adds a <see cref="ReLoadableMemoryDataProvider"/> to the configuration builder.
+    /// </summary>
+    /// <param name="builder">The configuration builder.</param>
+    /// <param name="initialData">The initial data to be loaded into the provider.</param>
+    /// <remarks>
+    /// In case the <paramref name="initialData"/> is null, an empty dictionary will be used.
+    /// </remarks>
+    public static IConfigurationBuilder AddReLoadableMemoryDataProvider(this IConfigurationBuilder builder, IReadOnlyDictionary<string, string?>? initialData = null)
+    {
+        var provider = new ReLoadableMemoryDataProvider(initialData ?? new Dictionary<string, string?>());
+        return builder.AddCustomConfiguration(source => source.DataProvider = provider);
     }
 }

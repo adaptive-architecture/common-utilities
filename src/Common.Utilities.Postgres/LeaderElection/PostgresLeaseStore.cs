@@ -46,6 +46,8 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
     {
         ObjectDisposedException.ThrowIf(_disposed, nameof(PostgresLeaseStore));
 
+        LeaderInfo? leaderInfo;
+
         try
         {
             var acquiredAt = DateTime.UtcNow;
@@ -84,23 +86,25 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
 
             // If the lease was acquired, the reader will have a row
             // If the lease was not acquired, the reader will be empty
-            if (!await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+            if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+            {
+                _logger.LogDebug("Acquired lease for election {ElectionName} by participant {ParticipantId}",
+                    electionName, participantId);
+
+                leaderInfo = new LeaderInfo
+                {
+                    ParticipantId = participantId,
+                    AcquiredAt = acquiredAt,
+                    ExpiresAt = expiresAt,
+                    Metadata = metadata
+                };
+            }
+            else
             {
                 _logger.LogDebug("Failed to acquire lease for election {ElectionName} by participant {ParticipantId} - already held by another participant",
                     electionName, participantId);
-                return null;
+                leaderInfo = null;
             }
-
-            _logger.LogDebug("Acquired lease for election {ElectionName} by participant {ParticipantId}",
-                    electionName, participantId);
-
-            return new LeaderInfo
-            {
-                ParticipantId = participantId,
-                AcquiredAt = acquiredAt,
-                ExpiresAt = expiresAt,
-                Metadata = metadata
-            };
         }
         catch (Exception ex)
         {
@@ -108,6 +112,7 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
                 electionName, participantId);
             throw;
         }
+        return leaderInfo;
     }
 
     /// <inheritdoc/>
@@ -119,6 +124,8 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
         CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(_disposed, nameof(PostgresLeaseStore));
+
+        LeaderInfo? leaderInfo;
 
         try
         {
@@ -149,23 +156,25 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
 
             await using var reader = await ExecuteReaderAsync(sql, parameters, metadata, cancellationToken).ConfigureAwait(false);
 
-            if (!await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+            if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+            {
+                _logger.LogTrace("Renewed lease for election {ElectionName} by participant {ParticipantId}",
+                electionName, participantId);
+
+                leaderInfo = new LeaderInfo
+                {
+                    ParticipantId = participantId,
+                    AcquiredAt = acquiredAt,
+                    ExpiresAt = expiresAt,
+                    Metadata = metadata
+                };
+            }
+            else
             {
                 _logger.LogDebug("Failed to renew lease for election {ElectionName} by participant {ParticipantId} - not current holder",
                     electionName, participantId);
-                return null;
+                leaderInfo = null;
             }
-
-            _logger.LogTrace("Renewed lease for election {ElectionName} by participant {ParticipantId}",
-                electionName, participantId);
-
-            return new LeaderInfo
-            {
-                ParticipantId = participantId,
-                AcquiredAt = acquiredAt,
-                ExpiresAt = expiresAt,
-                Metadata = metadata
-            };
         }
         catch (Exception ex)
         {
@@ -173,6 +182,8 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
                 electionName, participantId);
             throw;
         }
+
+        return leaderInfo;
     }
 
     /// <inheritdoc/>
@@ -223,6 +234,8 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
     {
         ObjectDisposedException.ThrowIf(_disposed, nameof(PostgresLeaseStore));
 
+        LeaderInfo? leaderInfo;
+
         try
         {
             const string sql = """
@@ -242,38 +255,43 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
 
             await using var reader = await ExecuteReaderAsync(sql, parameters, null, cancellationToken).ConfigureAwait(false);
 
-            if (!await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+            if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
             {
-                return null;
+                var participantId = reader.GetString(0);
+                var acquiredAt = reader.GetDateTime(1);
+                var expiresAt = reader.GetDateTime(2);
+                var metadataJson = await reader.IsDBNullAsync(3, cancellationToken)
+                    .ConfigureAwait(false)
+                    ? null
+                    : reader.GetString(3);
+
+                IReadOnlyDictionary<string, string>? metadata = null;
+                if (!String.IsNullOrEmpty(metadataJson))
+                {
+                    metadata = _serializer.Deserialize<Dictionary<string, string>>(metadataJson);
+                }
+
+                leaderInfo = new LeaderInfo
+                {
+                    ParticipantId = participantId,
+                    AcquiredAt = acquiredAt,
+                    ExpiresAt = expiresAt,
+                    Metadata = metadata
+                };
             }
-
-            var participantId = reader.GetString(0);
-            var acquiredAt = reader.GetDateTime(1);
-            var expiresAt = reader.GetDateTime(2);
-            var metadataJson = await reader.IsDBNullAsync(3, cancellationToken)
-                .ConfigureAwait(false)
-                ? null
-                : reader.GetString(3);
-
-            IReadOnlyDictionary<string, string>? metadata = null;
-            if (!String.IsNullOrEmpty(metadataJson))
+            else
             {
-                metadata = _serializer.Deserialize<Dictionary<string, string>>(metadataJson);
+                _logger.LogDebug("No current lease found for election {ElectionName}", electionName);
+                leaderInfo = null;
             }
-
-            return new LeaderInfo
-            {
-                ParticipantId = participantId,
-                AcquiredAt = acquiredAt,
-                ExpiresAt = expiresAt,
-                Metadata = metadata
-            };
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to get current lease for election {ElectionName}", electionName);
             throw;
         }
+
+        return leaderInfo;
     }
 
     /// <inheritdoc/>
@@ -283,16 +301,19 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
     {
         ObjectDisposedException.ThrowIf(_disposed, nameof(PostgresLeaseStore));
 
+        var hasValidLease = false;
+
         try
         {
             var currentLease = await GetCurrentLeaseAsync(electionName, cancellationToken).ConfigureAwait(false);
-            return currentLease?.IsValid == true;
+            hasValidLease = currentLease?.IsValid == true;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to check valid lease for election {ElectionName}", electionName);
             throw;
         }
+        return hasValidLease;
     }
 
     /// <summary>
