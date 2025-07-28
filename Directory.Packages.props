@@ -25,8 +25,8 @@
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
     <PackageVersion Include="Npgsql" Version="9.0.3" />
-    <PackageVersion Include="Roslynator.Analyzers" Version="4.13.1" />
-    <PackageVersion Include="StackExchange.Redis" Version="2.8.47" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.14.0" />
+    <PackageVersion Include="StackExchange.Redis" Version="2.8.58" />
     <PackageVersion Include="Testcontainers.Redis" Version="4.6.0" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.6.0" />
     <PackageVersion Include="xRetry" Version="1.9.0" />
