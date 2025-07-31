@@ -31,8 +31,10 @@ public class RetryTestCaseRunnerSpecs
         Assert.Same(instance2, instance3);
     }
 
-    [Fact]
-    public async Task Run_WithCreateTestsExceptionContainingDynamicSkipToken_ShouldReturnSkippedResult()
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(3)]
+    public async Task Run_FailingTests_ShouldReturnFailureResult(int maxRetries)
     {
         // Arrange
         var testCase = HelperTests.GetXunitTestCase(HelperTests.GetXunitTestMethod_Helper_Failure());
@@ -43,7 +45,7 @@ public class RetryTestCaseRunnerSpecs
 
         // Act
         var result = await RetryTestCaseRunner.Instance.Run(
-            maxRetries: 3,
+            maxRetries: maxRetries,
             testCase: testCase,
             messageBus: messageBus,
             aggregator: aggregator,
@@ -55,18 +57,24 @@ public class RetryTestCaseRunnerSpecs
         );
 
         // Assert
-        Assert.Equal(1, result.Skipped);
-        Assert.Equal(0, result.Failed);
+        Assert.Equal(0, result.Skipped);
+        Assert.Equal(1, result.Failed);
         Assert.Equal(1, result.Total);
     }
 
-    [Fact]
-    public async Task Run_WithCreateTestsExceptionNotContainingDynamicSkipToken_ShouldReturnFailedResult()
+
+
+    [Theory]
+    [InlineData("Some failure message")]
+    [InlineData(DynamicSkipToken.Value)]
+    public async Task Run_ShouldHandle_AggException(string exceptionMessage)
     {
         // Arrange
-        var testCase = HelperTests.GetXunitTestCase();
+        var testCase = HelperTests.GetXunitTestCase(HelperTests.GetXunitTestMethod_Helper_Failure());
         var messageBus = new MessageBus(NullMessageSink.Instance, false);
         var aggregator = new ExceptionAggregator();
+        aggregator.Add(new InvalidOperationException(exceptionMessage));
+
         var cancellationTokenSource = new CancellationTokenSource();
         var constructorArguments = Array.Empty<object>();
 
@@ -85,7 +93,6 @@ public class RetryTestCaseRunnerSpecs
 
         // Assert
         Assert.Equal(1, result.Failed);
-        Assert.Equal(0, result.Skipped);
         Assert.Equal(1, result.Total);
     }
 

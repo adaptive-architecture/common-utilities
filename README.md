@@ -13,6 +13,7 @@ A set of common utilities to be used across projects and reduce amount of time w
 |AdaptArch.Common.Utilities.Redis|[![NuGet](https://img.shields.io/nuget/v/AdaptArch.Common.Utilities.Redis.svg?style=flat-square)![Nuget](https://img.shields.io/nuget/dt/AdaptArch.Common.Utilities.Redis?style=flat-square)][4]|
 |AdaptArch.Common.Utilities.AspNetCore|[![NuGet](https://img.shields.io/nuget/v/AdaptArch.Common.Utilities.AspNetCore.svg?style=flat-square)![Nuget](https://img.shields.io/nuget/dt/AdaptArch.Common.Utilities.AspNetCore?style=flat-square)][5]|
 |AdaptArch.Common.Utilities.Postgres|[![NuGet](https://img.shields.io/nuget/v/AdaptArch.Common.Utilities.Postgres.svg?style=flat-square)![Nuget](https://img.shields.io/nuget/dt/AdaptArch.Common.Utilities.Postgres?style=flat-square)][6]| 
+|AdaptArch.Common.Utilities.xUnit|[![NuGet](https://img.shields.io/nuget/v/AdaptArch.Common.Utilities.xUnit.svg?style=flat-square)![Nuget](https://img.shields.io/nuget/dt/AdaptArch.Common.Utilities.xUnit?style=flat-square)][7]| 
 
 [1]: https://www.nuget.org/packages/AdaptArch.Common.Utilities
 [2]: https://www.nuget.org/packages/AdaptArch.Common.Utilities.Configuration
@@ -20,6 +21,7 @@ A set of common utilities to be used across projects and reduce amount of time w
 [4]: https://www.nuget.org/packages/AdaptArch.Common.Utilities.Redis
 [5]: https://www.nuget.org/packages/AdaptArch.Common.Utilities.AspNetCore
 [6]: https://www.nuget.org/packages/AdaptArch.Common.Utilities.Postgres
+[7]: https://www.nuget.org/packages/AdaptArch.Common.Utilities.xUnit
 
 
 ## Documentation
