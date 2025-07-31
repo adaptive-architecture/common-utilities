@@ -32,7 +32,7 @@ public class RedisLeaderElectionIntegrationTests
         try
         {
             // Act - Acquire lease
-            var lease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, metadata);
+            var lease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, metadata, TestContext.Current.CancellationToken);
 
             // Assert - Lease acquired successfully
             Assert.NotNull(lease);
@@ -42,24 +42,24 @@ public class RedisLeaderElectionIntegrationTests
             Assert.True(lease.TimeToExpiry > TimeSpan.FromSeconds(25)); // Should be close to 30 seconds
 
             // Verify lease exists
-            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
+            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.NotNull(currentLease);
             Assert.Equal(participantId, currentLease.ParticipantId);
 
-            var hasValidLease = await leaseStore.HasValidLeaseAsync(electionName);
+            var hasValidLease = await leaseStore.HasValidLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.True(hasValidLease);
 
             // Act - Release lease
-            var released = await leaseStore.ReleaseLeaseAsync(electionName, participantId);
+            var released = await leaseStore.ReleaseLeaseAsync(electionName, participantId, TestContext.Current.CancellationToken);
 
             // Assert - Lease released successfully
             Assert.True(released);
 
             // Verify lease is gone
-            currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
+            currentLease = await leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.Null(currentLease);
 
-            hasValidLease = await leaseStore.HasValidLeaseAsync(electionName);
+            hasValidLease = await leaseStore.HasValidLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.False(hasValidLease);
         }
         finally
@@ -84,10 +84,10 @@ public class RedisLeaderElectionIntegrationTests
         try
         {
             // Act - First participant acquires lease
-            var lease1 = await leaseStore1.TryAcquireLeaseAsync(electionName, participant1, leaseDuration);
+            var lease1 = await leaseStore1.TryAcquireLeaseAsync(electionName, participant1, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
             // Act - Second participant tries to acquire lease
-            var lease2 = await leaseStore2.TryAcquireLeaseAsync(electionName, participant2, leaseDuration);
+            var lease2 = await leaseStore2.TryAcquireLeaseAsync(electionName, participant2, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             Assert.NotNull(lease1);
@@ -96,13 +96,13 @@ public class RedisLeaderElectionIntegrationTests
             Assert.Null(lease2); // Should fail to acquire
 
             // Verify current lease is still held by first participant
-            var currentLease = await leaseStore1.GetCurrentLeaseAsync(electionName);
+            var currentLease = await leaseStore1.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.NotNull(currentLease);
             Assert.Equal(participant1, currentLease.ParticipantId);
         }
         finally
         {
-            _ = await leaseStore1.ReleaseLeaseAsync(electionName, participant1);
+            _ = await leaseStore1.ReleaseLeaseAsync(electionName, participant1, TestContext.Current.CancellationToken);
             leaseStore1.Dispose();
             leaseStore2.Dispose();
         }
@@ -123,14 +123,14 @@ public class RedisLeaderElectionIntegrationTests
         try
         {
             // Act - Acquire initial lease
-            var originalLease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, initialDuration);
+            var originalLease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, initialDuration, cancellationToken: TestContext.Current.CancellationToken);
             Assert.NotNull(originalLease);
 
             // Wait a moment to ensure time difference
-            await Task.Delay(100);
+            await Task.Delay(100, TestContext.Current.CancellationToken);
 
             // Act - Renew lease
-            var renewedLease = await leaseStore.TryRenewLeaseAsync(electionName, participantId, renewalDuration);
+            var renewedLease = await leaseStore.TryRenewLeaseAsync(electionName, participantId, renewalDuration, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             Assert.NotNull(renewedLease);
@@ -139,14 +139,14 @@ public class RedisLeaderElectionIntegrationTests
             Assert.True(renewedLease.TimeToExpiry > TimeSpan.FromSeconds(55)); // Should be close to 60 seconds
 
             // Verify lease is updated
-            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
+            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.NotNull(currentLease);
             Assert.Equal(participantId, currentLease.ParticipantId);
             Assert.True(currentLease.TimeToExpiry > TimeSpan.FromSeconds(55));
         }
         finally
         {
-            _ = await leaseStore.ReleaseLeaseAsync(electionName, participantId);
+            _ = await leaseStore.ReleaseLeaseAsync(electionName, participantId, TestContext.Current.CancellationToken);
             leaseStore.Dispose();
         }
     }
@@ -167,23 +167,23 @@ public class RedisLeaderElectionIntegrationTests
         try
         {
             // Act - First participant acquires lease
-            var lease1 = await leaseStore1.TryAcquireLeaseAsync(electionName, participant1, leaseDuration);
+            var lease1 = await leaseStore1.TryAcquireLeaseAsync(electionName, participant1, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
             Assert.NotNull(lease1);
 
             // Act - Second participant tries to renew lease
-            var renewedLease = await leaseStore2.TryRenewLeaseAsync(electionName, participant2, leaseDuration);
+            var renewedLease = await leaseStore2.TryRenewLeaseAsync(electionName, participant2, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             Assert.Null(renewedLease); // Should fail to renew
 
             // Verify original lease is still intact
-            var currentLease = await leaseStore1.GetCurrentLeaseAsync(electionName);
+            var currentLease = await leaseStore1.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.NotNull(currentLease);
             Assert.Equal(participant1, currentLease.ParticipantId);
         }
         finally
         {
-            _ = await leaseStore1.ReleaseLeaseAsync(electionName, participant1);
+            _ = await leaseStore1.ReleaseLeaseAsync(electionName, participant1, TestContext.Current.CancellationToken);
             leaseStore1.Dispose();
             leaseStore2.Dispose();
         }
@@ -209,7 +209,7 @@ public class RedisLeaderElectionIntegrationTests
         try
         {
             // Act - Acquire leadership
-            var acquired = await service.TryAcquireLeadershipAsync();
+            var acquired = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
             // Assert
             Assert.True(acquired);
@@ -225,7 +225,7 @@ public class RedisLeaderElectionIntegrationTests
             Assert.False(acquiredEvent.LeadershipLost);
 
             // Act - Release leadership
-            await service.ReleaseLeadershipAsync();
+            await service.ReleaseLeadershipAsync(TestContext.Current.CancellationToken);
 
             // Assert
             Assert.False(service.IsLeader);
@@ -271,9 +271,9 @@ public class RedisLeaderElectionIntegrationTests
             // Act - All services try to acquire leadership simultaneously
             var tasks = new[]
             {
-                service1.TryAcquireLeadershipAsync(),
-                service2.TryAcquireLeadershipAsync(),
-                service3.TryAcquireLeadershipAsync()
+                service1.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken),
+                service2.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken),
+                service3.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken)
             };
 
             var results = await Task.WhenAll(tasks);
@@ -288,14 +288,14 @@ public class RedisLeaderElectionIntegrationTests
             var leaderService = leaders[0];
 
             // Verify all services see the same current leader
-            var currentLeaders = await Task.WhenAll(
-                service1.TryAcquireLeadershipAsync(), // This will update CurrentLeader even if it fails
-                service2.TryAcquireLeadershipAsync(),
-                service3.TryAcquireLeadershipAsync()
+            _ = await Task.WhenAll(
+                service1.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken), // This will update CurrentLeader even if it fails
+                service2.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken),
+                service3.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken)
             );
 
             // Wait a moment for leader information to propagate
-            await Task.Delay(100);
+            await Task.Delay(100, TestContext.Current.CancellationToken);
 
             // Check that non-leader services know who the leader is
             foreach (var service in new[] { service1, service2, service3 })
@@ -303,18 +303,18 @@ public class RedisLeaderElectionIntegrationTests
                 if (!service.IsLeader)
                 {
                     // Trigger a check for current leader
-                    _ = await service.TryAcquireLeadershipAsync();
+                    _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
                 }
             }
 
             // Act - Leader releases leadership
-            await leaderService.ReleaseLeadershipAsync();
+            await leaderService.ReleaseLeadershipAsync(TestContext.Current.CancellationToken);
 
             // Assert - Leadership is released
             Assert.False(leaderService.IsLeader);
 
             // Wait for the release to propagate
-            await Task.Delay(100);
+            await Task.Delay(100, TestContext.Current.CancellationToken);
 
             // Verify leadership is actually available by checking each service
             var remainingServices = new[] { service1, service2, service3 }.Where(s => s != leaderService).ToList();
@@ -327,7 +327,7 @@ public class RedisLeaderElectionIntegrationTests
             {
                 foreach (var service in remainingServices)
                 {
-                    if (await service.TryAcquireLeadershipAsync())
+                    if (await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken))
                     {
                         secondLeader = service;
                         secondLeaderAcquired = true;
@@ -337,7 +337,7 @@ public class RedisLeaderElectionIntegrationTests
 
                 if (!secondLeaderAcquired)
                 {
-                    await Task.Delay(200); // Wait between attempts
+                    await Task.Delay(200, TestContext.Current.CancellationToken); // Wait between attempts
                 }
             }
 
@@ -381,11 +381,11 @@ public class RedisLeaderElectionIntegrationTests
         try
         {
             // Act - Start both services (auto-election should begin)
-            await service1.StartAsync();
-            await service2.StartAsync();
+            await service1.StartAsync(TestContext.Current.CancellationToken);
+            await service2.StartAsync(TestContext.Current.CancellationToken);
 
             // Wait for election to settle
-            await Task.Delay(5000);
+            await Task.Delay(5000, TestContext.Current.CancellationToken);
 
             // Assert - One service should have become leader
             var leaders = new[] { service1, service2 }.Where(s => s.IsLeader).ToList();
@@ -398,10 +398,10 @@ public class RedisLeaderElectionIntegrationTests
             Assert.Contains(leaderEvents, e => e.LeadershipGained);
 
             // Act - Stop the current leader (simulate failure)
-            await currentLeader.StopAsync();
+            await currentLeader.StopAsync(TestContext.Current.CancellationToken);
 
             // Wait for failover
-            await Task.Delay(5000);
+            await Task.Delay(5000, TestContext.Current.CancellationToken);
 
             // Assert - The other service should become leader
             Assert.True(follower.IsLeader);
@@ -411,8 +411,8 @@ public class RedisLeaderElectionIntegrationTests
         }
         finally
         {
-            await service1.StopAsync();
-            await service2.StopAsync();
+            await service1.StopAsync(TestContext.Current.CancellationToken);
+            await service2.StopAsync(TestContext.Current.CancellationToken);
             await service1.DisposeAsync();
             await service2.DisposeAsync();
         }
@@ -432,24 +432,24 @@ public class RedisLeaderElectionIntegrationTests
         try
         {
             // Act - Acquire a short lease
-            var lease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, shortLeaseDuration);
+            var lease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, shortLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
             Assert.NotNull(lease);
             Assert.True(lease.IsValid);
 
             // Wait for lease to expire
-            await Task.Delay(3000);
+            await Task.Delay(3000, TestContext.Current.CancellationToken);
 
             // Act - Try to get current lease (should handle expired lease)
-            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
+            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
 
             // Assert - Expired lease should be cleaned up
             Assert.Null(currentLease);
 
-            var hasValidLease = await leaseStore.HasValidLeaseAsync(electionName);
+            var hasValidLease = await leaseStore.HasValidLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.False(hasValidLease);
 
             // Another participant should be able to acquire the lease now
-            var newLease = await leaseStore.TryAcquireLeaseAsync(electionName, "participant-2", TimeSpan.FromMinutes(1));
+            var newLease = await leaseStore.TryAcquireLeaseAsync(electionName, "participant-2", TimeSpan.FromMinutes(1), cancellationToken: TestContext.Current.CancellationToken);
             Assert.NotNull(newLease);
             Assert.Equal("participant-2", newLease.ParticipantId);
         }
@@ -496,16 +496,16 @@ public class RedisLeaderElectionIntegrationTests
             Assert.True(acquired);
 
             // Act - Try to get current lease (should handle expired lease)
-            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
+            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
 
             // Assert - Expired lease that were not cleaned up should be ignored
             Assert.Null(currentLease);
 
-            var hasValidLease = await leaseStore.HasValidLeaseAsync(electionName);
+            var hasValidLease = await leaseStore.HasValidLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.False(hasValidLease);
 
             // Another participant should be able to acquire the lease now
-            var newLease = await leaseStore.TryAcquireLeaseAsync(electionName, "participant-2", TimeSpan.FromMinutes(1));
+            var newLease = await leaseStore.TryAcquireLeaseAsync(electionName, "participant-2", TimeSpan.FromMinutes(1), cancellationToken: TestContext.Current.CancellationToken);
             Assert.NotNull(newLease);
             Assert.Equal("participant-2", newLease.ParticipantId);
         }

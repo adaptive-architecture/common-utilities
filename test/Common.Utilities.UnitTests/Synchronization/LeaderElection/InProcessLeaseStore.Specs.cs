@@ -21,11 +21,7 @@ public class InProcessLeaseStoreSpecs
         var metadata = new Dictionary<string, string> { ["key"] = "value" };
 
         // Act
-        var result = await store.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration,
-            metadata);
+        var result = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, metadata, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -46,15 +42,9 @@ public class InProcessLeaseStoreSpecs
         var store = new InProcessLeaseStore(dateTimeProvider);
 
         // Act
-        var firstResult = await store.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration);
+        var firstResult = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
-        var secondResult = await store.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            AlternateParticipantId,
-            _defaultLeaseDuration);
+        var secondResult = await store.TryAcquireLeaseAsync(DefaultElectionName, AlternateParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(firstResult);
@@ -73,15 +63,9 @@ public class InProcessLeaseStoreSpecs
         var store = new InProcessLeaseStore(dateTimeProvider);
 
         // Act
-        var firstResult = await store.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration);
+        var firstResult = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
-        var secondResult = await store.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            AlternateParticipantId,
-            _defaultLeaseDuration);
+        var secondResult = await store.TryAcquireLeaseAsync(DefaultElectionName, AlternateParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(firstResult);
@@ -104,7 +88,7 @@ public class InProcessLeaseStoreSpecs
 
         // Act & Assert
         _ = await Assert.ThrowsAsync<ArgumentException>(() =>
-            store.TryAcquireLeaseAsync(electionName, DefaultParticipantId, _defaultLeaseDuration));
+            store.TryAcquireLeaseAsync(electionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken));
 
         store.Dispose();
     }
@@ -120,7 +104,7 @@ public class InProcessLeaseStoreSpecs
 
         // Act & Assert
         _ = await Assert.ThrowsAsync<ArgumentException>(() =>
-            store.TryAcquireLeaseAsync(DefaultElectionName, participantId, _defaultLeaseDuration));
+            store.TryAcquireLeaseAsync(DefaultElectionName, participantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken));
 
         store.Dispose();
     }
@@ -137,7 +121,7 @@ public class InProcessLeaseStoreSpecs
 
         // Act & Assert
         _ = await Assert.ThrowsAsync<ArgumentException>(() =>
-            store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, invalidDuration));
+            store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, invalidDuration, cancellationToken: TestContext.Current.CancellationToken));
 
         store.Dispose();
     }
@@ -165,7 +149,7 @@ public class InProcessLeaseStoreSpecs
 
         // Act & Assert
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration));
+            store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -178,16 +162,9 @@ public class InProcessLeaseStoreSpecs
         var newMetadata = new Dictionary<string, string> { ["renewed"] = "true" };
 
         // Act
-        var acquiredLease = await store.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration);
+        var acquiredLease = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
-        var renewedLease = await store.TryRenewLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration,
-            newMetadata);
+        var renewedLease = await store.TryRenewLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, newMetadata, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(acquiredLease);
@@ -207,10 +184,7 @@ public class InProcessLeaseStoreSpecs
         var store = new InProcessLeaseStore();
 
         // Act
-        var result = await store.TryRenewLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration);
+        var result = await store.TryRenewLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result);
@@ -226,15 +200,9 @@ public class InProcessLeaseStoreSpecs
         var store = new InProcessLeaseStore(dateTimeProvider);
 
         // Act
-        _ = await store.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration);
+        _ = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
-        var result = await store.TryRenewLeaseAsync(
-            DefaultElectionName,
-            AlternateParticipantId,
-            _defaultLeaseDuration);
+        var result = await store.TryRenewLeaseAsync(DefaultElectionName, AlternateParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result);
@@ -251,15 +219,9 @@ public class InProcessLeaseStoreSpecs
         var store = new InProcessLeaseStore(dateTimeProvider);
 
         // Act
-        _ = await store.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration);
+        _ = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
-        var result = await store.TryRenewLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration);
+        var result = await store.TryRenewLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result);
@@ -276,17 +238,9 @@ public class InProcessLeaseStoreSpecs
         var originalMetadata = new Dictionary<string, string> { ["original"] = "value" };
 
         // Act
-        _ = await store.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration,
-            originalMetadata);
+        _ = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, originalMetadata, TestContext.Current.CancellationToken);
 
-        var renewedLease = await store.TryRenewLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration,
-            null);
+        var renewedLease = await store.TryRenewLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, null, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(renewedLease);
@@ -306,7 +260,7 @@ public class InProcessLeaseStoreSpecs
 
         // Act & Assert
         _ = await Assert.ThrowsAsync<ArgumentException>(() =>
-            store.TryRenewLeaseAsync(electionName, DefaultParticipantId, _defaultLeaseDuration));
+            store.TryRenewLeaseAsync(electionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken));
 
         store.Dispose();
     }
@@ -322,7 +276,7 @@ public class InProcessLeaseStoreSpecs
 
         // Act & Assert
         _ = await Assert.ThrowsAsync<ArgumentException>(() =>
-            store.TryRenewLeaseAsync(DefaultElectionName, participantId, _defaultLeaseDuration));
+            store.TryRenewLeaseAsync(DefaultElectionName, participantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken));
 
         store.Dispose();
     }
@@ -339,7 +293,7 @@ public class InProcessLeaseStoreSpecs
 
         // Act & Assert
         _ = await Assert.ThrowsAsync<ArgumentException>(() =>
-            store.TryRenewLeaseAsync(DefaultElectionName, DefaultParticipantId, invalidDuration));
+            store.TryRenewLeaseAsync(DefaultElectionName, DefaultParticipantId, invalidDuration, cancellationToken: TestContext.Current.CancellationToken));
 
         store.Dispose();
     }
@@ -352,18 +306,15 @@ public class InProcessLeaseStoreSpecs
         var store = new InProcessLeaseStore(dateTimeProvider);
 
         // Act
-        _ = await store.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration);
+        _ = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
-        var result = await store.ReleaseLeaseAsync(DefaultElectionName, DefaultParticipantId);
+        var result = await store.ReleaseLeaseAsync(DefaultElectionName, DefaultParticipantId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result);
 
         // Verify lease is actually released
-        var currentLease = await store.GetCurrentLeaseAsync(DefaultElectionName);
+        var currentLease = await store.GetCurrentLeaseAsync(DefaultElectionName, TestContext.Current.CancellationToken);
         Assert.Null(currentLease);
 
         store.Dispose();
@@ -376,7 +327,7 @@ public class InProcessLeaseStoreSpecs
         var store = new InProcessLeaseStore();
 
         // Act
-        var result = await store.ReleaseLeaseAsync(DefaultElectionName, DefaultParticipantId);
+        var result = await store.ReleaseLeaseAsync(DefaultElectionName, DefaultParticipantId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result);
@@ -392,12 +343,9 @@ public class InProcessLeaseStoreSpecs
         var store = new InProcessLeaseStore(dateTimeProvider);
 
         // Act
-        _ = await store.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration);
+        _ = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
-        var result = await store.ReleaseLeaseAsync(DefaultElectionName, AlternateParticipantId);
+        var result = await store.ReleaseLeaseAsync(DefaultElectionName, AlternateParticipantId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result);
@@ -416,7 +364,7 @@ public class InProcessLeaseStoreSpecs
 
         // Act & Assert
         _ = await Assert.ThrowsAsync<ArgumentException>(() =>
-            store.ReleaseLeaseAsync(electionName, DefaultParticipantId));
+            store.ReleaseLeaseAsync(electionName, DefaultParticipantId, TestContext.Current.CancellationToken));
 
         store.Dispose();
     }
@@ -432,7 +380,7 @@ public class InProcessLeaseStoreSpecs
 
         // Act & Assert
         _ = await Assert.ThrowsAsync<ArgumentException>(() =>
-            store.ReleaseLeaseAsync(DefaultElectionName, participantId));
+            store.ReleaseLeaseAsync(DefaultElectionName, participantId, TestContext.Current.CancellationToken));
 
         store.Dispose();
     }
@@ -445,12 +393,9 @@ public class InProcessLeaseStoreSpecs
         var store = new InProcessLeaseStore(dateTimeProvider);
 
         // Act
-        var acquiredLease = await store.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration);
+        var acquiredLease = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
-        var currentLease = await store.GetCurrentLeaseAsync(DefaultElectionName);
+        var currentLease = await store.GetCurrentLeaseAsync(DefaultElectionName, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(acquiredLease);
@@ -469,7 +414,7 @@ public class InProcessLeaseStoreSpecs
         var store = new InProcessLeaseStore();
 
         // Act
-        var result = await store.GetCurrentLeaseAsync(DefaultElectionName);
+        var result = await store.GetCurrentLeaseAsync(DefaultElectionName, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result);
@@ -486,12 +431,9 @@ public class InProcessLeaseStoreSpecs
         var store = new InProcessLeaseStore(dateTimeProvider);
 
         // Act
-        _ = await store.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration);
+        _ = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
-        var result = await store.GetCurrentLeaseAsync(DefaultElectionName);
+        var result = await store.GetCurrentLeaseAsync(DefaultElectionName, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result);
@@ -510,7 +452,7 @@ public class InProcessLeaseStoreSpecs
 
         // Act & Assert
         _ = await Assert.ThrowsAsync<ArgumentException>(() =>
-            store.GetCurrentLeaseAsync(electionName));
+            store.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken));
 
         store.Dispose();
     }
@@ -523,12 +465,9 @@ public class InProcessLeaseStoreSpecs
         var store = new InProcessLeaseStore(dateTimeProvider);
 
         // Act
-        _ = await store.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration);
+        _ = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
-        var result = await store.HasValidLeaseAsync(DefaultElectionName);
+        var result = await store.HasValidLeaseAsync(DefaultElectionName, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result);
@@ -543,7 +482,7 @@ public class InProcessLeaseStoreSpecs
         var store = new InProcessLeaseStore();
 
         // Act
-        var result = await store.HasValidLeaseAsync(DefaultElectionName);
+        var result = await store.HasValidLeaseAsync(DefaultElectionName, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result);
@@ -560,12 +499,9 @@ public class InProcessLeaseStoreSpecs
         var store = new InProcessLeaseStore(dateTimeProvider);
 
         // Act
-        _ = await store.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            _defaultLeaseDuration);
+        _ = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
-        var result = await store.HasValidLeaseAsync(DefaultElectionName);
+        var result = await store.HasValidLeaseAsync(DefaultElectionName, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result);
@@ -584,7 +520,7 @@ public class InProcessLeaseStoreSpecs
 
         // Act & Assert
         _ = await Assert.ThrowsAsync<ArgumentException>(() =>
-            store.HasValidLeaseAsync(electionName));
+            store.HasValidLeaseAsync(electionName, TestContext.Current.CancellationToken));
 
         store.Dispose();
     }
@@ -599,8 +535,8 @@ public class InProcessLeaseStoreSpecs
         const string election2 = "election-2";
 
         // Act
-        var lease1 = await store.TryAcquireLeaseAsync(election1, DefaultParticipantId, _defaultLeaseDuration);
-        var lease2 = await store.TryAcquireLeaseAsync(election2, DefaultParticipantId, _defaultLeaseDuration);
+        var lease1 = await store.TryAcquireLeaseAsync(election1, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
+        var lease2 = await store.TryAcquireLeaseAsync(election2, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(lease1);
@@ -609,8 +545,8 @@ public class InProcessLeaseStoreSpecs
         Assert.Equal(DefaultParticipantId, lease2.ParticipantId);
 
         // Verify they are independent
-        var hasLease1 = await store.HasValidLeaseAsync(election1);
-        var hasLease2 = await store.HasValidLeaseAsync(election2);
+        var hasLease1 = await store.HasValidLeaseAsync(election1, TestContext.Current.CancellationToken);
+        var hasLease2 = await store.HasValidLeaseAsync(election2, TestContext.Current.CancellationToken);
         Assert.True(hasLease1);
         Assert.True(hasLease2);
 
@@ -693,13 +629,13 @@ public class InProcessLeaseStoreSpecs
         var store = new InProcessLeaseStore(dateTimeProvider);
 
         // Act
-        _ = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration);
+        _ = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Trigger cleanup by calling GetCurrentLeaseAsync
-        var currentLease = await store.GetCurrentLeaseAsync(DefaultElectionName);
+        var currentLease = await store.GetCurrentLeaseAsync(DefaultElectionName, TestContext.Current.CancellationToken);
 
         // Try to acquire with different participant (should succeed if cleanup worked)
-        var newLease = await store.TryAcquireLeaseAsync(DefaultElectionName, AlternateParticipantId, _defaultLeaseDuration);
+        var newLease = await store.TryAcquireLeaseAsync(DefaultElectionName, AlternateParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(currentLease);
@@ -719,7 +655,9 @@ public class InProcessLeaseStoreSpecs
         store.Dispose();
         store.Dispose();
         store.Dispose();
+#pragma warning disable S1215 // Suppress warning for GC.Collect in tests
         GC.Collect();
+#pragma warning restore S1215
         Assert.True(true); // If we reach here, the test passes
     }
 
@@ -732,19 +670,19 @@ public class InProcessLeaseStoreSpecs
 
         // Act & Assert
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration));
+            store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken));
 
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            store.TryRenewLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration));
+            store.TryRenewLeaseAsync(DefaultElectionName, DefaultParticipantId, _defaultLeaseDuration, cancellationToken: TestContext.Current.CancellationToken));
 
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            store.ReleaseLeaseAsync(DefaultElectionName, DefaultParticipantId));
+            store.ReleaseLeaseAsync(DefaultElectionName, DefaultParticipantId, TestContext.Current.CancellationToken));
 
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            store.GetCurrentLeaseAsync(DefaultElectionName));
+            store.GetCurrentLeaseAsync(DefaultElectionName, TestContext.Current.CancellationToken));
 
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            store.HasValidLeaseAsync(DefaultElectionName));
+            store.HasValidLeaseAsync(DefaultElectionName, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -755,20 +693,20 @@ public class InProcessLeaseStoreSpecs
         var shortLease = TimeSpan.FromMilliseconds(50);
 
         // Act
-        var lease = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, shortLease);
+        var lease = await store.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, shortLease, cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(lease);
         Assert.True(lease.IsValid);
         Assert.True(lease.TimeToExpiry > TimeSpan.Zero);
 
         // Wait for expiration
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
 
         // Assert
-        var currentLease = await store.GetCurrentLeaseAsync(DefaultElectionName);
+        var currentLease = await store.GetCurrentLeaseAsync(DefaultElectionName, TestContext.Current.CancellationToken);
         Assert.Null(currentLease);
 
         // Should be able to acquire again
-        var newLease = await store.TryAcquireLeaseAsync(DefaultElectionName, AlternateParticipantId, shortLease);
+        var newLease = await store.TryAcquireLeaseAsync(DefaultElectionName, AlternateParticipantId, shortLease, cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(newLease);
         Assert.Equal(AlternateParticipantId, newLease.ParticipantId);
 

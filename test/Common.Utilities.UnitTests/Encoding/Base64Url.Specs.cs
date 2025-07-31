@@ -68,12 +68,12 @@ public class Base64UrlSpecs
     [Fact]
     public void Encode_Empty_ReturnsEmpty()
     {
-        Assert.Equal(0, Base64Url.Encode(Array.Empty<byte>(), 0, Array.Empty<char>(), 0, 0));
+        Assert.Equal(0, Base64Url.Encode([], 0, [], 0, 0));
     }
 
     [Fact]
     public void Encode_Throws_ArgumentOutOfRange_Exception_4()
     {
-        _ = Assert.Throws<ArgumentOutOfRangeException>(() => _ = Base64Url.Encode(Array.Empty<byte>(), 0, Array.Empty<char>(), -1, 0));
+        _ = Assert.Throws<ArgumentOutOfRangeException>(() => _ = Base64Url.Encode([], 0, [], -1, 0));
     }
 }

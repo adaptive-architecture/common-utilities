@@ -106,7 +106,7 @@ public class Base32Specs
     [Fact]
     public void Encode_Empty_ReturnsEmpty()
     {
-        Assert.Equal(0, Base32.Encode(Array.Empty<byte>(), 0, Array.Empty<char>(), 0, 0));
+        Assert.Equal(0, Base32.Encode([], 0, [], 0, 0));
     }
 
     [Fact]
@@ -124,25 +124,25 @@ public class Base32Specs
     [Fact]
     public void Encode_Throws_ArgumentNull_Exception_3()
     {
-        _ = Assert.Throws<ArgumentNullException>(() => _ = Base32.Encode(null, 0, Array.Empty<char>(), 0, 0));
+        _ = Assert.Throws<ArgumentNullException>(() => _ = Base32.Encode(null, 0, [], 0, 0));
     }
 
     [Fact]
     public void Encode_Throws_ArgumentNull_Exception_4()
     {
-        _ = Assert.Throws<ArgumentNullException>(() => _ = Base32.Encode(Array.Empty<byte>(), 0, null, 0, 0));
+        _ = Assert.Throws<ArgumentNullException>(() => _ = Base32.Encode([], 0, null, 0, 0));
     }
 
     [Fact]
     public void Encode_Throws_ArgumentOutOfRange_Exception_4()
     {
-        _ = Assert.Throws<ArgumentOutOfRangeException>(() => _ = Base32.Encode(Array.Empty<byte>(), 0, Array.Empty<char>(), -1, 0));
+        _ = Assert.Throws<ArgumentOutOfRangeException>(() => _ = Base32.Encode([], 0, [], -1, 0));
     }
 
     [Fact]
     public void Encode_Throws_Argument_Exception_4()
     {
-        _ = Assert.Throws<ArgumentException>(() => _ = Base32.Encode(Array.Empty<byte>(), 0, Array.Empty<char>(), 2, 0));
+        _ = Assert.Throws<ArgumentException>(() => _ = Base32.Encode([], 0, [], 2, 0));
     }
 
     [Fact]

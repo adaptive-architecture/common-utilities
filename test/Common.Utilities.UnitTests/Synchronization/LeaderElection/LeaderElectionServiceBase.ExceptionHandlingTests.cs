@@ -23,7 +23,7 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
             DefaultParticipantId,
             options);
 
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         // Cancel immediately to force OperationCanceledException
         using var cts = new CancellationTokenSource();
@@ -51,13 +51,13 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
             DefaultParticipantId,
             options);
 
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         // Give the election task a chance to encounter the exception
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
 
         // Act - StopAsync should handle the exception in the election task gracefully
-        var exception = await Record.ExceptionAsync(() => service.StopAsync());
+        var exception = await Record.ExceptionAsync(() => service.StopAsync(TestContext.Current.CancellationToken));
 
         // Assert - Should not throw despite exception in election task
         Assert.Null(exception);
@@ -73,12 +73,12 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
             DefaultElectionName,
             DefaultParticipantId);
 
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         // Act & Assert - Multiple calls should not throw
-        await service.StopAsync();
-        await service.StopAsync();
-        await service.StopAsync();
+        await service.StopAsync(TestContext.Current.CancellationToken);
+        await service.StopAsync(TestContext.Current.CancellationToken);
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         // Should remain functional
         Assert.Equal(DefaultElectionName, service.ElectionName);
@@ -97,7 +97,7 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
 
         // Act & Assert - Should complete immediately without throwing
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        await service.StopAsync();
+        await service.StopAsync(TestContext.Current.CancellationToken);
         stopwatch.Stop();
 
         // Should complete very quickly since there's no election task to wait for
@@ -112,7 +112,7 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
             DefaultElectionName,
             DefaultParticipantId);
 
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         var cancellationToken = new CancellationToken(true); // Already cancelled
 
@@ -136,14 +136,14 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
             DefaultParticipantId,
             options);
 
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         // Let the election loop run for a bit
-        await Task.Delay(50);
+        await Task.Delay(50, TestContext.Current.CancellationToken);
 
         // Act - Stop while election loop is actively running
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        await service.StopAsync();
+        await service.StopAsync(TestContext.Current.CancellationToken);
         stopwatch.Stop();
 
         // Assert - Should stop reasonably quickly and not throw
@@ -167,14 +167,14 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
             DefaultParticipantId,
             options);
 
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         // Give the election task a chance to start running
-        await Task.Delay(30);
+        await Task.Delay(30, TestContext.Current.CancellationToken);
 
         // Act - StopAsync should wait for the election task to complete
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        await service.StopAsync();
+        await service.StopAsync(TestContext.Current.CancellationToken);
         stopwatch.Stop();
 
         // Assert - Should complete but timing can vary in tests
@@ -200,7 +200,7 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
             DefaultParticipantId,
             options);
 
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         // Act - Cancel StopAsync after short timeout
         using var cts = new CancellationTokenSource(100);
@@ -210,7 +210,7 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
         Assert.True(exception == null || exception is OperationCanceledException);
 
         // Cleanup - Stop without cancellation token
-        await service.StopAsync();
+        await service.StopAsync(TestContext.Current.CancellationToken);
         slowLeaseStore.Dispose();
     }
 
@@ -227,11 +227,11 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
             dateTimeProvider);
 
         // Acquire leadership first
-        _ = await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(service.IsLeader);
 
         // Act
-        await service.StopAsync();
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         // Assert - Leadership should be released during stop
         Assert.False(service.IsLeader);
@@ -249,10 +249,10 @@ public class LeaderElectionServiceBaseExceptionHandlingTests
             DefaultParticipantId);
 
         // Try to acquire leadership (will fail but that's ok for this test)
-        _ = await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Act & Assert - StopAsync should not throw even if release fails
-        var exception = await Record.ExceptionAsync(() => service.StopAsync());
+        var exception = await Record.ExceptionAsync(() => service.StopAsync(TestContext.Current.CancellationToken));
         Assert.Null(exception);
 
         faultyLeaseStore.Dispose();

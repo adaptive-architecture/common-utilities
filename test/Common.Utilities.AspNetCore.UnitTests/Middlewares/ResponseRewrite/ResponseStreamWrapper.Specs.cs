@@ -36,7 +36,7 @@ public class ResponseStreamWrapperSpecs
 
         responseStreamWrapper.SetLength(0);
 
-        await responseStreamWrapper.WriteAsync([1], 0, 1);
+        await responseStreamWrapper.WriteAsync([1], 0, 1, TestContext.Current.CancellationToken);
         Assert.Equal(1, memorySteam.Length);
 
         var buffer = new byte[1];
@@ -45,11 +45,11 @@ public class ResponseStreamWrapperSpecs
         Assert.Equal(1, buffer[0]);
 #pragma warning disable CA2022  // Avoid inexact read with 'System.IO.Stream.ReadAsync(byte[], int, int)'
         _ = responseStreamWrapper.Seek(0, SeekOrigin.Begin);
-        _ = await responseStreamWrapper.ReadAsync(buffer, 0, 1);
+        _ = await responseStreamWrapper.ReadAsync(buffer, 0, 1, TestContext.Current.CancellationToken);
         Assert.Equal(1, buffer[0]);
 
         _ = responseStreamWrapper.Seek(0, SeekOrigin.Begin);
-        _ = await responseStreamWrapper.ReadAsync((Memory<byte>)buffer);
+        _ = await responseStreamWrapper.ReadAsync((Memory<byte>)buffer, TestContext.Current.CancellationToken);
         Assert.Equal(1, buffer[0]);
 #pragma warning restore CA2022
 

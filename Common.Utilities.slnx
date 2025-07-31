@@ -8,6 +8,7 @@
     <Project Path="src/Common.Utilities.Hosting/Common.Utilities.Hosting.csproj" />
     <Project Path="src/Common.Utilities.Postgres/Common.Utilities.Postgres.csproj" />
     <Project Path="src/Common.Utilities.Redis/Common.Utilities.Redis.csproj" />
+    <Project Path="src/Common.Utilities.xUnit/Common.Utilities.xUnit.csproj" />
     <Project Path="src/Common.Utilities/Common.Utilities.csproj" />
   </Folder>
   <Folder Name="/test/">
@@ -19,5 +20,6 @@
     <Project Path="test/Common.Utilities.Redis.IntegrationTests/Common.Utilities.Redis.IntegrationTests.csproj" />
     <Project Path="test/Common.Utilities.Redis.UnitTests/Common.Utilities.Redis.UnitTests.csproj" />
     <Project Path="test/Common.Utilities.UnitTests/Common.Utilities.UnitTests.csproj" />
+    <Project Path="test/Common.Utilities.xUnit.UnitTests/Common.Utilities.xUnit.UnitTests.csproj" />
   </Folder>
 </Solution>

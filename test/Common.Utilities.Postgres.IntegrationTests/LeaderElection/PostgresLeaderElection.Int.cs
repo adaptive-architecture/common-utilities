@@ -36,13 +36,13 @@ public class PostgresLeaderElectionIntegrationTests
         try
         {
             // Ensure table exists
-            await leaseStore.EnsureTableExistsAsync();
+            await leaseStore.EnsureTableExistsAsync(TestContext.Current.CancellationToken);
             // Verify lease does not exists
-            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
+            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.Null(currentLease);
 
             // Act - Acquire lease
-            var lease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, metadata);
+            var lease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, metadata, TestContext.Current.CancellationToken);
 
             // Assert - Lease acquired successfully
             Assert.NotNull(lease);
@@ -52,24 +52,24 @@ public class PostgresLeaderElectionIntegrationTests
             Assert.True(lease.TimeToExpiry > TimeSpan.FromSeconds(25)); // Should be close to 30 seconds
 
             // Verify lease exists
-            currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
+            currentLease = await leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.NotNull(currentLease);
             Assert.Equal(participantId, currentLease.ParticipantId);
 
-            var hasValidLease = await leaseStore.HasValidLeaseAsync(electionName);
+            var hasValidLease = await leaseStore.HasValidLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.True(hasValidLease);
 
             // Act - Release lease
-            var released = await leaseStore.ReleaseLeaseAsync(electionName, participantId);
+            var released = await leaseStore.ReleaseLeaseAsync(electionName, participantId, TestContext.Current.CancellationToken);
 
             // Assert - Lease released successfully
             Assert.True(released);
 
             // Verify lease is gone
-            currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
+            currentLease = await leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.Null(currentLease);
 
-            hasValidLease = await leaseStore.HasValidLeaseAsync(electionName);
+            hasValidLease = await leaseStore.HasValidLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.False(hasValidLease);
         }
         finally
@@ -95,13 +95,13 @@ public class PostgresLeaderElectionIntegrationTests
         try
         {
             // Ensure table exists
-            await leaseStore1.EnsureTableExistsAsync();
+            await leaseStore1.EnsureTableExistsAsync(TestContext.Current.CancellationToken);
 
             // Act - First participant acquires lease
-            var lease1 = await leaseStore1.TryAcquireLeaseAsync(electionName, participant1, leaseDuration);
+            var lease1 = await leaseStore1.TryAcquireLeaseAsync(electionName, participant1, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
             // Act - Second participant tries to acquire lease
-            var lease2 = await leaseStore2.TryAcquireLeaseAsync(electionName, participant2, leaseDuration);
+            var lease2 = await leaseStore2.TryAcquireLeaseAsync(electionName, participant2, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             Assert.NotNull(lease1);
@@ -110,13 +110,13 @@ public class PostgresLeaderElectionIntegrationTests
             Assert.Null(lease2); // Should fail to acquire
 
             // Verify current lease is still held by first participant
-            var currentLease = await leaseStore1.GetCurrentLeaseAsync(electionName);
+            var currentLease = await leaseStore1.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.NotNull(currentLease);
             Assert.Equal(participant1, currentLease.ParticipantId);
         }
         finally
         {
-            _ = await leaseStore1.ReleaseLeaseAsync(electionName, participant1);
+            _ = await leaseStore1.ReleaseLeaseAsync(electionName, participant1, TestContext.Current.CancellationToken);
             leaseStore1.Dispose();
             leaseStore2.Dispose();
         }
@@ -138,17 +138,17 @@ public class PostgresLeaderElectionIntegrationTests
         try
         {
             // Ensure table exists
-            await leaseStore.EnsureTableExistsAsync();
+            await leaseStore.EnsureTableExistsAsync(TestContext.Current.CancellationToken);
 
             // Act - Acquire initial lease
-            var originalLease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, initialDuration);
+            var originalLease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, initialDuration, cancellationToken: TestContext.Current.CancellationToken);
             Assert.NotNull(originalLease);
 
             // Wait a moment to ensure time difference
-            await Task.Delay(100);
+            await Task.Delay(100, TestContext.Current.CancellationToken);
 
             // Act - Renew lease
-            var renewedLease = await leaseStore.TryRenewLeaseAsync(electionName, participantId, renewalDuration);
+            var renewedLease = await leaseStore.TryRenewLeaseAsync(electionName, participantId, renewalDuration, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             Assert.NotNull(renewedLease);
@@ -157,14 +157,14 @@ public class PostgresLeaderElectionIntegrationTests
             Assert.True(renewedLease.TimeToExpiry > TimeSpan.FromSeconds(55)); // Should be close to 60 seconds
 
             // Verify lease is updated
-            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
+            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.NotNull(currentLease);
             Assert.Equal(participantId, currentLease.ParticipantId);
             Assert.True(currentLease.TimeToExpiry > TimeSpan.FromSeconds(55));
         }
         finally
         {
-            _ = await leaseStore.ReleaseLeaseAsync(electionName, participantId);
+            _ = await leaseStore.ReleaseLeaseAsync(electionName, participantId, TestContext.Current.CancellationToken);
             leaseStore.Dispose();
         }
     }
@@ -186,26 +186,26 @@ public class PostgresLeaderElectionIntegrationTests
         try
         {
             // Ensure table exists
-            await leaseStore1.EnsureTableExistsAsync();
+            await leaseStore1.EnsureTableExistsAsync(TestContext.Current.CancellationToken);
 
             // Act - First participant acquires lease
-            var lease1 = await leaseStore1.TryAcquireLeaseAsync(electionName, participant1, leaseDuration);
+            var lease1 = await leaseStore1.TryAcquireLeaseAsync(electionName, participant1, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
             Assert.NotNull(lease1);
 
             // Act - Second participant tries to renew lease
-            var renewedLease = await leaseStore2.TryRenewLeaseAsync(electionName, participant2, leaseDuration);
+            var renewedLease = await leaseStore2.TryRenewLeaseAsync(electionName, participant2, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             Assert.Null(renewedLease); // Should fail to renew
 
             // Verify original lease is still intact
-            var currentLease = await leaseStore1.GetCurrentLeaseAsync(electionName);
+            var currentLease = await leaseStore1.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.NotNull(currentLease);
             Assert.Equal(participant1, currentLease.ParticipantId);
         }
         finally
         {
-            _ = await leaseStore1.ReleaseLeaseAsync(electionName, participant1);
+            _ = await leaseStore1.ReleaseLeaseAsync(electionName, participant1, TestContext.Current.CancellationToken);
             leaseStore1.Dispose();
             leaseStore2.Dispose();
         }
@@ -234,11 +234,11 @@ public class PostgresLeaderElectionIntegrationTests
         {
             // Ensure table exists first
             var leaseStore = new PostgresLeaseStore(_fixture.DataSource, serializer, tableName, NullLogger.Instance);
-            await leaseStore.EnsureTableExistsAsync();
+            await leaseStore.EnsureTableExistsAsync(TestContext.Current.CancellationToken);
             leaseStore.Dispose();
 
             // Act - Acquire leadership
-            var acquired = await service.TryAcquireLeadershipAsync();
+            var acquired = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
             // Assert
             Assert.True(acquired);
@@ -254,7 +254,7 @@ public class PostgresLeaderElectionIntegrationTests
             Assert.False(acquiredEvent.LeadershipLost);
 
             // Act - Release leadership
-            await service.ReleaseLeadershipAsync();
+            await service.ReleaseLeadershipAsync(TestContext.Current.CancellationToken);
 
             // Assert
             Assert.False(service.IsLeader);
@@ -300,15 +300,15 @@ public class PostgresLeaderElectionIntegrationTests
         {
             // Ensure table exists first
             var leaseStore = new PostgresLeaseStore(_fixture.DataSource, serializer, tableName, NullLogger.Instance);
-            await leaseStore.EnsureTableExistsAsync();
+            await leaseStore.EnsureTableExistsAsync(TestContext.Current.CancellationToken);
             leaseStore.Dispose();
 
             // Act - All services try to acquire leadership simultaneously
             var tasks = new[]
             {
-                service1.TryAcquireLeadershipAsync(),
-                service2.TryAcquireLeadershipAsync(),
-                service3.TryAcquireLeadershipAsync()
+                service1.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken),
+                service2.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken),
+                service3.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken)
             };
 
             var results = await Task.WhenAll(tasks);
@@ -323,14 +323,14 @@ public class PostgresLeaderElectionIntegrationTests
             var leaderService = leaders[0];
 
             // Verify all services see the same current leader
-            var currentLeaders = await Task.WhenAll(
-                service1.TryAcquireLeadershipAsync(), // This will update CurrentLeader even if it fails
-                service2.TryAcquireLeadershipAsync(),
-                service3.TryAcquireLeadershipAsync()
+            _ = await Task.WhenAll(
+                service1.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken), // This will update CurrentLeader even if it fails
+                service2.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken),
+                service3.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken)
             );
 
             // Wait a moment for leader information to propagate
-            await Task.Delay(100);
+            await Task.Delay(100, TestContext.Current.CancellationToken);
 
             // Check that non-leader services know who the leader is
             foreach (var service in new[] { service1, service2, service3 })
@@ -338,18 +338,18 @@ public class PostgresLeaderElectionIntegrationTests
                 if (!service.IsLeader)
                 {
                     // Trigger a check for current leader
-                    _ = await service.TryAcquireLeadershipAsync();
+                    _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
                 }
             }
 
             // Act - Leader releases leadership
-            await leaderService.ReleaseLeadershipAsync();
+            await leaderService.ReleaseLeadershipAsync(TestContext.Current.CancellationToken);
 
             // Assert - Leadership is released
             Assert.False(leaderService.IsLeader);
 
             // Wait for the release to propagate
-            await Task.Delay(100);
+            await Task.Delay(100, TestContext.Current.CancellationToken);
 
             // Verify leadership is actually available by checking each service
             var remainingServices = new[] { service1, service2, service3 }.Where(s => s != leaderService).ToList();
@@ -362,7 +362,7 @@ public class PostgresLeaderElectionIntegrationTests
             {
                 foreach (var service in remainingServices)
                 {
-                    if (await service.TryAcquireLeadershipAsync())
+                    if (await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken))
                     {
                         secondLeader = service;
                         secondLeaderAcquired = true;
@@ -372,7 +372,7 @@ public class PostgresLeaderElectionIntegrationTests
 
                 if (!secondLeaderAcquired)
                 {
-                    await Task.Delay(200); // Wait between attempts
+                    await Task.Delay(200, TestContext.Current.CancellationToken); // Wait between attempts
                 }
             }
 
@@ -418,15 +418,15 @@ public class PostgresLeaderElectionIntegrationTests
         {
             // Ensure table exists first
             var leaseStore = new PostgresLeaseStore(_fixture.DataSource, serializer, tableName, NullLogger.Instance);
-            await leaseStore.EnsureTableExistsAsync();
+            await leaseStore.EnsureTableExistsAsync(TestContext.Current.CancellationToken);
             leaseStore.Dispose();
 
             // Act - Start both services (auto-election should begin)
-            await service1.StartAsync();
-            await service2.StartAsync();
+            await service1.StartAsync(TestContext.Current.CancellationToken);
+            await service2.StartAsync(TestContext.Current.CancellationToken);
 
             // Wait for election to settle
-            await Task.Delay(5000);
+            await Task.Delay(5000, TestContext.Current.CancellationToken);
 
             // Assert - One service should have become leader
             var leaders = new[] { service1, service2 }.Where(s => s.IsLeader).ToList();
@@ -439,10 +439,10 @@ public class PostgresLeaderElectionIntegrationTests
             Assert.Contains(leaderEvents, e => e.LeadershipGained);
 
             // Act - Stop the current leader (simulate failure)
-            await currentLeader.StopAsync();
+            await currentLeader.StopAsync(TestContext.Current.CancellationToken);
 
             // Wait for failover
-            await Task.Delay(5000);
+            await Task.Delay(5000, TestContext.Current.CancellationToken);
 
             // Assert - The other service should become leader
             Assert.True(follower.IsLeader);
@@ -452,8 +452,8 @@ public class PostgresLeaderElectionIntegrationTests
         }
         finally
         {
-            await service1.StopAsync();
-            await service2.StopAsync();
+            await service1.StopAsync(TestContext.Current.CancellationToken);
+            await service2.StopAsync(TestContext.Current.CancellationToken);
             await service1.DisposeAsync();
             await service2.DisposeAsync();
         }
@@ -474,27 +474,27 @@ public class PostgresLeaderElectionIntegrationTests
         try
         {
             // Ensure table exists
-            await leaseStore.EnsureTableExistsAsync();
+            await leaseStore.EnsureTableExistsAsync(TestContext.Current.CancellationToken);
 
             // Act - Acquire a short lease
-            var lease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, shortLeaseDuration);
+            var lease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, shortLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
             Assert.NotNull(lease);
             Assert.True(lease.IsValid);
 
             // Wait for lease to expire
-            await Task.Delay(3000);
+            await Task.Delay(3000, TestContext.Current.CancellationToken);
 
             // Act - Try to get current lease (should handle expired lease)
-            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
+            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
 
             // Assert - Expired lease should be cleaned up
             Assert.Null(currentLease);
 
-            var hasValidLease = await leaseStore.HasValidLeaseAsync(electionName);
+            var hasValidLease = await leaseStore.HasValidLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.False(hasValidLease);
 
             // Another participant should be able to acquire the lease now
-            var newLease = await leaseStore.TryAcquireLeaseAsync(electionName, "participant-2", TimeSpan.FromMinutes(1));
+            var newLease = await leaseStore.TryAcquireLeaseAsync(electionName, "participant-2", TimeSpan.FromMinutes(1), cancellationToken: TestContext.Current.CancellationToken);
             Assert.NotNull(newLease);
             Assert.Equal("participant-2", newLease.ParticipantId);
         }
@@ -519,30 +519,30 @@ public class PostgresLeaderElectionIntegrationTests
         try
         {
             // Ensure table exists
-            await leaseStore.EnsureTableExistsAsync();
+            await leaseStore.EnsureTableExistsAsync(TestContext.Current.CancellationToken);
 
             // Act - Acquire multiple short leases
-            var lease1 = await leaseStore.TryAcquireLeaseAsync(electionName1, "participant-1", shortLeaseDuration);
-            var lease2 = await leaseStore.TryAcquireLeaseAsync(electionName2, "participant-2", shortLeaseDuration);
+            var lease1 = await leaseStore.TryAcquireLeaseAsync(electionName1, "participant-1", shortLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
+            var lease2 = await leaseStore.TryAcquireLeaseAsync(electionName2, "participant-2", shortLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
             Assert.NotNull(lease1);
             Assert.NotNull(lease2);
 
             // Wait for leases to expire
-            await Task.Delay(2000);
+            await Task.Delay(2000, TestContext.Current.CancellationToken);
 
             // Act - Clean up expired leases
-            _ = await leaseStore.CleanupExpiredLeasesAsync();
+            _ = await leaseStore.CleanupExpiredLeasesAsync(TestContext.Current.CancellationToken);
 
             // Assert - Both leases should be cleaned up
-            var currentLease1 = await leaseStore.GetCurrentLeaseAsync(electionName1);
-            var currentLease2 = await leaseStore.GetCurrentLeaseAsync(electionName2);
+            var currentLease1 = await leaseStore.GetCurrentLeaseAsync(electionName1, TestContext.Current.CancellationToken);
+            var currentLease2 = await leaseStore.GetCurrentLeaseAsync(electionName2, TestContext.Current.CancellationToken);
 
             Assert.Null(currentLease1);
             Assert.Null(currentLease2);
 
-            var hasValidLease1 = await leaseStore.HasValidLeaseAsync(electionName1);
-            var hasValidLease2 = await leaseStore.HasValidLeaseAsync(electionName2);
+            var hasValidLease1 = await leaseStore.HasValidLeaseAsync(electionName1, TestContext.Current.CancellationToken);
+            var hasValidLease2 = await leaseStore.HasValidLeaseAsync(electionName2, TestContext.Current.CancellationToken);
 
             Assert.False(hasValidLease1);
             Assert.False(hasValidLease2);
@@ -568,10 +568,10 @@ public class PostgresLeaderElectionIntegrationTests
         try
         {
             // Ensure table exists
-            await leaseStore.EnsureTableExistsAsync();
+            await leaseStore.EnsureTableExistsAsync(TestContext.Current.CancellationToken);
 
             // Act - Acquire lease with null metadata
-            var lease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, null);
+            var lease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, null, TestContext.Current.CancellationToken);
 
             // Assert - Lease acquired successfully with null metadata
             Assert.NotNull(lease);
@@ -581,13 +581,13 @@ public class PostgresLeaderElectionIntegrationTests
             Assert.True(lease.TimeToExpiry > TimeSpan.FromSeconds(25));
 
             // Verify lease exists and metadata is null
-            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
+            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.NotNull(currentLease);
             Assert.Equal(participantId, currentLease.ParticipantId);
             Assert.Null(currentLease.Metadata);
 
             // Act - Renew lease with null metadata
-            var renewedLease = await leaseStore.TryRenewLeaseAsync(electionName, participantId, leaseDuration, null);
+            var renewedLease = await leaseStore.TryRenewLeaseAsync(electionName, participantId, leaseDuration, null, TestContext.Current.CancellationToken);
 
             // Assert - Lease renewed successfully with null metadata
             Assert.NotNull(renewedLease);
@@ -596,7 +596,7 @@ public class PostgresLeaderElectionIntegrationTests
         }
         finally
         {
-            _ = await leaseStore.ReleaseLeaseAsync(electionName, participantId);
+            _ = await leaseStore.ReleaseLeaseAsync(electionName, participantId, TestContext.Current.CancellationToken);
             leaseStore.Dispose();
         }
     }
@@ -617,10 +617,10 @@ public class PostgresLeaderElectionIntegrationTests
         try
         {
             // Ensure table exists
-            await leaseStore.EnsureTableExistsAsync();
+            await leaseStore.EnsureTableExistsAsync(TestContext.Current.CancellationToken);
 
             // Act - Acquire lease with empty metadata
-            var lease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, emptyMetadata);
+            var lease = await leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, emptyMetadata, TestContext.Current.CancellationToken);
 
             // Assert - Lease acquired successfully with empty metadata
             Assert.NotNull(lease);
@@ -630,7 +630,7 @@ public class PostgresLeaderElectionIntegrationTests
             Assert.True(lease.IsValid);
 
             // Verify lease exists and metadata is empty
-            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName);
+            var currentLease = await leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
             Assert.NotNull(currentLease);
             Assert.Equal(participantId, currentLease.ParticipantId);
             Assert.NotNull(currentLease.Metadata);
@@ -638,7 +638,7 @@ public class PostgresLeaderElectionIntegrationTests
         }
         finally
         {
-            _ = await leaseStore.ReleaseLeaseAsync(electionName, participantId);
+            _ = await leaseStore.ReleaseLeaseAsync(electionName, participantId, TestContext.Current.CancellationToken);
             leaseStore.Dispose();
         }
     }
@@ -660,12 +660,12 @@ public class PostgresLeaderElectionIntegrationTests
         try
         {
             // Act & Assert - Should throw exceptions on connection failure
-            _ = await Assert.ThrowsAsync<SocketException>(() => leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration));
-            _ = await Assert.ThrowsAsync<SocketException>(() => leaseStore.GetCurrentLeaseAsync(electionName));
-            _ = await Assert.ThrowsAsync<SocketException>(() => leaseStore.HasValidLeaseAsync(electionName));
+            _ = await Assert.ThrowsAsync<SocketException>(() => leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, cancellationToken: TestContext.Current.CancellationToken));
+            _ = await Assert.ThrowsAsync<SocketException>(() => leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken));
+            _ = await Assert.ThrowsAsync<SocketException>(() => leaseStore.HasValidLeaseAsync(electionName, TestContext.Current.CancellationToken));
 
             // ReleaseLeaseAsync should return false on connection failure (not throw)
-            var released = await leaseStore.ReleaseLeaseAsync(electionName, participantId);
+            var released = await leaseStore.ReleaseLeaseAsync(electionName, participantId, TestContext.Current.CancellationToken);
             Assert.False(released); // Should return false on connection failure
         }
         finally
@@ -694,10 +694,10 @@ public class PostgresLeaderElectionIntegrationTests
         try
         {
             // Ensure table exists
-            await leaseStore.EnsureTableExistsAsync();
+            await leaseStore.EnsureTableExistsAsync(TestContext.Current.CancellationToken);
 
             // Act & Assert - Should throw exception on serialization failure
-            _ = await Assert.ThrowsAsync<InvalidOperationException>(() => leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, metadata));
+            _ = await Assert.ThrowsAsync<InvalidOperationException>(() => leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, metadata, TestContext.Current.CancellationToken));
         }
         finally
         {
@@ -726,17 +726,17 @@ public class PostgresLeaderElectionIntegrationTests
         try
         {
             // Ensure table exists
-            await leaseStore.EnsureTableExistsAsync();
+            await leaseStore.EnsureTableExistsAsync(TestContext.Current.CancellationToken);
 
             // First acquire a lease successfully
             var realSerializer = new ReflectionStringJsonDataSerializer();
             var realLeaseStore = new PostgresLeaseStore(_fixture.DataSource, realSerializer, tableName, NullLogger.Instance);
-            var lease = await realLeaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, metadata);
+            var lease = await realLeaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, metadata, TestContext.Current.CancellationToken);
             Assert.NotNull(lease);
             realLeaseStore.Dispose();
 
             // Now try to get the lease with the mocked serializer that fails deserialization
-            _ = await Assert.ThrowsAsync<InvalidOperationException>(() => leaseStore.GetCurrentLeaseAsync(electionName));
+            _ = await Assert.ThrowsAsync<InvalidOperationException>(() => leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken));
         }
         finally
         {
@@ -759,9 +759,9 @@ public class PostgresLeaderElectionIntegrationTests
         try
         {
             // Act & Assert - Should throw exceptions on SQL syntax error
-            _ = await Assert.ThrowsAsync<PostgresException>(() => leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration));
-            _ = await Assert.ThrowsAsync<PostgresException>(() => leaseStore.GetCurrentLeaseAsync(electionName));
-            _ = await Assert.ThrowsAsync<PostgresException>(() => leaseStore.HasValidLeaseAsync(electionName));
+            _ = await Assert.ThrowsAsync<PostgresException>(() => leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, cancellationToken: TestContext.Current.CancellationToken));
+            _ = await Assert.ThrowsAsync<PostgresException>(() => leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken));
+            _ = await Assert.ThrowsAsync<PostgresException>(() => leaseStore.HasValidLeaseAsync(electionName, TestContext.Current.CancellationToken));
         }
         finally
         {
@@ -793,7 +793,7 @@ public class PostgresLeaderElectionIntegrationTests
         try
         {
             // Act & Assert - Should return false on connection failure (base service catches exceptions)
-            var acquired = await service.TryAcquireLeadershipAsync();
+            var acquired = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
             Assert.False(acquired); // Should return false on connection failure
             Assert.False(service.IsLeader); // Should remain false
             Assert.Null(service.CurrentLeader); // Should remain null
@@ -828,12 +828,12 @@ public class PostgresLeaderElectionIntegrationTests
         await service.DisposeAsync();
 
         // Act & Assert - Should handle disposed state as per base class behavior
-        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() => service.TryAcquireLeadershipAsync());
-        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() => service.StartAsync());
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() => service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken));
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() => service.StartAsync(TestContext.Current.CancellationToken));
 
         // ReleaseLeadershipAsync and StopAsync don't call ThrowIfDisposed(), so they don't throw
-        await service.ReleaseLeadershipAsync(); // Should not throw (returns early if not leader)
-        await service.StopAsync(); // Should not throw (returns early if no election task)
+        await service.ReleaseLeadershipAsync(TestContext.Current.CancellationToken); // Should not throw (returns early if not leader)
+        await service.StopAsync(TestContext.Current.CancellationToken); // Should not throw (returns early if no election task)
     }
 
     [Fact]
@@ -845,11 +845,11 @@ public class PostgresLeaderElectionIntegrationTests
         var npgDataSource = NpgsqlDataSource.Create("Host=invalid-host;Database=invalid;Username=invalid;Password=invalid");
         var leaseStore = new PostgresLeaseStore(npgDataSource, mockSerializer, tableName, NullLogger.Instance);
 
-        _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.EnsureTableExistsAsync());
-        _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.TryRenewLeaseAsync("test-election", "participant-1", TimeSpan.FromSeconds(30)));
-        _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.TryAcquireLeaseAsync("test-election", "participant-1", TimeSpan.FromSeconds(30)));
-        _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.CleanupExpiredLeasesAsync());
-        var released = await leaseStore.ReleaseLeaseAsync("test-election", "participant-1");
+        _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.EnsureTableExistsAsync(TestContext.Current.CancellationToken));
+        _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.TryRenewLeaseAsync("test-election", "participant-1", TimeSpan.FromSeconds(30), cancellationToken: TestContext.Current.CancellationToken));
+        _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.TryAcquireLeaseAsync("test-election", "participant-1", TimeSpan.FromSeconds(30), cancellationToken: TestContext.Current.CancellationToken));
+        _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.CleanupExpiredLeasesAsync(TestContext.Current.CancellationToken));
+        var released = await leaseStore.ReleaseLeaseAsync("test-election", "participant-1", TestContext.Current.CancellationToken);
         Assert.False(released); // Should return false on connection failure
     }
 }

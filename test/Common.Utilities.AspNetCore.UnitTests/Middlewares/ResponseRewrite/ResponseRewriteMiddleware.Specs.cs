@@ -17,10 +17,10 @@ public class ResponseRewriteMiddlewareSpecs
     public async Task It_Should_Not_Transform_The_Ping_Route()
     {
         var client = _fixture.GetClient();
-        var response = await client.GetAsync("/ping");
+        var response = await client.GetAsync("/ping", TestContext.Current.CancellationToken);
 
         _ = response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
+        var responseContent = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("pong", responseContent);
     }
 
@@ -28,10 +28,10 @@ public class ResponseRewriteMiddlewareSpecs
     public async Task It_Should_Transform_The_Transformed_Route()
     {
         var client = _fixture.GetClient();
-        var response = await client.GetAsync("/transformed");
+        var response = await client.GetAsync("/transformed", TestContext.Current.CancellationToken);
 
         _ = response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
+        var responseContent = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("transformed", responseContent);
     }
 
@@ -39,10 +39,10 @@ public class ResponseRewriteMiddlewareSpecs
     public async Task It_Should_Not_Transform_The_Transformed_Route_If_Skipped()
     {
         var client = _fixture.GetClient();
-        var response = await client.GetAsync("/transformed?skip-rewrite");
+        var response = await client.GetAsync("/transformed?skip-rewrite", TestContext.Current.CancellationToken);
 
         _ = response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
+        var responseContent = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("NOT transformed", responseContent.Trim());
     }
 
@@ -50,7 +50,7 @@ public class ResponseRewriteMiddlewareSpecs
     public async Task It_Should_Not_Fail_When_No_Content_Is_Present()
     {
         var client = _fixture.GetClient();
-        var response = await client.GetAsync("/no-content");
+        var response = await client.GetAsync("/no-content", TestContext.Current.CancellationToken);
 
         _ = response.EnsureSuccessStatusCode();
         Assert.Equal(0, response.Content.Headers.ContentLength);
@@ -61,7 +61,7 @@ public class ResponseRewriteMiddlewareSpecs
     public async Task It_Should_Not_Fail_When_Testing_Body_Methods()
     {
         var client = _fixture.GetClient();
-        var response = await client.GetAsync("/methods-tests");
+        var response = await client.GetAsync("/methods-tests", TestContext.Current.CancellationToken);
 
         _ = response.EnsureSuccessStatusCode();
         Assert.Equal(0, response.Content.Headers.ContentLength);
@@ -72,7 +72,7 @@ public class ResponseRewriteMiddlewareSpecs
     public async Task It_Should_Not_Hide_Failures()
     {
         var client = _fixture.GetClient();
-        var response = await client.GetAsync("/failure");
+        var response = await client.GetAsync("/failure", TestContext.Current.CancellationToken);
 
         Assert.Equal(500, (int)response.StatusCode);
     }

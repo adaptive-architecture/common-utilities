@@ -1,4 +1,4 @@
-using AdaptArch.Common.Utilities.Configuration.Implementation;
+﻿using AdaptArch.Common.Utilities.Configuration.Implementation;
 using AdaptArch.Common.Utilities.Configuration.Providers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -26,7 +26,7 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
             DefaultParticipantId);
 
         // Act
-        var result = await service.TryAcquireLeadershipAsync();
+        var result = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result);
@@ -61,7 +61,7 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
                 DefaultParticipantId);
 
             // Act
-            var result = await service.TryAcquireLeadershipAsync();
+            var result = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
             // Assert
             Assert.False(result);
@@ -85,7 +85,7 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
             DefaultParticipantId);
 
         // Act & Assert - Should not throw even if lease store throws
-        await service.ReleaseLeadershipAsync();
+        await service.ReleaseLeadershipAsync(TestContext.Current.CancellationToken);
 
         Assert.False(service.IsLeader);
         Assert.Null(service.CurrentLeader);
@@ -114,12 +114,12 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
             options);
 
         // Act & Assert - Should not throw even with continuous exceptions
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         // Let it run for a bit to try multiple operations
-        await Task.Delay(200);
+        await Task.Delay(200, TestContext.Current.CancellationToken);
 
-        await service.StopAsync();
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         Assert.False(service.IsLeader);
         Assert.True(exceptionLeaseStore.CallCount > 0);
@@ -148,12 +148,12 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
             options);
 
         // Act
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         // Let it run for a bit to verify it keeps retrying despite exceptions
-        await Task.Delay(150);
+        await Task.Delay(150, TestContext.Current.CancellationToken);
 
-        await service.StopAsync();
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(service.IsLeader);
@@ -180,7 +180,7 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
         service.LeadershipChanged += (sender, args) => leadershipEvents.Add(args);
 
         // Act
-        _ = await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert - No leadership events should be fired for failed operations
         Assert.Empty(leadershipEvents);
@@ -210,12 +210,12 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
             options);
 
         // Act & Assert - Should not throw even when GetCurrentLeaseAsync fails
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         // Let it run for a bit to trigger GetCurrentLeaseAsync calls
-        await Task.Delay(150);
+        await Task.Delay(150, TestContext.Current.CancellationToken);
 
-        await service.StopAsync();
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         Assert.False(service.IsLeader);
         Assert.True(exceptionLeaseStore.CallCount > 0);
@@ -249,10 +249,10 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
         await service.StartAsync(cts.Token);
 
         // Let it run until cancellation
-        await Task.Delay(150);
+        await Task.Delay(150, TestContext.Current.CancellationToken);
 
         // Stop should complete gracefully
-        var exception2 = await Record.ExceptionAsync(() => service.StopAsync());
+        var exception2 = await Record.ExceptionAsync(() => service.StopAsync(TestContext.Current.CancellationToken));
 
         // Assert
         Assert.Null(exception2);
@@ -287,14 +287,14 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
             options);
 
         // Act
-        await service1.StartAsync();
-        await service2.StartAsync();
+        await service1.StartAsync(TestContext.Current.CancellationToken);
+        await service2.StartAsync(TestContext.Current.CancellationToken);
 
         // Let them run for a bit
-        await Task.Delay(150);
+        await Task.Delay(150, TestContext.Current.CancellationToken);
 
-        await service1.StopAsync();
-        await service2.StopAsync();
+        await service1.StopAsync(TestContext.Current.CancellationToken);
+        await service2.StopAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(service1.IsLeader);
@@ -350,14 +350,14 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
             options);
 
         // Act
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         var initialCallCount = exceptionLeaseStore.CallCount;
 
         // Let it run for multiple retry intervals
-        await Task.Delay(200);
+        await Task.Delay(200, TestContext.Current.CancellationToken);
 
-        await service.StopAsync();
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         var finalCallCount = exceptionLeaseStore.CallCount;
 
@@ -395,17 +395,17 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
 
         // Act
         // First acquire leadership manually to ensure we start as leader
-        var acquireResult = await service.TryAcquireLeadershipAsync();
+        var acquireResult = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(acquireResult);
         Assert.True(service.IsLeader);
 
         // Start the election loop which will trigger renewal attempts
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         // Wait for renewal attempts to fail and leadership to be lost
-        await Task.Delay(300);
+        await Task.Delay(300, TestContext.Current.CancellationToken);
 
-        await service.StopAsync();
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(service.IsLeader); // Should have lost leadership due to renewal failure
@@ -442,19 +442,19 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
             options);
 
         // Act & Assert - Should not throw any exceptions
-        var acquireResult = await service.TryAcquireLeadershipAsync();
+        var acquireResult = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(acquireResult);
         Assert.True(service.IsLeader);
 
         // Start the election loop - this should not throw despite renewal failures
-        var startException = await Record.ExceptionAsync(() => service.StartAsync());
+        var startException = await Record.ExceptionAsync(() => service.StartAsync(TestContext.Current.CancellationToken));
         Assert.Null(startException);
 
         // Let renewal attempts fail
-        await Task.Delay(300);
+        await Task.Delay(300, TestContext.Current.CancellationToken);
 
         // Stop should also not throw
-        var stopException = await Record.ExceptionAsync(() => service.StopAsync());
+        var stopException = await Record.ExceptionAsync(() => service.StopAsync(TestContext.Current.CancellationToken));
         Assert.Null(stopException);
 
         // Should have lost leadership due to renewal failure
@@ -486,19 +486,19 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
             options);
 
         // Act
-        var acquireResult = await service.TryAcquireLeadershipAsync();
+        var acquireResult = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(acquireResult);
         Assert.True(service.IsLeader);
 
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         var initialTotalCallCount = acquireSuccessRenewalFailStore.AcquireCallCount + acquireSuccessRenewalFailStore.RenewCallCount;
 
         // Let it run for multiple intervals - it will try to renew first, fail, lose leadership,
         // then try to acquire again multiple times
-        await Task.Delay(250);
+        await Task.Delay(250, TestContext.Current.CancellationToken);
 
-        await service.StopAsync();
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         var finalTotalCallCount = acquireSuccessRenewalFailStore.AcquireCallCount + acquireSuccessRenewalFailStore.RenewCallCount;
 

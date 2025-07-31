@@ -85,7 +85,7 @@ public class RedisMessageHubInt
 
         await _messageHubAsync.PublishAsync(nameof(MyMessage), sentMessage, CancellationToken.None);
 
-        await Task.Delay(s_waitTime);
+        await Task.Delay(s_waitTime, TestContext.Current.CancellationToken);
 
         Assert.NotNull(receivedMessage);
         Assert.Equal(sentMessage.Id, receivedMessage.Id);
@@ -95,7 +95,7 @@ public class RedisMessageHubInt
 
         await _messageHubAsync.PublishAsync(nameof(MyMessage), sentMessage, CancellationToken.None);
 
-        await Task.Delay(s_waitTime);
+        await Task.Delay(s_waitTime, TestContext.Current.CancellationToken);
 
         Assert.Null(receivedMessage);
     }

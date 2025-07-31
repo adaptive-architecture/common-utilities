@@ -1,12 +1,12 @@
 ﻿using AdaptArch.Common.Utilities.Configuration.Contracts;
 using AdaptArch.Common.Utilities.Configuration.Implementation;
 using AdaptArch.Common.Utilities.Configuration.Providers;
+using AdaptArch.Common.Utilities.xUnit.Extensions.Retry;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
-using xRetry;
 
 namespace AdaptArch.Common.Utilities.Configuration.UnitTests.Providers;
 

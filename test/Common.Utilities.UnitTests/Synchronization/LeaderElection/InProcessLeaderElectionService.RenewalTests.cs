@@ -37,12 +37,12 @@ public class InProcessLeaderElectionServiceRenewalTests
         service.LeadershipChanged += (sender, args) => leadershipEvents.Add(args);
 
         // Act - Test that the election loop can start and stop without errors
-        _ = await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(service.IsLeader);
 
-        await service.StartAsync();
-        await Task.Delay(300); // Allow some time for the loop to run
-        await service.StopAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
+        await Task.Delay(300, TestContext.Current.CancellationToken); // Allow some time for the loop to run
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         // Assert - Basic functionality should work
         Assert.True(leadershipEvents.Count >= 1); // Should have leadership gained event
@@ -62,23 +62,15 @@ public class InProcessLeaderElectionServiceRenewalTests
         var metadata = new Dictionary<string, string> { ["test"] = "value" };
 
         // Act - Acquire lease and then renew it
-        var initialLease = await leaseStore.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            TimeSpan.FromMinutes(5),
-            metadata);
+        var initialLease = await leaseStore.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, TimeSpan.FromMinutes(5), metadata, TestContext.Current.CancellationToken);
 
         Assert.NotNull(initialLease);
         Assert.True(initialLease.IsValid);
 
         // Wait a bit then renew
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
 
-        var renewedLease = await leaseStore.TryRenewLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            TimeSpan.FromMinutes(5),
-            metadata);
+        var renewedLease = await leaseStore.TryRenewLeaseAsync(DefaultElectionName, DefaultParticipantId, TimeSpan.FromMinutes(5), metadata, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(renewedLease);
@@ -108,19 +100,16 @@ public class InProcessLeaderElectionServiceRenewalTests
             AlternateParticipantId);
 
         // Act - Service1 gets leadership, then service2 takes it
-        _ = await service1.TryAcquireLeadershipAsync();
+        _ = await service1.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(service1.IsLeader);
 
         // Service2 takes leadership
-        await service1.ReleaseLeadershipAsync();
-        _ = await service2.TryAcquireLeadershipAsync();
+        await service1.ReleaseLeadershipAsync(TestContext.Current.CancellationToken);
+        _ = await service2.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(service2.IsLeader);
 
         // Now service1 should fail to renew
-        var renewResult = await leaseStore.TryRenewLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            TimeSpan.FromMinutes(5));
+        var renewResult = await leaseStore.TryRenewLeaseAsync(DefaultElectionName, DefaultParticipantId, TimeSpan.FromMinutes(5), cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(renewResult); // Should fail because service2 has the lease
@@ -140,21 +129,13 @@ public class InProcessLeaderElectionServiceRenewalTests
         var newMetadata = new Dictionary<string, string> { ["version"] = "1.1" };
 
         // Act - Acquire with original metadata
-        var initialLease = await leaseStore.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            TimeSpan.FromMinutes(5),
-            originalMetadata);
+        var initialLease = await leaseStore.TryAcquireLeaseAsync(DefaultElectionName, DefaultParticipantId, TimeSpan.FromMinutes(5), originalMetadata, TestContext.Current.CancellationToken);
 
         Assert.NotNull(initialLease);
         Assert.Equal(originalMetadata, initialLease.Metadata);
 
         // Renew with new metadata
-        var renewedLease = await leaseStore.TryRenewLeaseAsync(
-            DefaultElectionName,
-            DefaultParticipantId,
-            TimeSpan.FromMinutes(5),
-            newMetadata);
+        var renewedLease = await leaseStore.TryRenewLeaseAsync(DefaultElectionName, DefaultParticipantId, TimeSpan.FromMinutes(5), newMetadata, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(renewedLease);
@@ -185,10 +166,10 @@ public class InProcessLeaderElectionServiceRenewalTests
             options);
 
         // Act
-        _ = await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(service.IsLeader);
 
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         // Cancel after a short time
         using var cts = new CancellationTokenSource(100);
@@ -246,11 +227,11 @@ public class InProcessLeaderElectionServiceRenewalTests
 
         // Act
         // Both services start their election loops simultaneously
-        await service1.StartAsync();
-        await service2.StartAsync();
+        await service1.StartAsync(TestContext.Current.CancellationToken);
+        await service2.StartAsync(TestContext.Current.CancellationToken);
 
         // Give them a moment to compete for initial leadership
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
 
         // One should be leader, the other should not be
         var initialLeader = service1.IsLeader ? service1 : service2;
@@ -261,17 +242,17 @@ public class InProcessLeaderElectionServiceRenewalTests
 
         // Let the leader hold leadership for approximately 3 renewal intervals
         // 3 renewal intervals = 3 * 80ms = 240ms
-        await Task.Delay(250);
+        await Task.Delay(250, TestContext.Current.CancellationToken);
 
         // Leader should still be the leader after multiple renewals
         Assert.True(initialLeader.IsLeader);
         Assert.False(initialFollower.IsLeader);
 
         // Now simulate the leader "finishing processing" by stopping its service
-        await initialLeader.StopAsync();
+        await initialLeader.StopAsync(TestContext.Current.CancellationToken);
 
         // Give service2 time to detect the leadership change and take over
-        await Task.Delay(200);
+        await Task.Delay(200, TestContext.Current.CancellationToken);
 
         // Assert
         // The initial follower should now be the leader
@@ -317,15 +298,15 @@ public class InProcessLeaderElectionServiceRenewalTests
         service.LeadershipChanged += (sender, args) => leadershipEvents.Add(args);
 
         // Act
-        _ = await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(service.IsLeader);
 
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         // Monitor for multiple renewal intervals (allow enough time for 4-5 renewals)
-        await Task.Delay(300); // Monitor for 300ms = 6 renewal intervals
+        await Task.Delay(300, TestContext.Current.CancellationToken); // Monitor for 300ms = 6 renewal intervals
 
-        await service.StopAsync();
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         // Assert - Should have maintained leadership throughout
         // The service should have been leader most of the time and renewed successfully
@@ -364,9 +345,9 @@ public class InProcessLeaderElectionServiceRenewalTests
         var startException = await Record.ExceptionAsync(() => service.StartAsync(startCts.Token));
 
         // Give some time for cancellation to take effect and then stop
-        await Task.Delay(2 * cancelAfter);
+        await Task.Delay(2 * cancelAfter, TestContext.Current.CancellationToken);
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        var stopException = await Record.ExceptionAsync(() => service.StopAsync());
+        var stopException = await Record.ExceptionAsync(() => service.StopAsync(TestContext.Current.CancellationToken));
         stopwatch.Stop();
 
         // Assert
@@ -408,10 +389,10 @@ public class InProcessLeaderElectionServiceRenewalTests
             "service-1",
             options
         );
-        await service1.StartAsync();
+        await service1.StartAsync(TestContext.Current.CancellationToken);
 
         // Force service1 to acquire leadership
-        var isLeader = await service1.TryAcquireLeadershipAsync();
+        var isLeader = await service1.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(isLeader);
 
         await using var service2 = new InProcessLeaderElectionService(
@@ -421,33 +402,30 @@ public class InProcessLeaderElectionServiceRenewalTests
             options
         );
 
-        await service2.StartAsync();
+        await service2.StartAsync(TestContext.Current.CancellationToken);
 
-        isLeader = await service2.TryAcquireLeadershipAsync();
+        isLeader = await service2.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.False(isLeader);
 
         // Act - Simulate state loss by clearing the lease store
-        var released = await leaseStore.ReleaseLeaseAsync(DefaultElectionName, "service-1");
+        var released = await leaseStore.ReleaseLeaseAsync(DefaultElectionName, "service-1", TestContext.Current.CancellationToken);
         Assert.True(released);
         var failureStateStart = DateTime.UtcNow;
 
         // Now service2 should be able to acquire leadership
-        isLeader = await service2.TryAcquireLeadershipAsync();
+        isLeader = await service2.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(isLeader);
 
         // Assert - Service1 still thinks it is leader for a short time
         Assert.True(service1.IsLeader);
         var maxWaitTime = options.LeaseDuration * 2;
-        var service1Lease = await leaseStore.TryAcquireLeaseAsync(
-            DefaultElectionName,
-            "service-1",
-            options.LeaseDuration
-        );
+        var service1Lease = await leaseStore.TryAcquireLeaseAsync(DefaultElectionName, "service-1", options.LeaseDuration
+, cancellationToken: TestContext.Current.CancellationToken);
         Assert.Null(service1Lease); // Service1 should not have a valid lease after state loss
 
         while (service1.IsLeader && service2.IsLeader)
         {
-            await Task.Delay(options.RetryInterval / 3);
+            await Task.Delay(options.RetryInterval / 3, TestContext.Current.CancellationToken);
             if (DateTime.UtcNow - failureStateStart > maxWaitTime)
             {
                 break;

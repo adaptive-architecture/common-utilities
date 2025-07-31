@@ -25,7 +25,7 @@ internal class Base32EncodingHelper : Base
         // Special-case empty input
         if (count <= 0)
         {
-            return Array.Empty<byte>();
+            return [];
         }
 
         var output = new byte[GetArraySizeRequiredToDecode(count)];

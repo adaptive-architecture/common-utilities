@@ -93,7 +93,7 @@ public class PostgresLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Contains("DataSource is required", exception.Message);
     }
 
@@ -108,7 +108,7 @@ public class PostgresLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Contains("Serializer is required", exception.Message);
     }
 
@@ -124,7 +124,7 @@ public class PostgresLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Contains("TableName cannot be null or empty", exception.Message);
     }
 
@@ -140,7 +140,7 @@ public class PostgresLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Contains("TableName cannot be null or empty", exception.Message);
     }
 
@@ -185,7 +185,7 @@ public class PostgresLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Contains("TableName contains invalid characters", exception.Message);
     }
 
@@ -202,7 +202,7 @@ public class PostgresLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Contains("TableName cannot be null or empty.", exception.Message);
     }
 
@@ -218,7 +218,7 @@ public class PostgresLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Contains("ConnectionTimeout must be greater than zero", exception.Message);
     }
 
@@ -234,7 +234,7 @@ public class PostgresLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Contains("ConnectionTimeout must be greater than zero", exception.Message);
     }
 
@@ -250,7 +250,7 @@ public class PostgresLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Contains("CommandTimeout must be greater than zero", exception.Message);
     }
 
@@ -266,7 +266,7 @@ public class PostgresLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Contains("CommandTimeout must be greater than zero", exception.Message);
     }
 
@@ -282,7 +282,7 @@ public class PostgresLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Contains("CleanupInterval must be greater than zero when specified", exception.Message);
     }
 
@@ -298,7 +298,7 @@ public class PostgresLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Contains("CleanupInterval must be greater than zero when specified", exception.Message);
     }
 

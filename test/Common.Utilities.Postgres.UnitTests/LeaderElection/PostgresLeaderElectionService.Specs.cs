@@ -206,7 +206,7 @@ public class PostgresLeaderElectionServiceSpecs
         // Act & Assert
         _ = Assert.Throws<ArgumentNullException>(() =>
             new PostgresLeaderElectionService(
-                (PostgresLeaseStore)null!,
+                null!,
                 _electionName,
                 _participantId,
                 null,

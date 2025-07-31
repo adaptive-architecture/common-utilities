@@ -38,10 +38,10 @@ public class RepeatingJobWorkerSpecs
     {
         var jobType = jobTypeId.ToJobType();
         var state = JobState.New(jobDurationMs, initialDelayMs, intervalMs);
-        var serviceProvider = await ServiceBuilder.BeginTestAsync(state, Boolean.TrueString, GetServiceCollectionAction(jobType));
+        var serviceProvider = await ServiceBuilder.BeginTestAsync(state, Boolean.TrueString, GetServiceCollectionAction(jobType), TestContext.Current.CancellationToken);
 
         await state.Assert_NoExecution_WhileInitialDelay(jobType);
-        await ServiceBuilder.EndTestAsync(state, serviceProvider);
+        await ServiceBuilder.EndTestAsync(state, serviceProvider, TestContext.Current.CancellationToken);
     }
 
     [Theory(Timeout = TestTimeout)]
@@ -54,10 +54,10 @@ public class RepeatingJobWorkerSpecs
     {
         var jobType = jobTypeId.ToJobType();
         var state = JobState.New(jobDurationMs, initialDelayMs, intervalMs);
-        var serviceProvider = await ServiceBuilder.BeginTestAsync(state, Boolean.TrueString, GetServiceCollectionAction(jobType));
+        var serviceProvider = await ServiceBuilder.BeginTestAsync(state, Boolean.TrueString, GetServiceCollectionAction(jobType), TestContext.Current.CancellationToken);
 
         await state.Assert_Iterations_While_Running(jobType);
-        await ServiceBuilder.EndTestAsync(state, serviceProvider);
+        await ServiceBuilder.EndTestAsync(state, serviceProvider, TestContext.Current.CancellationToken);
         await state.Assert_No_FurtherIterations_After_Stopped();
     }
 
@@ -68,7 +68,7 @@ public class RepeatingJobWorkerSpecs
     {
         var jobType = jobTypeId.ToJobType();
         var state = JobState.WithShortDurations();
-        var serviceProvider = await ServiceBuilder.BeginTestAsync(state, Boolean.TrueString, GetServiceCollectionAction(jobType));
+        var serviceProvider = await ServiceBuilder.BeginTestAsync(state, Boolean.TrueString, GetServiceCollectionAction(jobType), TestContext.Current.CancellationToken);
 
         await state.WaitForExecutionAsync();
         Assert.True(state.ExecutionCount > 0);
@@ -87,7 +87,7 @@ public class RepeatingJobWorkerSpecs
     {
         var jobType = jobTypeId.ToJobType();
         var state = JobState.WithShortDurations();
-        var serviceProvider = await ServiceBuilder.BeginTestAsync(state, Boolean.FalseString, GetServiceCollectionAction(jobType));
+        var serviceProvider = await ServiceBuilder.BeginTestAsync(state, Boolean.FalseString, GetServiceCollectionAction(jobType), TestContext.Current.CancellationToken);
 
         await state.WaitForExecutionAsync();
         SetEnabledState(serviceProvider, true);
@@ -104,7 +104,7 @@ public class RepeatingJobWorkerSpecs
     {
         var jobType = jobTypeId.ToJobType();
         var state = JobState.WithShortDurations();
-        _ = await ServiceBuilder.BeginTestAsync(state, Boolean.TrueString, GetServiceCollectionAction_Failing(jobType));
+        _ = await ServiceBuilder.BeginTestAsync(state, Boolean.TrueString, GetServiceCollectionAction_Failing(jobType), TestContext.Current.CancellationToken);
         await state.WaitForExecutionAsync();
         Assert.True(state.ExecutionCount > 0);
     }
@@ -116,8 +116,8 @@ public class RepeatingJobWorkerSpecs
     {
         var jobType = jobTypeId.ToJobType();
         var state = JobState.WithShortDurations();
-        var serviceProvider = await ServiceBuilder.BeginTestAsync(state, Boolean.TrueString, GetServiceCollectionAction_Failing(jobType));
-        await ServiceBuilder.EndTestAsync(state, serviceProvider);
+        var serviceProvider = await ServiceBuilder.BeginTestAsync(state, Boolean.TrueString, GetServiceCollectionAction_Failing(jobType), TestContext.Current.CancellationToken);
+        await ServiceBuilder.EndTestAsync(state, serviceProvider, TestContext.Current.CancellationToken);
 
         try
         {
@@ -136,10 +136,10 @@ public class RepeatingJobWorkerSpecs
     {
         var jobType = jobTypeId.ToJobType();
         var state = JobState.WithLongDurations();
-        var serviceProvider = await ServiceBuilder.BeginTestAsync(state, Boolean.TrueString, GetServiceCollectionAction(jobType));
+        var serviceProvider = await ServiceBuilder.BeginTestAsync(state, Boolean.TrueString, GetServiceCollectionAction(jobType), TestContext.Current.CancellationToken);
 
         await state.Assert_NoExecution_WhileInitialDelay(jobType);
-        await ServiceBuilder.EndTestAsync(state, serviceProvider);
+        await ServiceBuilder.EndTestAsync(state, serviceProvider, TestContext.Current.CancellationToken);
         await state.Assert_No_FurtherIterations_After_Stopped();
     }
 }

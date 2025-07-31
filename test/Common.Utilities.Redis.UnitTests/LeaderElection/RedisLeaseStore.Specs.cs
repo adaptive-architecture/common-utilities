@@ -62,54 +62,7 @@ public class RedisLeaseStoreSpecs
 
         // Mock ScriptEvaluateAsync for Lua scripts (renewal and release)
         _ = _database.ScriptEvaluateAsync(Arg.Any<string>(), Arg.Any<RedisKey[]>(), Arg.Any<RedisValue[]>(), Arg.Any<CommandFlags>())
-            .Returns(callInfo =>
-            {
-                var script = callInfo.ArgAt<string>(0);
-                var keys = callInfo.ArgAt<RedisKey[]>(1);
-                var values = callInfo.ArgAt<RedisValue[]>(2);
-
-                if (script.Contains("redis.call('SET', key, newLeaseData, 'EX', ttlSeconds)")) // Renewal script
-                {
-                    var key = keys[0];
-                    var participantId = values[0];
-                    var newLeaseData = values[1];
-
-                    if (!_redisStorage.TryGetValue(key!, out var currentLease))
-                    {
-                        return Task.FromResult(RedisResult.Create(RedisValue.Null)); // No current lease
-                    }
-
-                    // Simulate parsing JSON to check participant ID
-                    if (currentLease.ToString().Contains($"\"ParticipantId\":\"{participantId}\""))
-                    {
-                        _redisStorage[key!] = newLeaseData;
-                        return Task.FromResult(RedisResult.Create(newLeaseData));
-                    }
-
-                    return Task.FromResult(RedisResult.Create(RedisValue.Null)); // Wrong participant
-                }
-                else if (script.Contains("return redis.call('DEL', key)")) // Release script
-                {
-                    var key = keys[0];
-                    var participantId = values[0];
-
-                    if (!_redisStorage.TryGetValue(key!, out var currentLease))
-                    {
-                        return Task.FromResult(RedisResult.Create(0)); // No current lease
-                    }
-
-                    // Simulate parsing JSON to check participant ID
-                    if (currentLease.ToString().Contains($"\"ParticipantId\":\"{participantId}\""))
-                    {
-                        _ = _redisStorage.Remove(key!);
-                        return Task.FromResult(RedisResult.Create(1)); // Successfully deleted
-                    }
-
-                    return Task.FromResult(RedisResult.Create(0)); // Wrong participant
-                }
-
-                return Task.FromResult(RedisResult.Create(RedisValue.Null));
-            });
+            .Returns(HandleScriptEvaluation);
 
         // Mock KeyDeleteAsync for cleanup
         _ = _database.KeyDeleteAsync(Arg.Any<RedisKey>(), Arg.Any<CommandFlags>())
@@ -118,6 +71,55 @@ public class RedisLeaseStoreSpecs
                 var key = callInfo.ArgAt<RedisKey>(0);
                 return _redisStorage.Remove(key!);
             });
+    }
+
+    private Task<RedisResult> HandleScriptEvaluation(NSubstitute.Core.CallInfo callInfo)
+    {
+        var script = callInfo.ArgAt<string>(0);
+        var keys = callInfo.ArgAt<RedisKey[]>(1);
+        var values = callInfo.ArgAt<RedisValue[]>(2);
+
+        if (script.Contains("redis.call('SET', key, newLeaseData, 'EX', ttlSeconds)")) // Renewal script
+        {
+            var key = keys[0];
+            var participantId = values[0];
+            var newLeaseData = values[1];
+
+            if (!_redisStorage.TryGetValue(key!, out var currentLease))
+            {
+                return Task.FromResult(RedisResult.Create(RedisValue.Null)); // No current lease
+            }
+
+            // Simulate parsing JSON to check participant ID
+            if (currentLease.ToString().Contains($"\"ParticipantId\":\"{participantId}\""))
+            {
+                _redisStorage[key!] = newLeaseData;
+                return Task.FromResult(RedisResult.Create(newLeaseData));
+            }
+
+            return Task.FromResult(RedisResult.Create(RedisValue.Null)); // Wrong participant
+        }
+        else if (script.Contains("return redis.call('DEL', key)")) // Release script
+        {
+            var key = keys[0];
+            var participantId = values[0];
+
+            if (!_redisStorage.TryGetValue(key!, out var currentLease))
+            {
+                return Task.FromResult(RedisResult.Create(0)); // No current lease
+            }
+
+            // Simulate parsing JSON to check participant ID
+            if (currentLease.ToString().Contains($"\"ParticipantId\":\"{participantId}\""))
+            {
+                _ = _redisStorage.Remove(key!);
+                return Task.FromResult(RedisResult.Create(1)); // Successfully deleted
+            }
+
+            return Task.FromResult(RedisResult.Create(0)); // Wrong participant
+        }
+
+        return Task.FromResult(RedisResult.Create(RedisValue.Null));
     }
 
     [Fact]
@@ -140,7 +142,7 @@ public class RedisLeaseStoreSpecs
         var metadata = new Dictionary<string, string> { ["version"] = "1.0" };
 
         // Act
-        var result = await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, metadata);
+        var result = await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, metadata, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -160,10 +162,10 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         // First participant acquires lease
-        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participant1, leaseDuration);
+        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participant1, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Act - Second participant tries to acquire
-        var result = await _leaseStore.TryAcquireLeaseAsync(electionName, participant2, leaseDuration);
+        var result = await _leaseStore.TryAcquireLeaseAsync(electionName, participant2, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result);
@@ -179,11 +181,11 @@ public class RedisLeaseStoreSpecs
         var newLeaseDuration = TimeSpan.FromMinutes(10);
 
         // First acquire lease
-        var originalLease = await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration);
+        var originalLease = await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(originalLease);
 
         // Act - Renew lease
-        var renewedLease = await _leaseStore.TryRenewLeaseAsync(electionName, participantId, newLeaseDuration);
+        var renewedLease = await _leaseStore.TryRenewLeaseAsync(electionName, participantId, newLeaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(renewedLease);
@@ -201,10 +203,10 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         // First participant acquires lease
-        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participant1, leaseDuration);
+        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participant1, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Act - Second participant tries to renew
-        var result = await _leaseStore.TryRenewLeaseAsync(electionName, participant2, leaseDuration);
+        var result = await _leaseStore.TryRenewLeaseAsync(electionName, participant2, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result);
@@ -219,7 +221,7 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         // Act - Try to renew non-existent lease
-        var result = await _leaseStore.TryRenewLeaseAsync(electionName, participantId, leaseDuration);
+        var result = await _leaseStore.TryRenewLeaseAsync(electionName, participantId, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result);
@@ -234,16 +236,16 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         // First acquire lease
-        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration);
+        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Act - Release lease
-        var result = await _leaseStore.ReleaseLeaseAsync(electionName, participantId);
+        var result = await _leaseStore.ReleaseLeaseAsync(electionName, participantId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result);
 
         // Verify lease is gone
-        var currentLease = await _leaseStore.GetCurrentLeaseAsync(electionName);
+        var currentLease = await _leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
         Assert.Null(currentLease);
     }
 
@@ -257,16 +259,16 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         // First participant acquires lease
-        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participant1, leaseDuration);
+        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participant1, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Act - Second participant tries to release
-        var result = await _leaseStore.ReleaseLeaseAsync(electionName, participant2);
+        var result = await _leaseStore.ReleaseLeaseAsync(electionName, participant2, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result);
 
         // Verify lease still exists
-        var currentLease = await _leaseStore.GetCurrentLeaseAsync(electionName);
+        var currentLease = await _leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
         Assert.NotNull(currentLease);
         Assert.Equal(participant1, currentLease.ParticipantId);
     }
@@ -279,7 +281,7 @@ public class RedisLeaseStoreSpecs
         const string participantId = "participant-1";
 
         // Act - Try to release non-existent lease
-        var result = await _leaseStore.ReleaseLeaseAsync(electionName, participantId);
+        var result = await _leaseStore.ReleaseLeaseAsync(electionName, participantId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result);
@@ -295,10 +297,11 @@ public class RedisLeaseStoreSpecs
         var metadata = new Dictionary<string, string> { ["version"] = "1.0" };
 
         // First acquire lease
-        var originalLease = await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, metadata);
+        var originalLease = await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, metadata, TestContext.Current.CancellationToken);
+        Assert.NotNull(originalLease);
 
         // Act
-        var currentLease = await _leaseStore.GetCurrentLeaseAsync(electionName);
+        var currentLease = await _leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(currentLease);
@@ -314,7 +317,7 @@ public class RedisLeaseStoreSpecs
         const string electionName = "test-election";
 
         // Act
-        var currentLease = await _leaseStore.GetCurrentLeaseAsync(electionName);
+        var currentLease = await _leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(currentLease);
@@ -329,10 +332,10 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         // First acquire lease
-        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration);
+        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Act
-        var hasValidLease = await _leaseStore.HasValidLeaseAsync(electionName);
+        var hasValidLease = await _leaseStore.HasValidLeaseAsync(electionName, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(hasValidLease);
@@ -345,7 +348,7 @@ public class RedisLeaseStoreSpecs
         const string electionName = "test-election";
 
         // Act
-        var hasValidLease = await _leaseStore.HasValidLeaseAsync(electionName);
+        var hasValidLease = await _leaseStore.HasValidLeaseAsync(electionName, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(hasValidLease);
@@ -368,19 +371,19 @@ public class RedisLeaseStoreSpecs
 
         // Act & Assert
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            _leaseStore.TryAcquireLeaseAsync("test", "participant", TimeSpan.FromMinutes(1)));
+            _leaseStore.TryAcquireLeaseAsync("test", "participant", TimeSpan.FromMinutes(1), cancellationToken: TestContext.Current.CancellationToken));
 
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            _leaseStore.TryRenewLeaseAsync("test", "participant", TimeSpan.FromMinutes(1)));
+            _leaseStore.TryRenewLeaseAsync("test", "participant", TimeSpan.FromMinutes(1), cancellationToken: TestContext.Current.CancellationToken));
 
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            _leaseStore.ReleaseLeaseAsync("test", "participant"));
+            _leaseStore.ReleaseLeaseAsync("test", "participant", TestContext.Current.CancellationToken));
 
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            _leaseStore.GetCurrentLeaseAsync("test"));
+            _leaseStore.GetCurrentLeaseAsync("test", TestContext.Current.CancellationToken));
 
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            _leaseStore.HasValidLeaseAsync("test"));
+            _leaseStore.HasValidLeaseAsync("test", TestContext.Current.CancellationToken));
     }
 
     #region Error Handling Tests
@@ -399,7 +402,7 @@ public class RedisLeaseStoreSpecs
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<RedisException>(() =>
-            _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration));
+            _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, cancellationToken: TestContext.Current.CancellationToken));
 
         Assert.Equal("Redis connection failed", exception.Message);
     }
@@ -418,7 +421,7 @@ public class RedisLeaseStoreSpecs
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<RedisException>(() =>
-            _leaseStore.TryRenewLeaseAsync(electionName, participantId, leaseDuration));
+            _leaseStore.TryRenewLeaseAsync(electionName, participantId, leaseDuration, cancellationToken: TestContext.Current.CancellationToken));
 
         Assert.Equal("Redis script execution failed", exception.Message);
     }
@@ -435,7 +438,7 @@ public class RedisLeaseStoreSpecs
             .Returns<Task<RedisResult>>(_ => throw redisException);
 
         // Act
-        var result = await _leaseStore.ReleaseLeaseAsync(electionName, participantId);
+        var result = await _leaseStore.ReleaseLeaseAsync(electionName, participantId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result);
@@ -453,7 +456,7 @@ public class RedisLeaseStoreSpecs
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<RedisException>(() =>
-            _leaseStore.GetCurrentLeaseAsync(electionName));
+            _leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken));
 
         Assert.Equal("Redis get operation failed", exception.Message);
     }
@@ -470,7 +473,7 @@ public class RedisLeaseStoreSpecs
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<RedisException>(() =>
-            _leaseStore.HasValidLeaseAsync(electionName));
+            _leaseStore.HasValidLeaseAsync(electionName, TestContext.Current.CancellationToken));
 
         Assert.Equal("Redis get operation failed", exception.Message);
     }
@@ -491,7 +494,7 @@ public class RedisLeaseStoreSpecs
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration));
+            leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, cancellationToken: TestContext.Current.CancellationToken));
 
         Assert.Equal("Serialization failed", exception.Message);
     }
@@ -513,7 +516,7 @@ public class RedisLeaseStoreSpecs
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            leaseStore.GetCurrentLeaseAsync(electionName));
+            leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken));
 
         Assert.Equal("Deserialization failed", exception.Message);
     }
@@ -532,7 +535,7 @@ public class RedisLeaseStoreSpecs
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<RedisTimeoutException>(() =>
-            _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration));
+            _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, cancellationToken: TestContext.Current.CancellationToken));
 
         Assert.Equal("Operation timed out", exception.Message);
     }
@@ -551,7 +554,7 @@ public class RedisLeaseStoreSpecs
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<RedisConnectionException>(() =>
-            _leaseStore.TryRenewLeaseAsync(electionName, participantId, leaseDuration));
+            _leaseStore.TryRenewLeaseAsync(electionName, participantId, leaseDuration, cancellationToken: TestContext.Current.CancellationToken));
 
         Assert.Equal("Connection lost", exception.Message);
     }
@@ -566,7 +569,7 @@ public class RedisLeaseStoreSpecs
         _redisStorage["leader_election:lease:test-election"] = "";
 
         // Act
-        var result1 = await _leaseStore.GetCurrentLeaseAsync(electionName);
+        var result1 = await _leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result1);
@@ -575,7 +578,7 @@ public class RedisLeaseStoreSpecs
         _ = _redisStorage.Remove("leader_election:lease:test-election");
 
         // Act
-        var result2 = await _leaseStore.GetCurrentLeaseAsync(electionName);
+        var result2 = await _leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result2);
@@ -598,7 +601,7 @@ public class RedisLeaseStoreSpecs
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration));
+            leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, cancellationToken: TestContext.Current.CancellationToken));
 
         Assert.Equal("Database unavailable", exception.Message);
     }
@@ -615,7 +618,7 @@ public class RedisLeaseStoreSpecs
             .Returns(Task.FromResult(RedisResult.Create((RedisValue)"unexpected_string")));
 
         // Act & Assert - Should handle gracefully and return false
-        var result = await _leaseStore.ReleaseLeaseAsync(electionName, participantId);
+        var result = await _leaseStore.ReleaseLeaseAsync(electionName, participantId, TestContext.Current.CancellationToken);
 
         Assert.False(result);
     }
@@ -629,7 +632,7 @@ public class RedisLeaseStoreSpecs
         var leaseDuration = TimeSpan.FromMinutes(5);
 
         // First acquire a lease
-        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration);
+        _ = await _leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, cancellationToken: TestContext.Current.CancellationToken);
 
         // Modify the lease to be expired (hack the stored JSON)
         var expiredTime = DateTime.UtcNow.AddMinutes(-10);
@@ -649,7 +652,7 @@ public class RedisLeaseStoreSpecs
 
         // Act & Assert - Should propagate the exception from KeyDeleteAsync
         var exception = await Assert.ThrowsAsync<RedisException>(() =>
-            _leaseStore.GetCurrentLeaseAsync(electionName));
+            _leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken));
 
         Assert.Equal("Delete operation failed", exception.Message);
     }

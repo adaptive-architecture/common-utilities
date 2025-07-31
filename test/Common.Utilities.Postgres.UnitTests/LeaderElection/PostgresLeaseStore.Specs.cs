@@ -73,7 +73,7 @@ public class PostgresLeaseStoreSpecs
 
         // Assert - Should throw when disposed
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(async () =>
-            await leaseStore.TryAcquireLeaseAsync("test", "participant", TimeSpan.FromMinutes(1)));
+            await leaseStore.TryAcquireLeaseAsync("test", "participant", TimeSpan.FromMinutes(1), cancellationToken: TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -98,24 +98,24 @@ public class PostgresLeaseStoreSpecs
 
         // Act & Assert
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            leaseStore.TryAcquireLeaseAsync("test", "participant", TimeSpan.FromMinutes(1)));
+            leaseStore.TryAcquireLeaseAsync("test", "participant", TimeSpan.FromMinutes(1), cancellationToken: TestContext.Current.CancellationToken));
 
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            leaseStore.TryRenewLeaseAsync("test", "participant", TimeSpan.FromMinutes(1)));
+            leaseStore.TryRenewLeaseAsync("test", "participant", TimeSpan.FromMinutes(1), cancellationToken: TestContext.Current.CancellationToken));
 
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            leaseStore.ReleaseLeaseAsync("test", "participant"));
+            leaseStore.ReleaseLeaseAsync("test", "participant", TestContext.Current.CancellationToken));
 
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            leaseStore.GetCurrentLeaseAsync("test"));
+            leaseStore.GetCurrentLeaseAsync("test", TestContext.Current.CancellationToken));
 
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            leaseStore.HasValidLeaseAsync("test"));
+            leaseStore.HasValidLeaseAsync("test", TestContext.Current.CancellationToken));
 
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            leaseStore.EnsureTableExistsAsync());
+            leaseStore.EnsureTableExistsAsync(TestContext.Current.CancellationToken));
 
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            leaseStore.CleanupExpiredLeasesAsync());
+            leaseStore.CleanupExpiredLeasesAsync(TestContext.Current.CancellationToken));
     }
 }

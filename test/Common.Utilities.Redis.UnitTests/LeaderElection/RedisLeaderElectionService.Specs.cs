@@ -56,52 +56,54 @@ public class RedisLeaderElectionServiceSpecs
 
         // Mock ScriptEvaluateAsync for Lua scripts
         _ = _database.ScriptEvaluateAsync(Arg.Any<string>(), Arg.Any<RedisKey[]>(), Arg.Any<RedisValue[]>(), Arg.Any<CommandFlags>())
-            .Returns(callInfo =>
+            .Returns(HandleScriptEvaluation);
+    }
+
+    private Task<RedisResult> HandleScriptEvaluation(NSubstitute.Core.CallInfo callInfo)
+    {
+        var script = callInfo.ArgAt<string>(0);
+        var keys = callInfo.ArgAt<RedisKey[]>(1);
+        var values = callInfo.ArgAt<RedisValue[]>(2);
+
+        if (script.Contains("redis.call('SET', key, newLeaseData, 'EX', ttlSeconds)")) // Renewal script
+        {
+            var key = keys[0];
+            var participantId = values[0];
+            var newLeaseData = values[1];
+
+            if (!_redisStorage.TryGetValue(key!, out var currentLease))
             {
-                var script = callInfo.ArgAt<string>(0);
-                var keys = callInfo.ArgAt<RedisKey[]>(1);
-                var values = callInfo.ArgAt<RedisValue[]>(2);
-
-                if (script.Contains("redis.call('SET', key, newLeaseData, 'EX', ttlSeconds)")) // Renewal script
-                {
-                    var key = keys[0];
-                    var participantId = values[0];
-                    var newLeaseData = values[1];
-
-                    if (!_redisStorage.TryGetValue(key!, out var currentLease))
-                    {
-                        return Task.FromResult(RedisResult.Create(RedisValue.Null));
-                    }
-
-                    if (currentLease.ToString().Contains($"\"ParticipantId\":\"{participantId}\""))
-                    {
-                        _redisStorage[key!] = newLeaseData;
-                        return Task.FromResult(RedisResult.Create(newLeaseData));
-                    }
-
-                    return Task.FromResult(RedisResult.Create(RedisValue.Null));
-                }
-                else if (script.Contains("return redis.call('DEL', key)")) // Release script
-                {
-                    var key = keys[0];
-                    var participantId = values[0];
-
-                    if (!_redisStorage.TryGetValue(key!, out var currentLease))
-                    {
-                        return Task.FromResult(RedisResult.Create(0));
-                    }
-
-                    if (currentLease.ToString().Contains($"\"ParticipantId\":\"{participantId}\""))
-                    {
-                        _ = _redisStorage.Remove(key!);
-                        return Task.FromResult(RedisResult.Create(1));
-                    }
-
-                    return Task.FromResult(RedisResult.Create(0));
-                }
-
                 return Task.FromResult(RedisResult.Create(RedisValue.Null));
-            });
+            }
+
+            if (currentLease.ToString().Contains($"\"ParticipantId\":\"{participantId}\""))
+            {
+                _redisStorage[key!] = newLeaseData;
+                return Task.FromResult(RedisResult.Create(newLeaseData));
+            }
+
+            return Task.FromResult(RedisResult.Create(RedisValue.Null));
+        }
+        else if (script.Contains("return redis.call('DEL', key)")) // Release script
+        {
+            var key = keys[0];
+            var participantId = values[0];
+
+            if (!_redisStorage.TryGetValue(key!, out var currentLease))
+            {
+                return Task.FromResult(RedisResult.Create(0));
+            }
+
+            if (currentLease.ToString().Contains($"\"ParticipantId\":\"{participantId}\""))
+            {
+                _ = _redisStorage.Remove(key!);
+                return Task.FromResult(RedisResult.Create(1));
+            }
+
+            return Task.FromResult(RedisResult.Create(0));
+        }
+
+        return Task.FromResult(RedisResult.Create(RedisValue.Null));
     }
 
     [Fact]
@@ -155,7 +157,7 @@ public class RedisLeaderElectionServiceSpecs
         service.LeadershipChanged += (_, args) => leadershipChangedEvents.Add(args);
 
         // Act
-        var result = await service.TryAcquireLeadershipAsync();
+        var result = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result);
@@ -182,13 +184,13 @@ public class RedisLeaderElectionServiceSpecs
         await using var service2 = new RedisLeaderElectionService(_connectionMultiplexer, serializer, electionName, "participant-2");
 
         // First service acquires leadership
-        _ = await service1.TryAcquireLeadershipAsync();
+        _ = await service1.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         var leadershipChangedEvents = new List<LeadershipChangedEventArgs>();
         service2.LeadershipChanged += (_, args) => leadershipChangedEvents.Add(args);
 
         // Act - Second service tries to acquire
-        var result = await service2.TryAcquireLeadershipAsync();
+        var result = await service2.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result);
@@ -211,14 +213,14 @@ public class RedisLeaderElectionServiceSpecs
         await using var service = new RedisLeaderElectionService(_connectionMultiplexer, serializer, electionName, participantId);
 
         // First acquire leadership
-        _ = await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(service.IsLeader);
 
         var leadershipChangedEvents = new List<LeadershipChangedEventArgs>();
         service.LeadershipChanged += (_, args) => leadershipChangedEvents.Add(args);
 
         // Act
-        await service.ReleaseLeadershipAsync();
+        await service.ReleaseLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(service.IsLeader);
@@ -246,7 +248,7 @@ public class RedisLeaderElectionServiceSpecs
         service.LeadershipChanged += (_, args) => leadershipChangedEvents.Add(args);
 
         // Act - Try to release when not leader
-        await service.ReleaseLeadershipAsync();
+        await service.ReleaseLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(service.IsLeader);
@@ -268,11 +270,11 @@ public class RedisLeaderElectionServiceSpecs
         await using var service = new RedisLeaderElectionService(_connectionMultiplexer, serializer, electionName, participantId, options);
 
         // Act - Start multiple times
-        await service.StartAsync();
-        await service.StartAsync(); // Should not throw or cause issues
+        await service.StartAsync(TestContext.Current.CancellationToken);
+        await service.StartAsync(TestContext.Current.CancellationToken); // Should not throw or cause issues
 
         // Assert - Should complete without errors
-        await service.StopAsync();
+        await service.StopAsync(TestContext.Current.CancellationToken);
         Assert.True(true); // If we reach here, the test passes
     }
 
@@ -287,14 +289,14 @@ public class RedisLeaderElectionServiceSpecs
         await using var service = new RedisLeaderElectionService(_connectionMultiplexer, serializer, electionName, participantId);
 
         // Acquire leadership
-        _ = await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(service.IsLeader);
 
         var leadershipChangedEvents = new List<LeadershipChangedEventArgs>();
         service.LeadershipChanged += (_, args) => leadershipChangedEvents.Add(args);
 
         // Act
-        await service.StopAsync();
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(service.IsLeader);
@@ -359,9 +361,9 @@ public class RedisLeaderElectionServiceSpecs
         // Act - Multiple services try to acquire leadership simultaneously
         var tasks = new[]
         {
-            service1.TryAcquireLeadershipAsync(),
-            service2.TryAcquireLeadershipAsync(),
-            service3.TryAcquireLeadershipAsync()
+            service1.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken),
+            service2.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken),
+            service3.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken)
         };
 
         var results = await Task.WhenAll(tasks);

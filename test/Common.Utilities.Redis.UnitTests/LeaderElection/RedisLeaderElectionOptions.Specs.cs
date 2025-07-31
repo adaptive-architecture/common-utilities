@@ -76,7 +76,7 @@ public class RedisLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Equal("ConnectionMultiplexer is required for Redis leader election.", exception.Message);
     }
 
@@ -92,7 +92,7 @@ public class RedisLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Equal("Serializer is required for Redis leader election.", exception.Message);
     }
 
@@ -108,7 +108,7 @@ public class RedisLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Equal("KeyPrefix cannot be null or whitespace.", exception.Message);
     }
 
@@ -124,7 +124,7 @@ public class RedisLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Equal("KeyPrefix cannot be null or whitespace.", exception.Message);
     }
 
@@ -140,7 +140,7 @@ public class RedisLeaderElectionOptionsSpecs
         };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => options.Validate());
+        var exception = Assert.Throws<InvalidOperationException>(options.Validate);
         Assert.Equal("KeyPrefix cannot be null or whitespace.", exception.Message);
     }
 

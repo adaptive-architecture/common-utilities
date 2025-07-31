@@ -23,6 +23,7 @@ if [ -z "$configuration" ] || [ -z "$version" ] || [ -z "$nuget_api_key" ]; then
 fi
 
 projects=( \
+  "Common.Utilities.xUnit" \
   "Common.Utilities" \
   "Common.Utilities.AspNetCore" \
   "Common.Utilities.Redis" \

@@ -138,7 +138,7 @@ public class InProcessLeaderElectionServiceBasicTests
             dateTimeProvider);
 
         // Act
-        var result = await service.TryAcquireLeadershipAsync();
+        var result = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result);
@@ -163,8 +163,8 @@ public class InProcessLeaderElectionServiceBasicTests
             AlternateParticipantId);
 
         // Act
-        var result1 = await service1.TryAcquireLeadershipAsync();
-        var result2 = await service2.TryAcquireLeadershipAsync();
+        var result1 = await service1.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
+        var result2 = await service2.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result1);
@@ -202,10 +202,10 @@ public class InProcessLeaderElectionServiceBasicTests
             dateTimeProvider);
 
         // Act
-        _ = await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(service.IsLeader);
 
-        await service.ReleaseLeadershipAsync();
+        await service.ReleaseLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(service.IsLeader);
@@ -221,7 +221,7 @@ public class InProcessLeaderElectionServiceBasicTests
             DefaultParticipantId);
 
         // Act & Assert - Should not throw
-        await service.ReleaseLeadershipAsync();
+        await service.ReleaseLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.False(service.IsLeader);
     }
 
@@ -253,10 +253,10 @@ public class InProcessLeaderElectionServiceBasicTests
             options);
 
         // Act
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         // Give some time for the election loop to potentially run
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
 
         // Assert - Should not throw and service should be initialized
         // With EnableContinuousCheck = false, the election loop starts but may acquire leadership immediately
@@ -291,8 +291,8 @@ public class InProcessLeaderElectionServiceBasicTests
             DefaultParticipantId);
 
         // Act
-        await service.StartAsync();
-        await service.StopAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         // Assert - Should not throw
         Assert.Equal(DefaultElectionName, service.ElectionName);
@@ -332,7 +332,7 @@ public class InProcessLeaderElectionServiceBasicTests
         service.LeadershipChanged += (sender, args) => eventArgs = args;
 
         // Act
-        _ = await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(eventArgs);
@@ -359,10 +359,10 @@ public class InProcessLeaderElectionServiceBasicTests
         service.LeadershipChanged += (sender, args) => eventArgs = args;
 
         // Act
-        _ = await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         eventArgs = null; // Reset for the next event
 
-        await service.ReleaseLeadershipAsync();
+        await service.ReleaseLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(eventArgs);
@@ -388,8 +388,8 @@ public class InProcessLeaderElectionServiceBasicTests
             AlternateParticipantId);
 
         // Act
-        var result1 = await service1.TryAcquireLeadershipAsync();
-        var result2 = await service2.TryAcquireLeadershipAsync();
+        var result1 = await service1.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
+        var result2 = await service2.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result1);
@@ -423,8 +423,8 @@ public class InProcessLeaderElectionServiceBasicTests
             dateTimeProvider);
 
         // Act
-        var result1 = await service1.TryAcquireLeadershipAsync();
-        var result2 = await service2.TryAcquireLeadershipAsync();
+        var result1 = await service1.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
+        var result2 = await service2.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result1);
@@ -451,13 +451,13 @@ public class InProcessLeaderElectionServiceBasicTests
             AlternateParticipantId);
 
         // Act
-        _ = await service1.TryAcquireLeadershipAsync();
+        _ = await service1.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(service1.IsLeader);
 
-        await service1.ReleaseLeadershipAsync();
+        await service1.ReleaseLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.False(service1.IsLeader);
 
-        _ = await service2.TryAcquireLeadershipAsync();
+        _ = await service2.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(service1.IsLeader);
@@ -475,7 +475,7 @@ public class InProcessLeaderElectionServiceBasicTests
             DefaultElectionName,
             DefaultParticipantId);
 
-        _ = await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(service.IsLeader);
 
         // Act
@@ -484,7 +484,7 @@ public class InProcessLeaderElectionServiceBasicTests
         // Assert
         // After disposal, service should be unusable
         _ = await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            service.TryAcquireLeadershipAsync());
+            service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -499,7 +499,7 @@ public class InProcessLeaderElectionServiceBasicTests
             DefaultElectionName,
             DefaultParticipantId);
 
-        _ = await service1.TryAcquireLeadershipAsync();
+        _ = await service1.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(service1.IsLeader);
         await service1.DisposeAsync();
 
@@ -510,7 +510,7 @@ public class InProcessLeaderElectionServiceBasicTests
             AlternateParticipantId);
 
         // Assert - should be able to acquire leadership after disposal
-        var result = await service2.TryAcquireLeadershipAsync();
+        var result = await service2.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         Assert.True(result);
         Assert.True(service2.IsLeader);
@@ -537,7 +537,7 @@ public class InProcessLeaderElectionServiceBasicTests
             options);
 
         // Act
-        _ = await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(service.IsLeader);
@@ -598,9 +598,9 @@ public class InProcessLeaderElectionServiceBasicTests
             new LeaderElectionOptions { EnableContinuousCheck = autoStart });
 
         // Act & Assert - Should not throw
-        await service.StartAsync();
-        await service.StartAsync();
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
+        await service.StartAsync(TestContext.Current.CancellationToken);
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(DefaultElectionName, service.ElectionName);
         Assert.Equal(DefaultParticipantId, service.ParticipantId);
@@ -618,9 +618,9 @@ public class InProcessLeaderElectionServiceBasicTests
             new LeaderElectionOptions { EnableContinuousCheck = autoStart });
 
         // Act & Assert - Should not throw
-        await service.StopAsync();
-        await service.StopAsync();
-        await service.StopAsync();
+        await service.StopAsync(TestContext.Current.CancellationToken);
+        await service.StopAsync(TestContext.Current.CancellationToken);
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(DefaultElectionName, service.ElectionName);
         Assert.Equal(DefaultParticipantId, service.ParticipantId);
@@ -637,14 +637,14 @@ public class InProcessLeaderElectionServiceBasicTests
             options);
 
         // Act & Assert - Should not throw with interleaved calls
-        await service.StartAsync();
-        await service.StopAsync();
-        await service.StartAsync();
-        await service.StartAsync(); // Multiple starts
-        await service.StopAsync();
-        await service.StopAsync(); // Multiple stops
-        await service.StartAsync();
-        await service.StopAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
+        await service.StopAsync(TestContext.Current.CancellationToken);
+        await service.StartAsync(TestContext.Current.CancellationToken);
+        await service.StartAsync(TestContext.Current.CancellationToken); // Multiple starts
+        await service.StopAsync(TestContext.Current.CancellationToken);
+        await service.StopAsync(TestContext.Current.CancellationToken); // Multiple stops
+        await service.StartAsync(TestContext.Current.CancellationToken);
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(DefaultElectionName, service.ElectionName);
         Assert.Equal(DefaultParticipantId, service.ParticipantId);
@@ -666,13 +666,13 @@ public class InProcessLeaderElectionServiceBasicTests
         // Multiple concurrent starts
         for (int i = 0; i < 5; i++)
         {
-            tasks.Add(service.StartAsync());
+            tasks.Add(service.StartAsync(TestContext.Current.CancellationToken));
         }
 
         // Multiple concurrent stops
         for (int i = 0; i < 5; i++)
         {
-            tasks.Add(service.StopAsync());
+            tasks.Add(service.StopAsync(TestContext.Current.CancellationToken));
         }
 
         // Assert - Should all complete without throwing
@@ -722,16 +722,16 @@ public class InProcessLeaderElectionServiceBasicTests
             dateTimeProvider);
 
         // Act - Acquire leadership then do start/stop cycles
-        _ = await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(service.IsLeader);
 
         // Multiple start/stop cycles while being leader
-        await service.StartAsync();
-        await service.StopAsync();
-        await service.StartAsync();
-        await service.StartAsync();
-        await service.StopAsync();
-        await service.StopAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
+        await service.StopAsync(TestContext.Current.CancellationToken);
+        await service.StartAsync(TestContext.Current.CancellationToken);
+        await service.StartAsync(TestContext.Current.CancellationToken);
+        await service.StopAsync(TestContext.Current.CancellationToken);
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         // Assert - Should maintain state correctly
         Assert.Equal(DefaultElectionName, service.ElectionName);
@@ -758,9 +758,9 @@ public class InProcessLeaderElectionServiceBasicTests
         // Act & Assert - Rapid start/stop sequence
         for (int i = 0; i < 10; i++)
         {
-            await service.StartAsync();
-            await Task.Delay(5); // Brief delay to let election loop potentially start
-            await service.StopAsync();
+            await service.StartAsync(TestContext.Current.CancellationToken);
+            await Task.Delay(5, TestContext.Current.CancellationToken); // Brief delay to let election loop potentially start
+            await service.StopAsync(TestContext.Current.CancellationToken);
         }
 
         Assert.Equal(DefaultElectionName, service.ElectionName);
@@ -804,11 +804,11 @@ public class InProcessLeaderElectionServiceBasicTests
         try
         {
             // Act - Start both services with EnableContinuousCheck=true
-            await service1.StartAsync();
-            await service2.StartAsync();
+            await service1.StartAsync(TestContext.Current.CancellationToken);
+            await service2.StartAsync(TestContext.Current.CancellationToken);
 
             // Wait for initial leader election to settle
-            await Task.Delay(300);
+            await Task.Delay(300, TestContext.Current.CancellationToken);
 
             // Phase 1: One service should become leader
             var initialLeaderCount = (service1.IsLeader ? 1 : 0) + (service2.IsLeader ? 1 : 0);
@@ -818,11 +818,11 @@ public class InProcessLeaderElectionServiceBasicTests
             var currentFollower = service1.IsLeader ? service2 : service1;
 
             // Phase 2: Current leader releases leadership
-            await currentLeader.ReleaseLeadershipAsync();
+            await currentLeader.ReleaseLeadershipAsync(TestContext.Current.CancellationToken);
             Assert.False(currentLeader.IsLeader);
 
             // Force the follower to try acquiring leadership
-            _ = await currentFollower.TryAcquireLeadershipAsync();
+            _ = await currentFollower.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
             // Wait for the follower to detect leadership is available and acquire it
             var maxWait = TimeSpan.FromSeconds(2);
@@ -830,7 +830,7 @@ public class InProcessLeaderElectionServiceBasicTests
 
             while (!currentFollower.IsLeader && DateTime.UtcNow - start < maxWait)
             {
-                await Task.Delay(50);
+                await Task.Delay(50, TestContext.Current.CancellationToken);
             }
 
             // Assert Phase 2: Follower should now be leader
@@ -838,15 +838,15 @@ public class InProcessLeaderElectionServiceBasicTests
             Assert.False(currentLeader.IsLeader, "Original leader should remain non-leader");
 
             // Phase 3: New leader releases leadership
-            await currentFollower.ReleaseLeadershipAsync();
+            await currentFollower.ReleaseLeadershipAsync(TestContext.Current.CancellationToken);
             Assert.False(currentFollower.IsLeader);
 
             // Wait a bit and stop services to prevent re-acquisition due to EnableContinuousCheck
-            await service1.StopAsync();
-            await service2.StopAsync();
+            await service1.StopAsync(TestContext.Current.CancellationToken);
+            await service2.StopAsync(TestContext.Current.CancellationToken);
 
             // Wait a bit to ensure leadership is properly released and services are stopped
-            await Task.Delay(300);
+            await Task.Delay(300, TestContext.Current.CancellationToken);
 
             // Assert Phase 3: Both should be non-leaders after second release and service stop
             Assert.False(service1.IsLeader, "Service1 should not be leader after stop");
@@ -868,8 +868,8 @@ public class InProcessLeaderElectionServiceBasicTests
         finally
         {
             // Cleanup - services should already be stopped, but ensure cleanup
-            try { await service1.StopAsync(); } catch { }
-            try { await service2.StopAsync(); } catch { }
+            try { await service1.StopAsync(TestContext.Current.CancellationToken); } catch { /* NOOP */ }
+            try { await service2.StopAsync(TestContext.Current.CancellationToken); } catch { /* NOOP */ }
             leaseStore.Dispose();
         }
     }

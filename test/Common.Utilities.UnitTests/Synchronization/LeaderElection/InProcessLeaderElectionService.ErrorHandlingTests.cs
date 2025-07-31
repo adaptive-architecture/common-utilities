@@ -20,7 +20,7 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
             DefaultParticipantId);
 
         // Act
-        var result = await service.TryAcquireLeadershipAsync();
+        var result = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result); // Should return false on exception
@@ -61,7 +61,7 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
             options);
 
         // Act
-        var result = await service.TryAcquireLeadershipAsync();
+        var result = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result); // Should return false on timeout
@@ -81,7 +81,7 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
             DefaultParticipantId);
 
         // First acquire leadership
-        _ = await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
         Assert.True(service.IsLeader);
 
         // Replace with faulty store
@@ -91,11 +91,8 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
             DefaultElectionName,
             DefaultParticipantId);
 
-        // Manually set leadership status for test
-        var baseService = (InProcessLeaderElectionService)faultyService;
-
         // Act & Assert - Should not throw despite lease store error
-        var exception = await Record.ExceptionAsync(() => faultyService.ReleaseLeadershipAsync());
+        var exception = await Record.ExceptionAsync(() => faultyService.ReleaseLeadershipAsync(TestContext.Current.CancellationToken));
         Assert.Null(exception);
 
         leaseStore.Dispose();
@@ -120,9 +117,9 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
             options);
 
         // Act
-        await service.StartAsync();
-        await Task.Delay(300); // Allow multiple retry cycles
-        await service.StopAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
+        await Task.Delay(300, TestContext.Current.CancellationToken); // Allow multiple retry cycles
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         // Assert - Should not crash despite repeated exceptions
         Assert.False(service.IsLeader);
@@ -149,7 +146,7 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
             options);
 
         // Act
-        await service.StartAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         // Stop quickly while operations might be in progress
         using var cts = new CancellationTokenSource(50);
@@ -177,7 +174,7 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
         };
 
         // Act & Assert - Should not throw despite event handler exception
-        var exception = await Record.ExceptionAsync(() => service.TryAcquireLeadershipAsync());
+        var exception = await Record.ExceptionAsync(() => service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken));
         Assert.Null(exception);
         Assert.True(service.IsLeader); // Should still acquire leadership
         Assert.Equal(1, eventFiredCount); // Event should have fired
@@ -201,9 +198,9 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
             options);
 
         // Act
-        await service.StartAsync();
-        await Task.Delay(200); // Allow multiple election loop cycles
-        await service.StopAsync();
+        await service.StartAsync(TestContext.Current.CancellationToken);
+        await Task.Delay(200, TestContext.Current.CancellationToken); // Allow multiple election loop cycles
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         // Assert - Should survive intermittent lease store errors
         Assert.True(intermittentLeaseStore.GetCurrentLeaseCallCount > 0);
@@ -219,10 +216,7 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
 
         // Act & Assert - Should handle exception gracefully
         var exception = await Record.ExceptionAsync(() =>
-            faultyLeaseStore.TryRenewLeaseAsync(
-                DefaultElectionName,
-                DefaultParticipantId,
-                TimeSpan.FromMinutes(5)));
+            faultyLeaseStore.TryRenewLeaseAsync(DefaultElectionName, DefaultParticipantId, TimeSpan.FromMinutes(5), cancellationToken: TestContext.Current.CancellationToken));
 
         // Assert - Should propagate the exception from the faulty store
         Assert.NotNull(exception);
@@ -242,7 +236,7 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
             DefaultElectionName,
             DefaultParticipantId);
 
-        _ = await service.TryAcquireLeadershipAsync();
+        _ = await service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken);
 
         // Act & Assert - Should not throw despite StopAsync exception
         var exception = await Record.ExceptionAsync(() => service.DisposeAsync().AsTask());
@@ -262,7 +256,7 @@ public class InProcessLeaderElectionServiceErrorHandlingTests
         await service.DisposeAsync();
 
         // Act & Assert
-        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() => service.TryAcquireLeadershipAsync());
-        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() => service.StartAsync());
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() => service.TryAcquireLeadershipAsync(TestContext.Current.CancellationToken));
+        _ = await Assert.ThrowsAsync<ObjectDisposedException>(() => service.StartAsync(TestContext.Current.CancellationToken));
     }
 }

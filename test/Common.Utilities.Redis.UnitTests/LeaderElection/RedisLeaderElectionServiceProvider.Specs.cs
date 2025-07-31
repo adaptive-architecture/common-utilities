@@ -312,14 +312,14 @@ public class RedisLeaderElectionServiceProviderSpecs
                 {
                     elections.AddRange(threadElections);
                 }
-            }));
+            }, TestContext.Current.CancellationToken));
         }
 
         await Task.WhenAll(tasks.ToArray());
 
         // Assert
         Assert.Equal(threadCount * electionsPerThread, elections.Count);
-        Assert.All(elections, election => Assert.NotNull(election));
+        Assert.All(elections, Assert.NotNull);
 
         // Verify all elections are unique
         var uniqueElections = elections.Distinct().ToList();

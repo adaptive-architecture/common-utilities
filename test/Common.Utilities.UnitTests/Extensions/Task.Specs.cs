@@ -10,7 +10,7 @@ public class TaskSpecs
     public void Forget_Should_Not_Fail()
     {
         Task.CompletedTask.Forget();
-        Task.Delay(TimeSpan.FromMilliseconds(1)).Forget();
+        Task.Delay(TimeSpan.FromMilliseconds(1), TestContext.Current.CancellationToken).Forget();
 
         ThrowExceptionAsync(TimeSpan.Zero).Forget();
         ThrowExceptionAsync(TimeSpan.FromMilliseconds(2)).Forget();
@@ -24,16 +24,16 @@ public class TaskSpecs
     public void Task_Void_RunSync_Should_Allow_Running_Task_Synchronously()
     {
         Func<Task> taskFactory = () => Task.CompletedTask;
-        taskFactory.RunSync();
+        taskFactory.RunSync(cancellationToken: TestContext.Current.CancellationToken);
 
         taskFactory = () => Task.Delay(TimeSpan.FromMilliseconds(1));
-        taskFactory.RunSync();
+        taskFactory.RunSync(cancellationToken: TestContext.Current.CancellationToken);
 
         taskFactory = GetNullTask;
-        taskFactory.RunSync();
+        taskFactory.RunSync(cancellationToken: TestContext.Current.CancellationToken);
 
         taskFactory = () => ThrowExceptionAsync(TimeSpan.FromMilliseconds(2));
-        _ = Assert.Throws<ApplicationException>(() => taskFactory.RunSync());
+        _ = Assert.Throws<ApplicationException>(() => taskFactory.RunSync(cancellationToken: TestContext.Current.CancellationToken));
 
         Assert.True(true);
     }
@@ -43,19 +43,20 @@ public class TaskSpecs
     {
         var result = false;
         Func<Task<bool>> taskFactory = () => Task.FromResult(true);
-        result = taskFactory.RunSync();
+        result = taskFactory.RunSync(cancellationToken: TestContext.Current.CancellationToken);
         Assert.True(result);
 
         taskFactory = delegate
         {
             return Task.FromResult(false);
         };
-        result = taskFactory.RunSync();
+        result = taskFactory.RunSync(cancellationToken: TestContext.Current.CancellationToken);
         Assert.False(result);
 
         result = true;
+        Assert.True(result);
         taskFactory = GetNullTask<bool>;
-        result = taskFactory.RunSync();
+        result = taskFactory.RunSync(cancellationToken: TestContext.Current.CancellationToken);
         Assert.False(result);
 
         taskFactory = async delegate
@@ -63,7 +64,7 @@ public class TaskSpecs
             await ThrowExceptionAsync(TimeSpan.FromMilliseconds(2));
             return true;
         };
-        _ = Assert.Throws<ApplicationException>(() => taskFactory.RunSync());
+        _ = Assert.Throws<ApplicationException>(() => taskFactory.RunSync(cancellationToken: TestContext.Current.CancellationToken));
 
         Assert.True(true);
     }
