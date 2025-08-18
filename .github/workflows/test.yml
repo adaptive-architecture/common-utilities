@@ -21,7 +21,7 @@ jobs:
           java-version: '17'
           java-package: 'jre'
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0 # In order for Sonar Scan to have all data.
 
