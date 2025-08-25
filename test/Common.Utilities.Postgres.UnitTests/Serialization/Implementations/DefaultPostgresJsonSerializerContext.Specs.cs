@@ -1,5 +1,5 @@
-﻿using AdaptArch.Common.Utilities.Postgres.Serialization.Implementations;
-using System.Text.Json;
+﻿using System.Text.Json;
+using AdaptArch.Common.Utilities.Postgres.Serialization.Implementations;
 
 namespace AdaptArch.Common.Utilities.Postgres.UnitTests.Serialization.Implementations;
 

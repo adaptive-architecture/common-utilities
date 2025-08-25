@@ -1,7 +1,7 @@
 ﻿using AdaptArch.Common.Utilities.GlobalAbstractions.Contracts;
 using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations;
-using AdaptArch.Common.Utilities.Synchronization.LeaderElection.Contracts;
 using AdaptArch.Common.Utilities.Serialization.Contracts;
+using AdaptArch.Common.Utilities.Synchronization.LeaderElection.Contracts;
 using Npgsql;
 
 namespace AdaptArch.Common.Utilities.Postgres.LeaderElection;

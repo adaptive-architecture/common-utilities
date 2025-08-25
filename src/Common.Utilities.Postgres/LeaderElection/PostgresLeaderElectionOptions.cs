@@ -1,5 +1,5 @@
-﻿using Npgsql;
-using AdaptArch.Common.Utilities.Serialization.Contracts;
+﻿using AdaptArch.Common.Utilities.Serialization.Contracts;
+using Npgsql;
 
 namespace AdaptArch.Common.Utilities.Postgres.LeaderElection;
 

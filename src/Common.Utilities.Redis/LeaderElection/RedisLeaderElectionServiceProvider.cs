@@ -1,6 +1,6 @@
 ﻿using AdaptArch.Common.Utilities.GlobalAbstractions.Contracts;
-using AdaptArch.Common.Utilities.Synchronization.LeaderElection.Contracts;
 using AdaptArch.Common.Utilities.Redis.Serialization.Contracts;
+using AdaptArch.Common.Utilities.Synchronization.LeaderElection.Contracts;
 using StackExchange.Redis;
 
 namespace AdaptArch.Common.Utilities.Redis.LeaderElection;

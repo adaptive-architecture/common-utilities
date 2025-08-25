@@ -1,4 +1,5 @@
-﻿using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations;
+﻿using System.Net.Sockets;
+using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations;
 using AdaptArch.Common.Utilities.Postgres.IntegrationTests.Fixtures;
 using AdaptArch.Common.Utilities.Postgres.LeaderElection;
 using AdaptArch.Common.Utilities.Serialization.Contracts;
@@ -6,7 +7,6 @@ using AdaptArch.Common.Utilities.Serialization.Implementations;
 using AdaptArch.Common.Utilities.Synchronization.LeaderElection.Contracts;
 using Npgsql;
 using NSubstitute;
-using System.Net.Sockets;
 
 namespace AdaptArch.Common.Utilities.Postgres.IntegrationTests.LeaderElection;
 
