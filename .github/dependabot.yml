@@ -8,6 +8,8 @@ updates:
       all:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "Microsoft.NET.ILLink.Tasks"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
