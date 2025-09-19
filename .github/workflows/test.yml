@@ -56,6 +56,9 @@ jobs:
           /d:sonar.scanner.scanAll=false
           /d:sonar.exclusions="**/assets/**/*,**/coverage/**/*,**/docfx/**/*,**/samples/**/*,**/bin/**/*,**/obj/**/*"
           /d:sonar.scanner.skipJreProvisioning=true
+          /d:sonar.verbose=true
+          /d:sonar.log.level=DEBUG
+          /d:sonar.qualitygate.wait=true
 
       - name: Build
         run: dotnet build --no-incremental
@@ -67,6 +70,81 @@ jobs:
         run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Display SonarQube Configuration
+        if: always()
+        run: |
+          echo "=== SonarQube Configuration ==="
+          if [ -f .sonarqube/conf/SonarQube.Analysis.xml ]; then
+            echo "Found SonarQube.Analysis.xml:"
+            cat .sonarqube/conf/SonarQube.Analysis.xml
+          else
+            echo "No SonarQube.Analysis.xml found"
+          fi
+
+          echo ""
+          echo "=== SonarQube Directory Structure ==="
+          find .sonarqube -type f | head -20 | while read file; do
+            echo "$file"
+          done
+
+      - name: Display SonarQube Output Files
+        if: always()
+        run: |
+          echo "=== Listing SonarQube output directory ==="
+          ls -la .sonarqube/out/ || echo "No .sonarqube/out/ directory found"
+
+          echo ""
+          echo "=== SonarQube Issues Report ==="
+          if [ -f .sonarqube/out/sonar-report.json ]; then
+            cat .sonarqube/out/sonar-report.json
+          elif [ -f .sonarqube/out/issues-report/issues-report.json ]; then
+            cat .sonarqube/out/issues-report/issues-report.json
+          else
+            echo "No issues report found"
+          fi
+
+          echo ""
+          echo "=== All files in SonarQube output ==="
+          find .sonarqube -name "*.json" -o -name "*.xml" -o -name "*.txt" -o -name "*.log" | head -20 | while read file; do
+            echo "=== Content of $file ==="
+            cat "$file" 2>/dev/null || echo "Could not read $file"
+            echo ""
+          done
+
+      - name: Display SonarQube Analysis Results
+        if: always()
+        run: |
+          echo "=== Searching for SonarQube logs and reports ==="
+          find . -path "./coverage" -prune -o -path "./.git" -prune -o -name "*sonar*" -type f -print | head -30 | while read file; do
+            echo "Found file: $file"
+            if [[ "$file" == *.json ]] || [[ "$file" == *.xml ]] || [[ "$file" == *.txt ]] || [[ "$file" == *.log ]]; then
+              echo "=== Content of $file ==="
+              head -100 "$file" 2>/dev/null || echo "Could not read $file"
+              echo ""
+            fi
+          done
+
+      - name: Parse and Display SonarQube Issues
+        if: always()
+        run: |
+          echo "=== Searching for SonarQube Issues in Console Output ==="
+          echo "Looking for issue patterns in the workflow log above..."
+
+          echo ""
+          echo "=== MSBuild Warning/Error Summary ==="
+          # Look for any warning or error files that might have been created
+          find . -name "*.sarif" -o -name "*warnings*" -o -name "*errors*" | while read file; do
+            echo "Found analysis file: $file"
+            cat "$file" 2>/dev/null || echo "Could not read $file"
+          done
+
+          echo ""
+          echo "=== SonarQube Scanner Logs ==="
+          find . -name "sonar-scanner*.log" | while read logfile; do
+            echo "=== Content of $logfile ==="
+            grep -i "warning\|error\|issue\|rule" "$logfile" 2>/dev/null || echo "No issues found in $logfile"
+          done
 
       # - uses: coverallsapp/github-action@master
       #   with:
