@@ -16,6 +16,8 @@ public sealed class Md5HashAlgorithm : IHashAlgorithm
     public byte[] ComputeHash(byte[] key)
     {
         ArgumentNullException.ThrowIfNull(key);
+#pragma warning disable S4790 // Using MD5 is acceptable here for non-cryptographic purposes.
         return MD5.HashData(key);
+#pragma warning restore S4790
     }
 }

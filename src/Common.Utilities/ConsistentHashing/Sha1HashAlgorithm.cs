@@ -16,6 +16,8 @@ public sealed class Sha1HashAlgorithm : IHashAlgorithm
     public byte[] ComputeHash(byte[] key)
     {
         ArgumentNullException.ThrowIfNull(key);
+#pragma warning disable S4790 // Using SHA1 is acceptable here for non-cryptographic purposes.
         return SHA1.HashData(key);
+#pragma warning restore S4790
     }
 }

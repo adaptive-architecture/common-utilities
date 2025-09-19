@@ -27,4 +27,40 @@ internal sealed class VirtualNode<T> : IComparable<VirtualNode<T>>
     {
         return HashCode.Combine(Hash, Server);
     }
+
+    public static bool operator ==(VirtualNode<T>? left, VirtualNode<T>? right)
+    {
+        if (ReferenceEquals(left, right)) return true;
+        if (left is null || right is null) return false;
+        return left.Hash == right.Hash && left.Server.Equals(right.Server);
+    }
+
+    public static bool operator !=(VirtualNode<T>? left, VirtualNode<T>? right)
+    {
+        return !(left == right);
+    }
+
+    public static bool operator <(VirtualNode<T>? left, VirtualNode<T>? right)
+    {
+        if (left is null) return right is not null;
+        return left.CompareTo(right) < 0;
+    }
+
+    public static bool operator <=(VirtualNode<T>? left, VirtualNode<T>? right)
+    {
+        if (left is null) return true;
+        return left.CompareTo(right) <= 0;
+    }
+
+    public static bool operator >(VirtualNode<T>? left, VirtualNode<T>? right)
+    {
+        if (left is null) return false;
+        return left.CompareTo(right) > 0;
+    }
+
+    public static bool operator >=(VirtualNode<T>? left, VirtualNode<T>? right)
+    {
+        if (left is null) return right is null;
+        return left.CompareTo(right) >= 0;
+    }
 }

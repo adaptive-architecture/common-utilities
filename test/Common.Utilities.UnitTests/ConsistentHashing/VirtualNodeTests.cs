@@ -451,6 +451,459 @@ public class VirtualNodeTests
 
     #endregion
 
+    #region Comparison Operators Tests
+
+    [Fact]
+    public void EqualityOperator_SameHashAndServer_ReturnsTrue()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        var node2 = new VirtualNode<string>(100u, "server1");
+
+        // Act & Assert
+        Assert.True(node1 == node2);
+        Assert.True(node2 == node1);
+    }
+
+    [Fact]
+    public void EqualityOperator_SameHashDifferentServer_ReturnsFalse()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        var node2 = new VirtualNode<string>(100u, "server2");
+
+        // Act & Assert
+        Assert.False(node1 == node2);
+        Assert.False(node2 == node1);
+    }
+
+    [Fact]
+    public void EqualityOperator_DifferentHashSameServer_ReturnsFalse()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        var node2 = new VirtualNode<string>(200u, "server1");
+
+        // Act & Assert
+        Assert.False(node1 == node2);
+        Assert.False(node2 == node1);
+    }
+
+    [Fact]
+    public void EqualityOperator_BothNull_ReturnsTrue()
+    {
+        // Arrange
+        VirtualNode<string> node1 = null!;
+        VirtualNode<string> node2 = null!;
+
+        // Act & Assert
+        Assert.True(node1 == node2);
+    }
+
+    [Fact]
+    public void EqualityOperator_OneNull_ReturnsFalse()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        VirtualNode<string> node2 = null!;
+
+        // Act & Assert
+        Assert.False(node1 == node2);
+        Assert.False(node2 == node1);
+    }
+
+    [Fact]
+    public void EqualityOperator_SameReference_ReturnsTrue()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        var node2 = node1;
+
+        // Act & Assert
+        Assert.True(node1 == node2);
+        Assert.True(node2 == node1);
+    }
+
+    [Fact]
+    public void InequalityOperator_SameHashAndServer_ReturnsFalse()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        var node2 = new VirtualNode<string>(100u, "server1");
+
+        // Act & Assert
+        Assert.False(node1 != node2);
+        Assert.False(node2 != node1);
+    }
+
+    [Fact]
+    public void InequalityOperator_DifferentNodes_ReturnsTrue()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        var node2 = new VirtualNode<string>(200u, "server2");
+
+        // Act & Assert
+        Assert.True(node1 != node2);
+        Assert.True(node2 != node1);
+    }
+
+    [Fact]
+    public void InequalityOperator_OneNull_ReturnsTrue()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        VirtualNode<string> node2 = null!;
+
+        // Act & Assert
+        Assert.True(node1 != node2);
+        Assert.True(node2 != node1);
+    }
+
+    [Fact]
+    public void InequalityOperator_BothNull_ReturnsFalse()
+    {
+        // Arrange
+        VirtualNode<string> node1 = null!;
+        VirtualNode<string> node2 = null!;
+
+        // Act & Assert
+        Assert.False(node1 != node2);
+    }
+
+    [Fact]
+    public void LessThanOperator_SmallerHash_ReturnsTrue()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        var node2 = new VirtualNode<string>(200u, "server2");
+
+        // Act & Assert
+        Assert.True(node1 < node2);
+        Assert.False(node2 < node1);
+    }
+
+    [Fact]
+    public void LessThanOperator_SameHash_ReturnsFalse()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        var node2 = new VirtualNode<string>(100u, "server2");
+
+        // Act & Assert
+        Assert.False(node1 < node2);
+        Assert.False(node2 < node1);
+    }
+
+    [Fact]
+    public void LessThanOperator_LeftNull_ReturnsCorrectValue()
+    {
+        // Arrange
+        VirtualNode<string> node1 = null!;
+        var node2 = new VirtualNode<string>(100u, "server1");
+
+        // Act & Assert
+        Assert.True(node1 < node2);   // null < non-null is true
+        Assert.False(node2 < node1);  // non-null < null is false
+    }
+
+    [Fact]
+    public void LessThanOperator_BothNull_ReturnsFalse()
+    {
+        // Arrange
+        VirtualNode<string> node1 = null!;
+        VirtualNode<string> node2 = null!;
+
+        // Act & Assert
+        Assert.False(node1 < node2);
+    }
+
+    [Fact]
+    public void LessThanOrEqualOperator_SmallerHash_ReturnsTrue()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        var node2 = new VirtualNode<string>(200u, "server2");
+
+        // Act & Assert
+        Assert.True(node1 <= node2);
+        Assert.False(node2 <= node1);
+    }
+
+    [Fact]
+    public void LessThanOrEqualOperator_SameHash_ReturnsTrue()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        var node2 = new VirtualNode<string>(100u, "server2");
+
+        // Act & Assert
+        Assert.True(node1 <= node2);
+        Assert.True(node2 <= node1);
+    }
+
+    [Fact]
+    public void LessThanOrEqualOperator_LeftNull_ReturnsTrue()
+    {
+        // Arrange
+        VirtualNode<string> node1 = null!;
+        var node2 = new VirtualNode<string>(100u, "server1");
+
+        // Act & Assert
+        Assert.True(node1 <= node2);
+        Assert.False(node2 <= node1);
+    }
+
+    [Fact]
+    public void LessThanOrEqualOperator_BothNull_ReturnsTrue()
+    {
+        // Arrange
+        VirtualNode<string> node1 = null!;
+        VirtualNode<string> node2 = null!;
+
+        // Act & Assert
+        Assert.True(node1 <= node2);
+    }
+
+    [Fact]
+    public void GreaterThanOperator_LargerHash_ReturnsTrue()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(200u, "server1");
+        var node2 = new VirtualNode<string>(100u, "server2");
+
+        // Act & Assert
+        Assert.True(node1 > node2);
+        Assert.False(node2 > node1);
+    }
+
+    [Fact]
+    public void GreaterThanOperator_SameHash_ReturnsFalse()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        var node2 = new VirtualNode<string>(100u, "server2");
+
+        // Act & Assert
+        Assert.False(node1 > node2);
+        Assert.False(node2 > node1);
+    }
+
+    [Fact]
+    public void GreaterThanOperator_LeftNull_ReturnsFalse()
+    {
+        // Arrange
+        VirtualNode<string> node1 = null!;
+        var node2 = new VirtualNode<string>(100u, "server1");
+
+        // Act & Assert
+        Assert.False(node1 > node2);
+        Assert.True(node2 > node1);
+    }
+
+    [Fact]
+    public void GreaterThanOperator_BothNull_ReturnsFalse()
+    {
+        // Arrange
+        VirtualNode<string> node1 = null!;
+        VirtualNode<string> node2 = null!;
+
+        // Act & Assert
+        Assert.False(node1 > node2);
+    }
+
+    [Fact]
+    public void GreaterThanOrEqualOperator_LargerHash_ReturnsTrue()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(200u, "server1");
+        var node2 = new VirtualNode<string>(100u, "server2");
+
+        // Act & Assert
+        Assert.True(node1 >= node2);
+        Assert.False(node2 >= node1);
+    }
+
+    [Fact]
+    public void GreaterThanOrEqualOperator_SameHash_ReturnsTrue()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        var node2 = new VirtualNode<string>(100u, "server2");
+
+        // Act & Assert
+        Assert.True(node1 >= node2);
+        Assert.True(node2 >= node1);
+    }
+
+    [Fact]
+    public void GreaterThanOrEqualOperator_LeftNull_ReturnsCorrectValue()
+    {
+        // Arrange
+        VirtualNode<string> node1 = null!;
+        var node2 = new VirtualNode<string>(100u, "server1");
+
+        // Act & Assert
+        Assert.False(node1 >= node2);  // null >= non-null is false
+        Assert.True(node2 >= node1);   // non-null >= null is true
+    }
+
+    [Fact]
+    public void GreaterThanOrEqualOperator_BothNull_ReturnsTrue()
+    {
+        // Arrange
+        VirtualNode<string> node1 = null!;
+        VirtualNode<string> node2 = null!;
+
+        // Act & Assert
+        Assert.True(node1 >= node2);
+    }
+
+    [Theory]
+    [InlineData(0u, 1u)]
+    [InlineData(1u, 2u)]
+    [InlineData(100u, 200u)]
+    [InlineData(UInt32.MaxValue - 1, UInt32.MaxValue)]
+    public void ComparisonOperators_ConsistentWithCompareTo(uint smallerHash, uint largerHash)
+    {
+        // Arrange
+        var smallerNode = new VirtualNode<string>(smallerHash, "server1");
+        var largerNode = new VirtualNode<string>(largerHash, "server2");
+
+        // Act & Assert - Verify all operators are consistent with CompareTo
+        Assert.True(smallerNode < largerNode);
+        Assert.True(smallerNode <= largerNode);
+        Assert.False(smallerNode > largerNode);
+        Assert.False(smallerNode >= largerNode);
+        Assert.True(smallerNode != largerNode);
+        Assert.False(smallerNode == largerNode);
+
+        Assert.False(largerNode < smallerNode);
+        Assert.False(largerNode <= smallerNode);
+        Assert.True(largerNode > smallerNode);
+        Assert.True(largerNode >= smallerNode);
+        Assert.True(largerNode != smallerNode);
+        Assert.False(largerNode == smallerNode);
+    }
+
+    [Fact]
+    public void ComparisonOperators_EdgeCaseWithMinMaxValues()
+    {
+        // Arrange
+        var minNode = new VirtualNode<string>(UInt32.MinValue, "server1");
+        var maxNode = new VirtualNode<string>(UInt32.MaxValue, "server2");
+
+        // Act & Assert
+        Assert.True(minNode < maxNode);
+        Assert.True(minNode <= maxNode);
+        Assert.False(minNode > maxNode);
+        Assert.False(minNode >= maxNode);
+        Assert.True(minNode != maxNode);
+        Assert.False(minNode == maxNode);
+
+        Assert.False(maxNode < minNode);
+        Assert.False(maxNode <= minNode);
+        Assert.True(maxNode > minNode);
+        Assert.True(maxNode >= minNode);
+        Assert.True(maxNode != minNode);
+        Assert.False(maxNode == minNode);
+    }
+
+    [Fact]
+    public void ComparisonOperators_WithDifferentGenericTypes_WorkCorrectly()
+    {
+        // Arrange
+        var intNode1 = new VirtualNode<int>(100u, 1);
+        var intNode2 = new VirtualNode<int>(200u, 2);
+        var intNode3 = new VirtualNode<int>(100u, 1); // Same as node1
+
+        // Act & Assert
+        Assert.True(intNode1 < intNode2);
+        Assert.False(intNode2 < intNode1);
+        Assert.True(intNode1 == intNode3);
+        Assert.False(intNode1 != intNode3);
+
+        // Test with GUIDs
+        var guid1 = Guid.NewGuid();
+        var guid2 = Guid.NewGuid();
+        var guidNode1 = new VirtualNode<Guid>(100u, guid1);
+        var guidNode2 = new VirtualNode<Guid>(200u, guid2);
+        var guidNode3 = new VirtualNode<Guid>(100u, guid1);
+
+        Assert.True(guidNode1 < guidNode2);
+        Assert.False(guidNode2 < guidNode1);
+        Assert.True(guidNode1 == guidNode3);
+        Assert.False(guidNode1 != guidNode3);
+    }
+
+    [Fact]
+    public void ComparisonOperators_TransitivityProperty()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        var node2 = new VirtualNode<string>(200u, "server2");
+        var node3 = new VirtualNode<string>(300u, "server3");
+
+        // Act & Assert - Test transitivity: if a < b and b < c, then a < c
+        Assert.True(node1 < node2);
+        Assert.True(node2 < node3);
+        Assert.True(node1 < node3); // Transitivity
+
+        // Test with <= operator
+        Assert.True(node1 <= node2);
+        Assert.True(node2 <= node3);
+        Assert.True(node1 <= node3); // Transitivity
+
+        // Test with > operator
+        Assert.True(node3 > node2);
+        Assert.True(node2 > node1);
+        Assert.True(node3 > node1); // Transitivity
+
+        // Test with >= operator
+        Assert.True(node3 >= node2);
+        Assert.True(node2 >= node1);
+        Assert.True(node3 >= node1); // Transitivity
+    }
+
+    [Fact]
+    public void ComparisonOperators_ReflexivityProperty()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        var node2 = node1; // Same reference
+
+        // Act & Assert - Test reflexivity: a == a, a <= a, a >= a
+        Assert.True(node1 == node2);
+        Assert.False(node1 != node2);
+        Assert.True(node1 <= node2);
+        Assert.True(node1 >= node2);
+        Assert.False(node1 < node2);
+        Assert.False(node1 > node2);
+    }
+
+    [Fact]
+    public void ComparisonOperators_SymmetryProperty()
+    {
+        // Arrange
+        var node1 = new VirtualNode<string>(100u, "server1");
+        var node2 = new VirtualNode<string>(100u, "server1");
+        var node3 = new VirtualNode<string>(200u, "server2");
+
+        // Act & Assert - Test symmetry: if a == b, then b == a
+        Assert.True(node1 == node2);
+        Assert.True(node2 == node1);
+
+        // Test symmetry with inequality
+        Assert.True(node1 != node3);
+        Assert.True(node3 != node1);
+
+        // Test with ordering operators
+        Assert.True(node1 < node3);
+        Assert.True(node3 > node1);
+    }
+
+    #endregion
+
     // Helper record for testing with custom equatable types
     private record ServerInfo(string Host, int Port) : IEquatable<ServerInfo>;
 }

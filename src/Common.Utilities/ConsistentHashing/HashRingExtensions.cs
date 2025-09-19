@@ -5,6 +5,8 @@ namespace AdaptArch.Common.Utilities.ConsistentHashing;
 /// </summary>
 public static class HashRingExtensions
 {
+    #region GetServer Overloads
+
     /// <summary>
     /// Gets the server that should handle the specified string key.
     /// </summary>
@@ -20,6 +22,55 @@ public static class HashRingExtensions
         byte[] keyBytes = System.Text.Encoding.UTF8.GetBytes(key);
         return ring.GetServer(keyBytes);
     }
+
+    /// <summary>
+    /// Gets the server that should handle the specified GUID key.
+    /// </summary>
+    /// <typeparam name="T">The type of server identifiers.</typeparam>
+    /// <param name="ring">The hash ring instance.</param>
+    /// <param name="key">The GUID key to find a server for.</param>
+    /// <returns>The server that should handle the key.</returns>
+    public static T GetServer<T>(this HashRing<T> ring, Guid key) where T : IEquatable<T>
+    {
+        ArgumentNullException.ThrowIfNull(ring);
+
+        byte[] keyBytes = key.ToByteArray();
+        return ring.GetServer(keyBytes);
+    }
+
+    /// <summary>
+    /// Gets the server that should handle the specified integer key.
+    /// </summary>
+    /// <typeparam name="T">The type of server identifiers.</typeparam>
+    /// <param name="ring">The hash ring instance.</param>
+    /// <param name="key">The integer key to find a server for.</param>
+    /// <returns>The server that should handle the key.</returns>
+    public static T GetServer<T>(this HashRing<T> ring, int key) where T : IEquatable<T>
+    {
+        ArgumentNullException.ThrowIfNull(ring);
+
+        byte[] keyBytes = BitConverter.GetBytes(key);
+        return ring.GetServer(keyBytes);
+    }
+
+    /// <summary>
+    /// Gets the server that should handle the specified long integer key.
+    /// </summary>
+    /// <typeparam name="T">The type of server identifiers.</typeparam>
+    /// <param name="ring">The hash ring instance.</param>
+    /// <param name="key">The long integer key to find a server for.</param>
+    /// <returns>The server that should handle the key.</returns>
+    public static T GetServer<T>(this HashRing<T> ring, long key) where T : IEquatable<T>
+    {
+        ArgumentNullException.ThrowIfNull(ring);
+
+        byte[] keyBytes = BitConverter.GetBytes(key);
+        return ring.GetServer(keyBytes);
+    }
+
+    #endregion
+
+    #region TryGetServer Overloads
 
     /// <summary>
     /// Tries to get the server that should handle the specified string key.
@@ -39,21 +90,6 @@ public static class HashRingExtensions
     }
 
     /// <summary>
-    /// Gets the server that should handle the specified GUID key.
-    /// </summary>
-    /// <typeparam name="T">The type of server identifiers.</typeparam>
-    /// <param name="ring">The hash ring instance.</param>
-    /// <param name="key">The GUID key to find a server for.</param>
-    /// <returns>The server that should handle the key.</returns>
-    public static T GetServer<T>(this HashRing<T> ring, Guid key) where T : IEquatable<T>
-    {
-        ArgumentNullException.ThrowIfNull(ring);
-
-        byte[] keyBytes = key.ToByteArray();
-        return ring.GetServer(keyBytes);
-    }
-
-    /// <summary>
     /// Tries to get the server that should handle the specified GUID key.
     /// </summary>
     /// <typeparam name="T">The type of server identifiers.</typeparam>
@@ -67,21 +103,6 @@ public static class HashRingExtensions
 
         byte[] keyBytes = key.ToByteArray();
         return ring.TryGetServer(keyBytes, out server);
-    }
-
-    /// <summary>
-    /// Gets the server that should handle the specified integer key.
-    /// </summary>
-    /// <typeparam name="T">The type of server identifiers.</typeparam>
-    /// <param name="ring">The hash ring instance.</param>
-    /// <param name="key">The integer key to find a server for.</param>
-    /// <returns>The server that should handle the key.</returns>
-    public static T GetServer<T>(this HashRing<T> ring, int key) where T : IEquatable<T>
-    {
-        ArgumentNullException.ThrowIfNull(ring);
-
-        byte[] keyBytes = BitConverter.GetBytes(key);
-        return ring.GetServer(keyBytes);
     }
 
     /// <summary>
@@ -101,21 +122,6 @@ public static class HashRingExtensions
     }
 
     /// <summary>
-    /// Gets the server that should handle the specified long integer key.
-    /// </summary>
-    /// <typeparam name="T">The type of server identifiers.</typeparam>
-    /// <param name="ring">The hash ring instance.</param>
-    /// <param name="key">The long integer key to find a server for.</param>
-    /// <returns>The server that should handle the key.</returns>
-    public static T GetServer<T>(this HashRing<T> ring, long key) where T : IEquatable<T>
-    {
-        ArgumentNullException.ThrowIfNull(ring);
-
-        byte[] keyBytes = BitConverter.GetBytes(key);
-        return ring.GetServer(keyBytes);
-    }
-
-    /// <summary>
     /// Tries to get the server that should handle the specified long integer key.
     /// </summary>
     /// <typeparam name="T">The type of server identifiers.</typeparam>
@@ -130,6 +136,10 @@ public static class HashRingExtensions
         byte[] keyBytes = BitConverter.GetBytes(key);
         return ring.TryGetServer(keyBytes, out server);
     }
+
+    #endregion
+
+    #region GetServers Overloads
 
     /// <summary>
     /// Gets multiple servers that should handle the specified string key, in preference order.
@@ -195,4 +205,6 @@ public static class HashRingExtensions
         byte[] keyBytes = BitConverter.GetBytes(key);
         return ring.GetServers(keyBytes, count);
     }
+
+    #endregion
 }

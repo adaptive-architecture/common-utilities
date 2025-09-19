@@ -190,6 +190,11 @@ public sealed class HashRing<T> where T : IEquatable<T>
         ArgumentNullException.ThrowIfNull(key);
         ArgumentOutOfRangeException.ThrowIfLessThan(count, 0);
 
+        return GetServersCore(key, count);
+    }
+
+    private IEnumerable<T> GetServersCore(byte[] key, int count)
+    {
         var virtualNodes = _sortedVirtualNodes;
         if (virtualNodes.Count == 0)
         {
