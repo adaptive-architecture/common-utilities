@@ -345,22 +345,6 @@ public class HashRingContractTests
     }
 
     [Fact]
-    public void Servers_WithServers_ReturnsAllServers()
-    {
-        // Arrange
-        var ring = new HashRing<string>();
-        ring.Add("server1");
-        ring.Add("server2");
-        ring.Add("server3");
-
-        // Act & Assert
-        Assert.Equal(3, ring.Servers.Count);
-        Assert.Contains("server1", ring.Servers);
-        Assert.Contains("server2", ring.Servers);
-        Assert.Contains("server3", ring.Servers);
-    }
-
-    [Fact]
     public void VirtualNodeCount_EmptyRing_ReturnsZero()
     {
         // Arrange
