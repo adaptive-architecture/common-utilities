@@ -30,13 +30,14 @@ public class RedisLeaderElectionOptionsSpecs
         const int database = 5;
         const string keyPrefix = "custom_prefix";
 
-        var options = new RedisLeaderElectionOptions();
-
-        // Act
-        options.ConnectionMultiplexer = connectionMultiplexer;
-        options.Serializer = serializer;
-        options.Database = database;
-        options.KeyPrefix = keyPrefix;
+        var options = new RedisLeaderElectionOptions
+        {
+            // Act
+            ConnectionMultiplexer = connectionMultiplexer,
+            Serializer = serializer,
+            Database = database,
+            KeyPrefix = keyPrefix
+        };
 
         // Assert
         Assert.Same(connectionMultiplexer, options.ConnectionMultiplexer);

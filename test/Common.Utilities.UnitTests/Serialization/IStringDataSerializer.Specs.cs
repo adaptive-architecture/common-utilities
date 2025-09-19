@@ -206,7 +206,7 @@ public class IStringDataSerializerSpecs
     {
         public int Id { get; set; }
         public string Name { get; set; } = String.Empty;
-        public Dictionary<string, string> Properties { get; set; } = new();
+        public Dictionary<string, string> Properties { get; set; } = [];
     }
 
     /// <summary>

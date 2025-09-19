@@ -4,6 +4,8 @@
     href: extension-methods.md
   - name: Encoding Utilities
     href: encoding-utilities.md
+  - name: Consistent Hashing
+    href: consistent-hashing.md
   - name: Global Abstractions
     href: global-abstractions.md
   - name: Delay and Jitter

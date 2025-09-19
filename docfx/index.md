@@ -12,6 +12,7 @@ A comprehensive collection of .NET utilities and extensions designed to reduce b
 **Core utilities package** - Dependency-free foundation providing:
 - **Extension Methods**: Enhanced DateTime, Dictionary, Task, JSON, and Exception utilities
 - **Encoding**: RFC-compliant Base32 and Base64Url encoding
+- **Consistent Hashing**: Distributed key-to-server mapping with minimal redistribution
 - **Global Abstractions**: Testable wrappers for DateTime, Random, and UUID generation
 - **Delay & Jitter**: Exponential backoff and retry strategies
 - **PubSub System**: In-process publish-subscribe messaging
@@ -65,11 +66,18 @@ dotnet add package AdaptArch.Common.Utilities
 using AdaptArch.Common.Utilities.Extensions;
 using AdaptArch.Common.Utilities.GlobalAbstractions.Contracts;
 using AdaptArch.Common.Utilities.PubSub.Contracts;
+using AdaptArch.Common.Utilities.ConsistentHashing;
 
 // Extension methods
 var timestamp = DateTime.UtcNow.ToUnixTimestampMilliseconds();
 var config = settings.GetValueOrDefault("ApiUrl", "https://localhost");
 ProcessDataAsync().Forget(); // Fire-and-forget
+
+// Consistent hashing for load balancing
+var ring = new HashRing<string>();
+ring.Add("server1.example.com");
+ring.Add("server2.example.com");
+string server = ring.GetServer("user-12345"); // Always routes to same server
 
 // Testable abstractions
 public class OrderService
