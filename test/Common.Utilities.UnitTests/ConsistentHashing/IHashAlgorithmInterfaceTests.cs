@@ -47,10 +47,12 @@ public class IHashAlgorithmInterfaceTests
     #region Polymorphic Usage Tests
 
     [Theory]
-    [MemberData(nameof(GetHashAlgorithms))]
-    public void IHashAlgorithm_PolymorphicUsage_WorksCorrectly(IHashAlgorithm algorithm, int expectedHashLength)
+    [InlineData(typeof(Sha1HashAlgorithm), 20)]
+    [InlineData(typeof(Md5HashAlgorithm), 16)]
+    public void IHashAlgorithm_PolymorphicUsage_WorksCorrectly(Type algorithmType, int expectedHashLength)
     {
         // Arrange
+        var algorithm = (IHashAlgorithm)Activator.CreateInstance(algorithmType)!;
         var data = System.Text.Encoding.UTF8.GetBytes("test data");
 
         // Act
@@ -62,10 +64,12 @@ public class IHashAlgorithmInterfaceTests
     }
 
     [Theory]
-    [MemberData(nameof(GetHashAlgorithms))]
-    public void IHashAlgorithm_ConsistentResults_AcrossMultipleCalls(IHashAlgorithm algorithm, int expectedHashLength)
+    [InlineData(typeof(Sha1HashAlgorithm), 20)]
+    [InlineData(typeof(Md5HashAlgorithm), 16)]
+    public void IHashAlgorithm_ConsistentResults_AcrossMultipleCalls(Type algorithmType, int expectedHashLength)
     {
         // Arrange
+        var algorithm = (IHashAlgorithm)Activator.CreateInstance(algorithmType)!;
         var data = System.Text.Encoding.UTF8.GetBytes("consistent test");
 
         // Act
@@ -80,10 +84,12 @@ public class IHashAlgorithmInterfaceTests
     }
 
     [Theory]
-    [MemberData(nameof(GetHashAlgorithms))]
-    public void IHashAlgorithm_DifferentData_ProducesDifferentHashes(IHashAlgorithm algorithm, int expectedHashLength)
+    [InlineData(typeof(Sha1HashAlgorithm), 20)]
+    [InlineData(typeof(Md5HashAlgorithm), 16)]
+    public void IHashAlgorithm_DifferentData_ProducesDifferentHashes(Type algorithmType, int expectedHashLength)
     {
         // Arrange
+        var algorithm = (IHashAlgorithm)Activator.CreateInstance(algorithmType)!;
         var data1 = System.Text.Encoding.UTF8.GetBytes("data one");
         var data2 = System.Text.Encoding.UTF8.GetBytes("data two");
 
@@ -98,10 +104,12 @@ public class IHashAlgorithmInterfaceTests
     }
 
     [Theory]
-    [MemberData(nameof(GetHashAlgorithms))]
-    public void IHashAlgorithm_EmptyData_ReturnsValidHash(IHashAlgorithm algorithm, int expectedHashLength)
+    [InlineData(typeof(Sha1HashAlgorithm), 20)]
+    [InlineData(typeof(Md5HashAlgorithm), 16)]
+    public void IHashAlgorithm_EmptyData_ReturnsValidHash(Type algorithmType, int expectedHashLength)
     {
         // Arrange
+        var algorithm = (IHashAlgorithm)Activator.CreateInstance(algorithmType)!;
         var emptyData = Array.Empty<byte>();
 
         // Act
@@ -113,18 +121,24 @@ public class IHashAlgorithmInterfaceTests
     }
 
     [Theory]
-    [MemberData(nameof(GetHashAlgorithms))]
-    public void IHashAlgorithm_NullData_ThrowsArgumentNullException(IHashAlgorithm algorithm, int _)
+    [InlineData(typeof(Sha1HashAlgorithm))]
+    [InlineData(typeof(Md5HashAlgorithm))]
+    public void IHashAlgorithm_NullData_ThrowsArgumentNullException(Type algorithmType)
     {
-        // Arrange, Act & Assert
+        // Arrange
+        var algorithm = (IHashAlgorithm)Activator.CreateInstance(algorithmType)!;
+
+        // Act & Assert
         Assert.Throws<ArgumentNullException>(() => algorithm.ComputeHash(null!));
     }
 
     [Theory]
-    [MemberData(nameof(GetHashAlgorithms))]
-    public void IHashAlgorithm_LargeData_HandlesCorrectly(IHashAlgorithm algorithm, int expectedHashLength)
+    [InlineData(typeof(Sha1HashAlgorithm), 20)]
+    [InlineData(typeof(Md5HashAlgorithm), 16)]
+    public void IHashAlgorithm_LargeData_HandlesCorrectly(Type algorithmType, int expectedHashLength)
     {
         // Arrange
+        var algorithm = (IHashAlgorithm)Activator.CreateInstance(algorithmType)!;
         var largeData = new byte[100000];
         new Random(42).NextBytes(largeData); // Deterministic data
 
@@ -136,24 +150,17 @@ public class IHashAlgorithmInterfaceTests
         Assert.Equal(expectedHashLength, hash.Length);
     }
 
-    public static TheoryData<IHashAlgorithm, int> GetHashAlgorithms()
-    {
-        return new TheoryData<IHashAlgorithm, int>
-        {
-            { new Sha1HashAlgorithm(), 20 }, // SHA-1 produces 160-bit (20-byte) hash
-            { new Md5HashAlgorithm(), 16 }   // MD5 produces 128-bit (16-byte) hash
-        };
-    }
-
     #endregion
 
     #region HashRing Integration Tests
 
     [Theory]
-    [MemberData(nameof(GetHashAlgorithms))]
-    public void IHashAlgorithm_UsedInHashRing_WorksCorrectly(IHashAlgorithm algorithm, int _)
+    [InlineData(typeof(Sha1HashAlgorithm))]
+    [InlineData(typeof(Md5HashAlgorithm))]
+    public void IHashAlgorithm_UsedInHashRing_WorksCorrectly(Type algorithmType)
     {
         // Arrange
+        var algorithm = (IHashAlgorithm)Activator.CreateInstance(algorithmType)!;
         var ring = new HashRing<string>(algorithm);
         ring.Add("server1");
         ring.Add("server2");
@@ -170,10 +177,12 @@ public class IHashAlgorithmInterfaceTests
     }
 
     [Theory]
-    [MemberData(nameof(GetHashAlgorithms))]
-    public void IHashAlgorithm_UsedInHashRingOptions_WorksCorrectly(IHashAlgorithm algorithm, int _)
+    [InlineData(typeof(Sha1HashAlgorithm))]
+    [InlineData(typeof(Md5HashAlgorithm))]
+    public void IHashAlgorithm_UsedInHashRingOptions_WorksCorrectly(Type algorithmType)
     {
         // Arrange
+        var algorithm = (IHashAlgorithm)Activator.CreateInstance(algorithmType)!;
         var options = new HashRingOptions(algorithm, 100);
         var ring = new HashRing<string>(options);
         ring.Add("server1");
@@ -228,10 +237,12 @@ public class IHashAlgorithmInterfaceTests
     #region Performance and Thread Safety
 
     [Theory]
-    [MemberData(nameof(GetHashAlgorithms))]
-    public async Task IHashAlgorithm_ConcurrentAccess_IsThreadSafe(IHashAlgorithm algorithm, int expectedHashLength)
+    [InlineData(typeof(Sha1HashAlgorithm), 20)]
+    [InlineData(typeof(Md5HashAlgorithm), 16)]
+    public async Task IHashAlgorithm_ConcurrentAccess_IsThreadSafe(Type algorithmType, int expectedHashLength)
     {
         // Arrange
+        var algorithm = (IHashAlgorithm)Activator.CreateInstance(algorithmType)!;
         const int threadCount = 10;
         const int operationsPerThread = 100;
         var results = new ConcurrentBag<byte[]>();
@@ -264,10 +275,12 @@ public class IHashAlgorithmInterfaceTests
     }
 
     [Theory]
-    [MemberData(nameof(GetHashAlgorithms))]
-    public void IHashAlgorithm_PerformanceBaseline_CompletesInReasonableTime(IHashAlgorithm algorithm, int _)
+    [InlineData(typeof(Sha1HashAlgorithm))]
+    [InlineData(typeof(Md5HashAlgorithm))]
+    public void IHashAlgorithm_PerformanceBaseline_CompletesInReasonableTime(Type algorithmType)
     {
         // Arrange
+        var algorithm = (IHashAlgorithm)Activator.CreateInstance(algorithmType)!;
         const int iterations = 10000;
         var testData = System.Text.Encoding.UTF8.GetBytes("performance test data");
 
