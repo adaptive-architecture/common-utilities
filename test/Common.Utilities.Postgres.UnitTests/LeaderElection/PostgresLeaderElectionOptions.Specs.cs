@@ -321,10 +321,11 @@ public class PostgresLeaderElectionOptionsSpecs
     public void CleanupInterval_CanBeSetToNull()
     {
         // Arrange
-        var options = new PostgresLeaderElectionOptions();
-
-        // Act
-        options.CleanupInterval = null;
+        var options = new PostgresLeaderElectionOptions
+        {
+            // Act
+            CleanupInterval = null
+        };
 
         // Assert
         Assert.Null(options.CleanupInterval);

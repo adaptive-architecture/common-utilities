@@ -2,9 +2,18 @@
 using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Configuration;
 using AdaptArch.Common.Utilities.Jobs.Contracts;
 using AdaptArch.Common.Utilities.Samples.Hosting.BackgroundWorkers;
+using AdaptArch.Common.Utilities.Samples.ConsistentHashing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+Console.WriteLine("=== AdaptArch Common Utilities Samples ===\n");
+
+// Run Consistent Hashing Examples
+DatabaseRoutingExample.RunExample();
+HttpRoutingExample.RunExample();
+
+Console.WriteLine("=== Background Worker Examples ===");
 
 var builder = Host.CreateApplicationBuilder(args);
 

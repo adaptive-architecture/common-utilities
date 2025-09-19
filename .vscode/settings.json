@@ -9,6 +9,7 @@
     "nupkg",
     "opencover",
     "Qube",
+    "Roslynator",
     "sonarscanner",
     "temurin",
     "Testcontainers"
