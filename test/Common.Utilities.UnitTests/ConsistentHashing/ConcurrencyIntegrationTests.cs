@@ -58,7 +58,7 @@ public class ConcurrencyIntegrationTests
         var testKeys = Enumerable.Range(1, 50).Select(i => $"key{i}").ToArray();
 
         // Act - Mix concurrent reads with occasional writes
-        var readTasks = Enumerable.Range(0, 20).Select(async i =>
+        var readTasks = Enumerable.Range(0, 20).Select(async _ =>
         {
             await Task.Delay(Random.Shared.Next(1, 10)); // Random delay
 
@@ -277,7 +277,7 @@ public class ConcurrencyIntegrationTests
         const string testKey = "test_key";
 
         // Act - Concurrent TryGetServer calls while removing the only server
-        var readTasks = Enumerable.Range(0, 50).Select(async i =>
+        var readTasks = Enumerable.Range(0, 50).Select(async _ =>
         {
             await Task.Delay(Random.Shared.Next(1, 100));
 

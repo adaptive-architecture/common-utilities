@@ -205,7 +205,7 @@ public class VirtualNodeTests
     {
         // Arrange
         var node = new VirtualNode<string>(100u, "server1");
-        var other = "not a virtual node";
+        const string other = "not a virtual node";
 
         // Act & Assert
         Assert.False(node.Equals(other));

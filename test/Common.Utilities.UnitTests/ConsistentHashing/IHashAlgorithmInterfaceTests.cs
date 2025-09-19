@@ -31,7 +31,7 @@ public class IHashAlgorithmInterfaceTests
     public void IHashAlgorithm_HasCorrectMethodSignature()
     {
         // Arrange
-        var algorithm = new Sha1HashAlgorithm() as IHashAlgorithm;
+        Sha1HashAlgorithm algorithm = new();
 
         // Act & Assert
         // Should be able to call ComputeHash with byte array
@@ -136,10 +136,13 @@ public class IHashAlgorithmInterfaceTests
         Assert.Equal(expectedHashLength, hash.Length);
     }
 
-    public static IEnumerable<object[]> GetHashAlgorithms()
+    public static TheoryData<IHashAlgorithm, int> GetHashAlgorithms()
     {
-        yield return new object[] { new Sha1HashAlgorithm(), 20 }; // SHA-1 produces 160-bit (20-byte) hash
-        yield return new object[] { new Md5HashAlgorithm(), 16 };  // MD5 produces 128-bit (16-byte) hash
+        return new TheoryData<IHashAlgorithm, int>
+        {
+            { new Sha1HashAlgorithm(), 20 }, // SHA-1 produces 160-bit (20-byte) hash
+            { new Md5HashAlgorithm(), 16 }   // MD5 produces 128-bit (16-byte) hash
+        };
     }
 
     #endregion

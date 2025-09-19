@@ -164,7 +164,7 @@ public class HashRingExtensionsComprehensiveTests
         ring.Add("server1");
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => ring.TryGetServer((string)null!, out string server));
+        Assert.Throws<ArgumentNullException>(() => ring.TryGetServer((string)null!, out _));
     }
 
     [Fact]
@@ -174,10 +174,10 @@ public class HashRingExtensionsComprehensiveTests
         HashRing<string> ring = null!;
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => ring.TryGetServer("test", out string server));
-        Assert.Throws<ArgumentNullException>(() => ring.TryGetServer(123, out string server));
-        Assert.Throws<ArgumentNullException>(() => ring.TryGetServer(123L, out string server));
-        Assert.Throws<ArgumentNullException>(() => ring.TryGetServer(Guid.NewGuid(), out string server));
+        Assert.Throws<ArgumentNullException>(() => ring.TryGetServer("test", out _));
+        Assert.Throws<ArgumentNullException>(() => ring.TryGetServer(123, out _));
+        Assert.Throws<ArgumentNullException>(() => ring.TryGetServer(123L, out _));
+        Assert.Throws<ArgumentNullException>(() => ring.TryGetServer(Guid.NewGuid(), out _));
     }
 
     #endregion
@@ -695,7 +695,7 @@ public class HashRingExtensionsComprehensiveTests
             ring.GetServer((long)i);
             ring.TryGetServer($"try-string-{i}", out _);
             ring.TryGetServer(i + keyCount, out _);
-            ring.GetServers($"multi-{i}", 3).Take(2).ToList();
+            _ = ring.GetServers($"multi-{i}", 3).Take(2).ToList();
         }
 
         stopwatch.Stop();

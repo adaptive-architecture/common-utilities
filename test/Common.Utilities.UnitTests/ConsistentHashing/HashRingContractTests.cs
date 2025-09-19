@@ -341,7 +341,7 @@ public class HashRingContractTests
 
         // Act & Assert
         Assert.Empty(ring.Servers);
-        Assert.IsAssignableFrom<IReadOnlyCollection<string>>(ring.Servers);
+        Assert.IsType<IReadOnlyCollection<string>>(ring.Servers, exactMatch: false);
     }
 
     [Fact]

@@ -4,6 +4,8 @@ namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 
 public class FailoverIntegrationTests
 {
+    private static readonly string[] ExpectedServers = ["server2", "server4"];
+    private static readonly string[] ExpectedFailoverServers = ["small", "large"];
     [Fact]
     public void HashRing_RemoveServer_RedistributesKeysToRemainingServers()
     {
@@ -159,7 +161,7 @@ public class FailoverIntegrationTests
 
         // Assert - Both remaining servers should handle all keys
         var finalMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
-        Assert.All(finalMapping.Values, server => Assert.Contains(server, new[] { "server2", "server4" }));
+        Assert.All(finalMapping.Values, server => Assert.Contains(server, ExpectedServers));
     }
 
     [Fact]
@@ -187,7 +189,7 @@ public class FailoverIntegrationTests
         // Assert - Keys from medium server should be redistributed to small and large
         foreach (var key in mediumKeys)
         {
-            Assert.Contains(finalMapping[key], new[] { "small", "large" });
+            Assert.Contains(finalMapping[key], ExpectedFailoverServers);
         }
 
         // Assert - Large server should get more keys than small server due to higher virtual nodes
@@ -217,7 +219,7 @@ public class FailoverIntegrationTests
 
         // Server fails
         ring.Remove("server2");
-        var failureMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
+        _ = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
 
         // Server recovers
         ring.Add("server2");
@@ -250,7 +252,7 @@ public class FailoverIntegrationTests
         }
 
         var testKeys = Enumerable.Range(1, 1000).Select(i => $"key{i}").ToArray();
-        var initialMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
+        _ = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
 
         // Act - Remove multiple servers simultaneously
         ring.Remove("server1");

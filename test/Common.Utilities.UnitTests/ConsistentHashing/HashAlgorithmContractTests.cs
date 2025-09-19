@@ -178,8 +178,8 @@ public class HashAlgorithmContractTests
         var md5 = new Md5HashAlgorithm();
 
         // Assert
-        Assert.IsAssignableFrom<IHashAlgorithm>(sha1);
-        Assert.IsAssignableFrom<IHashAlgorithm>(md5);
+        Assert.IsType<IHashAlgorithm>(sha1, exactMatch: false);
+        Assert.IsType<IHashAlgorithm>(md5, exactMatch: false);
     }
 
     #endregion
