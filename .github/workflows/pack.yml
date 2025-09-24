@@ -5,10 +5,9 @@ on:
 
 jobs:
   package:
-    permissions:
-      id-token: write  # enable GitHub OIDC token issuance for this job
     runs-on: ubuntu-latest
     permissions:
+      id-token: write  # enable GitHub OIDC token issuance for this job
       packages: write
       contents: read
     env:
