@@ -5,6 +5,8 @@ on:
 
 jobs:
   package:
+    permissions:
+    id-token: write  # enable GitHub OIDC token issuance for this job
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -39,5 +41,13 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
 
+      # Get a short-lived NuGet API key
+      - name: NuGet login (OIDC → temp API key)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+
       - name: Publish packages
-        run: bash ./pipeline/publish-packages.sh -c $config -v ${{steps.branch_name.outputs.SOURCE_TAG_TRIMMED}} -n ${{secrets.NUGET_ORG_KEY}} -g ${{secrets.GITHUB_TOKEN}}
+        run: bash ./pipeline/publish-packages.sh -c $config -v ${{steps.branch_name.outputs.SOURCE_TAG_TRIMMED}} -n ${{steps.login.outputs.NUGET_API_KEY}} -g ${{secrets.GITHUB_TOKEN}}
