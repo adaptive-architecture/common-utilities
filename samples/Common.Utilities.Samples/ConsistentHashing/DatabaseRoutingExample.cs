@@ -50,7 +50,7 @@ public static class DatabaseRoutingExample
 
         // Simulate database failure and failover
         Console.WriteLine("=== Simulating Database Failover ===");
-        var failedServer = "db-replica-1.example.com:5432";
+        const string failedServer = "db-replica-1.example.com:5432";
         Console.WriteLine($"Removing failed server: {failedServer}");
         dbRing.Remove(failedServer);
 

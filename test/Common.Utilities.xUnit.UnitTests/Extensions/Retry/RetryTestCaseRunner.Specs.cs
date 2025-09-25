@@ -365,7 +365,7 @@ public class RetryTestCaseRunnerSpecs
         var cancellationTokenSource = new CancellationTokenSource();
         var constructorArguments = Array.Empty<object>();
 
-        testCase.CreateTests().Returns(Array.Empty<IXunitTest>());
+        testCase.CreateTests().Returns([]);
 
         // Act
         var result = await RetryTestCaseRunner.Instance.Run(
@@ -399,7 +399,7 @@ public class RetryTestCaseRunnerSpecs
         test.TestDisplayName.Returns("CancellableTest");
 
         // Cancel the token before running
-        cancellationTokenSource.Cancel();
+        await cancellationTokenSource.CancelAsync();
 
         // Act
         var result = await RetryTestCaseRunner.Instance.Run(

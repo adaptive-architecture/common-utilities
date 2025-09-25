@@ -18,7 +18,6 @@ public abstract class LeaderElectionServiceBase : ILeaderElectionService
     private Task? _electionTask;
     private volatile bool _isLeader;
     private volatile bool _isDisposed;
-    private LeaderInfo? _currentLeader;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LeaderElectionServiceBase"/> class.
@@ -60,7 +59,7 @@ public abstract class LeaderElectionServiceBase : ILeaderElectionService
     public bool IsLeader => _isLeader;
 
     /// <inheritdoc/>
-    public LeaderInfo? CurrentLeader => _currentLeader;
+    public LeaderInfo? CurrentLeader { get; private set; }
 
     /// <inheritdoc/>
     public event EventHandler<LeadershipChangedEventArgs>? LeadershipChanged;
@@ -281,10 +280,10 @@ public abstract class LeaderElectionServiceBase : ILeaderElectionService
     private void UpdateLeadershipStatus(bool isLeader, LeaderInfo? leaderInfo)
     {
         var wasLeader = _isLeader;
-        var previousLeader = _currentLeader;
+        var previousLeader = CurrentLeader;
 
         _isLeader = isLeader;
-        _currentLeader = leaderInfo;
+        CurrentLeader = leaderInfo;
 
         if (wasLeader != isLeader)
         {

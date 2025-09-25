@@ -4,6 +4,7 @@
     "coverallsapp",
     "docfx",
     "finalizer",
+    "Finalizers",
     "lcov",
     "Npgsql",
     "nupkg",
