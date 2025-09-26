@@ -315,7 +315,7 @@ public class RedisLeaderElectionServiceProviderSpecs
             }, TestContext.Current.CancellationToken));
         }
 
-        await Task.WhenAll(tasks.ToArray());
+        await Task.WhenAll([.. tasks]);
 
         // Assert
         Assert.Equal(threadCount * electionsPerThread, elections.Count);

@@ -7,6 +7,7 @@ namespace AdaptArch.Common.Utilities.ConsistentHashing;
 internal sealed class ConfigurationSnapshot<T> where T : IEquatable<T>
 {
     private readonly List<VirtualNode<T>> _sortedVirtualNodes;
+    private readonly IHashAlgorithm _hashAlgorithm;
 
     /// <summary>
     /// Gets the servers in this configuration snapshot.
@@ -39,14 +40,16 @@ internal sealed class ConfigurationSnapshot<T> where T : IEquatable<T>
     /// <param name="servers">The servers in this configuration.</param>
     /// <param name="virtualNodes">The virtual nodes in this configuration.</param>
     /// <param name="createdAt">The timestamp when this snapshot was created.</param>
-    /// <exception cref="ArgumentNullException">Thrown when servers or virtualNodes is null.</exception>
-    public ConfigurationSnapshot(IReadOnlyList<T> servers, IReadOnlyList<VirtualNode<T>> virtualNodes, DateTime createdAt)
+    /// <param name="hashAlgorithm">The hash algorithm used for key hashing.</param>
+    /// <exception cref="ArgumentNullException">Thrown when servers, virtualNodes, or hashAlgorithm is null.</exception>
+    public ConfigurationSnapshot(IReadOnlyList<T> servers, IReadOnlyList<VirtualNode<T>> virtualNodes, DateTime createdAt, IHashAlgorithm hashAlgorithm)
     {
         Servers = servers ?? throw new ArgumentNullException(nameof(servers));
         VirtualNodes = virtualNodes ?? throw new ArgumentNullException(nameof(virtualNodes));
         CreatedAt = createdAt;
+        _hashAlgorithm = hashAlgorithm ?? throw new ArgumentNullException(nameof(hashAlgorithm));
 
-        _sortedVirtualNodes = virtualNodes.OrderBy(node => node.Hash).ToList();
+        _sortedVirtualNodes = [.. virtualNodes.OrderBy(node => node.Hash)];
     }
 
     /// <summary>
@@ -79,18 +82,9 @@ internal sealed class ConfigurationSnapshot<T> where T : IEquatable<T>
         return _sortedVirtualNodes[index].Server;
     }
 
-    private static uint ComputeKeyHash(byte[] key)
+    private uint ComputeKeyHash(byte[] key)
     {
-        // Use a simple hash for key computation - in a real implementation,
-        // this would use the same hash algorithm as the parent HashRing
-        uint hash = 2166136261U; // FNV-1a 32-bit offset basis
-
-        for (int i = 0; i < key.Length; i++)
-        {
-            hash ^= key[i];
-            hash *= 16777619U; // FNV-1a 32-bit prime
-        }
-
-        return hash;
+        byte[] hashBytes = _hashAlgorithm.ComputeHash(key);
+        return BitConverter.ToUInt32(hashBytes, 0);
     }
 }

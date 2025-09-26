@@ -42,7 +42,7 @@ public sealed class HashRingHistoryLimitExceededExceptionTests
     {
         var exception = new HashRingHistoryLimitExceededException(3, 3);
 
-        Assert.IsType<InvalidOperationException>(exception);
+        Assert.IsType<InvalidOperationException>(exception, exactMatch: false);
     }
 
 }

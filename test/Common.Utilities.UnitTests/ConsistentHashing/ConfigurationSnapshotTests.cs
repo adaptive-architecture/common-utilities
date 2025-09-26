@@ -7,6 +7,7 @@ using Xunit;
 
 public sealed class ConfigurationSnapshotTests
 {
+    private static readonly IHashAlgorithm DefaultHashAlgorithm = new Sha1HashAlgorithm();
     [Fact]
     public void Constructor_WithValidParameters_SetsPropertiesCorrectly()
     {
@@ -18,7 +19,7 @@ public sealed class ConfigurationSnapshotTests
         };
         var timestamp = DateTime.UtcNow;
 
-        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, timestamp);
+        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, timestamp, DefaultHashAlgorithm);
 
         Assert.Equal(servers, snapshot.Servers);
         Assert.Equal(virtualNodes, snapshot.VirtualNodes);
@@ -32,7 +33,7 @@ public sealed class ConfigurationSnapshotTests
         var virtualNodes = new List<VirtualNode<string>>();
 
         var exception = Assert.Throws<ArgumentNullException>(() =>
-            new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow));
+            new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow, DefaultHashAlgorithm));
 
         Assert.Equal("servers", exception.ParamName);
     }
@@ -44,7 +45,7 @@ public sealed class ConfigurationSnapshotTests
         List<VirtualNode<string>> virtualNodes = null!;
 
         var exception = Assert.Throws<ArgumentNullException>(() =>
-            new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow));
+            new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow, DefaultHashAlgorithm));
 
         Assert.Equal("virtualNodes", exception.ParamName);
     }
@@ -55,7 +56,7 @@ public sealed class ConfigurationSnapshotTests
         var servers = Array.Empty<string>();
         var virtualNodes = new List<VirtualNode<string>>();
 
-        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow);
+        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow, DefaultHashAlgorithm);
 
         Assert.Empty(snapshot.Servers);
         Assert.Empty(snapshot.VirtualNodes);
@@ -67,7 +68,7 @@ public sealed class ConfigurationSnapshotTests
         var servers = new[] { "server1" };
         var virtualNodes = new List<VirtualNode<string>>();
 
-        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow);
+        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow, DefaultHashAlgorithm);
 
         Assert.Single(snapshot.Servers);
         Assert.Empty(snapshot.VirtualNodes);
@@ -79,7 +80,7 @@ public sealed class ConfigurationSnapshotTests
         var servers = new[] { "server1" };
         var virtualNodes = new List<VirtualNode<string>>();
 
-        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow);
+        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow, DefaultHashAlgorithm);
 
         Assert.IsType<IReadOnlyList<string>>(snapshot.Servers, exactMatch: false);
     }
@@ -93,7 +94,7 @@ public sealed class ConfigurationSnapshotTests
             new(123456789, "server1")
         };
 
-        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow);
+        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow, DefaultHashAlgorithm);
 
         Assert.IsType<IReadOnlyList<VirtualNode<string>>>(snapshot.VirtualNodes, exactMatch: false);
     }
@@ -108,7 +109,7 @@ public sealed class ConfigurationSnapshotTests
             new(200, "server2")
         };
 
-        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow);
+        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow, DefaultHashAlgorithm);
         var key = new byte[] { 1, 2, 3 };
 
         var result = snapshot.GetServer(key);
@@ -123,7 +124,7 @@ public sealed class ConfigurationSnapshotTests
         var servers = new[] { "server1" };
         var virtualNodes = new List<VirtualNode<string>>();
 
-        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow);
+        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow, DefaultHashAlgorithm);
         var key = new byte[] { 1, 2, 3 };
 
         Assert.Throws<InvalidOperationException>(() => snapshot.GetServer(key));
@@ -138,7 +139,7 @@ public sealed class ConfigurationSnapshotTests
             new(100, "server1")
         };
 
-        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow);
+        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow, DefaultHashAlgorithm);
         byte[] key = null!;
 
         var exception = Assert.Throws<ArgumentNullException>(() => snapshot.GetServer(key));
@@ -151,7 +152,7 @@ public sealed class ConfigurationSnapshotTests
         var servers = new[] { "server1", "server2", "server3" };
         var virtualNodes = new List<VirtualNode<string>>();
 
-        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow);
+        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow, DefaultHashAlgorithm);
 
         Assert.Equal(3, snapshot.ServerCount);
     }
@@ -167,7 +168,7 @@ public sealed class ConfigurationSnapshotTests
             new(300, "server1")
         };
 
-        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow);
+        var snapshot = new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow, DefaultHashAlgorithm);
 
         Assert.Equal(3, snapshot.VirtualNodeCount);
     }

@@ -208,7 +208,7 @@ public class EdgeCaseTests
             [0x00],
             [0xFF],
             Enumerable.Repeat((byte)0x55, 1000).ToArray(), // Long repeating pattern
-            Enumerable.Range(0, 256).Select(i => (byte)i).ToArray(), // All byte values
+            [.. Enumerable.Range(0, 256).Select(i => (byte)i)], // All byte values
             [] // Empty array
         };
 

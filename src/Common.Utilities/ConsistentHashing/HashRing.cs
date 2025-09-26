@@ -138,6 +138,94 @@ public sealed class HashRing<T> where T : IEquatable<T>
     }
 
     /// <summary>
+    /// Atomically adds multiple servers to the hash ring with their respective virtual node counts.
+    /// </summary>
+    /// <param name="servers">A collection of key-value pairs where the key is the server and the value is the number of virtual nodes.</param>
+    /// <exception cref="ArgumentNullException">Thrown when servers collection is null or contains null servers.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when any virtual node count is less than 1.</exception>
+    public void AddRange(IEnumerable<KeyValuePair<T, int>> servers)
+    {
+        ArgumentNullException.ThrowIfNull(servers);
+
+        // Validate all inputs before making any changes
+        var serverList = servers.ToList();
+        foreach (var kvp in serverList)
+        {
+            ArgumentNullException.ThrowIfNull(kvp.Key);
+            ArgumentOutOfRangeException.ThrowIfLessThan(kvp.Value, 1);
+        }
+
+        if (serverList.Count == 0)
+            return;
+
+        lock (_lock)
+        {
+            foreach (var kvp in serverList)
+            {
+                _serverVirtualNodes.AddOrUpdate(kvp.Key, kvp.Value, (_, _) => kvp.Value);
+            }
+            RebuildVirtualNodes();
+        }
+    }
+
+    /// <summary>
+    /// Atomically adds multiple servers to the hash ring with the default number of virtual nodes.
+    /// </summary>
+    /// <param name="servers">The servers to add.</param>
+    /// <exception cref="ArgumentNullException">Thrown when servers collection is null or contains null servers.</exception>
+    public void AddRange(IEnumerable<T> servers)
+    {
+        ArgumentNullException.ThrowIfNull(servers);
+
+        var serversWithDefaults = servers.Select(server =>
+        {
+            ArgumentNullException.ThrowIfNull(server);
+            return new KeyValuePair<T, int>(server, _defaultVirtualNodes);
+        });
+
+        AddRange(serversWithDefaults);
+    }
+
+    /// <summary>
+    /// Atomically removes multiple servers from the hash ring.
+    /// </summary>
+    /// <param name="servers">The servers to remove.</param>
+    /// <returns>The number of servers that were actually removed.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when servers collection is null or contains null servers.</exception>
+    public int RemoveRange(IEnumerable<T> servers)
+    {
+        ArgumentNullException.ThrowIfNull(servers);
+
+        var serverList = servers.ToList();
+        foreach (var server in serverList)
+        {
+            ArgumentNullException.ThrowIfNull(server);
+        }
+
+        if (serverList.Count == 0)
+            return 0;
+
+        lock (_lock)
+        {
+            int removedCount = 0;
+            foreach (var server in serverList)
+            {
+                if (_serverVirtualNodes.TryRemove(server, out _))
+                {
+                    removedCount++;
+                }
+            }
+
+            if (removedCount > 0)
+            {
+                RebuildVirtualNodes();
+            }
+
+            return removedCount;
+        }
+    }
+
+    /// <summary>
     /// Determines whether the hash ring contains the specified server.
     /// </summary>
     /// <param name="server">The server to check.</param>
@@ -313,7 +401,7 @@ public sealed class HashRing<T> where T : IEquatable<T>
         {
             var servers = _serverVirtualNodes.Keys.ToArray();
             var virtualNodes = _sortedVirtualNodes.ToList();
-            var snapshot = new ConfigurationSnapshot<T>(servers, virtualNodes, DateTime.UtcNow);
+            var snapshot = new ConfigurationSnapshot<T>(servers, virtualNodes, DateTime.UtcNow, _hashAlgorithm);
 
             _historyManager!.Add(snapshot);
         }
@@ -386,7 +474,6 @@ public sealed class HashRing<T> where T : IEquatable<T>
                     catch (InvalidOperationException)
                     {
                         // Skip snapshots with no servers
-                        continue;
                     }
                 }
             }

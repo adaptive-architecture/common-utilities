@@ -8,6 +8,7 @@ using Xunit;
 
 public sealed class HistoryManagerTests
 {
+    private static readonly IHashAlgorithm DefaultHashAlgorithm = new Sha1HashAlgorithm();
     [Theory]
     [InlineData(1)]
     [InlineData(3)]
@@ -196,6 +197,6 @@ public sealed class HistoryManagerTests
         {
             new((uint)server.GetHashCode(), server)
         };
-        return new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow);
+        return new ConfigurationSnapshot<string>(servers, virtualNodes, DateTime.UtcNow, DefaultHashAlgorithm);
     }
 }

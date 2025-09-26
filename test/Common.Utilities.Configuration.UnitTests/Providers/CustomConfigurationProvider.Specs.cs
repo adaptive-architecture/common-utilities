@@ -104,13 +104,13 @@ public class CustomConfigurationProviderSpecs
     private void SetupGetHashSequence(Func<string> func, int count, int exceptionIndex = -1)
     {
         var results = GetSequence(func, count, exceptionIndex);
-        _ = _dataProviderMock.GetHashAsync(Arg.Any<CancellationToken>()).ReturnsForAnyArgs(results[0], results.Skip(1).ToArray());
+        _ = _dataProviderMock.GetHashAsync(Arg.Any<CancellationToken>()).ReturnsForAnyArgs(results[0], [.. results.Skip(1)]);
     }
 
     private void SetupReadDataSequence(Func<IReadOnlyDictionary<string, string>> func, int count, int exceptionIndex = -1)
     {
         var results = GetSequence(func, count, exceptionIndex);
-        _ = _dataProviderMock.ReadDataAsync(Arg.Any<CancellationToken>()).ReturnsForAnyArgs(results[0], results.Skip(1).ToArray());
+        _ = _dataProviderMock.ReadDataAsync(Arg.Any<CancellationToken>()).ReturnsForAnyArgs(results[0], [.. results.Skip(1)]);
     }
 
     [Fact]

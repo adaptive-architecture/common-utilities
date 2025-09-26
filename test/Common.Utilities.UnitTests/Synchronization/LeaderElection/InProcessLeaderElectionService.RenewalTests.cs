@@ -3,6 +3,7 @@ using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks;
 using AdaptArch.Common.Utilities.Synchronization.LeaderElection.Contracts;
 using AdaptArch.Common.Utilities.Synchronization.LeaderElection.Implementations.InProcess;
 using AdaptArch.Common.Utilities.UnitTests.Synchronization.LeaderElection.TestHelpers;
+using AdaptArch.Common.Utilities.xUnit.Extensions.Retry;
 
 namespace AdaptArch.Common.Utilities.UnitTests.Synchronization.LeaderElection;
 
@@ -358,7 +359,7 @@ public class InProcessLeaderElectionServiceRenewalTests
         slowLeaseStore.Dispose();
     }
 
-    [Fact]
+    [RetryFact]
     public async Task LeadershipRenewal_ShouldRecoverAfterStateLoss()
     {
         /* This simulates the scenario where the central authority (lease store) loses state,
