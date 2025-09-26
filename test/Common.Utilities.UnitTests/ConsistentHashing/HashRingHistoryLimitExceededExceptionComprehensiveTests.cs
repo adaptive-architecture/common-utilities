@@ -39,7 +39,7 @@ public sealed class HashRingHistoryLimitExceededExceptionComprehensiveTests
     [Fact]
     public void MessageConstructor_WithNullMessage_HandlesCorrectly()
     {
-        string nullMessage = null;
+        const string nullMessage = null;
 
         var exception = new HashRingHistoryLimitExceededException(nullMessage);
 
@@ -266,9 +266,9 @@ public sealed class HashRingHistoryLimitExceededExceptionComprehensiveTests
     {
         var exception = new HashRingHistoryLimitExceededException(5, 3);
 
-        Assert.IsAssignableFrom<InvalidOperationException>(exception);
-        Assert.IsAssignableFrom<SystemException>(exception);
-        Assert.IsAssignableFrom<Exception>(exception);
+        Assert.IsType<InvalidOperationException>(exception, exactMatch: false);
+        Assert.IsType<SystemException>(exception, exactMatch: false);
+        Assert.IsType<Exception>(exception, exactMatch: false);
     }
 
     [Fact]

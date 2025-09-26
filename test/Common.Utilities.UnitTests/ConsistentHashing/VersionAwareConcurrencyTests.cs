@@ -142,7 +142,7 @@ public sealed class VersionAwareConcurrencyTests
         await Task.WhenAll([clearTask, .. queryTasks]);
 
         Assert.Empty(exceptions);
-        Assert.True(queryResults.Count > 0);
+        Assert.False(queryResults.IsEmpty);
         Assert.Contains(queryResults, r => r.HasHistory);
         Assert.Contains(queryResults, r => !r.HasHistory);
     }
@@ -294,7 +294,7 @@ public sealed class VersionAwareConcurrencyTests
         await Task.WhenAll([snapshotTask, clearTask, .. queryTasks]);
 
         Assert.Empty(exceptions);
-        Assert.True(queryResults.Count > 0);
+        Assert.False(queryResults.IsEmpty);
 
         var withHistory = queryResults.Where(r => r.HasHistory).ToList();
         var withoutHistory = queryResults.Where(r => !r.HasHistory).ToList();

@@ -16,6 +16,9 @@ using Xunit;
 /// </summary>
 public sealed class HashRingComprehensiveTests
 {
+    private static readonly int[] TestServers = new[] { 1, 2, 3 };
+    private static readonly string[] TestServerNames = new[] { "server2", "server3" };
+
     #region Constructor and Configuration Tests
 
     [Fact]
@@ -81,7 +84,7 @@ public sealed class HashRingComprehensiveTests
     public void Add_WithNullServer_ThrowsArgumentNullException()
     {
         var ring = new HashRing<string>();
-        string server = null;
+        const string server = null;
 
         var exception = Assert.Throws<ArgumentNullException>(() => ring.Add(server!));
         Assert.Equal("server", exception.ParamName);
@@ -147,7 +150,7 @@ public sealed class HashRingComprehensiveTests
     public void Remove_WithNullServer_ThrowsArgumentNullException()
     {
         var ring = new HashRing<string>();
-        string server = null;
+        const string server = null;
 
         var exception = Assert.Throws<ArgumentNullException>(() => ring.Remove(server!));
         Assert.Equal("server", exception.ParamName);
@@ -201,7 +204,7 @@ public sealed class HashRingComprehensiveTests
     public void Contains_WithNullServer_ThrowsArgumentNullException()
     {
         var ring = new HashRing<string>();
-        string server = null;
+        const string server = null;
 
         var exception = Assert.Throws<ArgumentNullException>(() => ring.Contains(server!));
         Assert.Equal("server", exception.ParamName);
@@ -903,7 +906,7 @@ public sealed class HashRingComprehensiveTests
         var ring = new HashRing<string>();
         ring.Add("server1");
 
-        var removedCount = ring.RemoveRange(new[] { "server2", "server3" });
+        var removedCount = ring.RemoveRange(TestServerNames);
 
         Assert.Equal(0, removedCount);
         Assert.Single(ring.Servers);
@@ -1197,7 +1200,7 @@ public sealed class HashRingComprehensiveTests
         var key = Encoding.UTF8.GetBytes("test");
         var server = ring.GetServer(key);
 
-        Assert.Contains(server, new[] { 1, 2, 3 });
+        Assert.Contains(server, TestServers);
     }
 
     [Fact]

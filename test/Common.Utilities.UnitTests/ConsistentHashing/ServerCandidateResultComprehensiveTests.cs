@@ -11,6 +11,8 @@ using Xunit;
 /// </summary>
 public sealed class ServerCandidateResultComprehensiveTests
 {
+    private static readonly int[] TopThreeServers = new[] { 1, 2, 3 };
+
     #region Constructor Tests
 
     [Fact]
@@ -396,10 +398,10 @@ public sealed class ServerCandidateResultComprehensiveTests
 
         var resultServers = result.Servers;
 
-        Assert.IsAssignableFrom<IReadOnlyList<string>>(resultServers);
+        Assert.IsType<IReadOnlyList<string>>(resultServers, exactMatch: false);
         // The servers list should be read-only - check that it's the interface type
         // Note: Implementation may reuse input list for performance
-        Assert.IsAssignableFrom<IReadOnlyList<string>>(resultServers);
+        Assert.IsType<IReadOnlyList<string>>(resultServers, exactMatch: false);
     }
 
     #endregion
@@ -418,7 +420,7 @@ public sealed class ServerCandidateResultComprehensiveTests
         Assert.Equal(1, result.GetPrimaryServer());
 
         var topThree = result.GetTopServers(3);
-        Assert.Equal(new[] { 1, 2, 3 }, topThree);
+        Assert.Equal(TopThreeServers, topThree);
     }
 
     [Fact]

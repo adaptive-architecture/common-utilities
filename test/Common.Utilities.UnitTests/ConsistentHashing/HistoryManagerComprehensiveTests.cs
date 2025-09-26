@@ -223,7 +223,7 @@ public sealed class HistoryManagerComprehensiveTests
 
         Assert.NotNull(snapshots);
         Assert.Empty(snapshots);
-        Assert.IsAssignableFrom<IReadOnlyList<ConfigurationSnapshot<string>>>(snapshots);
+        Assert.IsType<IReadOnlyList<ConfigurationSnapshot<string>>>(snapshots, exactMatch: false);
     }
 
     [Fact]
@@ -254,7 +254,7 @@ public sealed class HistoryManagerComprehensiveTests
 
         var snapshots = manager.GetSnapshots();
 
-        Assert.IsAssignableFrom<IReadOnlyList<ConfigurationSnapshot<string>>>(snapshots);
+        Assert.IsType<IReadOnlyList<ConfigurationSnapshot<string>>>(snapshots, exactMatch: false);
         // Verify it's actually read-only by checking the runtime type
         Assert.False(snapshots is List<ConfigurationSnapshot<string>>);
     }
@@ -272,7 +272,7 @@ public sealed class HistoryManagerComprehensiveTests
 
         Assert.NotNull(snapshots);
         Assert.Empty(snapshots);
-        Assert.IsAssignableFrom<IReadOnlyList<ConfigurationSnapshot<string>>>(snapshots);
+        Assert.IsType<IReadOnlyList<ConfigurationSnapshot<string>>>(snapshots, exactMatch: false);
     }
 
     [Fact]

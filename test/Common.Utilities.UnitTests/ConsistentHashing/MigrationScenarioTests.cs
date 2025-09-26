@@ -8,6 +8,8 @@ using Xunit;
 
 public sealed class MigrationScenarioTests
 {
+    private static readonly string[] TestServers = new[] { "server-1", "server-2", "server-3" };
+
     [Fact]
     public void Migration_TwoToThreeServers_ReturnsCorrectCandidates()
     {
@@ -29,7 +31,7 @@ public sealed class MigrationScenarioTests
         Assert.Equal(2, candidates.ConfigurationCount);
         Assert.True(candidates.Servers.Count >= 1);
         Assert.True(candidates.Servers.Count <= 2);
-        Assert.All(candidates.Servers, server => Assert.Contains(server, new[] { "server-1", "server-2", "server-3" }));
+        Assert.All(candidates.Servers, server => Assert.Contains(server, TestServers));
     }
 
     [Fact]
