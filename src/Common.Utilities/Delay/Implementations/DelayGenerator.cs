@@ -46,7 +46,7 @@ public class DelayGenerator : IDelayGenerator
             case DelayType.PowerOfE:
                 return Math.Pow(iteration, Math.E) * delayInterval;
             default:
-                throw new ArgumentOutOfRangeException(nameof(delayType), $"The \"{delayType}\" delay type is not known.");
+                throw new NotSupportedException($"The \"{delayType}\" delay type is not known.");
         }
         // ReSharper restore SwitchStatementHandlesSomeKnownEnumValuesWithDefault
     }

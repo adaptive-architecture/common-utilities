@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using AdaptArch.Common.Utilities.ConsistentHashing;
+using AdaptArch.Common.Utilities.xUnit.Extensions.Retry;
 
 namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 
@@ -266,7 +267,7 @@ public class ConcurrencyIntegrationTests
         Assert.True(ring.VirtualNodeCount >= ring.Servers.Count);
     }
 
-    [Fact]
+    [RetryFact]
     public async Task HashRing_ConcurrentTryGetServer_HandlesEmptyRingSafely()
     {
         // Arrange

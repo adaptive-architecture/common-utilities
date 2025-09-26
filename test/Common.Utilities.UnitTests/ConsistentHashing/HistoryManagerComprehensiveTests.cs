@@ -40,13 +40,13 @@ public sealed class HistoryManagerComprehensiveTests
     [InlineData(-1)]
     [InlineData(-10)]
     [InlineData(-100)]
-    [InlineData(int.MinValue)]
+    [InlineData(Int32.MinValue)]
     public void Constructor_WithInvalidMaxSize_ThrowsArgumentOutOfRangeException(int invalidMaxSize)
     {
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() => new HistoryManager<string>(invalidMaxSize));
 
         Assert.Equal("maxSize", exception.ParamName);
-        Assert.Contains("Maximum size must be at least 1", exception.Message);
+        Assert.Contains("must be a non-negative and", exception.Message);
     }
 
     #endregion

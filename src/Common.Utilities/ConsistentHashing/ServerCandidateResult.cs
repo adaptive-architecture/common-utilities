@@ -34,14 +34,8 @@ public sealed class ServerCandidateResult<T> where T : IEquatable<T>
     public ServerCandidateResult(IReadOnlyList<T> servers, int configurationCount, bool hasHistory)
     {
         ArgumentNullException.ThrowIfNull(servers);
+        ArgumentOutOfRangeException.ThrowIfNegative(configurationCount);
         Servers = servers;
-
-        if (configurationCount < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(configurationCount), configurationCount,
-                "Configuration count must be non-negative.");
-        }
-
         ConfigurationCount = configurationCount;
         HasHistory = hasHistory;
     }
@@ -68,12 +62,7 @@ public sealed class ServerCandidateResult<T> where T : IEquatable<T>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when maxServers is negative.</exception>
     public IReadOnlyList<T> GetTopServers(int maxServers)
     {
-        if (maxServers < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(maxServers), maxServers,
-                "Maximum servers must be non-negative.");
-        }
-
+        ArgumentOutOfRangeException.ThrowIfNegative(maxServers);
         if (maxServers == 0)
         {
             return [];

@@ -36,11 +36,7 @@ internal sealed class HistoryManager<T> where T : IEquatable<T>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when maxSize is less than 1.</exception>
     public HistoryManager(int maxSize)
     {
-        if (maxSize < 1)
-        {
-            throw new ArgumentOutOfRangeException(nameof(maxSize), maxSize, "Maximum size must be at least 1.");
-        }
-
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maxSize);
         MaxSize = maxSize;
         _snapshots = new List<ConfigurationSnapshot<T>>(maxSize);
     }

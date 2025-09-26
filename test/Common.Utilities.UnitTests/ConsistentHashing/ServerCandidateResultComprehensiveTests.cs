@@ -45,7 +45,7 @@ public sealed class ServerCandidateResultComprehensiveTests
     [InlineData(-1)]
     [InlineData(-10)]
     [InlineData(-100)]
-    [InlineData(int.MinValue)]
+    [InlineData(Int32.MinValue)]
     public void Constructor_WithNegativeConfigurationCount_ThrowsArgumentOutOfRangeException(int negativeCount)
     {
         var servers = new List<string> { "server1" };
@@ -54,7 +54,7 @@ public sealed class ServerCandidateResultComprehensiveTests
             new ServerCandidateResult<string>(servers, negativeCount, false));
 
         Assert.Equal("configurationCount", exception.ParamName);
-        Assert.Contains("Configuration count must be non-negative", exception.Message);
+        Assert.Contains("must be a non-negative", exception.Message);
     }
 
     [Fact]
@@ -176,7 +176,7 @@ public sealed class ServerCandidateResultComprehensiveTests
     [Theory]
     [InlineData(-1)]
     [InlineData(-10)]
-    [InlineData(int.MinValue)]
+    [InlineData(Int32.MinValue)]
     public void GetTopServers_NegativeMaxServers_ThrowsArgumentOutOfRangeException(int negativeMax)
     {
         var servers = new List<string> { "server1" };
@@ -185,7 +185,7 @@ public sealed class ServerCandidateResultComprehensiveTests
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() => result.GetTopServers(negativeMax));
 
         Assert.Equal("maxServers", exception.ParamName);
-        Assert.Contains("Maximum servers must be non-negative", exception.Message);
+        Assert.Contains("must be a non-negative", exception.Message);
     }
 
     [Fact]
@@ -347,7 +347,7 @@ public sealed class ServerCandidateResultComprehensiveTests
     public void ServerCandidateResult_WithMaxIntConfigurationCount_HandlesCorrectly()
     {
         var servers = new List<string> { "server1" };
-        const int maxConfigCount = int.MaxValue;
+        const int maxConfigCount = Int32.MaxValue;
 
         var result = new ServerCandidateResult<string>(servers, maxConfigCount, true);
 

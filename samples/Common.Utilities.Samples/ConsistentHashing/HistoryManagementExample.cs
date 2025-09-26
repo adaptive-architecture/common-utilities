@@ -218,7 +218,7 @@ public class MigrationManager
         Console.WriteLine($"Primary server: {candidates.Servers.First()}");
         if (candidates.Servers.Count > 1)
         {
-            Console.WriteLine($"Fallback servers: {string.Join(", ", candidates.Servers.Skip(1))}");
+            Console.WriteLine($"Fallback servers: {String.Join(", ", candidates.Servers.Skip(1))}");
         }
         Console.WriteLine($"Total configurations checked: {candidates.ConfigurationCount}");
 
@@ -293,7 +293,8 @@ public class HistoryManager
                 break;
 
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new NotSupportedException($"The \"{_policy}\" policy type is not known.");
+
         }
     }
 
@@ -314,7 +315,7 @@ public class HistoryManager
     private void TryCreateSnapshotWithMonitoring()
     {
         // Check usage before creating
-        var usagePercent = (_ring.HistoryCount * 100.0) / _ring.MaxHistorySize;
+        var usagePercent = _ring.HistoryCount * 100.0 / _ring.MaxHistorySize;
 
         if (usagePercent >= 80)
         {
@@ -503,16 +504,16 @@ public class ConsoleLogger : ILogger
 {
     public void LogInformation(string message, params object[] args)
     {
-        Console.WriteLine($"[INFO] {string.Format(message, args)}");
+        Console.WriteLine($"[INFO] {String.Format(message, args)}");
     }
 
     public void LogWarning(string message, params object[] args)
     {
-        Console.WriteLine($"[WARN] {string.Format(message, args)}");
+        Console.WriteLine($"[WARN] {String.Format(message, args)}");
     }
 
     public void LogError(string message, params object[] args)
     {
-        Console.WriteLine($"[ERROR] {string.Format(message, args)}");
+        Console.WriteLine($"[ERROR] {String.Format(message, args)}");
     }
 }

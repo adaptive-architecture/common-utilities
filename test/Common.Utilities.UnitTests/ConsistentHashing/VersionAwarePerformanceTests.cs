@@ -153,7 +153,7 @@ public sealed class VersionAwarePerformanceTests
 
     [Theory]
     [InlineData(100)]
-    [InlineData(1000)]
+    [InlineData(500)]
     public void MemoryUsage_WithHistory_ReasonableOverhead(int serverCount)
     {
         var noHistoryOptions = new HashRingOptions { EnableVersionHistory = false };

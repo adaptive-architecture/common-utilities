@@ -498,12 +498,7 @@ public sealed class HashRing<T> where T : IEquatable<T>
     public ServerCandidateResult<T> GetServerCandidates(byte[] key, int maxCandidates)
     {
         ArgumentNullException.ThrowIfNull(key);
-
-        if (maxCandidates < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(maxCandidates), maxCandidates,
-                "Maximum candidates must be non-negative.");
-        }
+        ArgumentOutOfRangeException.ThrowIfNegative(maxCandidates);
 
         if (maxCandidates == 0)
         {

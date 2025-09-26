@@ -95,7 +95,7 @@ public sealed class HashRingHistoryLimitExceededExceptionComprehensiveTests
     [InlineData(5, 4)]
     [InlineData(10, 8)]
     [InlineData(100, 95)]
-    [InlineData(int.MaxValue, int.MaxValue - 1)]
+    [InlineData(Int32.MaxValue, Int32.MaxValue - 1)]
     public void ParameterizedConstructor_WithValidValues_SetsPropertiesCorrectly(int maxSize, int currentCount)
     {
         var exception = new HashRingHistoryLimitExceededException(maxSize, currentCount);
@@ -112,7 +112,7 @@ public sealed class HashRingHistoryLimitExceededExceptionComprehensiveTests
     [Theory]
     [InlineData(0, 0)]
     [InlineData(-1, -1)]
-    [InlineData(int.MinValue, int.MinValue)]
+    [InlineData(Int32.MinValue, Int32.MinValue)]
     public void ParameterizedConstructor_WithBoundaryValues_HandlesCorrectly(int maxSize, int currentCount)
     {
         var exception = new HashRingHistoryLimitExceededException(maxSize, currentCount);
@@ -244,8 +244,8 @@ public sealed class HashRingHistoryLimitExceededExceptionComprehensiveTests
     }
 
     [Theory]
-    [InlineData(int.MaxValue, int.MaxValue)]
-    [InlineData(int.MinValue, int.MinValue)]
+    [InlineData(Int32.MaxValue, Int32.MaxValue)]
+    [InlineData(Int32.MinValue, Int32.MinValue)]
     [InlineData(0, 0)]
     public void ToString_WithBoundaryValues_FormatsCorrectly(int maxSize, int currentCount)
     {
@@ -327,8 +327,8 @@ public sealed class HashRingHistoryLimitExceededExceptionComprehensiveTests
     [Fact]
     public void Exception_WithLargeNumbers_HandlesCorrectly()
     {
-        const int maxSize = int.MaxValue;
-        const int currentCount = int.MaxValue - 1;
+        const int maxSize = Int32.MaxValue;
+        const int currentCount = Int32.MaxValue - 1;
 
         var exception = new HashRingHistoryLimitExceededException(maxSize, currentCount);
 
