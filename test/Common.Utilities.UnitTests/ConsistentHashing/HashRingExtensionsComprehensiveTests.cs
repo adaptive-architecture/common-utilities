@@ -711,10 +711,7 @@ public class HashRingExtensionsComprehensiveTests
         // Arrange
         var ring = new HashRing<string>();
         var servers = new[] { "server1", "server2", "server3", "server4", "server5" };
-        foreach (var server in servers)
-        {
-            ring.Add(server);
-        }
+        ring.AddRange(servers);
 
         var distribution = new Dictionary<string, int>();
         foreach (var server in servers)

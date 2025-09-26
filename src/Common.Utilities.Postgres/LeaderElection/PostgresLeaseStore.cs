@@ -30,8 +30,10 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
         string? tableName = null,
         ILogger? logger = null)
     {
-        _dataSource = dataSource ?? throw new ArgumentNullException(nameof(dataSource));
-        _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+        ArgumentNullException.ThrowIfNull(dataSource);
+        ArgumentNullException.ThrowIfNull(serializer);
+        _dataSource = dataSource;
+        _serializer = serializer;
         _tableName = tableName ?? "leader_election_leases";
         _logger = logger ?? NullLogger.Instance;
     }

@@ -45,7 +45,8 @@ public sealed class HashRingOptions
     /// <exception cref="ArgumentNullException">Thrown when hashAlgorithm is null.</exception>
     public HashRingOptions(IHashAlgorithm hashAlgorithm)
     {
-        HashAlgorithm = hashAlgorithm ?? throw new ArgumentNullException(nameof(hashAlgorithm));
+        ArgumentNullException.ThrowIfNull(hashAlgorithm);
+        HashAlgorithm = hashAlgorithm;
     }
 
     /// <summary>
@@ -70,7 +71,8 @@ public sealed class HashRingOptions
     /// <exception cref="ArgumentOutOfRangeException">Thrown when defaultVirtualNodes is less than 1.</exception>
     public HashRingOptions(IHashAlgorithm hashAlgorithm, int defaultVirtualNodes)
     {
-        HashAlgorithm = hashAlgorithm ?? throw new ArgumentNullException(nameof(hashAlgorithm));
+        ArgumentNullException.ThrowIfNull(hashAlgorithm);
+        HashAlgorithm = hashAlgorithm;
 
         if (defaultVirtualNodes < 1)
             throw new ArgumentOutOfRangeException(nameof(defaultVirtualNodes), "Default virtual nodes must be at least 1.");

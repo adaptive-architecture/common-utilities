@@ -34,7 +34,8 @@ public abstract class LeaderElectionServiceBase : ILeaderElectionService
         LeaderElectionOptions? options,
         ILogger? logger = null)
     {
-        _leaseStore = leaseStore ?? throw new ArgumentNullException(nameof(leaseStore));
+        ArgumentNullException.ThrowIfNull(leaseStore);
+        _leaseStore = leaseStore;
         _logger = logger ?? NullLogger.Instance;
 
         ElectionName = !String.IsNullOrWhiteSpace(electionName)

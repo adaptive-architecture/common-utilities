@@ -32,7 +32,8 @@ public class RedisMessageHubOptions : MessageHubOptions
     /// <param name="dataSerializer">The data serializer to use. For AoT scenarios, use <see cref="JsonDataSerializer"/>.</param>
     public RedisMessageHubOptions(IDataSerializer dataSerializer)
     {
-        DataSerializer = dataSerializer ?? throw new ArgumentNullException(nameof(dataSerializer));
+        ArgumentNullException.ThrowIfNull(dataSerializer);
+        DataSerializer = dataSerializer;
     }
 
     /// <summary>

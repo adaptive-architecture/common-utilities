@@ -27,8 +27,10 @@ public class RedisLeaseStore : ILeaseStore, IDisposable
         IDataSerializer serializer,
         ILogger? logger = null)
     {
-        _connectionMultiplexer = connectionMultiplexer ?? throw new ArgumentNullException(nameof(connectionMultiplexer));
-        _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+        ArgumentNullException.ThrowIfNull(connectionMultiplexer);
+        ArgumentNullException.ThrowIfNull(serializer);
+        _connectionMultiplexer = connectionMultiplexer;
+        _serializer = serializer;
         _logger = logger ?? NullLogger.Instance;
     }
 

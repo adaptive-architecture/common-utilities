@@ -33,7 +33,8 @@ public sealed class ServerCandidateResult<T> where T : IEquatable<T>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when configurationCount is negative.</exception>
     public ServerCandidateResult(IReadOnlyList<T> servers, int configurationCount, bool hasHistory)
     {
-        Servers = servers ?? throw new ArgumentNullException(nameof(servers));
+        ArgumentNullException.ThrowIfNull(servers);
+        Servers = servers;
 
         if (configurationCount < 0)
         {

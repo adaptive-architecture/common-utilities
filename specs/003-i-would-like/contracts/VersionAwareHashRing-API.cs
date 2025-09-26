@@ -47,7 +47,8 @@ public sealed class ServerCandidateResult<T> where T : IEquatable<T>
 
     internal ServerCandidateResult(IReadOnlyList<T> servers, int configurationCount, bool hasHistory)
     {
-        Servers = servers ?? throw new ArgumentNullException(nameof(servers));
+        ArgumentNullException.ThrowIfNull(servers);
+        Servers = servers;
         ConfigurationCount = configurationCount;
         HasHistory = hasHistory;
     }

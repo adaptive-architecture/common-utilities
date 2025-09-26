@@ -373,7 +373,8 @@ public class ProductionHashRingService
 
     public ProductionHashRingService(ILogger logger, HistoryManagementOptions? options = null)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        ArgumentNullException.ThrowIfNull(logger);
+        _logger = logger;
         _options = options ?? new HistoryManagementOptions();
 
         var ringOptions = new HashRingOptions

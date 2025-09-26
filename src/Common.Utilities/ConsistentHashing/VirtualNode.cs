@@ -9,7 +9,8 @@ internal sealed class VirtualNode<T> : IComparable<VirtualNode<T>>
     public VirtualNode(uint hash, T server)
     {
         Hash = hash;
-        Server = server ?? throw new ArgumentNullException(nameof(server));
+        ArgumentNullException.ThrowIfNull(server);
+        Server = server;
     }
 
     public int CompareTo(VirtualNode<T>? other)

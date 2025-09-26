@@ -44,10 +44,13 @@ internal sealed class ConfigurationSnapshot<T> where T : IEquatable<T>
     /// <exception cref="ArgumentNullException">Thrown when servers, virtualNodes, or hashAlgorithm is null.</exception>
     public ConfigurationSnapshot(IReadOnlyList<T> servers, IReadOnlyList<VirtualNode<T>> virtualNodes, DateTime createdAt, IHashAlgorithm hashAlgorithm)
     {
-        Servers = servers ?? throw new ArgumentNullException(nameof(servers));
-        VirtualNodes = virtualNodes ?? throw new ArgumentNullException(nameof(virtualNodes));
+        ArgumentNullException.ThrowIfNull(servers);
+        ArgumentNullException.ThrowIfNull(virtualNodes);
+        ArgumentNullException.ThrowIfNull(hashAlgorithm);
+        Servers = servers;
+        VirtualNodes = virtualNodes;
         CreatedAt = createdAt;
-        _hashAlgorithm = hashAlgorithm ?? throw new ArgumentNullException(nameof(hashAlgorithm));
+        _hashAlgorithm = hashAlgorithm;
 
         _sortedVirtualNodes = [.. virtualNodes.OrderBy(node => node.Hash)];
     }
