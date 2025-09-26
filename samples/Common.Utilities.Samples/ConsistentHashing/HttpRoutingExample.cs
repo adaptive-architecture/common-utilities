@@ -46,7 +46,7 @@ public static class HttpRoutingExample
 
         // Demonstrate sticky sessions - same session always goes to same server
         Console.WriteLine("Sticky session consistency check:");
-        var testSession = "session-abc123";
+        const string testSession = "session-abc123";
         for (int i = 0; i < 5; i++)
         {
             var server = loadBalancer.RouteRequest(testSession);
@@ -56,7 +56,7 @@ public static class HttpRoutingExample
 
         // Simulate server maintenance and removal
         Console.WriteLine("=== Server Maintenance Simulation ===");
-        var serverToRemove = "api-server-2.example.com";
+        const string serverToRemove = "api-server-2.example.com";
         Console.WriteLine($"Taking server offline for maintenance: {serverToRemove}");
         loadBalancer.RemoveServer(serverToRemove);
 

@@ -62,7 +62,7 @@ public sealed class HandlerRegistry
     {
         return _handlers.TryGetValue(topic, out var handlerRegistrations)
             ? GetMatchingHandlers<T>(handlerRegistrations.Values)
-            : Array.Empty<Delegate>();
+            : [];
     }
 
     /// <summary>

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="$(AssemblyName).Redis" />
+    <InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
   </ItemGroup>
 
 </Project>

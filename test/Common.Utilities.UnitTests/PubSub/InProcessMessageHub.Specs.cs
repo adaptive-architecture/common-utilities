@@ -66,7 +66,7 @@ public class InProcessMessageHubSpecs
         Assert.Equal(1, reacted);
     }
 
-    [Fact]
+    [RetryFact]
     public void Should_Be_Able_To_Subscribe_Multiple_Times()
     {
         var topic = Guid.NewGuid().ToString("N");

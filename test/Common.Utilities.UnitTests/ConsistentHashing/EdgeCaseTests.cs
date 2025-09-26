@@ -163,10 +163,7 @@ public class EdgeCaseTests
         };
 
         // Act - Add all special servers
-        foreach (var server in specialServers)
-        {
-            ring.Add(server);
-        }
+        ring.AddRange(specialServers);
 
         // Assert
         Assert.Equal(specialServers.Length, ring.Servers.Count);
@@ -208,7 +205,7 @@ public class EdgeCaseTests
             [0x00],
             [0xFF],
             Enumerable.Repeat((byte)0x55, 1000).ToArray(), // Long repeating pattern
-            Enumerable.Range(0, 256).Select(i => (byte)i).ToArray(), // All byte values
+            [.. Enumerable.Range(0, 256).Select(i => (byte)i)], // All byte values
             [] // Empty array
         };
 
@@ -238,10 +235,7 @@ public class EdgeCaseTests
         };
 
         // Act
-        foreach (var guid in serverGuids)
-        {
-            ring.Add(guid);
-        }
+        ring.AddRange(serverGuids);
 
         // Assert
         Assert.Equal(serverGuids.Length, ring.Servers.Count);
@@ -270,10 +264,7 @@ public class EdgeCaseTests
         };
 
         // Act
-        foreach (var server in servers)
-        {
-            ring.Add(server);
-        }
+        ring.AddRange(servers);
 
         // Assert
         Assert.Equal(servers.Length, ring.Servers.Count);

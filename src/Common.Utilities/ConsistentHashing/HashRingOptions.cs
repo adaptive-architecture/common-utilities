@@ -12,6 +12,20 @@ public sealed class HashRingOptions
     public int DefaultVirtualNodes { get; set; } = 42;
 
     /// <summary>
+    /// Gets or sets whether version history is enabled for data migration scenarios.
+    /// When enabled, the hash ring can maintain previous server configurations.
+    /// Default value is false.
+    /// </summary>
+    public bool EnableVersionHistory { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets the maximum number of historical configurations to retain.
+    /// Only used when EnableVersionHistory is true.
+    /// Default value is 3. Minimum value is 1.
+    /// </summary>
+    public int MaxHistorySize { get; set; } = 3;
+
+    /// <summary>
     /// Gets or sets the hash algorithm to use.
     /// Default is SHA1.
     /// </summary>

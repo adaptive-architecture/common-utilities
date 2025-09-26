@@ -526,6 +526,7 @@ foreach (var server in ring.Servers)
 
 ## Related Documentation
 
+- [Consistent Hashing History Management](consistent-hashing-history-management.md) - Advanced version history management and Clear method usage
 - [Extension Methods](extension-methods.md) - General extension method utilities
 - [Synchronization Utilities](synchronization-utilities.md) - Thread-safe utilities
 - [Global Abstractions](global-abstractions.md) - Common interfaces and patterns

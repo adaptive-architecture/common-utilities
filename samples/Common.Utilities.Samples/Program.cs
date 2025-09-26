@@ -12,6 +12,7 @@ Console.WriteLine("=== AdaptArch Common Utilities Samples ===\n");
 // Run Consistent Hashing Examples
 DatabaseRoutingExample.RunExample();
 HttpRoutingExample.RunExample();
+HistoryManagementExample.RunExample();
 
 Console.WriteLine("=== Background Worker Examples ===");
 

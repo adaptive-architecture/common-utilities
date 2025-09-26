@@ -95,7 +95,7 @@ public class ConcurrencyIntegrationTests
             }, TestContext.Current.CancellationToken)
         };
 
-        await Task.WhenAll(readTasks.Concat(writeTasks).ToArray());
+        await Task.WhenAll([.. readTasks, .. writeTasks]);
 
         // Assert - All read results should be valid (mapped to servers that existed at read time)
         var allResults = readResults.ToArray();
@@ -291,7 +291,7 @@ public class ConcurrencyIntegrationTests
             ring.Remove("server1");
         }, TestContext.Current.CancellationToken);
 
-        await Task.WhenAll(readTasks.Concat(new[] { removeTask }).ToArray());
+        await Task.WhenAll([.. readTasks, .. new[] { removeTask }]);
 
         // Assert - All operations completed successfully
         var resultArray = results.ToArray();
