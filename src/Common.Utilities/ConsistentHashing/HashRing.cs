@@ -440,7 +440,7 @@ public sealed class HashRing<T> where T : IEquatable<T>
         {
             var candidates = new List<T>();
             var configurationCount = 1; // Current configuration always counts
-            var hasHistory = IsVersionHistoryEnabled && _historyManager!.HasSnapshots;
+            var hasHistory = HasHistory();
 
             // Get server from current configuration
             if (!IsEmpty)
@@ -505,7 +505,7 @@ public sealed class HashRing<T> where T : IEquatable<T>
             lock (_lock)
             {
                 var configurationCount = 1; // Current configuration always counts
-                var hasHistory = IsVersionHistoryEnabled && _historyManager!.HasSnapshots;
+                var hasHistory = HasHistory();
 
                 if (hasHistory)
                 {
@@ -556,4 +556,6 @@ public sealed class HashRing<T> where T : IEquatable<T>
             return false;
         }
     }
+
+    private bool HasHistory() => IsVersionHistoryEnabled && _historyManager!.HasSnapshots;
 }
