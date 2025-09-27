@@ -1,4 +1,4 @@
-namespace AdaptArch.Common.Utilities.ConsistentHashing;
+﻿namespace AdaptArch.Common.Utilities.ConsistentHashing;
 
 /// <summary>
 /// Manages the history of configuration snapshots with a configurable maximum size limit.

@@ -1,4 +1,4 @@
-namespace AdaptArch.Common.Utilities.ConsistentHashing;
+﻿namespace AdaptArch.Common.Utilities.ConsistentHashing;
 
 internal sealed class VirtualNode<T> : IComparable<VirtualNode<T>>
     where T : IEquatable<T>

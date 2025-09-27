@@ -1,4 +1,4 @@
-namespace AdaptArch.Common.Utilities.ConsistentHashing;
+﻿namespace AdaptArch.Common.Utilities.ConsistentHashing;
 
 /// <summary>
 /// Represents the result of querying servers from current and historical configurations.

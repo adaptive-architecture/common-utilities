@@ -1,4 +1,4 @@
-namespace AdaptArch.Common.Utilities.ConsistentHashing;
+﻿namespace AdaptArch.Common.Utilities.ConsistentHashing;
 
 /// <summary>
 /// Extension methods for <see cref="HashRing{T}"/> to support common key types.

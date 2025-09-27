@@ -1,11 +1,11 @@
-namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
+﻿namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 
-using AdaptArch.Common.Utilities.ConsistentHashing;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AdaptArch.Common.Utilities.ConsistentHashing;
 using Xunit;
 
 public sealed class VersionAwareConcurrencyTests

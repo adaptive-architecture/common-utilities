@@ -1,4 +1,4 @@
-namespace AdaptArch.Common.Utilities.ConsistentHashing;
+﻿namespace AdaptArch.Common.Utilities.ConsistentHashing;
 
 /// <summary>
 /// Exception thrown when attempting to create a configuration snapshot that would exceed the history limit.

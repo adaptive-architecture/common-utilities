@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using AdaptArch.Common.Utilities.ConsistentHashing;
 
 namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;

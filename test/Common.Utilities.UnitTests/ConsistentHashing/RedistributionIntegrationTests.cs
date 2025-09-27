@@ -1,4 +1,4 @@
-using AdaptArch.Common.Utilities.ConsistentHashing;
+﻿using AdaptArch.Common.Utilities.ConsistentHashing;
 
 namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 

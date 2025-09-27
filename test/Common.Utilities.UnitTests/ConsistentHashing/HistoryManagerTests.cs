@@ -1,9 +1,9 @@
-namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
+﻿namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 
-using AdaptArch.Common.Utilities.ConsistentHashing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AdaptArch.Common.Utilities.ConsistentHashing;
 using Xunit;
 
 public sealed class HistoryManagerTests

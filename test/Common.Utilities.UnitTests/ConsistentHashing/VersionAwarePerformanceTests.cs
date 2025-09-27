@@ -1,12 +1,12 @@
-namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
+﻿namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 
-using AdaptArch.Common.Utilities.ConsistentHashing;
-using AdaptArch.Common.Utilities.xUnit.Extensions.Retry;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using AdaptArch.Common.Utilities.ConsistentHashing;
+using AdaptArch.Common.Utilities.xUnit.Extensions.Retry;
 using Xunit;
 
 public sealed class VersionAwarePerformanceTests

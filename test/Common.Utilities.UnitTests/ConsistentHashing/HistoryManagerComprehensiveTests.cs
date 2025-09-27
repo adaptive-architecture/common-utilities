@@ -1,10 +1,10 @@
-namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
+﻿namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 
-using AdaptArch.Common.Utilities.ConsistentHashing;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using AdaptArch.Common.Utilities.ConsistentHashing;
 using Xunit;
 
 /// <summary>

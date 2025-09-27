@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using AdaptArch.Common.Utilities.ConsistentHashing;
 using AdaptArch.Common.Utilities.xUnit.Extensions.Retry;
 

@@ -1,7 +1,7 @@
-namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
+﻿namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 
-using AdaptArch.Common.Utilities.ConsistentHashing;
 using System;
+using AdaptArch.Common.Utilities.ConsistentHashing;
 using Xunit;
 
 /// <summary>

@@ -1,13 +1,13 @@
-namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
+﻿namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 #pragma warning disable S2925 // SONAR: Do not use 'Thread.Sleep()' in a test.
 
-using AdaptArch.Common.Utilities.ConsistentHashing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AdaptArch.Common.Utilities.ConsistentHashing;
 using Xunit;
 
 /// <summary>
