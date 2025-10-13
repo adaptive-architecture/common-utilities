@@ -357,3 +357,4 @@ coverage/
 *.lcov
 
 .claude/*.local.json
+specs
