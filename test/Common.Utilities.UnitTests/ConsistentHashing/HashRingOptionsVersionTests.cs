@@ -6,30 +6,11 @@ using Xunit;
 public sealed class HashRingOptionsVersionTests
 {
     [Fact]
-    public void EnableVersionHistory_DefaultsToFalse()
-    {
-        var options = new HashRingOptions();
-
-        Assert.False(options.EnableVersionHistory);
-    }
-
-    [Fact]
     public void MaxHistorySize_DefaultsTo3()
     {
         var options = new HashRingOptions();
 
         Assert.Equal(3, options.MaxHistorySize);
-    }
-
-    [Fact]
-    public void EnableVersionHistory_CanBeSetToTrue()
-    {
-        var options = new HashRingOptions
-        {
-            EnableVersionHistory = true
-        };
-
-        Assert.True(options.EnableVersionHistory);
     }
 
     [Fact]

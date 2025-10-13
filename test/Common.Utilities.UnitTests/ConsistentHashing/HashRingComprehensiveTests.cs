@@ -16,8 +16,8 @@ using Xunit;
 /// </summary>
 public sealed class HashRingComprehensiveTests
 {
-    private static readonly int[] TestServers = new[] { 1, 2, 3 };
-    private static readonly string[] TestServerNames = new[] { "server2", "server3" };
+    private static readonly int[] TestServers = [1, 2, 3];
+    private static readonly string[] TestServerNames = ["server2", "server3"];
 
     #region Constructor and Configuration Tests
 
@@ -27,7 +27,6 @@ public sealed class HashRingComprehensiveTests
         var options = new HashRingOptions
         {
             DefaultVirtualNodes = 100,
-            EnableVersionHistory = true,
             MaxHistorySize = 5
         };
 
@@ -36,7 +35,6 @@ public sealed class HashRingComprehensiveTests
         Assert.Empty(ring.Servers);
         Assert.True(ring.IsEmpty);
         Assert.Equal(0, ring.VirtualNodeCount);
-        Assert.True(ring.IsVersionHistoryEnabled);
         Assert.Equal(0, ring.HistoryCount);
         Assert.Equal(5, ring.MaxHistorySize);
     }
@@ -283,7 +281,7 @@ public sealed class HashRingComprehensiveTests
         var key = Encoding.UTF8.GetBytes("test");
 
         var exception = Assert.Throws<InvalidOperationException>(() => ring.GetServer(key));
-        Assert.Contains("No servers available", exception.Message);
+        Assert.Contains("No configuration snapshots available", exception.Message);
     }
 
     [Fact]
@@ -291,6 +289,7 @@ public sealed class HashRingComprehensiveTests
     {
         var ring = new HashRing<string>();
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
 
         var keys = new[]
         {
@@ -298,7 +297,7 @@ public sealed class HashRingComprehensiveTests
             Encoding.UTF8.GetBytes("key2"),
             Encoding.UTF8.GetBytes("completely-different-key"),
             Encoding.UTF8.GetBytes(""),
-            new byte[] { 0x00, 0xFF, 0x42, 0x13 }
+            [0x00, 0xFF, 0x42, 0x13]
         };
 
         foreach (var key in keys)
@@ -315,6 +314,7 @@ public sealed class HashRingComprehensiveTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         var key = Encoding.UTF8.GetBytes("consistent-key");
         var server1 = ring.GetServer(key);
@@ -332,6 +332,7 @@ public sealed class HashRingComprehensiveTests
     {
         var ring = new HashRing<string>();
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
         var emptyKey = Array.Empty<byte>();
 
         var server = ring.GetServer(emptyKey);
@@ -349,6 +350,7 @@ public sealed class HashRingComprehensiveTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         var server = ring.GetServer(binaryKey);
 
@@ -388,6 +390,7 @@ public sealed class HashRingComprehensiveTests
     {
         var ring = new HashRing<string>();
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
         var key = Encoding.UTF8.GetBytes("test");
 
         var result = ring.TryGetServer(key, out var server);
@@ -430,6 +433,7 @@ public sealed class HashRingComprehensiveTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
         var key = Encoding.UTF8.GetBytes("test");
 
         var servers = ring.GetServers(key, 0).ToList();
@@ -443,6 +447,7 @@ public sealed class HashRingComprehensiveTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
         var key = Encoding.UTF8.GetBytes("test");
 
         var servers = ring.GetServers(key, 10).ToList();
@@ -459,6 +464,7 @@ public sealed class HashRingComprehensiveTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
         var key = Encoding.UTF8.GetBytes("test");
 
         var servers1 = ring.GetServers(key, 3).ToList();
@@ -474,6 +480,7 @@ public sealed class HashRingComprehensiveTests
         ring.Add("server1", 100); // Many virtual nodes
         ring.Add("server2", 100);
         ring.Add("server3", 100);
+        ring.CreateConfigurationSnapshot();
         var key = Encoding.UTF8.GetBytes("test");
 
         var servers = ring.GetServers(key, 10).ToList();
@@ -481,255 +488,6 @@ public sealed class HashRingComprehensiveTests
         var uniqueServers = servers.Distinct().ToList();
         Assert.Equal(uniqueServers.Count, servers.Count);
         Assert.True(uniqueServers.Count <= 3);
-    }
-
-    #endregion
-
-    #region Version History Tests
-
-    [Fact]
-    public void CreateConfigurationSnapshot_VersionHistoryDisabled_ThrowsInvalidOperationException()
-    {
-        var ring = new HashRing<string>(); // Version history disabled by default
-
-        var exception = Assert.Throws<InvalidOperationException>(() => ring.CreateConfigurationSnapshot());
-        Assert.Contains("version history is not enabled", exception.Message);
-    }
-
-    [Fact]
-    public void CreateConfigurationSnapshot_VersionHistoryEnabled_CreatesSnapshot()
-    {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 5 };
-        var ring = new HashRing<string>(options);
-        ring.Add("server1");
-
-        ring.CreateConfigurationSnapshot();
-
-        Assert.Equal(1, ring.HistoryCount);
-    }
-
-    [Fact]
-    public void ClearHistory_VersionHistoryDisabled_ThrowsInvalidOperationException()
-    {
-        var ring = new HashRing<string>();
-
-        var exception = Assert.Throws<InvalidOperationException>(() => ring.ClearHistory());
-        Assert.Contains("version history is not enabled", exception.Message);
-    }
-
-    [Fact]
-    public void ClearHistory_VersionHistoryEnabled_ClearsHistory()
-    {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 5 };
-        var ring = new HashRing<string>(options);
-        ring.Add("server1");
-        ring.CreateConfigurationSnapshot();
-
-        ring.ClearHistory();
-
-        Assert.Equal(0, ring.HistoryCount);
-    }
-
-    #endregion
-
-    #region Server Candidates Tests
-
-    [Fact]
-    public void GetServerCandidates_WithNullKey_ThrowsArgumentNullException()
-    {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 5 };
-        var ring = new HashRing<string>(options);
-        ring.Add("server1");
-        byte[] key = null;
-
-        var exception = Assert.Throws<ArgumentNullException>(() => ring.GetServerCandidates(key!));
-        Assert.Equal("key", exception.ParamName);
-    }
-
-    [Fact]
-    public void GetServerCandidates_EmptyRingNoHistory_ThrowsInvalidOperationException()
-    {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 5 };
-        var ring = new HashRing<string>(options);
-        var key = Encoding.UTF8.GetBytes("test");
-
-        var exception = Assert.Throws<InvalidOperationException>(() => ring.GetServerCandidates(key));
-        Assert.Contains("No servers are available", exception.Message);
-    }
-
-    [Fact]
-    public void GetServerCandidates_WithMaxCandidatesNegative_ThrowsArgumentOutOfRangeException()
-    {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 5 };
-        var ring = new HashRing<string>(options);
-        ring.Add("server1");
-        var key = Encoding.UTF8.GetBytes("test");
-
-        var exception = Assert.Throws<ArgumentOutOfRangeException>(() => ring.GetServerCandidates(key, -1));
-        Assert.Equal("maxCandidates", exception.ParamName);
-    }
-
-    [Fact]
-    public void GetServerCandidates_MaxCandidatesZero_ReturnsEmptyList()
-    {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 5 };
-        var ring = new HashRing<string>(options);
-        ring.Add("server1");
-        var key = Encoding.UTF8.GetBytes("test");
-
-        var result = ring.GetServerCandidates(key, 0);
-
-        Assert.Empty(result.Servers);
-        Assert.Equal(1, result.ConfigurationCount);
-        Assert.False(result.HasHistory);
-    }
-
-    [Fact]
-    public void TryGetServerCandidates_WithNullKey_ThrowsArgumentNullException()
-    {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 5 };
-        var ring = new HashRing<string>(options);
-        ring.Add("server1");
-        byte[] key = null;
-
-        var exception = Assert.Throws<ArgumentNullException>(() => ring.TryGetServerCandidates(key!, out _));
-        Assert.Equal("key", exception.ParamName);
-    }
-
-    [Fact]
-    public void TryGetServerCandidates_EmptyRing_ReturnsFalse()
-    {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 5 };
-        var ring = new HashRing<string>(options);
-        var key = Encoding.UTF8.GetBytes("test");
-
-        var success = ring.TryGetServerCandidates(key, out var result);
-
-        Assert.False(success);
-        Assert.Null(result);
-    }
-
-    [Fact]
-    public void TryGetServerCandidates_NonEmptyRing_ReturnsTrue()
-    {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 5 };
-        var ring = new HashRing<string>(options);
-        ring.Add("server1");
-        var key = Encoding.UTF8.GetBytes("test");
-
-        var success = ring.TryGetServerCandidates(key, out var result);
-
-        Assert.True(success);
-        Assert.NotNull(result);
-        Assert.Single(result.Servers);
-    }
-
-    [Fact]
-    public void GetServerCandidates_EmptyRingWithEmptyHistoricalSnapshots_ThrowsInvalidOperationException()
-    {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 5 };
-        var ring = new HashRing<string>(options);
-        var key = Encoding.UTF8.GetBytes("test");
-
-        // Create empty snapshots by taking snapshots when the ring is empty
-        // This is a legitimate scenario - the ring starts empty, we take a snapshot,
-        // then it becomes empty again, we take another snapshot, etc.
-
-        // Create first empty snapshot
-        ring.CreateConfigurationSnapshot();
-
-        // Add server, then remove it, then create another empty snapshot
-        ring.Add("temp-server");
-        ring.Remove("temp-server");
-        ring.CreateConfigurationSnapshot();
-
-        // Add server again, remove it, create third empty snapshot
-        ring.Add("temp-server2");
-        ring.Remove("temp-server2");
-        ring.CreateConfigurationSnapshot();
-
-        // At this point we have:
-        // - Current configuration: empty (IsEmpty = true)
-        // - Historical snapshots: 3 empty snapshots (hasHistory = true)
-        // - All snapshot.GetServer(key) calls will throw InvalidOperationException
-        // - candidates.Count will remain 0
-        // - This should trigger the "No servers are available in any configuration" exception
-
-        var exception = Assert.Throws<InvalidOperationException>(() => ring.GetServerCandidates(key));
-        Assert.Equal("No servers are available in any configuration.", exception.Message);
-
-        // Verify the ring state
-        Assert.True(ring.IsEmpty);
-        Assert.True(ring.IsVersionHistoryEnabled);
-        Assert.Equal(3, ring.HistoryCount);
-    }
-
-    [Fact]
-    public void GetServerCandidates_MaxCandidatesLowerThanServerCount_ReturnsLimitedCandidates()
-    {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 100 };
-        var ring = new HashRing<string>(options);
-        var key = Encoding.UTF8.GetBytes("test-key");
-
-        // Create multiple configurations with different servers to build up candidates
-        // Each configuration will provide 1 candidate for the key
-
-        // Configuration 1: server1, server2
-        ring.Add("server1");
-        ring.Add("server2");
-        ring.CreateConfigurationSnapshot();
-
-        // Configuration 2: server3, server4
-        ring.Remove("server1");
-        ring.Remove("server2");
-        ring.Add("server3");
-        ring.Add("server4");
-        ring.CreateConfigurationSnapshot();
-
-        // Configuration 3: add server5 and server6
-        ring.Remove("server3");
-        ring.Remove("server4");
-        ring.Add("server5");
-        ring.Add("server6");
-        ring.CreateConfigurationSnapshot();
-
-        // Configuration 4: server7, server8
-        ring.Remove("server5");
-        ring.Remove("server6");
-        ring.Add("server7");
-        ring.Add("server8");
-        ring.CreateConfigurationSnapshot();
-
-        // Configuration 5: add server9 and server10
-        ring.Remove("server7");
-        ring.Remove("server8");
-        ring.Add("server9");
-        ring.Add("server10");
-
-        // At this point we have current config + 4 historical snapshots = 5 configurations
-        // Each configuration will map the key to one server, giving us up to 5 candidates
-
-        // Get all candidates first to see what we're working with
-        var allCandidates = ring.GetServerCandidates(key);
-
-        // Now test limiting to 3 candidates when we potentially have 5
-        var result = ring.GetServerCandidates(key, 3);
-
-        Assert.True(result.Servers.Count <= 3, $"Expected at most 3 candidates, got {result.Servers.Count}");
-        Assert.True(result.Servers.Count <= allCandidates.Servers.Count,
-                   "Limited result should not have more servers than unlimited result");
-        Assert.Equal(5, result.ConfigurationCount); // 1 current + 4 snapshots
-        Assert.True(result.HasHistory);
-
-        // Verify all returned servers are unique
-        var uniqueServers = result.Servers.Distinct().ToList();
-        Assert.Equal(result.Servers.Count, uniqueServers.Count);
-
-        // Verify all returned servers exist in the ring or its history
-        foreach (var server in result.Servers)
-        {
-            Assert.Contains(server, allCandidates.Servers);
-        }
     }
 
     #endregion
@@ -922,6 +680,7 @@ public sealed class HashRingComprehensiveTests
         // Add some initial servers
         ring.Add("initial1");
         ring.Add("initial2");
+        ring.CreateConfigurationSnapshot();
         _ = ring.GetServer(key);
 
         // Add multiple servers atomically
@@ -933,6 +692,7 @@ public sealed class HashRingComprehensiveTests
         };
 
         ring.AddRange(serversToAdd);
+        ring.CreateConfigurationSnapshot();
 
         // Verify all were added
         Assert.Equal(5, ring.Servers.Count);
@@ -945,6 +705,7 @@ public sealed class HashRingComprehensiveTests
         // Remove multiple servers atomically
         var serversToRemove = new[] { "atomic1", "atomic3", "initial1" };
         var removedCount = ring.RemoveRange(serversToRemove);
+        ring.CreateConfigurationSnapshot();
 
         Assert.Equal(3, removedCount);
         Assert.Equal(2, ring.Servers.Count);
@@ -1037,30 +798,34 @@ public sealed class HashRingComprehensiveTests
     [Fact]
     public void ComplexWorkflow_AddRemoveWithHistory_MaintainsConsistency()
     {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 10 };
+        var options = new HashRingOptions { MaxHistorySize = 10 };
         var ring = new HashRing<string>(options);
         var testKey = Encoding.UTF8.GetBytes("integration-test");
 
         // Phase 1: Initial setup
         ring.Add("server1");
         ring.Add("server2");
-        var initialServer = ring.GetServer(testKey);
         ring.CreateConfigurationSnapshot();
+        _ = ring.GetServer(testKey);
+        Assert.Equal(1, ring.HistoryCount);
 
-        // Phase 2: Add server
+        // Phase 2: Add server and create snapshot
         ring.Add("server3");
-        var candidates1 = ring.GetServerCandidates(testKey);
-        Assert.Contains(initialServer, candidates1.Servers); // Should still include original
-
-        // Phase 3: Remove server
         ring.CreateConfigurationSnapshot();
+        Assert.Equal(2, ring.HistoryCount);
+        var server2 = ring.GetServer(testKey); // Still works with multiple snapshots
+        Assert.NotNull(server2);
+
+        // Phase 3: Remove server and create snapshot
         ring.Remove("server1");
-        var candidates2 = ring.GetServerCandidates(testKey);
+        ring.CreateConfigurationSnapshot();
+        Assert.Equal(3, ring.HistoryCount);
+        var server3 = ring.GetServer(testKey); // Still works
+        Assert.NotNull(server3);
 
         // Verify history is maintained
         Assert.True(ring.HistoryCount > 0);
-        Assert.True(candidates2.HasHistory);
-        Assert.True(candidates2.ConfigurationCount > 1);
+        Assert.Equal(10, ring.MaxHistorySize);
     }
 
     [Fact]
@@ -1073,6 +838,7 @@ public sealed class HashRingComprehensiveTests
         {
             ring.Add($"server-{i:D3}");
         }
+        ring.CreateConfigurationSnapshot();
 
         // Test 1000 different keys
         var serverCounts = new Dictionary<string, int>();
@@ -1103,6 +869,7 @@ public sealed class HashRingComprehensiveTests
         {
             ring.Add($"initial-server-{i}");
         }
+        ring.CreateConfigurationSnapshot();
 
         // Concurrent read operations
         for (int i = 0; i < 50; i++)
@@ -1165,7 +932,7 @@ public sealed class HashRingComprehensiveTests
     [InlineData(100, 50)]
     public void HistoryLimit_ReachingLimit_ThrowsCorrectException(int maxSize, int snapshotsToCreate)
     {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = maxSize };
+        var options = new HashRingOptions { MaxHistorySize = maxSize, HistoryLimitBehavior = HistoryLimitBehavior.ThrowError };
         var ring = new HashRing<string>(options);
         ring.Add("server1");
 
@@ -1196,6 +963,7 @@ public sealed class HashRingComprehensiveTests
         ring.Add(1);
         ring.Add(2);
         ring.Add(3);
+        ring.CreateConfigurationSnapshot();
 
         var key = Encoding.UTF8.GetBytes("test");
         var server = ring.GetServer(key);
@@ -1212,6 +980,7 @@ public sealed class HashRingComprehensiveTests
 
         ring.Add(guid1);
         ring.Add(guid2);
+        ring.CreateConfigurationSnapshot();
 
         var key = Encoding.UTF8.GetBytes("test");
         var server = ring.GetServer(key);
@@ -1228,6 +997,7 @@ public sealed class HashRingComprehensiveTests
 
         ring.Add(server1);
         ring.Add(server2);
+        ring.CreateConfigurationSnapshot();
 
         var key = Encoding.UTF8.GetBytes("test");
         var server = ring.GetServer(key);

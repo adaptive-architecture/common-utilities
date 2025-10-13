@@ -13,6 +13,7 @@ public class HashRingExtensionsComprehensiveTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         bool success = ring.TryGetServer(12345, out string server);
@@ -44,6 +45,7 @@ public class HashRingExtensionsComprehensiveTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
         const int testKey = 67890;
 
         // Act
@@ -66,6 +68,7 @@ public class HashRingExtensionsComprehensiveTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         bool success = ring.TryGetServer(1234567890123L, out string server);
@@ -97,6 +100,7 @@ public class HashRingExtensionsComprehensiveTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
         const long testKey = 9876543210987L;
 
         // Act
@@ -124,6 +128,7 @@ public class HashRingExtensionsComprehensiveTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         bool success = ring.TryGetServer(key, out string server);
@@ -146,6 +151,7 @@ public class HashRingExtensionsComprehensiveTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         bool success = ring.TryGetServer(key, out string server);
@@ -162,6 +168,7 @@ public class HashRingExtensionsComprehensiveTests
         // Arrange
         var ring = new HashRing<string>();
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
 
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => ring.TryGetServer((string)null!, out _));
@@ -193,6 +200,7 @@ public class HashRingExtensionsComprehensiveTests
         ring.Add("server2");
         ring.Add("server3");
         ring.Add("server4");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         var servers = ring.GetServers("test-key", 3).ToList();
@@ -213,6 +221,7 @@ public class HashRingExtensionsComprehensiveTests
         ring.Add("server2");
         ring.Add("server3");
         ring.Add("server4");
+        ring.CreateConfigurationSnapshot();
         var guid = Guid.Parse("12345678-9012-3456-7890-123456789012");
 
         // Act
@@ -233,6 +242,7 @@ public class HashRingExtensionsComprehensiveTests
         ring.Add("server2");
         ring.Add("server3");
         ring.Add("server4");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         var servers = ring.GetServers(54321, 2).ToList();
@@ -252,6 +262,7 @@ public class HashRingExtensionsComprehensiveTests
         ring.Add("server2");
         ring.Add("server3");
         ring.Add("server4");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         var servers = ring.GetServers(9876543210L, 2).ToList();
@@ -269,6 +280,7 @@ public class HashRingExtensionsComprehensiveTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         var servers = ring.GetServers("test-key", 10).ToList();
@@ -280,25 +292,13 @@ public class HashRingExtensionsComprehensiveTests
     }
 
     [Fact]
-    public void GetServers_AllKeyTypes_EmptyRing_ReturnsEmptyEnumerable()
-    {
-        // Arrange
-        var ring = new HashRing<string>();
-
-        // Act & Assert
-        Assert.Empty(ring.GetServers("test", 1));
-        Assert.Empty(ring.GetServers(123, 1));
-        Assert.Empty(ring.GetServers(123L, 1));
-        Assert.Empty(ring.GetServers(Guid.NewGuid(), 1));
-    }
-
-    [Fact]
     public void GetServers_StringKey_CountZero_ReturnsEmptyEnumerable()
     {
         // Arrange
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         var servers = ring.GetServers("test-key", 0).ToList();
@@ -313,6 +313,7 @@ public class HashRingExtensionsComprehensiveTests
         // Arrange
         var ring = new HashRing<string>();
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
 
         // Act & Assert
         Assert.Throws<ArgumentOutOfRangeException>(() => ring.GetServers("test", -1).ToList());
@@ -324,6 +325,7 @@ public class HashRingExtensionsComprehensiveTests
         // Arrange
         var ring = new HashRing<string>();
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
 
         // Act & Assert
         Assert.Throws<ArgumentOutOfRangeException>(() => ring.GetServers("test", -1).ToList());
@@ -340,6 +342,7 @@ public class HashRingExtensionsComprehensiveTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
         const string testKey = "consistency-test";
 
         // Act
@@ -366,6 +369,7 @@ public class HashRingExtensionsComprehensiveTests
         ring.Add("server2");
         ring.Add("server3");
         ring.Add("server4");
+        ring.CreateConfigurationSnapshot();
 
         const string stringKey = "test";
         const int intKey = 12345;
@@ -398,6 +402,7 @@ public class HashRingExtensionsComprehensiveTests
         // Arrange
         var ring = new HashRing<string>();
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
 
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => ring.GetServers((string)null!, 1).ToList());
@@ -428,6 +433,7 @@ public class HashRingExtensionsComprehensiveTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         var serversEnumerable = ring.GetServers("test-key", 2);
@@ -445,6 +451,7 @@ public class HashRingExtensionsComprehensiveTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Act - Get enumerable but don't enumerate
         var serversEnumerable = ring.GetServers("test-key", 2);
@@ -452,6 +459,7 @@ public class HashRingExtensionsComprehensiveTests
         // Add more servers after getting enumerable
         ring.Add("server3");
         ring.Add("server4");
+        ring.CreateConfigurationSnapshot();
 
         // Now enumerate
         var servers = serversEnumerable.ToList();
@@ -469,6 +477,7 @@ public class HashRingExtensionsComprehensiveTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
         const string testKey = "consistency-check";
 
         // Act
@@ -487,6 +496,7 @@ public class HashRingExtensionsComprehensiveTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         const string stringKey = "test";
         const int intKey = 42;
@@ -510,6 +520,7 @@ public class HashRingExtensionsComprehensiveTests
         // Arrange
         var ring = new HashRing<string>();
         ring.Add("only-server");
+        ring.CreateConfigurationSnapshot();
 
         const string stringKey = "test";
         const int intKey = 123;
@@ -554,6 +565,7 @@ public class HashRingExtensionsComprehensiveTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         var specialStrings = new[]
         {
@@ -594,6 +606,7 @@ public class HashRingExtensionsComprehensiveTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
         var guid = Guid.Parse(guidString);
 
         // Act
@@ -616,6 +629,7 @@ public class HashRingExtensionsComprehensiveTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         const string testKey = "modification-test";
 
@@ -626,12 +640,14 @@ public class HashRingExtensionsComprehensiveTests
         // Add more servers
         ring.Add("server3");
         ring.Add("server4");
+        ring.CreateConfigurationSnapshot();
 
         var afterAddServer = ring.GetServer(testKey);
         Assert.Contains(afterAddServer, ring.Servers);
 
         // Remove a server
         ring.Remove("server1");
+        ring.CreateConfigurationSnapshot();
 
         var afterRemoveServer = ring.GetServer(testKey);
         Assert.Contains(afterRemoveServer, ring.Servers);
@@ -640,6 +656,7 @@ public class HashRingExtensionsComprehensiveTests
         // Clear and re-add
         ring.Clear();
         ring.Add("new-server");
+        ring.CreateConfigurationSnapshot();
 
         var afterClearServer = ring.GetServer(testKey);
         Assert.Equal("new-server", afterClearServer);
@@ -653,6 +670,7 @@ public class HashRingExtensionsComprehensiveTests
         ring.Add(new ServerRecord("host1", 8080));
         ring.Add(new ServerRecord("host2", 8080));
         ring.Add(new ServerRecord("host3", 9090));
+        ring.CreateConfigurationSnapshot();
 
         const string testKey = "custom-type-test";
 
@@ -683,6 +701,7 @@ public class HashRingExtensionsComprehensiveTests
         {
             ring.Add($"server{i}");
         }
+        ring.CreateConfigurationSnapshot();
 
         const int keyCount = 1000;
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
@@ -712,6 +731,7 @@ public class HashRingExtensionsComprehensiveTests
         var ring = new HashRing<string>();
         var servers = new[] { "server1", "server2", "server3", "server4", "server5" };
         ring.AddRange(servers);
+        ring.CreateConfigurationSnapshot();
 
         var distribution = new Dictionary<string, int>();
         foreach (var server in servers)

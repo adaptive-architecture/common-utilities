@@ -45,15 +45,26 @@ internal sealed class HistoryManager<T> where T : IEquatable<T>
     /// Adds a configuration snapshot to the history.
     /// </summary>
     /// <param name="snapshot">The snapshot to add.</param>
+    /// <param name="behavior">The behavior to apply when the history is at maximum capacity.</param>
     /// <exception cref="ArgumentNullException">Thrown when snapshot is null.</exception>
-    /// <exception cref="HashRingHistoryLimitExceededException">Thrown when adding would exceed the maximum size limit.</exception>
-    public void Add(ConfigurationSnapshot<T> snapshot)
+    /// <exception cref="HashRingHistoryLimitExceededException">
+    /// Thrown when adding would exceed the maximum size limit and <paramref name="behavior"/> is <see cref="HistoryLimitBehavior.ThrowError"/>.
+    /// </exception>
+    public void Add(ConfigurationSnapshot<T> snapshot, HistoryLimitBehavior behavior)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
 
         if (IsFull)
         {
-            throw new HashRingHistoryLimitExceededException(MaxSize, _snapshots.Count);
+            if (behavior == HistoryLimitBehavior.RemoveOldest)
+            {
+                // FIFO removal: remove the oldest snapshot (index 0)
+                _snapshots.RemoveAt(0);
+            }
+            else // ThrowError
+            {
+                throw new HashRingHistoryLimitExceededException(MaxSize, _snapshots.Count);
+            }
         }
 
         _snapshots.Add(snapshot);
@@ -94,7 +105,7 @@ internal sealed class HistoryManager<T> where T : IEquatable<T>
     {
         if (_snapshots.Count > 0)
         {
-            snapshot = _snapshots[_snapshots.Count - 1];
+            snapshot = _snapshots[^1];
             return true;
         }
 

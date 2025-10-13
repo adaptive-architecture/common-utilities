@@ -13,6 +13,7 @@ public class HashRingExtensionsContractTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         string server = ring.GetServer("user123");
@@ -30,6 +31,7 @@ public class HashRingExtensionsContractTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         string server1 = ring.GetServer("user123");
@@ -47,6 +49,7 @@ public class HashRingExtensionsContractTests
         // Arrange
         var ring = new HashRing<string>();
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
 
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => ring.GetServer((string)null));
@@ -68,6 +71,7 @@ public class HashRingExtensionsContractTests
         // Arrange
         var ring = new HashRing<string>();
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         bool success = ring.TryGetServer("user123", out string server);
@@ -103,6 +107,7 @@ public class HashRingExtensionsContractTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
         var guid = Guid.NewGuid();
 
         // Act
@@ -121,6 +126,7 @@ public class HashRingExtensionsContractTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
         var guid = Guid.NewGuid();
 
         // Act
@@ -150,6 +156,7 @@ public class HashRingExtensionsContractTests
         // Arrange
         var ring = new HashRing<string>();
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
         var guid = Guid.NewGuid();
 
         // Act
@@ -187,6 +194,7 @@ public class HashRingExtensionsContractTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         string server = ring.GetServer(12345);
@@ -204,6 +212,7 @@ public class HashRingExtensionsContractTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         string server1 = ring.GetServer(12345);
@@ -236,6 +245,7 @@ public class HashRingExtensionsContractTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         string server = ring.GetServer(1234567890L);
@@ -253,6 +263,7 @@ public class HashRingExtensionsContractTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         string server1 = ring.GetServer(1234567890L);
@@ -286,6 +297,7 @@ public class HashRingExtensionsContractTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         var servers = ring.GetServers("user123", 2).ToList();
@@ -303,6 +315,7 @@ public class HashRingExtensionsContractTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         var servers1 = ring.GetServers("user123", 2).ToList();
@@ -323,6 +336,7 @@ public class HashRingExtensionsContractTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         var servers = ring.GetServers("user123", 5).ToList();
@@ -344,6 +358,7 @@ public class HashRingExtensionsContractTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         string stringKeyServer = ring.GetServer("123");
@@ -363,6 +378,7 @@ public class HashRingExtensionsContractTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Act & Assert - All should work without throwing exceptions
         Assert.NotNull(ring.GetServer("test"));

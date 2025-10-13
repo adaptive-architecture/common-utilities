@@ -28,6 +28,9 @@ public static class HttpRoutingExample
         }
         Console.WriteLine();
 
+        // Create snapshot to enable routing
+        loadBalancer.CreateSnapshot();
+
         // Simulate routing requests based on session IDs
         var sessionIds = new[]
         {
@@ -58,7 +61,9 @@ public static class HttpRoutingExample
         Console.WriteLine("=== Server Maintenance Simulation ===");
         const string serverToRemove = "api-server-2.example.com";
         Console.WriteLine($"Taking server offline for maintenance: {serverToRemove}");
+        loadBalancer.CreateSnapshot();
         loadBalancer.RemoveServer(serverToRemove);
+        loadBalancer.CreateSnapshot();
 
         Console.WriteLine("Routing during maintenance:");
         foreach (var sessionId in sessionIds)
@@ -71,7 +76,9 @@ public static class HttpRoutingExample
         // Server comes back online
         Console.WriteLine("=== Server Back Online ===");
         Console.WriteLine($"Bringing server back online: {serverToRemove}");
+        loadBalancer.CreateSnapshot();
         loadBalancer.AddServer(serverToRemove, 200); // Medium capacity
+        loadBalancer.CreateSnapshot();
 
         Console.WriteLine("Routing after server recovery:");
         foreach (var sessionId in sessionIds)
@@ -101,6 +108,9 @@ public static class HttpRoutingExample
         advancedRouter.AddServer(new ServerInfo("us-east-1.api.example.com", "US-East", 200));
         advancedRouter.AddServer(new ServerInfo("us-west-1.api.example.com", "US-West", 200));
         advancedRouter.AddServer(new ServerInfo("eu-west-1.api.example.com", "EU-West", 150));
+
+        // Create snapshot to enable routing
+        advancedRouter.CreateSnapshot();
 
         // Route requests based on user ID and preferences
         var requests = new[]
@@ -142,6 +152,11 @@ public class HttpLoadBalancer
     public bool RemoveServer(string serverHostname)
     {
         return _ring.Remove(serverHostname);
+    }
+
+    public void CreateSnapshot()
+    {
+        _ring.CreateConfigurationSnapshot();
     }
 
     public string RouteRequest(string sessionId)
@@ -211,6 +226,11 @@ public class AdvancedHttpRouter
     public bool RemoveServer(ServerInfo serverInfo)
     {
         return _ring.Remove(serverInfo);
+    }
+
+    public void CreateSnapshot()
+    {
+        _ring.CreateConfigurationSnapshot();
     }
 
     public ServerInfo RouteRequest(UserRequest request)

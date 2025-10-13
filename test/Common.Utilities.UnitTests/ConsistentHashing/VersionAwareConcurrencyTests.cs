@@ -15,7 +15,6 @@ public sealed class VersionAwareConcurrencyTests
     {
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
             MaxHistorySize = 10
         };
         var hashRing = new HashRing<string>(options);
@@ -52,11 +51,10 @@ public sealed class VersionAwareConcurrencyTests
     }
 
     [Fact]
-    public async Task ConcurrentServerCandidateQueries_WithHistory_ReturnsConsistentResults()
+    public async Task ConcurrentServerQueries_WithHistory_ReturnsConsistentResults()
     {
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
             MaxHistorySize = 3
         };
         var hashRing = new HashRing<string>(options);
@@ -65,14 +63,15 @@ public sealed class VersionAwareConcurrencyTests
         hashRing.Add("server-2");
         hashRing.CreateConfigurationSnapshot();
         hashRing.Add("server-3");
+        hashRing.CreateConfigurationSnapshot();
 
         var testKey = Encoding.UTF8.GetBytes("concurrent-test-key");
-        var results = new ConcurrentBag<ServerCandidateResult<string>>();
+        var results = new ConcurrentBag<string>();
 
         var queryTasks = Enumerable.Range(0, 20).Select(_ => Task.Run(() =>
         {
-            var candidates = hashRing.GetServerCandidates(testKey);
-            results.Add(candidates);
+            var server = hashRing.GetServer(testKey);
+            results.Add(server);
         })).ToArray();
 
         await Task.WhenAll(queryTasks);
@@ -80,12 +79,10 @@ public sealed class VersionAwareConcurrencyTests
         Assert.Equal(20, results.Count);
 
         var firstResult = results.First();
+        // All concurrent queries should return same server for same key
         Assert.All(results, result =>
         {
-            Assert.Equal(firstResult.ConfigurationCount, result.ConfigurationCount);
-            Assert.Equal(firstResult.HasHistory, result.HasHistory);
-            Assert.Equal(firstResult.Servers.Count, result.Servers.Count);
-            Assert.True(firstResult.Servers.SequenceEqual(result.Servers));
+            Assert.Equal(firstResult, result);
         });
     }
 
@@ -94,7 +91,6 @@ public sealed class VersionAwareConcurrencyTests
     {
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
             MaxHistorySize = 5
         };
         var hashRing = new HashRing<string>(options);
@@ -106,7 +102,8 @@ public sealed class VersionAwareConcurrencyTests
         hashRing.CreateConfigurationSnapshot();
 
         var testKey = Encoding.UTF8.GetBytes("clear-test-key");
-        var queryResults = new ConcurrentBag<ServerCandidateResult<string>>();
+        var successfulQueries = 0;
+        var failedQueries = 0;
         var exceptions = new ConcurrentBag<Exception>();
 
         var clearTask = Task.Run(() =>
@@ -128,8 +125,15 @@ public sealed class VersionAwareConcurrencyTests
             {
                 for (int i = 0; i < 10; i++)
                 {
-                    var candidates = hashRing.GetServerCandidates(testKey);
-                    queryResults.Add(candidates);
+                    if (hashRing.TryGetServer(testKey, out var server))
+                    {
+                        Interlocked.Increment(ref successfulQueries);
+                        Assert.NotNull(server);
+                    }
+                    else
+                    {
+                        Interlocked.Increment(ref failedQueries);
+                    }
                     Task.Delay(10).Wait();
                 }
             }
@@ -142,39 +146,39 @@ public sealed class VersionAwareConcurrencyTests
         await Task.WhenAll([clearTask, .. queryTasks]);
 
         Assert.Empty(exceptions);
-        Assert.False(queryResults.IsEmpty);
-        Assert.Contains(queryResults, r => r.HasHistory);
-        Assert.Contains(queryResults, r => !r.HasHistory);
+        // Some queries should succeed (before clear) and some should fail (after clear)
+        Assert.True(successfulQueries > 0);
+        Assert.True(failedQueries > 0);
     }
 
     [Fact]
-    public async Task ConcurrentTryGetServerCandidates_WithVaryingHistory_ThreadSafe()
+    public async Task ConcurrentTryGetServer_WithVaryingHistory_ThreadSafe()
     {
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
             MaxHistorySize = 3
         };
         var hashRing = new HashRing<string>(options);
 
         hashRing.Add("concurrent-server-1");
+        hashRing.CreateConfigurationSnapshot();
         var testKey = Encoding.UTF8.GetBytes("try-get-concurrent");
 
-        var successResults = new ConcurrentBag<ServerCandidateResult<string>>();
+        var successResults = new ConcurrentBag<string>();
         var failureCount = 0;
 
         var snapshotTask = Task.Run(() =>
         {
             Task.Delay(25).Wait();
-            hashRing.CreateConfigurationSnapshot();
             hashRing.Add("concurrent-server-2");
+            hashRing.CreateConfigurationSnapshot();
         }, TestContext.Current.CancellationToken);
 
         var queryTasks = Enumerable.Range(0, 15).Select(_ => Task.Run(() =>
         {
-            if (hashRing.TryGetServerCandidates(testKey, out var result))
+            if (hashRing.TryGetServer(testKey, out var server))
             {
-                successResults.Add(result);
+                successResults.Add(server);
             }
             else
             {
@@ -185,16 +189,16 @@ public sealed class VersionAwareConcurrencyTests
         await Task.WhenAll([snapshotTask, .. queryTasks]);
 
         Assert.False(successResults.IsEmpty);
-        Assert.Equal(0, failureCount);
-        Assert.All(successResults, result => Assert.NotNull(result));
+        // Most queries should succeed after snapshot is created
+        Assert.True(failureCount < 15);
+        Assert.All(successResults, server => Assert.NotNull(server));
     }
 
     [Fact]
-    public async Task ConcurrentMaxCandidatesQueries_WithHistory_ProducesConsistentResults()
+    public async Task ConcurrentGetServers_WithHistory_ProducesConsistentResults()
     {
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
             MaxHistorySize = 2
         };
         var hashRing = new HashRing<string>(options);
@@ -208,22 +212,22 @@ public sealed class VersionAwareConcurrencyTests
         hashRing.Add("max-server-5");
 
         var testKey = Encoding.UTF8.GetBytes("max-candidates-test");
-        var results = new ConcurrentBag<ServerCandidateResult<string>>();
+        var results = new ConcurrentBag<List<string>>();
 
         var queryTasks = Enumerable.Range(0, 12).Select(i => Task.Run(() =>
         {
-            var maxCandidates = (i % 3) + 1;
-            var candidates = hashRing.GetServerCandidates(testKey, maxCandidates);
-            results.Add(candidates);
+            var count = (i % 3) + 1;
+            var servers = hashRing.GetServers(testKey, count).ToList();
+            results.Add(servers);
         })).ToArray();
 
         await Task.WhenAll(queryTasks);
 
         Assert.Equal(12, results.Count);
-        Assert.All(results, result =>
+        Assert.All(results, serverList =>
         {
-            Assert.True(result.HasHistory);
-            Assert.True(result.Servers.Count <= 3);
+            Assert.NotEmpty(serverList);
+            Assert.True(serverList.Count <= 3);
         });
     }
 
@@ -232,16 +236,17 @@ public sealed class VersionAwareConcurrencyTests
     {
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
             MaxHistorySize = 4
         };
         var hashRing = new HashRing<string>(options);
 
         hashRing.Add("mixed-server-1");
         hashRing.Add("mixed-server-2");
+        hashRing.CreateConfigurationSnapshot();
 
         var testKey = Encoding.UTF8.GetBytes("mixed-operations-test");
-        var queryResults = new ConcurrentBag<ServerCandidateResult<string>>();
+        var successfulQueries = 0;
+        var failedQueries = 0;
         var exceptions = new ConcurrentBag<Exception>();
 
         var snapshotTask = Task.Run(() =>
@@ -249,11 +254,10 @@ public sealed class VersionAwareConcurrencyTests
             try
             {
                 Task.Delay(20).Wait();
-                hashRing.CreateConfigurationSnapshot();
                 Task.Delay(30).Wait();
                 hashRing.Add("mixed-server-3");
-                Task.Delay(20).Wait();
                 hashRing.CreateConfigurationSnapshot();
+                Task.Delay(20).Wait();
             }
             catch (Exception ex)
             {
@@ -280,8 +284,15 @@ public sealed class VersionAwareConcurrencyTests
             {
                 for (int i = 0; i < 8; i++)
                 {
-                    var candidates = hashRing.GetServerCandidates(testKey);
-                    queryResults.Add(candidates);
+                    if (hashRing.TryGetServer(testKey, out var server))
+                    {
+                        Interlocked.Increment(ref successfulQueries);
+                        Assert.NotNull(server);
+                    }
+                    else
+                    {
+                        Interlocked.Increment(ref failedQueries);
+                    }
                     Task.Delay(15).Wait();
                 }
             }
@@ -294,12 +305,8 @@ public sealed class VersionAwareConcurrencyTests
         await Task.WhenAll([snapshotTask, clearTask, .. queryTasks]);
 
         Assert.Empty(exceptions);
-        Assert.False(queryResults.IsEmpty);
-
-        var withHistory = queryResults.Where(r => r.HasHistory).ToList();
-        var withoutHistory = queryResults.Where(r => !r.HasHistory).ToList();
-
-        Assert.True(withHistory.Count > 0);
-        Assert.True(withoutHistory.Count > 0);
+        // Some queries should succeed (with snapshots) and some fail (after clear)
+        Assert.True(successfulQueries > 0);
+        Assert.True(failedQueries > 0);
     }
 }

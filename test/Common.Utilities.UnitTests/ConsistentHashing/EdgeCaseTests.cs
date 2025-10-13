@@ -19,6 +19,7 @@ public class EdgeCaseTests
         {
             ring.Add($"server{i:D3}");
         }
+        ring.CreateConfigurationSnapshot();
 
         // Assert
         Assert.Equal(serverCount, ring.Servers.Count);
@@ -40,6 +41,7 @@ public class EdgeCaseTests
         ring.Add("low-capacity", 1);     // Minimum
         ring.Add("medium-capacity", 42); // Default
         ring.Add("high-capacity", 2000);  // Reduced from 10000 to avoid timeouts
+        ring.CreateConfigurationSnapshot();
 
         // Assert
         Assert.Equal(3, ring.Servers.Count);
@@ -65,6 +67,7 @@ public class EdgeCaseTests
 
         // Act - Single server with many virtual nodes
         ring.Add("single-server", 10000); // Reduced from 50000
+        ring.CreateConfigurationSnapshot();
 
         // Assert
         Assert.Single(ring.Servers);
@@ -88,6 +91,7 @@ public class EdgeCaseTests
         // Arrange
         var ring = new HashRing<string>();
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
 
         // Act - Route many keys (should be fast due to single server)
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
@@ -118,14 +122,17 @@ public class EdgeCaseTests
             // Add servers
             ring.Add("server1");
             ring.Add("server2");
+            ring.CreateConfigurationSnapshot();
             var server1 = ring.GetServer(testKey);
 
             // Remove one server
             ring.Remove("server2");
+            ring.CreateConfigurationSnapshot();
             var server2 = ring.GetServer(testKey);
 
             // Add it back
             ring.Add("server2");
+            ring.CreateConfigurationSnapshot();
             var server3 = ring.GetServer(testKey);
 
             // Key should consistently map (though may change during modifications)
@@ -164,6 +171,7 @@ public class EdgeCaseTests
 
         // Act - Add all special servers
         ring.AddRange(specialServers);
+        ring.CreateConfigurationSnapshot();
 
         // Assert
         Assert.Equal(specialServers.Length, ring.Servers.Count);
@@ -196,6 +204,7 @@ public class EdgeCaseTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Act & Assert - Test with various binary data
         var binaryKeys = new[]
@@ -236,6 +245,7 @@ public class EdgeCaseTests
 
         // Act
         ring.AddRange(serverGuids);
+        ring.CreateConfigurationSnapshot();
 
         // Assert
         Assert.Equal(serverGuids.Length, ring.Servers.Count);
@@ -265,6 +275,7 @@ public class EdgeCaseTests
 
         // Act
         ring.AddRange(servers);
+        ring.CreateConfigurationSnapshot();
 
         // Assert
         Assert.Equal(servers.Length, ring.Servers.Count);
@@ -289,6 +300,10 @@ public class EdgeCaseTests
         var ring = new HashRing<string>();
         const string serverName = "test-server";
         var results = new ConcurrentBag<bool>();
+
+        // Add initial snapshot
+        ring.Add("initial-server");
+        ring.CreateConfigurationSnapshot();
 
         // Act - Concurrent add/remove of same server
         var tasks = new List<Task>();
@@ -332,7 +347,7 @@ public class EdgeCaseTests
         // Assert - Operations should complete without throwing
         Assert.Equal(100, results.Count);
         // Final state should be consistent
-        Assert.True(ring.IsEmpty || ring.Contains(serverName));
+        Assert.True(ring.Contains("initial-server") || ring.Contains(serverName));
     }
 
     [Fact]
@@ -341,6 +356,7 @@ public class EdgeCaseTests
         // Arrange
         var ring = new HashRing<string>();
         ring.Add("initial-server");
+        ring.CreateConfigurationSnapshot();
 
         var readResults = new ConcurrentBag<string>();
         const string testKey = "stable-key";
@@ -376,8 +392,10 @@ public class EdgeCaseTests
             {
                 await Task.Delay(Random.Shared.Next(5, 25), TestContext.Current.CancellationToken);
                 ring.Add($"server{serverIndex}");
+                ring.CreateConfigurationSnapshot();
                 await Task.Delay(Random.Shared.Next(5, 25), TestContext.Current.CancellationToken);
                 ring.Remove($"server{serverIndex}");
+                ring.CreateConfigurationSnapshot();
             }, TestContext.Current.CancellationToken));
         }
 
@@ -408,6 +426,7 @@ public class EdgeCaseTests
         // Act
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Assert - Should work even with extreme hash values
         var server1 = ring.GetServer("min-hash-key");
@@ -432,6 +451,7 @@ public class EdgeCaseTests
         {
             ring.Add($"server{i}");
         }
+        ring.CreateConfigurationSnapshot();
 
         // Act
         var servers = ring.GetServers("test-key", requestedCount).ToList();

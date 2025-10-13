@@ -210,15 +210,17 @@ public class HashRingContractTests
     #region GetServer Methods Tests (T006)
 
     [Fact]
-    public void GetServer_WithNoServers_ReturnsEmpty()
+    public void GetServer_WithNoServers_ThrowsInvalidOperationException()
     {
         // Arrange
         var ring = new HashRing<string>();
         var key = new byte[] { 1, 2, 3, 4 };
 
-        // Act & Assert
-        Assert.Empty(ring.GetServers(key, 1));
+        // Act & Assert - No snapshots, should throw
+        Assert.Throws<InvalidOperationException>(() => ring.GetServers(key, 1).ToList());
     }
+
+    private static readonly string[] collection = ["server1", "server2"];
 
     [Fact]
     public void GetServer_WithValidKey_ReturnsServer()
@@ -227,6 +229,7 @@ public class HashRingContractTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot(); // Create snapshot for lookup
         var key = new byte[] { 1, 2, 3, 4 };
 
         // Act
@@ -234,7 +237,7 @@ public class HashRingContractTests
 
         // Assert
         Assert.NotNull(server);
-        Assert.Contains(server, ring.Servers);
+        Assert.Contains(server, collection);
     }
 
     [Fact]
@@ -245,6 +248,7 @@ public class HashRingContractTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot(); // Create snapshot for lookup
         var key = new byte[] { 1, 2, 3, 4 };
 
         // Act
@@ -274,6 +278,7 @@ public class HashRingContractTests
         // Arrange
         var ring = new HashRing<string>();
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
 
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => ring.GetServer((byte[])null));
@@ -285,6 +290,7 @@ public class HashRingContractTests
         // Arrange
         var ring = new HashRing<string>();
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
         var key = new byte[] { 1, 2, 3, 4 };
 
         // Act
@@ -319,6 +325,7 @@ public class HashRingContractTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
         var key = new byte[] { 1, 2, 3, 4 };
 
         // Act
@@ -399,6 +406,154 @@ public class HashRingContractTests
 
         // Assert
         Assert.True(ring.IsEmpty);
+    }
+
+    #endregion
+
+    #region API Contract Tests - Breaking Changes (T004)
+
+    [Fact]
+    public void HashRing_DoesNotHaveIsVersionHistoryEnabledProperty()
+    {
+        // Arrange & Act
+        var type = typeof(HashRing<string>);
+        var propertyInfo = type.GetProperty("IsVersionHistoryEnabled");
+
+        // Assert - Property should NOT exist (breaking change)
+        Assert.Null(propertyInfo);
+    }
+
+    [Fact]
+    public void HashRing_DoesNotHaveGetServerCandidatesMethod()
+    {
+        // Arrange & Act
+        var type = typeof(HashRing<string>);
+        var method = type.GetMethod("GetServerCandidates", [typeof(byte[])]);
+
+        // Assert - Method should NOT exist (breaking change)
+        Assert.Null(method);
+    }
+
+    [Fact]
+    public void HashRing_DoesNotHaveGetServerCandidatesWithMaxCandidatesMethod()
+    {
+        // Arrange & Act
+        var type = typeof(HashRing<string>);
+        var method = type.GetMethod("GetServerCandidates", [typeof(byte[]), typeof(int)]);
+
+        // Assert - Method should NOT exist (breaking change)
+        Assert.Null(method);
+    }
+
+    [Fact]
+    public void HashRing_DoesNotHaveTryGetServerCandidatesMethod()
+    {
+        // Arrange & Act
+        var type = typeof(HashRing<string>);
+        // Look for method with out parameter
+        var methods = type.GetMethods().Where(m => m.Name == "TryGetServerCandidates");
+
+        // Assert - Method should NOT exist (breaking change)
+        Assert.Empty(methods);
+    }
+
+    [Fact]
+    public void HashRing_HasGetServerMethod()
+    {
+        // Arrange & Act
+        var type = typeof(HashRing<string>);
+        var method = type.GetMethod("GetServer", [typeof(byte[])]);
+
+        // Assert - GetServer method should still exist
+        Assert.NotNull(method);
+        Assert.Equal(typeof(string), method.ReturnType);
+    }
+
+    [Fact]
+    public void HashRing_HasTryGetServerMethod()
+    {
+        // Arrange & Act
+        var type = typeof(HashRing<string>);
+        var methods = type.GetMethods().Where(m => m.Name == "TryGetServer");
+
+        // Assert - TryGetServer method should still exist
+        Assert.NotEmpty(methods);
+    }
+
+    [Fact]
+    public void HashRing_HasGetServersMethod()
+    {
+        // Arrange & Act
+        var type = typeof(HashRing<string>);
+        var method = type.GetMethod("GetServers", [typeof(byte[]), typeof(int)]);
+
+        // Assert - GetServers method should still exist
+        Assert.NotNull(method);
+    }
+
+    [Fact]
+    public void HashRing_HasAllConstructorOverloads()
+    {
+        // Arrange & Act
+        var type = typeof(HashRing<string>);
+        var constructors = type.GetConstructors();
+
+        // Assert - Should have multiple constructors (backward compatibility)
+        Assert.True(constructors.Length >= 4, $"Expected at least 4 constructors, found {constructors.Length}");
+
+        // Verify specific constructor signatures exist
+        Assert.NotNull(type.GetConstructor(Type.EmptyTypes)); // Default constructor
+        Assert.NotNull(type.GetConstructor([typeof(IHashAlgorithm)])); // HashAlgorithm constructor
+        Assert.NotNull(type.GetConstructor([typeof(IHashAlgorithm), typeof(int)])); // HashAlgorithm + virtualNodes
+        Assert.NotNull(type.GetConstructor([typeof(HashRingOptions)])); // Options constructor
+    }
+
+    [Fact]
+    public void HashRing_HasHistoryCountProperty()
+    {
+        // Arrange & Act
+        var type = typeof(HashRing<string>);
+        var propertyInfo = type.GetProperty("HistoryCount");
+
+        // Assert - Property should exist (snapshot management visibility)
+        Assert.NotNull(propertyInfo);
+        Assert.Equal(typeof(int), propertyInfo.PropertyType);
+    }
+
+    [Fact]
+    public void HashRing_HasMaxHistorySizeProperty()
+    {
+        // Arrange & Act
+        var type = typeof(HashRing<string>);
+        var propertyInfo = type.GetProperty("MaxHistorySize");
+
+        // Assert - Property should exist (snapshot management visibility)
+        Assert.NotNull(propertyInfo);
+        Assert.Equal(typeof(int), propertyInfo.PropertyType);
+    }
+
+    [Fact]
+    public void HashRing_HasCreateConfigurationSnapshotMethod()
+    {
+        // Arrange & Act
+        var type = typeof(HashRing<string>);
+        var method = type.GetMethod("CreateConfigurationSnapshot");
+
+        // Assert - Method should exist
+        Assert.NotNull(method);
+        Assert.Equal(typeof(void), method.ReturnType);
+    }
+
+    [Fact]
+    public void HashRing_HasClearHistoryMethod()
+    {
+        // Arrange & Act
+        var type = typeof(HashRing<string>);
+        var method = type.GetMethod("ClearHistory");
+
+        // Assert - Method should exist
+        Assert.NotNull(method);
+        Assert.Equal(typeof(void), method.ReturnType);
     }
 
     #endregion

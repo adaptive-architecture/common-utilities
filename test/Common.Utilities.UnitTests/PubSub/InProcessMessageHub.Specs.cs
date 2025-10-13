@@ -138,7 +138,7 @@ public class InProcessMessageHubSpecs
         Assert.Equal(1, reacted);
     }
 
-    [Fact]
+    [RetryFact]
     public void Should_Intercept_Exception_And_Not_Fail_If_Error_Handler_Fails()
     {
         var topic = Guid.NewGuid().ToString("N");

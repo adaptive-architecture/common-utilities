@@ -1,4 +1,4 @@
-﻿namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
+namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -8,16 +8,17 @@ using Xunit;
 
 public sealed class MigrationScenarioTests
 {
-    private static readonly string[] TestServers = new[] { "server-1", "server-2", "server-3" };
+    private static readonly string[] TestServers = ["server-1", "server-2", "server-3"];
 
     [Fact]
     public void Migration_TwoToThreeServers_ReturnsCorrectCandidates()
     {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 3 };
+        var options = new HashRingOptions { MaxHistorySize = 3 };
         var hashRing = new HashRing<string>(options);
 
         hashRing.Add("server-1");
         hashRing.Add("server-2");
+        hashRing.CreateConfigurationSnapshot();
 
         var testKey = Encoding.UTF8.GetBytes("user:12345");
         _ = hashRing.GetServer(testKey);
@@ -25,23 +26,19 @@ public sealed class MigrationScenarioTests
         hashRing.CreateConfigurationSnapshot();
         hashRing.Add("server-3");
 
-        var candidates = hashRing.GetServerCandidates(testKey);
-
-        Assert.True(candidates.HasHistory);
-        Assert.Equal(2, candidates.ConfigurationCount);
-        Assert.True(candidates.Servers.Count >= 1);
-        Assert.True(candidates.Servers.Count <= 2);
-        Assert.All(candidates.Servers, server => Assert.Contains(server, TestServers));
+        var servers = hashRing.GetServers(testKey, 3);
+        Assert.All(servers, server => Assert.Contains(server, TestServers));
     }
 
     [Fact]
     public void Migration_MultipleKeys_MaintainsConsistency()
     {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 3 };
+        var options = new HashRingOptions { MaxHistorySize = 3 };
         var hashRing = new HashRing<string>(options);
 
         hashRing.Add("db-server-1");
         hashRing.Add("db-server-2");
+        hashRing.CreateConfigurationSnapshot();
 
         var testKeys = new[]
         {
@@ -59,13 +56,10 @@ public sealed class MigrationScenarioTests
 
         foreach (var key in testKeys)
         {
-            var candidates = hashRing.GetServerCandidates(key);
             var initialServer = initialMapping[key];
+            var servers = hashRing.GetServers(key, 3);
 
-            Assert.True(candidates.HasHistory);
-            Assert.Equal(2, candidates.ConfigurationCount);
-
-            if (!candidates.Servers.Contains(initialServer))
+            if (!servers.Contains(initialServer))
             {
                 Assert.Fail($"Key {Encoding.UTF8.GetString(key)} lost its original server {initialServer}");
             }
@@ -75,12 +69,17 @@ public sealed class MigrationScenarioTests
     [Fact]
     public void Migration_ThreePhaseScaleOut_ManagesHistoryCorrectly()
     {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 3 };
+        var options = new HashRingOptions
+        {
+            MaxHistorySize = 3,
+            HistoryLimitBehavior = HistoryLimitBehavior.ThrowError
+        };
         var hashRing = new HashRing<string>(options);
 
         hashRing.Add("server-1");
         hashRing.Add("server-2");
-        var testKey = Encoding.UTF8.GetBytes("test-key");
+        hashRing.CreateConfigurationSnapshot();
+        _ = Encoding.UTF8.GetBytes("test-key");
 
         hashRing.CreateConfigurationSnapshot();
         hashRing.Add("server-3");
@@ -94,9 +93,6 @@ public sealed class MigrationScenarioTests
         hashRing.Add("server-5");
         Assert.Equal(3, hashRing.HistoryCount);
 
-        var candidates = hashRing.GetServerCandidates(testKey);
-        Assert.True(candidates.HasHistory);
-        Assert.Equal(4, candidates.ConfigurationCount);
 
         Assert.Throws<HashRingHistoryLimitExceededException>(() => hashRing.CreateConfigurationSnapshot());
     }
@@ -104,11 +100,12 @@ public sealed class MigrationScenarioTests
     [Fact]
     public void Migration_ScaleOutThenClearHistory_OnlyCurrentConfigurationRemains()
     {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 3 };
+        var options = new HashRingOptions { MaxHistorySize = 3 };
         var hashRing = new HashRing<string>(options);
 
         hashRing.Add("cache-1");
         hashRing.Add("cache-2");
+        hashRing.CreateConfigurationSnapshot();
 
         var testKey = Encoding.UTF8.GetBytes("cache-key:important");
 
@@ -119,47 +116,44 @@ public sealed class MigrationScenarioTests
 
         Assert.Equal(2, hashRing.HistoryCount);
 
-        var beforeClear = hashRing.GetServerCandidates(testKey);
-        Assert.True(beforeClear.HasHistory);
-
+        _ = hashRing.GetServer(testKey);
         hashRing.ClearHistory();
+        hashRing.CreateConfigurationSnapshot(); // Create new snapshot after clearing history
 
-        var afterClear = hashRing.GetServerCandidates(testKey);
-        Assert.False(afterClear.HasHistory);
-        Assert.Equal(1, afterClear.ConfigurationCount);
-        Assert.Single(afterClear.Servers);
-        Assert.Equal(0, hashRing.HistoryCount);
+        var afterClear = hashRing.GetServer(testKey);
+        Assert.NotNull(afterClear);
+        Assert.Equal(1, hashRing.HistoryCount); // One new snapshot exists
     }
 
     [Fact]
     public void Migration_ComplexServerChanges_MaintainsDataAccessibility()
     {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 5 };
+        var options = new HashRingOptions { MaxHistorySize = 5 };
         var hashRing = new HashRing<string>(options);
 
         var dataKeys = GenerateTestKeys("data:", 100);
 
         hashRing.Add("node-a");
         hashRing.Add("node-b");
+        hashRing.CreateConfigurationSnapshot();
 
         var phase1Mapping = dataKeys.ToDictionary(key => key, key => hashRing.GetServer(key));
 
         hashRing.CreateConfigurationSnapshot();
         hashRing.Add("node-c");
 
-        _ = dataKeys.ToDictionary(key => key, key => hashRing.GetServerCandidates(key));
+        _ = dataKeys.ToDictionary(key => key, key => hashRing.GetServer(key));
 
         hashRing.CreateConfigurationSnapshot();
         hashRing.Remove("node-a");
 
         foreach (var key in dataKeys)
         {
-            var candidates = hashRing.GetServerCandidates(key);
+            var servers = hashRing.GetServers(key, 5);
             var originalServer = phase1Mapping[key];
 
-            Assert.True(candidates.ConfigurationCount >= 2);
-
-            var allCandidateServers = candidates.Servers.ToHashSet();
+            // Either the original server is still available in candidates, or we have a new server
+            var allCandidateServers = servers.ToHashSet();
             Assert.True(allCandidateServers.Contains(originalServer) ||
                        allCandidateServers.Any(s => s != originalServer));
         }
@@ -168,21 +162,22 @@ public sealed class MigrationScenarioTests
     [Fact]
     public void Migration_ServerDeduplication_ReturnsUniqueServers()
     {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 2 };
+        var options = new HashRingOptions { MaxHistorySize = 2 };
         var hashRing = new HashRing<string>(options);
 
         hashRing.Add("server-alpha");
         hashRing.Add("server-beta");
+        hashRing.CreateConfigurationSnapshot();
 
         var testKey = Encoding.UTF8.GetBytes("consistent-key");
         _ = hashRing.GetServer(testKey);
 
         hashRing.CreateConfigurationSnapshot();
 
-        var candidates = hashRing.GetServerCandidates(testKey);
+        var servers = hashRing.GetServers(testKey, 2);
 
-        var uniqueServers = candidates.Servers.Distinct().ToList();
-        Assert.Equal(candidates.Servers.Count, uniqueServers.Count);
+        var uniqueServers = servers.Distinct().ToList();
+        Assert.Equal(uniqueServers.Count, servers.Count());
     }
 
     private static List<byte[]> GenerateTestKeys(string prefix, int count)

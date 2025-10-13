@@ -390,8 +390,8 @@ public sealed class HashRingHistoryLimitExceededExceptionComprehensiveTests
     {
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
-            MaxHistorySize = 2
+            MaxHistorySize = 2,
+            HistoryLimitBehavior = HistoryLimitBehavior.ThrowError
         };
         var ring = new HashRing<string>(options);
         ring.Add("server1");
@@ -415,11 +415,11 @@ public sealed class HashRingHistoryLimitExceededExceptionComprehensiveTests
     public void Exception_ThrownByHistoryManager_HasCorrectProperties()
     {
         var manager = new HistoryManager<string>(1);
-        manager.Add(CreateTestSnapshot("server1"));
+        manager.Add(CreateTestSnapshot("server1"), HistoryLimitBehavior.ThrowError);
 
         // This should throw when trying to add beyond limit
         var exception = Assert.Throws<HashRingHistoryLimitExceededException>(() =>
-            manager.Add(CreateTestSnapshot("server2")));
+            manager.Add(CreateTestSnapshot("server2"), HistoryLimitBehavior.ThrowError));
 
         Assert.Equal(1, exception.MaxHistorySize);
         Assert.Equal(1, exception.CurrentCount);
@@ -433,8 +433,8 @@ public sealed class HashRingHistoryLimitExceededExceptionComprehensiveTests
     {
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
-            MaxHistorySize = historyLimit
+            MaxHistorySize = historyLimit,
+            HistoryLimitBehavior = HistoryLimitBehavior.ThrowError
         };
         var ring = new HashRing<string>(options);
         ring.Add("server1");
@@ -460,10 +460,11 @@ public sealed class HashRingHistoryLimitExceededExceptionComprehensiveTests
     [Fact]
     public void Exception_CanBeHandledInTryCatchBlock()
     {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 1 };
+        var options = new HashRingOptions { MaxHistorySize = 1, HistoryLimitBehavior = HistoryLimitBehavior.ThrowError };
         var ring = new HashRing<string>(options);
         ring.Add("server1");
         ring.CreateConfigurationSnapshot();
+        ring.Add("server2"); // Add server to create a different snapshot
 
         HashRingHistoryLimitExceededException caughtException = null;
 
@@ -485,10 +486,11 @@ public sealed class HashRingHistoryLimitExceededExceptionComprehensiveTests
     [Fact]
     public void Exception_CanBeHandledAsInvalidOperationException()
     {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 1 };
+        var options = new HashRingOptions { MaxHistorySize = 1, HistoryLimitBehavior = HistoryLimitBehavior.ThrowError };
         var ring = new HashRing<string>(options);
         ring.Add("server1");
         ring.CreateConfigurationSnapshot();
+        ring.Add("server2"); // Add server to create a different snapshot
 
         InvalidOperationException caughtException = null;
 
@@ -513,12 +515,13 @@ public sealed class HashRingHistoryLimitExceededExceptionComprehensiveTests
     [Fact]
     public void Exception_CanBeUsedInExceptionFilters()
     {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 2 };
+        var options = new HashRingOptions { MaxHistorySize = 2, HistoryLimitBehavior = HistoryLimitBehavior.ThrowError };
         var ring = new HashRing<string>(options);
         ring.Add("server1");
         ring.CreateConfigurationSnapshot();
         ring.Add("server2");
         ring.CreateConfigurationSnapshot();
+        ring.Add("server3"); // Add server to create a different snapshot
 
         bool filterMatched = false;
 

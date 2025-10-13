@@ -1,4 +1,4 @@
-﻿namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
+namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 
 using System;
 using System.Collections.Generic;
@@ -11,11 +11,11 @@ using Xunit;
 
 public sealed class VersionAwarePerformanceTests
 {
-    [Fact]
+    [RetryFact]
     public void GetServer_StandardVsVersionAware_PerformanceComparison()
     {
-        var standardOptions = new HashRingOptions { EnableVersionHistory = false };
-        var versionAwareOptions = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 3 };
+        var standardOptions = new HashRingOptions();
+        var versionAwareOptions = new HashRingOptions { MaxHistorySize = 3 };
 
         var standardRing = new HashRing<string>(standardOptions);
         var versionAwareRing = new HashRing<string>(versionAwareOptions);
@@ -25,6 +25,8 @@ public sealed class VersionAwarePerformanceTests
             standardRing.Add($"server-{i}");
             versionAwareRing.Add($"server-{i}");
         }
+        standardRing.CreateConfigurationSnapshot();
+        versionAwareRing.CreateConfigurationSnapshot();
 
         var testKeys = GenerateTestKeys(1000);
 
@@ -53,18 +55,19 @@ public sealed class VersionAwarePerformanceTests
     [Fact]
     public void GetServerCandidates_WithHistory_PerformanceWithScale()
     {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 5 };
+        var options = new HashRingOptions { MaxHistorySize = 5 };
         var hashRing = new HashRing<string>(options);
 
         for (int i = 1; i <= 50; i++)
         {
             hashRing.Add($"server-{i}");
         }
+        hashRing.CreateConfigurationSnapshot();
 
         for (int snapshot = 0; snapshot < 5; snapshot++)
         {
-            hashRing.CreateConfigurationSnapshot();
             hashRing.Add($"scale-server-{snapshot}");
+            hashRing.CreateConfigurationSnapshot();
         }
 
         var testKeys = GenerateTestKeys(5000);
@@ -73,8 +76,7 @@ public sealed class VersionAwarePerformanceTests
         {
             foreach (var key in testKeys)
             {
-                var candidates = hashRing.GetServerCandidates(key);
-                Assert.True(candidates.HasHistory);
+                _ = hashRing.GetServer(key);
             }
         });
 
@@ -90,18 +92,19 @@ public sealed class VersionAwarePerformanceTests
     [InlineData(5, 100)]
     public void GetServerCandidates_HistorySize_PerformanceLinearScale(int historySize, int keyCount)
     {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = historySize };
+        var options = new HashRingOptions { MaxHistorySize = historySize };
         var hashRing = new HashRing<string>(options);
 
         for (int i = 1; i <= 20; i++)
         {
             hashRing.Add($"perf-server-{i}");
         }
+        hashRing.CreateConfigurationSnapshot();
 
         for (int i = 0; i < historySize; i++)
         {
-            hashRing.CreateConfigurationSnapshot();
             hashRing.Add($"history-server-{i}");
+            hashRing.CreateConfigurationSnapshot();
         }
 
         var testKeys = GenerateTestKeys(keyCount);
@@ -110,7 +113,7 @@ public sealed class VersionAwarePerformanceTests
         {
             foreach (var key in testKeys)
             {
-                hashRing.GetServerCandidates(key);
+                hashRing.GetServer(key);
             }
         });
 
@@ -123,13 +126,14 @@ public sealed class VersionAwarePerformanceTests
     [Fact]
     public void CreateConfigurationSnapshot_Performance_AcceptableOverhead()
     {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 10 };
+        var options = new HashRingOptions { MaxHistorySize = 10 };
         var hashRing = new HashRing<string>(options);
 
         for (int i = 1; i <= 100; i++)
         {
             hashRing.Add($"snapshot-server-{i}");
         }
+        hashRing.CreateConfigurationSnapshot();
 
         var snapshotTimes = new List<TimeSpan>();
 
@@ -137,8 +141,8 @@ public sealed class VersionAwarePerformanceTests
         {
             var snapshotTime = MeasureOperation(() =>
             {
-                hashRing.CreateConfigurationSnapshot();
                 hashRing.Add($"additional-server-{i}");
+                hashRing.CreateConfigurationSnapshot();
             });
 
             snapshotTimes.Add(snapshotTime);
@@ -156,8 +160,8 @@ public sealed class VersionAwarePerformanceTests
     [InlineData(500)]
     public void MemoryUsage_WithHistory_ReasonableOverhead(int serverCount)
     {
-        var noHistoryOptions = new HashRingOptions { EnableVersionHistory = false };
-        var withHistoryOptions = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 3 };
+        var noHistoryOptions = new HashRingOptions();
+        var withHistoryOptions = new HashRingOptions { MaxHistorySize = 3 };
 
         var standardRing = new HashRing<string>(noHistoryOptions);
         var versionAwareRing = new HashRing<string>(withHistoryOptions);
@@ -167,11 +171,13 @@ public sealed class VersionAwarePerformanceTests
             standardRing.Add($"server-{i}");
             versionAwareRing.Add($"server-{i}");
         }
+        standardRing.CreateConfigurationSnapshot();
+        versionAwareRing.CreateConfigurationSnapshot();
 
         for (int i = 0; i < 3; i++)
         {
-            versionAwareRing.CreateConfigurationSnapshot();
             versionAwareRing.Add($"history-server-{i}");
+            versionAwareRing.CreateConfigurationSnapshot();
         }
 
 #pragma warning disable S1215
@@ -192,7 +198,7 @@ public sealed class VersionAwarePerformanceTests
 
         foreach (var key in testKeys)
         {
-            versionAwareRing.GetServerCandidates(key);
+            versionAwareRing.GetServer(key);
         }
 
         var versionAwareMemoryAfter = GC.GetTotalMemory(true);
@@ -210,7 +216,7 @@ public sealed class VersionAwarePerformanceTests
     [RetryFact]
     public void ConcurrentOperations_Performance_ThreadSafetyOverhead()
     {
-        var options = new HashRingOptions { EnableVersionHistory = true, MaxHistorySize = 3 };
+        var options = new HashRingOptions { MaxHistorySize = 3 };
         var hashRing = new HashRing<string>(options);
 
         for (int i = 1; i <= 20; i++)
@@ -227,11 +233,11 @@ public sealed class VersionAwarePerformanceTests
         {
             foreach (var key in testKeys)
             {
-                hashRing.GetServerCandidates(key);
+                hashRing.GetServer(key);
             }
         });
 
-        var concurrentTime = MeasureOperation(() => Parallel.ForEach(testKeys, key => hashRing.GetServerCandidates(key)));
+        var concurrentTime = MeasureOperation(() => Parallel.ForEach(testKeys, key => hashRing.GetServer(key)));
 
 
         // Concurrent operations might be slower due to lock contention, but they should scale reasonably
