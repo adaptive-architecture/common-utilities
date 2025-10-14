@@ -164,6 +164,7 @@ public class IHashAlgorithmInterfaceTests
         var ring = new HashRing<string>(algorithm);
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         var server1 = ring.GetServer("test-key-1");
@@ -186,6 +187,7 @@ public class IHashAlgorithmInterfaceTests
         var options = new HashRingOptions(algorithm, 100);
         var ring = new HashRing<string>(options);
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         var server = ring.GetServer("test-key");
@@ -207,6 +209,7 @@ public class IHashAlgorithmInterfaceTests
         var ring = new HashRing<string>(customAlgorithm);
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Act
         var server = ring.GetServer("test");

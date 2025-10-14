@@ -13,8 +13,11 @@ Consistent hashing is a special kind of hashing algorithm that maps both keys an
 
 ## Key Features
 
+- **Snapshot-Based Lookups**: All key lookups use immutable configuration snapshots
+- **Always-On History**: Snapshot history is always enabled with configurable limits
 - **Thread-Safe**: All operations are safe for concurrent access
 - **Minimal Redistribution**: Adding/removing servers affects only adjacent keys
+- **FIFO History Management**: Automatic oldest-snapshot removal when limit reached (default behavior)
 - **Configurable Virtual Nodes**: Control load distribution granularity
 - **Multiple Hash Algorithms**: Support for SHA1 and MD5
 - **Extension Methods**: Convenient methods for common key types
@@ -35,6 +38,9 @@ ring.Add("server1.example.com");
 ring.Add("server2.example.com");
 ring.Add("server3.example.com");
 
+// Create a configuration snapshot to enable lookups
+ring.CreateConfigurationSnapshot();
+
 // Route a request
 string server = ring.GetServer("user-12345");
 Console.WriteLine($"Route user-12345 to: {server}");
@@ -43,6 +49,8 @@ Console.WriteLine($"Route user-12345 to: {server}");
 string server2 = ring.GetServer("user-12345");
 Console.WriteLine($"Consistent routing: {server == server2}"); // True
 ```
+
+**Important**: All key lookups use configuration snapshots. You must call `CreateConfigurationSnapshot()` after adding servers and before calling `GetServer()` or related methods.
 
 ### With Custom Configuration
 
@@ -108,7 +116,9 @@ var ring = new HashRing<string>(new HashRingOptions
 |--------|-------------|
 | `Add(T server, int virtualNodes = 42)` | Adds a server with specified virtual nodes |
 | `Remove(T server)` | Removes a server from the ring |
-| `GetServer(byte[] key)` | Gets the server for a specific key |
+| `CreateConfigurationSnapshot()` | Creates a snapshot of current configuration for lookups |
+| `ClearHistory()` | Clears all snapshot history |
+| `GetServer(byte[] key)` | Gets the server for a specific key (uses snapshots) |
 | `TryGetServer(byte[] key, out T server)` | Safe version that doesn't throw |
 | `GetServers(byte[] key, int count)` | Gets multiple servers in preference order |
 | `Contains(T server)` | Checks if a server exists in the ring |
@@ -121,6 +131,8 @@ var ring = new HashRing<string>(new HashRingOptions
 | `Servers` | Read-only collection of all servers |
 | `IsEmpty` | Whether the ring has no servers |
 | `VirtualNodeCount` | Total number of virtual nodes |
+| `HistoryCount` | Current number of configuration snapshots |
+| `MaxHistorySize` | Maximum number of snapshots (from options) |
 
 ### Hash Algorithms
 
@@ -175,11 +187,23 @@ public class DatabaseRouter
         _ring.Add(new DatabaseConnection("primary", "Server=primary;..."), 300);
         _ring.Add(new DatabaseConnection("replica1", "Server=replica1;..."), 200);
         _ring.Add(new DatabaseConnection("replica2", "Server=replica2;..."), 200);
+
+        // Create snapshot to enable lookups
+        _ring.CreateConfigurationSnapshot();
     }
 
     public DatabaseConnection GetDatabaseForUser(string userId)
     {
         return _ring.GetServer(userId);
+    }
+
+    public void AddDatabase(DatabaseConnection connection, int capacity = 42)
+    {
+        // Create snapshot before change for history
+        _ring.CreateConfigurationSnapshot();
+        _ring.Add(connection, capacity);
+        // Create snapshot after change to enable lookups with new config
+        _ring.CreateConfigurationSnapshot();
     }
 }
 
@@ -201,7 +225,9 @@ public class LoadBalancer
 
     public void AddServer(string hostname, int capacity = 42)
     {
+        _ring.CreateConfigurationSnapshot();  // Capture before change
         _ring.Add(hostname, capacity);
+        _ring.CreateConfigurationSnapshot();  // Enable lookups with new server
     }
 
     public string RouteRequest(string sessionId)
@@ -211,7 +237,9 @@ public class LoadBalancer
 
     public void HandleServerFailure(string hostname)
     {
+        _ring.CreateConfigurationSnapshot();  // Capture before change
         _ring.Remove(hostname);
+        _ring.CreateConfigurationSnapshot();  // Enable lookups without failed server
         // Keys previously routed to this server will be
         // automatically redistributed to remaining servers
     }
@@ -524,9 +552,74 @@ foreach (var server in ring.Servers)
 }
 ```
 
+## Snapshot History Management
+
+### Overview
+
+All HashRing instances have snapshot history enabled automatically. Snapshots are immutable configuration states used for key lookups.
+
+### Default Behavior (FIFO)
+
+By default, HashRing uses FIFO (First-In-First-Out) removal when the history limit is reached:
+
+```csharp
+var ring = new HashRing<string>();  // MaxHistorySize defaults to 3, FIFO behavior
+
+ring.Add("server-1");
+ring.Add("server-2");
+ring.CreateConfigurationSnapshot();  // Snapshot 1
+
+ring.Add("server-3");
+ring.CreateConfigurationSnapshot();  // Snapshot 2
+
+ring.Add("server-4");
+ring.CreateConfigurationSnapshot();  // Snapshot 3
+
+// History is full (3/3)
+ring.Add("server-5");
+ring.CreateConfigurationSnapshot();  // Snapshot 4 - oldest (Snapshot 1) automatically removed
+```
+
+### ThrowError Behavior
+
+For explicit control, use `HistoryLimitBehavior.ThrowError`:
+
+```csharp
+var options = new HashRingOptions
+{
+    MaxHistorySize = 5,
+    HistoryLimitBehavior = HistoryLimitBehavior.ThrowError
+};
+var ring = new HashRing<string>(options);
+
+// When limit reached, CreateConfigurationSnapshot() throws HashRingHistoryLimitExceededException
+try
+{
+    ring.CreateConfigurationSnapshot();
+}
+catch (HashRingHistoryLimitExceededException ex)
+{
+    Console.WriteLine($"History limit reached: {ex.MaxHistorySize}");
+    ring.ClearHistory();  // Clear and retry
+    ring.CreateConfigurationSnapshot();
+}
+```
+
+### Monitoring History
+
+```csharp
+Console.WriteLine($"Snapshots: {ring.HistoryCount}/{ring.MaxHistorySize}");
+
+// Check if approaching limit
+if (ring.HistoryCount >= ring.MaxHistorySize - 1)
+{
+    Console.WriteLine("History nearly full");
+}
+```
+
 ## Related Documentation
 
-- [Consistent Hashing History Management](consistent-hashing-history-management.md) - Advanced version history management and Clear method usage
+- [Consistent Hashing History Management](consistent-hashing-history-management.md) - Advanced snapshot history management patterns
 - [Extension Methods](extension-methods.md) - General extension method utilities
 - [Synchronization Utilities](synchronization-utilities.md) - Thread-safe utilities
 - [Global Abstractions](global-abstractions.md) - Common interfaces and patterns

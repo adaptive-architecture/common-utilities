@@ -1,4 +1,4 @@
-﻿using AdaptArch.Common.Utilities.ConsistentHashing;
+using AdaptArch.Common.Utilities.ConsistentHashing;
 
 namespace AdaptArch.Common.Utilities.Samples.ConsistentHashing;
 
@@ -23,50 +23,71 @@ public static class HistoryManagementExample
 
     /// <summary>
     /// Shows what happens when you reach the history limit and how to handle it.
+    /// Demonstrates both FIFO (default) and ThrowError behaviors.
     /// </summary>
     private static void DemonstrateBasicHistoryLimit()
     {
         Console.WriteLine("--- Basic History Limit Handling ---");
 
-        // Create a hash ring with a small history limit for demonstration
-        var options = new HashRingOptions
+        // Example 1: FIFO behavior (default) - oldest snapshots automatically removed
+        Console.WriteLine("\n1. FIFO (RemoveOldest) Behavior:");
+        var fifoOptions = new HashRingOptions
         {
-            EnableVersionHistory = true,
-            MaxHistorySize = 3
+            MaxHistorySize = 3,
+            HistoryLimitBehavior = HistoryLimitBehavior.RemoveOldest  // Default, but explicit here
         };
-        var ring = new HashRing<string>(options);
+        var fifoRing = new HashRing<string>(fifoOptions);
 
-        // Add initial servers
-        ring.Add("server-1");
-        ring.Add("server-2");
+        fifoRing.Add("server-1");
+        fifoRing.Add("server-2");
+        Console.WriteLine($"Initial setup - History: {fifoRing.HistoryCount}/{fifoRing.MaxHistorySize}");
 
-        Console.WriteLine($"Initial setup - History: {ring.HistoryCount}/{ring.MaxHistorySize}");
+        // Fill up the history - FIFO will automatically remove oldest
+        for (int i = 1; i <= 5; i++)
+        {
+            fifoRing.CreateConfigurationSnapshot();
+            fifoRing.Add($"server-{i + 2}");
+            Console.WriteLine($"Added server-{i + 2} - History: {fifoRing.HistoryCount}/{fifoRing.MaxHistorySize} (oldest removed automatically)");
+        }
+
+        // Example 2: ThrowError behavior - explicit error handling required
+        Console.WriteLine("\n2. ThrowError Behavior:");
+        var errorOptions = new HashRingOptions
+        {
+            MaxHistorySize = 3,
+            HistoryLimitBehavior = HistoryLimitBehavior.ThrowError
+        };
+        var errorRing = new HashRing<string>(errorOptions);
+
+        errorRing.Add("server-1");
+        errorRing.Add("server-2");
+        Console.WriteLine($"Initial setup - History: {errorRing.HistoryCount}/{errorRing.MaxHistorySize}");
 
         // Fill up the history
         for (int i = 1; i <= 3; i++)
         {
-            ring.CreateConfigurationSnapshot();
-            ring.Add($"server-{i + 2}");
-            Console.WriteLine($"Added server-{i + 2} - History: {ring.HistoryCount}/{ring.MaxHistorySize}");
+            errorRing.CreateConfigurationSnapshot();
+            errorRing.Add($"server-{i + 2}");
+            Console.WriteLine($"Added server-{i + 2} - History: {errorRing.HistoryCount}/{errorRing.MaxHistorySize}");
         }
 
-        // Now we're at the limit - next snapshot will fail
+        // Now we're at the limit - next snapshot will throw
         Console.WriteLine("\nAttempting to create snapshot beyond limit...");
         try
         {
-            ring.CreateConfigurationSnapshot();
+            errorRing.CreateConfigurationSnapshot();
             Console.WriteLine("Snapshot created successfully");
         }
         catch (HashRingHistoryLimitExceededException ex)
         {
-            Console.WriteLine($"❌ History limit exceeded! Max: {ex.MaxHistorySize}, Current: {ex.CurrentCount}");
-            Console.WriteLine("🔧 Clearing history and retrying...");
+            Console.WriteLine($"✗ History limit exceeded! Max: {ex.MaxHistorySize}, Current: {ex.CurrentCount}");
+            Console.WriteLine("⚠ Clearing history and retrying...");
 
             // Clear history and create new snapshot
-            ring.ClearHistory();
-            ring.CreateConfigurationSnapshot();
+            errorRing.ClearHistory();
+            errorRing.CreateConfigurationSnapshot();
 
-            Console.WriteLine($"✅ History cleared and new snapshot created - History: {ring.HistoryCount}/{ring.MaxHistorySize}");
+            Console.WriteLine($"✓ History cleared and new snapshot created - History: {errorRing.HistoryCount}/{errorRing.MaxHistorySize}");
         }
 
         Console.WriteLine();
@@ -81,7 +102,6 @@ public static class HistoryManagementExample
 
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
             MaxHistorySize = 5
         };
         var ring = new HashRing<string>(options);
@@ -94,7 +114,7 @@ public static class HistoryManagementExample
             // Check if we're approaching the limit
             if (ring.HistoryCount >= ring.MaxHistorySize - 1)
             {
-                Console.WriteLine($"📊 Approaching limit ({ring.HistoryCount}/{ring.MaxHistorySize}), clearing history...");
+                Console.WriteLine($"⚠ Approaching limit ({ring.HistoryCount}/{ring.MaxHistorySize}), clearing history...");
                 ring.ClearHistory();
             }
 
@@ -105,7 +125,7 @@ public static class HistoryManagementExample
             Console.WriteLine($"Added deploy-server-{i} - History: {ring.HistoryCount}/{ring.MaxHistorySize}");
         }
 
-        Console.WriteLine($"✅ Deployment completed with {ring.Servers.Count} servers");
+        Console.WriteLine($"✓ Deployment completed with {ring.Servers.Count} servers");
         Console.WriteLine();
     }
 
@@ -157,8 +177,8 @@ public class MigrationManager
     {
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
-            MaxHistorySize = 4
+            MaxHistorySize = 4,
+            HistoryLimitBehavior = HistoryLimitBehavior.ThrowError
         };
         _ring = new HashRing<string>(options);
     }
@@ -166,13 +186,16 @@ public class MigrationManager
     public void PerformMigration()
     {
         // Initial cluster setup
-        Console.WriteLine("🚀 Starting migration from legacy cluster...");
+        Console.WriteLine("▶ Starting migration from legacy cluster...");
         _ring.Add("legacy-server-1");
         _ring.Add("legacy-server-2");
 
-        var testKey = "user-12345";
+        // Create initial snapshot to enable lookups
+        _ring.CreateConfigurationSnapshot();
+
+        const string testKey = "user-12345";
         var originalServer = _ring.GetServer(testKey);
-        Console.WriteLine($"📍 Test user routes to: {originalServer}");
+        Console.WriteLine($"  Test user routes to: {originalServer}");
 
         // Migration steps
         var migrationSteps = new[]
@@ -187,7 +210,7 @@ public class MigrationManager
 
         foreach (var (server, description) in migrationSteps)
         {
-            Console.WriteLine($"\n📦 {description}");
+            Console.WriteLine($"\n▶ {description}");
 
             try
             {
@@ -195,41 +218,37 @@ public class MigrationManager
                 _ring.CreateConfigurationSnapshot();
                 _ring.Add(server);
 
-                Console.WriteLine($"✅ Added {server}");
+                Console.WriteLine($"  Added {server}");
                 ShowMigrationStatus(testKey);
             }
             catch (HashRingHistoryLimitExceededException)
             {
-                Console.WriteLine("⚠️ History limit reached during migration");
-                Console.WriteLine("🔧 Clearing history to continue migration...");
+                Console.WriteLine("⚠ History limit reached during migration");
+                Console.WriteLine("  Clearing history to continue migration...");
 
                 _ring.ClearHistory();
                 _ring.CreateConfigurationSnapshot();
                 _ring.Add(server);
 
-                Console.WriteLine($"✅ History cleared, added {server}");
+                Console.WriteLine($"  History cleared, added {server}");
                 ShowMigrationStatus(testKey);
             }
         }
 
-        // Test server candidates with history
-        Console.WriteLine("\n🔍 Testing server resolution with history:");
-        var candidates = _ring.GetServerCandidates(System.Text.Encoding.UTF8.GetBytes(testKey));
-        Console.WriteLine($"Primary server: {candidates.Servers.First()}");
-        if (candidates.Servers.Count > 1)
-        {
-            Console.WriteLine($"Fallback servers: {String.Join(", ", candidates.Servers.Skip(1))}");
-        }
-        Console.WriteLine($"Total configurations checked: {candidates.ConfigurationCount}");
+        // Test server resolution with history
+        Console.WriteLine("\n▶ Testing server resolution with history:");
+        var resolvedServer = _ring.GetServer(System.Text.Encoding.UTF8.GetBytes(testKey));
+        Console.WriteLine($"Primary server: {resolvedServer}");
+        Console.WriteLine($"Configurations available: {_ring.HistoryCount}");
 
-        Console.WriteLine("\n✅ Migration completed successfully!");
+        Console.WriteLine("\n✓ Migration completed successfully!");
     }
 
     private void ShowMigrationStatus(string testKey)
     {
         var currentServer = _ring.GetServer(testKey);
-        Console.WriteLine($"   📊 Status: {_ring.Servers.Count} servers, history {_ring.HistoryCount}/{_ring.MaxHistorySize}");
-        Console.WriteLine($"   📍 Test user now routes to: {currentServer}");
+        Console.WriteLine($"     Status: {_ring.Servers.Count} servers, history {_ring.HistoryCount}/{_ring.MaxHistorySize}");
+        Console.WriteLine($"     Test user now routes to: {currentServer}");
     }
 }
 
@@ -246,7 +265,6 @@ public class HistoryManager
         _policy = policy;
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
             MaxHistorySize = 2  // Small limit for demonstration
         };
         _ring = new HashRing<string>(options);
@@ -268,11 +286,11 @@ public class HistoryManager
         try
         {
             HandleSnapshotCreation();
-            Console.WriteLine($"✅ Policy handled successfully - History: {_ring.HistoryCount}/{_ring.MaxHistorySize}");
+            Console.WriteLine($"✓ Policy handled successfully - History: {_ring.HistoryCount}/{_ring.MaxHistorySize}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"❌ Policy failed: {ex.Message}");
+            Console.WriteLine($"✗ Policy failed: {ex.Message}");
         }
     }
 
@@ -306,7 +324,7 @@ public class HistoryManager
         }
         catch (HashRingHistoryLimitExceededException)
         {
-            Console.WriteLine("🔧 Clearing all history automatically...");
+            Console.WriteLine("  Clearing all history automatically...");
             _ring.ClearHistory();
             _ring.CreateConfigurationSnapshot();
         }
@@ -319,12 +337,12 @@ public class HistoryManager
 
         if (usagePercent >= 80)
         {
-            Console.WriteLine($"⚠️ Warning: History usage at {usagePercent:F0}%");
+            Console.WriteLine($"⚠ Warning: History usage at {usagePercent:F0}%");
         }
 
         if (_ring.HistoryCount >= _ring.MaxHistorySize)
         {
-            Console.WriteLine("🔧 History full, clearing before creating new snapshot...");
+            Console.WriteLine("  History full, clearing before creating new snapshot...");
             _ring.ClearHistory();
         }
 
@@ -380,7 +398,6 @@ public class ProductionHashRingService
 
         var ringOptions = new HashRingOptions
         {
-            EnableVersionHistory = true,
             MaxHistorySize = _options.MaxHistorySize
         };
         _ring = new HashRing<string>(ringOptions);
@@ -460,9 +477,9 @@ public class ProductionHashRingService
         _logger.LogInformation("Cleared {Count} historical configurations", oldCount);
     }
 
-    public ServerCandidateResult<string> GetServerCandidates(string key)
+    public string GetServer(string key)
     {
-        return _ring.GetServerCandidates(System.Text.Encoding.UTF8.GetBytes(key));
+        return _ring.GetServer(System.Text.Encoding.UTF8.GetBytes(key));
     }
 }
 

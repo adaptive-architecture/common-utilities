@@ -12,12 +12,14 @@ public class RedistributionIntegrationTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         var testKeys = Enumerable.Range(1, 1000).Select(i => $"user{i}").ToArray();
         var initialMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
 
         // Act - Add a new server
         ring.Add("server4");
+        ring.CreateConfigurationSnapshot();
 
         var finalMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
 
@@ -51,6 +53,7 @@ public class RedistributionIntegrationTests
         // Arrange
         var ring = new HashRing<string>();
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
 
         var testKeys = Enumerable.Range(1, 1000).Select(i => $"key{i}").ToArray();
 
@@ -59,6 +62,7 @@ public class RedistributionIntegrationTests
 
         // Add second server
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
         var mapping2 = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
         CountServerDistribution(mapping2, serverCounts);
 
@@ -69,6 +73,7 @@ public class RedistributionIntegrationTests
         // Add third server
         serverCounts.Clear();
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
         var mapping3 = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
         CountServerDistribution(mapping3, serverCounts);
 
@@ -92,10 +97,12 @@ public class RedistributionIntegrationTests
         lowVNodeRing.Add("server1", 1);
         lowVNodeRing.Add("server2", 1);
         lowVNodeRing.Add("server3", 1);
+        lowVNodeRing.CreateConfigurationSnapshot();
 
         highVNodeRing.Add("server1", 100);
         highVNodeRing.Add("server2", 100);
         highVNodeRing.Add("server3", 100);
+        highVNodeRing.CreateConfigurationSnapshot();
 
         var testKeys = Enumerable.Range(1, 1000).Select(i => $"key{i}").ToArray();
 
@@ -105,7 +112,9 @@ public class RedistributionIntegrationTests
 
         // Act - Add fourth server to both rings
         lowVNodeRing.Add("server4", 1);
+        lowVNodeRing.CreateConfigurationSnapshot();
         highVNodeRing.Add("server4", 100);
+        highVNodeRing.CreateConfigurationSnapshot();
 
         var lowVNFinal = testKeys.ToDictionary(key => key, key => lowVNodeRing.GetServer(key));
         var highVNFinal = testKeys.ToDictionary(key => key, key => highVNodeRing.GetServer(key));
@@ -133,12 +142,13 @@ public class RedistributionIntegrationTests
         var ring = new HashRing<string>();
         ring.Add("server1", 100);
         ring.Add("server2", 100);
+        ring.CreateConfigurationSnapshot();
 
         var testKeys = Enumerable.Range(1, 1000).Select(i => $"key{i}").ToArray();
-        var initialMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
 
         // Act - Add server with more virtual nodes (should get more keys)
         ring.Add("server3", 200); // Double the virtual nodes
+        ring.CreateConfigurationSnapshot();
 
         var finalMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
         var serverCounts = new Dictionary<string, int>();
@@ -173,6 +183,7 @@ public class RedistributionIntegrationTests
         for (int i = 1; i <= 5; i++)
         {
             ring.Add($"server{i}");
+            ring.CreateConfigurationSnapshot();
 
             var mapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
             var distribution = new Dictionary<string, int>();
@@ -200,12 +211,14 @@ public class RedistributionIntegrationTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         var testKeys = Enumerable.Range(1, 1000).Select(i => $"key{i}").ToArray();
         var initialMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
 
         // Act - Add new server
         ring.Add("server4");
+        ring.CreateConfigurationSnapshot();
         var finalMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
 
         // Analyze redistribution

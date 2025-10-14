@@ -1,4 +1,4 @@
-﻿namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
+namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 
 using System;
 using System.Collections.Generic;
@@ -59,7 +59,7 @@ public sealed class HistoryManagerComprehensiveTests
         var manager = new HistoryManager<string>(3);
         var snapshot = CreateTestSnapshot("server1");
 
-        manager.Add(snapshot);
+        manager.Add(snapshot, HistoryLimitBehavior.ThrowError);
 
         Assert.Equal(1, manager.Count);
         Assert.True(manager.HasSnapshots);
@@ -73,7 +73,7 @@ public sealed class HistoryManagerComprehensiveTests
         var manager = new HistoryManager<string>(3);
         ConfigurationSnapshot<string> snapshot = null;
 
-        var exception = Assert.Throws<ArgumentNullException>(() => manager.Add(snapshot!));
+        var exception = Assert.Throws<ArgumentNullException>(() => manager.Add(snapshot!, HistoryLimitBehavior.ThrowError));
         Assert.Equal("snapshot", exception.ParamName);
     }
 
@@ -90,7 +90,7 @@ public sealed class HistoryManagerComprehensiveTests
 
         foreach (var snapshot in snapshots)
         {
-            manager.Add(snapshot);
+            manager.Add(snapshot, HistoryLimitBehavior.ThrowError);
         }
 
         Assert.Equal(3, manager.Count);
@@ -109,10 +109,10 @@ public sealed class HistoryManagerComprehensiveTests
     {
         var manager = new HistoryManager<string>(2);
 
-        manager.Add(CreateTestSnapshot("server1"));
+        manager.Add(CreateTestSnapshot("server1"), HistoryLimitBehavior.ThrowError);
         Assert.False(manager.IsFull);
 
-        manager.Add(CreateTestSnapshot("server2"));
+        manager.Add(CreateTestSnapshot("server2"), HistoryLimitBehavior.ThrowError);
         Assert.True(manager.IsFull);
         Assert.Equal(0, manager.GetRemainingCapacity());
     }
@@ -121,11 +121,11 @@ public sealed class HistoryManagerComprehensiveTests
     public void Add_BeyondCapacity_ThrowsHashRingHistoryLimitExceededException()
     {
         var manager = new HistoryManager<string>(2);
-        manager.Add(CreateTestSnapshot("server1"));
-        manager.Add(CreateTestSnapshot("server2"));
+        manager.Add(CreateTestSnapshot("server1"), HistoryLimitBehavior.ThrowError);
+        manager.Add(CreateTestSnapshot("server2"), HistoryLimitBehavior.ThrowError);
 
         var exception = Assert.Throws<HashRingHistoryLimitExceededException>(() =>
-            manager.Add(CreateTestSnapshot("server3")));
+            manager.Add(CreateTestSnapshot("server3"), HistoryLimitBehavior.ThrowError));
 
         Assert.Equal(2, exception.MaxHistorySize);
         Assert.Equal(2, exception.CurrentCount);
@@ -146,7 +146,7 @@ public sealed class HistoryManagerComprehensiveTests
         // Add exactly to the limit
         for (int i = 0; i < limit; i++)
         {
-            manager.Add(CreateTestSnapshot($"server{i}"));
+            manager.Add(CreateTestSnapshot($"server{i}"), HistoryLimitBehavior.ThrowError);
         }
 
         Assert.Equal(limit, manager.Count);
@@ -155,7 +155,7 @@ public sealed class HistoryManagerComprehensiveTests
 
         // The next add should throw
         Assert.Throws<HashRingHistoryLimitExceededException>(() =>
-            manager.Add(CreateTestSnapshot("overflow")));
+            manager.Add(CreateTestSnapshot("overflow"), HistoryLimitBehavior.ThrowError));
     }
 
     #endregion
@@ -179,8 +179,8 @@ public sealed class HistoryManagerComprehensiveTests
     public void Clear_NonEmptyManager_BecomesEmpty()
     {
         var manager = new HistoryManager<string>(3);
-        manager.Add(CreateTestSnapshot("server1"));
-        manager.Add(CreateTestSnapshot("server2"));
+        manager.Add(CreateTestSnapshot("server1"), HistoryLimitBehavior.ThrowError);
+        manager.Add(CreateTestSnapshot("server2"), HistoryLimitBehavior.ThrowError);
 
         manager.Clear();
 
@@ -195,8 +195,8 @@ public sealed class HistoryManagerComprehensiveTests
     public void Clear_FullManager_BecomesEmpty()
     {
         var manager = new HistoryManager<string>(2);
-        manager.Add(CreateTestSnapshot("server1"));
-        manager.Add(CreateTestSnapshot("server2"));
+        manager.Add(CreateTestSnapshot("server1"), HistoryLimitBehavior.ThrowError);
+        manager.Add(CreateTestSnapshot("server2"), HistoryLimitBehavior.ThrowError);
         Assert.True(manager.IsFull);
 
         manager.Clear();
@@ -206,7 +206,7 @@ public sealed class HistoryManagerComprehensiveTests
         Assert.Equal(2, manager.GetRemainingCapacity());
 
         // Should be able to add again after clear
-        manager.Add(CreateTestSnapshot("server3"));
+        manager.Add(CreateTestSnapshot("server3"), HistoryLimitBehavior.ThrowError);
         Assert.Equal(1, manager.Count);
     }
 
@@ -234,9 +234,9 @@ public sealed class HistoryManagerComprehensiveTests
         var snapshot2 = CreateTestSnapshotWithTime("server2", DateTime.UtcNow.AddMinutes(-5));
         var snapshot3 = CreateTestSnapshotWithTime("server3", DateTime.UtcNow);
 
-        manager.Add(snapshot1);
-        manager.Add(snapshot2);
-        manager.Add(snapshot3);
+        manager.Add(snapshot1, HistoryLimitBehavior.ThrowError);
+        manager.Add(snapshot2, HistoryLimitBehavior.ThrowError);
+        manager.Add(snapshot3, HistoryLimitBehavior.ThrowError);
 
         var snapshots = manager.GetSnapshots();
 
@@ -250,7 +250,7 @@ public sealed class HistoryManagerComprehensiveTests
     public void GetSnapshots_ReturnsReadOnlyList_CannotModify()
     {
         var manager = new HistoryManager<string>(3);
-        manager.Add(CreateTestSnapshot("server1"));
+        manager.Add(CreateTestSnapshot("server1"), HistoryLimitBehavior.ThrowError);
 
         var snapshots = manager.GetSnapshots();
 
@@ -283,9 +283,9 @@ public sealed class HistoryManagerComprehensiveTests
         var snapshot2 = CreateTestSnapshotWithTime("server2", DateTime.UtcNow.AddMinutes(-5));
         var snapshot3 = CreateTestSnapshotWithTime("server3", DateTime.UtcNow);
 
-        manager.Add(snapshot1);
-        manager.Add(snapshot2);
-        manager.Add(snapshot3);
+        manager.Add(snapshot1, HistoryLimitBehavior.ThrowError);
+        manager.Add(snapshot2, HistoryLimitBehavior.ThrowError);
+        manager.Add(snapshot3, HistoryLimitBehavior.ThrowError);
 
         var snapshots = manager.GetSnapshotsReverse();
 
@@ -299,9 +299,9 @@ public sealed class HistoryManagerComprehensiveTests
     public void GetSnapshotsReverse_ComparedToGetSnapshots_AreOpposite()
     {
         var manager = new HistoryManager<string>(3);
-        manager.Add(CreateTestSnapshot("server1"));
-        manager.Add(CreateTestSnapshot("server2"));
-        manager.Add(CreateTestSnapshot("server3"));
+        manager.Add(CreateTestSnapshot("server1"), HistoryLimitBehavior.ThrowError);
+        manager.Add(CreateTestSnapshot("server2"), HistoryLimitBehavior.ThrowError);
+        manager.Add(CreateTestSnapshot("server3"), HistoryLimitBehavior.ThrowError);
 
         var forward = manager.GetSnapshots();
         var reverse = manager.GetSnapshotsReverse();
@@ -333,7 +333,7 @@ public sealed class HistoryManagerComprehensiveTests
     {
         var manager = new HistoryManager<string>(3);
         var testSnapshot = CreateTestSnapshot("server1");
-        manager.Add(testSnapshot);
+        manager.Add(testSnapshot, HistoryLimitBehavior.ThrowError);
 
         var result = manager.TryGetLatest(out var snapshot);
 
@@ -350,9 +350,9 @@ public sealed class HistoryManagerComprehensiveTests
         var snapshot2 = CreateTestSnapshotWithTime("server2", DateTime.UtcNow.AddMinutes(-5));
         var snapshot3 = CreateTestSnapshotWithTime("server3", DateTime.UtcNow);
 
-        manager.Add(snapshot1);
-        manager.Add(snapshot2);
-        manager.Add(snapshot3);
+        manager.Add(snapshot1, HistoryLimitBehavior.ThrowError);
+        manager.Add(snapshot2, HistoryLimitBehavior.ThrowError);
+        manager.Add(snapshot3, HistoryLimitBehavior.ThrowError);
 
         var result = manager.TryGetLatest(out var latest);
 
@@ -388,7 +388,7 @@ public sealed class HistoryManagerComprehensiveTests
 
         for (int i = 0; i < added; i++)
         {
-            manager.Add(CreateTestSnapshot($"server{i}"));
+            manager.Add(CreateTestSnapshot($"server{i}"), HistoryLimitBehavior.ThrowError);
         }
 
         var remaining = manager.GetRemainingCapacity();
@@ -406,7 +406,7 @@ public sealed class HistoryManagerComprehensiveTests
 
         for (int i = 0; i < maxSize; i++)
         {
-            manager.Add(CreateTestSnapshot($"server{i}"));
+            manager.Add(CreateTestSnapshot($"server{i}"), HistoryLimitBehavior.ThrowError);
         }
 
         var remaining = manager.GetRemainingCapacity();
@@ -427,12 +427,12 @@ public sealed class HistoryManagerComprehensiveTests
         VerifyConsistentState(manager);
 
         // After adding one
-        manager.Add(CreateTestSnapshot("server1"));
+        manager.Add(CreateTestSnapshot("server1"), HistoryLimitBehavior.ThrowError);
         VerifyConsistentState(manager);
 
         // After adding to full
-        manager.Add(CreateTestSnapshot("server2"));
-        manager.Add(CreateTestSnapshot("server3"));
+        manager.Add(CreateTestSnapshot("server2"), HistoryLimitBehavior.ThrowError);
+        manager.Add(CreateTestSnapshot("server3"), HistoryLimitBehavior.ThrowError);
         VerifyConsistentState(manager);
 
         // After clearing
@@ -440,7 +440,7 @@ public sealed class HistoryManagerComprehensiveTests
         VerifyConsistentState(manager);
 
         // After adding again
-        manager.Add(CreateTestSnapshot("server4"));
+        manager.Add(CreateTestSnapshot("server4"), HistoryLimitBehavior.ThrowError);
         VerifyConsistentState(manager);
     }
 
@@ -490,21 +490,21 @@ public sealed class HistoryManagerComprehensiveTests
         Assert.False(manager.IsFull);
 
         // Add first snapshot
-        manager.Add(CreateTestSnapshot("server1"));
+        manager.Add(CreateTestSnapshot("server1"), HistoryLimitBehavior.ThrowError);
         Assert.Equal(1, manager.Count);
         Assert.True(manager.IsFull);
         Assert.Equal(0, manager.GetRemainingCapacity());
 
         // Adding second should throw
         Assert.Throws<HashRingHistoryLimitExceededException>(() =>
-            manager.Add(CreateTestSnapshot("server2")));
+            manager.Add(CreateTestSnapshot("server2"), HistoryLimitBehavior.ThrowError));
 
         // Clear and verify can add again
         manager.Clear();
         Assert.Equal(0, manager.Count);
         Assert.False(manager.IsFull);
 
-        manager.Add(CreateTestSnapshot("server3"));
+        manager.Add(CreateTestSnapshot("server3"), HistoryLimitBehavior.ThrowError);
         Assert.Equal(1, manager.Count);
         Assert.True(manager.IsFull);
     }
@@ -519,7 +519,7 @@ public sealed class HistoryManagerComprehensiveTests
         const int snapshotsToAdd = 5000;
         for (int i = 0; i < snapshotsToAdd; i++)
         {
-            manager.Add(CreateTestSnapshot($"server{i}"));
+            manager.Add(CreateTestSnapshot($"server{i}"), HistoryLimitBehavior.ThrowError);
         }
 
         Assert.Equal(snapshotsToAdd, manager.Count);
@@ -541,7 +541,7 @@ public sealed class HistoryManagerComprehensiveTests
         {
             var timestamp = DateTime.UtcNow.AddMinutes(i);
             timestamps.Add(timestamp);
-            manager.Add(CreateTestSnapshotWithTime($"server{i}", timestamp));
+            manager.Add(CreateTestSnapshotWithTime($"server{i}", timestamp), HistoryLimitBehavior.ThrowError);
         }
 
         var snapshots = manager.GetSnapshots();
@@ -569,7 +569,7 @@ public sealed class HistoryManagerComprehensiveTests
         // Pre-populate with some snapshots
         for (int i = 0; i < 50; i++)
         {
-            manager.Add(CreateTestSnapshot($"server{i}"));
+            manager.Add(CreateTestSnapshot($"server{i}"), HistoryLimitBehavior.ThrowError);
         }
 
         var tasks = new List<Task>();
@@ -632,7 +632,7 @@ public sealed class HistoryManagerComprehensiveTests
             {
                 try
                 {
-                    manager.Add(CreateTestSnapshot($"server{taskId}"));
+                    manager.Add(CreateTestSnapshot($"server{taskId}"), HistoryLimitBehavior.ThrowError);
                     Interlocked.Increment(ref successfulAdds);
                 }
                 catch (HashRingHistoryLimitExceededException)
@@ -666,7 +666,7 @@ public sealed class HistoryManagerComprehensiveTests
         var manager = new HistoryManager<int>(5);
         var snapshot = CreateTestSnapshot(42);
 
-        manager.Add(snapshot);
+        manager.Add(snapshot, HistoryLimitBehavior.ThrowError);
 
         Assert.Equal(1, manager.Count);
         var snapshots = manager.GetSnapshots();
@@ -681,7 +681,7 @@ public sealed class HistoryManagerComprehensiveTests
         var serverId = Guid.NewGuid();
         var snapshot = CreateTestSnapshot(serverId);
 
-        manager.Add(snapshot);
+        manager.Add(snapshot, HistoryLimitBehavior.ThrowError);
 
         Assert.Equal(1, manager.Count);
         var snapshots = manager.GetSnapshots();

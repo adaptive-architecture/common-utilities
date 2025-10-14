@@ -172,6 +172,7 @@ public class HashRingOptionsTests
         // Act
         var ring = new HashRing<string>(options);
         ring.Add("server1"); // Should use 200 virtual nodes by default from options
+        ring.CreateConfigurationSnapshot();
 
         // Assert
         Assert.Equal(200, ring.VirtualNodeCount);
@@ -210,8 +211,10 @@ public class HashRingOptionsTests
 
         sha1Ring.Add("server1");
         sha1Ring.Add("server2");
+        sha1Ring.CreateConfigurationSnapshot();
         md5Ring.Add("server1");
         md5Ring.Add("server2");
+        md5Ring.CreateConfigurationSnapshot();
 
         // Act - Get servers for same key with different algorithms
         var sha1Server1 = sha1Ring.GetServer("test-key");
@@ -239,8 +242,10 @@ public class HashRingOptionsTests
 
         lowRing.Add("server1");
         lowRing.Add("server2");
+        lowRing.CreateConfigurationSnapshot();
         highRing.Add("server1");
         highRing.Add("server2");
+        highRing.CreateConfigurationSnapshot();
 
         // Act & Assert
         Assert.Equal(100, lowRing.VirtualNodeCount); // 50 * 2
@@ -308,6 +313,82 @@ public class HashRingOptionsTests
         Assert.Equal(150, options1.DefaultVirtualNodes);
         Assert.Equal(200, options2.DefaultVirtualNodes);
         Assert.NotSame(options1.HashAlgorithm, options2.HashAlgorithm);
+    }
+
+    #endregion
+
+    #region Contract Tests for HistoryLimitBehavior Property (T003)
+
+    [Fact]
+    public void HashRingOptions_HasHistoryLimitBehaviorProperty()
+    {
+        // Arrange & Act
+        var propertyInfo = typeof(HashRingOptions).GetProperty("HistoryLimitBehavior");
+
+        // Assert
+        Assert.NotNull(propertyInfo);
+        Assert.Equal(typeof(HistoryLimitBehavior), propertyInfo.PropertyType);
+    }
+
+    [Fact]
+    public void HashRingOptions_HistoryLimitBehavior_DefaultsToRemoveOldest()
+    {
+        // Arrange & Act
+        var options = new HashRingOptions();
+
+        // Assert
+        Assert.Equal(HistoryLimitBehavior.RemoveOldest, options.HistoryLimitBehavior);
+    }
+
+    [Fact]
+    public void HashRingOptions_HistoryLimitBehavior_CanBeSetToThrowError()
+    {
+        // Arrange
+        var options = new HashRingOptions
+        {
+            // Act
+            HistoryLimitBehavior = HistoryLimitBehavior.ThrowError
+        };
+
+        // Assert
+        Assert.Equal(HistoryLimitBehavior.ThrowError, options.HistoryLimitBehavior);
+    }
+
+    [Fact]
+    public void HashRingOptions_HistoryLimitBehavior_CanBeSetToRemoveOldest()
+    {
+        // Arrange
+        var options = new HashRingOptions
+        {
+            // Act
+            HistoryLimitBehavior = HistoryLimitBehavior.RemoveOldest
+        };
+
+        // Assert
+        Assert.Equal(HistoryLimitBehavior.RemoveOldest, options.HistoryLimitBehavior);
+    }
+
+    [Fact]
+    public void HashRingOptions_DoesNotHaveEnableVersionHistoryProperty()
+    {
+        // Arrange & Act
+        var propertyInfo = typeof(HashRingOptions).GetProperty("EnableVersionHistory");
+
+        // Assert - Property should NOT exist
+        Assert.Null(propertyInfo);
+    }
+
+    [Fact]
+    public void HashRingOptions_HasMaxHistorySizeProperty()
+    {
+        // Arrange & Act
+        var options = new HashRingOptions();
+        var propertyInfo = typeof(HashRingOptions).GetProperty("MaxHistorySize");
+
+        // Assert
+        Assert.NotNull(propertyInfo);
+        Assert.Equal(typeof(int), propertyInfo.PropertyType);
+        Assert.Equal(3, options.MaxHistorySize); // Default value
     }
 
     #endregion
