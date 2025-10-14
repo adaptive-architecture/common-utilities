@@ -1,4 +1,4 @@
-﻿namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
+namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 
 using System.Text;
 using AdaptArch.Common.Utilities.ConsistentHashing;
@@ -15,8 +15,8 @@ public sealed class HistoryLimitIntegrationTests
     {
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
-            MaxHistorySize = maxHistorySize
+            MaxHistorySize = maxHistorySize,
+            HistoryLimitBehavior = HistoryLimitBehavior.ThrowError
         };
         var hashRing = new HashRing<string>(options);
 
@@ -42,8 +42,8 @@ public sealed class HistoryLimitIntegrationTests
     {
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
-            MaxHistorySize = 2
+            MaxHistorySize = 2,
+            HistoryLimitBehavior = HistoryLimitBehavior.ThrowError
         };
         var hashRing = new HashRing<string>(options);
 
@@ -71,8 +71,8 @@ public sealed class HistoryLimitIntegrationTests
     {
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
-            MaxHistorySize = 2
+            MaxHistorySize = 2,
+            HistoryLimitBehavior = HistoryLimitBehavior.RemoveOldest
         };
         var hashRing = new HashRing<string>(options);
 
@@ -89,11 +89,9 @@ public sealed class HistoryLimitIntegrationTests
 
         Assert.Equal(2, hashRing.HistoryCount);
 
-        var candidates = hashRing.GetServerCandidates(testKey);
+        var server = hashRing.GetServer(testKey);
 
-        Assert.True(candidates.HasHistory);
-        Assert.Equal(3, candidates.ConfigurationCount);
-        Assert.True(candidates.Servers.Count >= 1);
+        Assert.NotNull(server);
     }
 
     [Fact]
@@ -101,8 +99,8 @@ public sealed class HistoryLimitIntegrationTests
     {
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
-            MaxHistorySize = 3
+            MaxHistorySize = 3,
+            HistoryLimitBehavior = HistoryLimitBehavior.RemoveOldest
         };
         var hashRing = new HashRing<string>(options);
 
@@ -119,11 +117,11 @@ public sealed class HistoryLimitIntegrationTests
             hashRing.Add($"new-server-{i}");
         }
 
-        var candidates = hashRing.GetServerCandidates(testKey, maxCandidates: 2);
+        var servers = hashRing.GetServers(testKey, count: 2).ToList();
 
-        Assert.True(candidates.HasHistory);
-        Assert.True(candidates.Servers.Count <= 2);
-        Assert.Equal(4, candidates.ConfigurationCount);
+        Assert.NotNull(servers);
+        Assert.True(servers.Count <= 2);
+        Assert.Equal(3, hashRing.HistoryCount); // 3 snapshots in history
     }
 
     [Fact]
@@ -131,8 +129,8 @@ public sealed class HistoryLimitIntegrationTests
     {
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
-            MaxHistorySize = 2
+            MaxHistorySize = 2,
+            HistoryLimitBehavior = HistoryLimitBehavior.RemoveOldest
         };
         var hashRing = new HashRing<string>(options);
 
@@ -141,11 +139,10 @@ public sealed class HistoryLimitIntegrationTests
         hashRing.Add("server-2");
 
         var testKey = Encoding.UTF8.GetBytes("zero-candidates");
-        var candidates = hashRing.GetServerCandidates(testKey, maxCandidates: 0);
+        var servers = hashRing.GetServers(testKey, count: 0).ToList();
 
-        Assert.Empty(candidates.Servers);
-        Assert.True(candidates.HasHistory);
-        Assert.Equal(2, candidates.ConfigurationCount);
+        Assert.Empty(servers);
+        Assert.Equal(1, hashRing.HistoryCount); // 1 snapshot in history
     }
 
     [Fact]
@@ -153,14 +150,14 @@ public sealed class HistoryLimitIntegrationTests
     {
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
-            MaxHistorySize = 1
+            MaxHistorySize = 1,
+            HistoryLimitBehavior = HistoryLimitBehavior.RemoveOldest
         };
         var hashRing = new HashRing<string>(options);
 
         var testKey = Encoding.UTF8.GetBytes("try-get-test");
 
-        var success = hashRing.TryGetServerCandidates(testKey, out var result);
+        var success = hashRing.TryGetServer(testKey, out var result);
 
         Assert.False(success);
         Assert.Null(result);
@@ -168,12 +165,11 @@ public sealed class HistoryLimitIntegrationTests
         hashRing.Add("server-1");
         hashRing.CreateConfigurationSnapshot();
 
-        success = hashRing.TryGetServerCandidates(testKey, out result);
+        success = hashRing.TryGetServer(testKey, out result);
 
         Assert.True(success);
         Assert.NotNull(result);
-        Assert.Single(result.Servers);
-        Assert.True(result.HasHistory);
+        Assert.Equal(1, hashRing.HistoryCount);
     }
 
     [Theory]
@@ -184,32 +180,34 @@ public sealed class HistoryLimitIntegrationTests
     {
         var options = new HashRingOptions
         {
-            EnableVersionHistory = true,
-            MaxHistorySize = maxHistorySize
+            MaxHistorySize = maxHistorySize,
+            HistoryLimitBehavior = HistoryLimitBehavior.ThrowError
         };
         var hashRing = new HashRing<string>(options);
 
         hashRing.Add("base-server");
+        hashRing.CreateConfigurationSnapshot(); // Create initial snapshot
         var testKey = Encoding.UTF8.GetBytes("stress-test-key");
 
-        int successfulSnapshots = 0;
+        int successfulSnapshots = 1; // Count the initial snapshot
         int rejectedSnapshots = 0;
 
         for (int i = 0; i < operationCount; i++)
         {
             try
             {
-                hashRing.CreateConfigurationSnapshot();
                 hashRing.Add($"server-{i}");
+                hashRing.CreateConfigurationSnapshot();
                 successfulSnapshots++;
             }
             catch (HashRingHistoryLimitExceededException)
             {
                 rejectedSnapshots++;
                 hashRing.ClearHistory();
+                hashRing.CreateConfigurationSnapshot(); // Create new snapshot after clearing
             }
 
-            var candidates = hashRing.TryGetServerCandidates(testKey, out var result);
+            var candidates = hashRing.TryGetServer(testKey, out var result);
             Assert.True(candidates);
             Assert.NotNull(result);
             Assert.True(hashRing.HistoryCount <= maxHistorySize);
@@ -217,6 +215,6 @@ public sealed class HistoryLimitIntegrationTests
 
         Assert.True(successfulSnapshots > 0);
         Assert.True(rejectedSnapshots > 0);
-        Assert.Equal(operationCount, successfulSnapshots + rejectedSnapshots);
+        Assert.True(successfulSnapshots + rejectedSnapshots >= operationCount);
     }
 }

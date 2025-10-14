@@ -28,6 +28,9 @@ public static class DatabaseRoutingExample
         }
         Console.WriteLine();
 
+        // Create snapshot to enable lookups
+        dbRing.CreateConfigurationSnapshot();
+
         // Simulate routing different user IDs to different databases
         var userIds = new[] { "user-12345", "user-67890", "user-11111", "user-22222", "user-33333" };
 
@@ -52,7 +55,9 @@ public static class DatabaseRoutingExample
         Console.WriteLine("=== Simulating Database Failover ===");
         const string failedServer = "db-replica-1.example.com:5432";
         Console.WriteLine($"Removing failed server: {failedServer}");
+        dbRing.CreateConfigurationSnapshot();
         dbRing.Remove(failedServer);
+        dbRing.CreateConfigurationSnapshot();
 
         Console.WriteLine("Routing after failover:");
         foreach (var userId in userIds)
@@ -65,7 +70,9 @@ public static class DatabaseRoutingExample
         // Simulate server recovery
         Console.WriteLine("=== Server Recovery ===");
         Console.WriteLine($"Adding recovered server back: {failedServer}");
+        dbRing.CreateConfigurationSnapshot();
         dbRing.Add(failedServer);
+        dbRing.CreateConfigurationSnapshot();
 
         Console.WriteLine("Routing after recovery:");
         foreach (var userId in userIds)
@@ -116,13 +123,17 @@ public static class DatabaseRoutingExample
         public void AddDatabase(string connectionString, string name)
         {
             var connection = new DatabaseConnection(connectionString, name);
+            _ring.CreateConfigurationSnapshot();
             _ring.Add(connection);
+            _ring.CreateConfigurationSnapshot();
         }
 
         public void RemoveDatabase(string connectionString, string name)
         {
             var connection = new DatabaseConnection(connectionString, name);
+            _ring.CreateConfigurationSnapshot();
             _ring.Remove(connection);
+            _ring.CreateConfigurationSnapshot();
         }
 
         public DatabaseConnection GetDatabaseForUser(string userId)

@@ -3,6 +3,17 @@
 /// <summary>
 /// Configuration options for creating HashRing instances.
 /// </summary>
+/// <remarks>
+/// <para>
+/// <strong>Snapshot Management:</strong> All HashRing instances have snapshot history enabled by default.
+/// Configure <see cref="MaxHistorySize"/> and <see cref="HistoryLimitBehavior"/> to control how snapshots
+/// are managed when the limit is reached.
+/// </para>
+/// <para>
+/// <strong>Default Behavior:</strong> By default, HashRing uses FIFO (First-In-First-Out) removal with a
+/// maximum of 3 snapshots. This allows continuous operation without manual snapshot cleanup.
+/// </para>
+/// </remarks>
 public sealed class HashRingOptions
 {
     /// <summary>
@@ -12,18 +23,35 @@ public sealed class HashRingOptions
     public int DefaultVirtualNodes { get; set; } = 42;
 
     /// <summary>
-    /// Gets or sets whether version history is enabled for data migration scenarios.
-    /// When enabled, the hash ring can maintain previous server configurations.
-    /// Default value is false.
-    /// </summary>
-    public bool EnableVersionHistory { get; set; } = false;
-
-    /// <summary>
     /// Gets or sets the maximum number of historical configurations to retain.
-    /// Only used when EnableVersionHistory is true.
+    /// Snapshot history is always enabled for all HashRing instances.
     /// Default value is 3. Minimum value is 1.
     /// </summary>
     public int MaxHistorySize { get; set; } = 3;
+
+    /// <summary>
+    /// Gets or sets the behavior when <see cref="HashRing{T}.CreateConfigurationSnapshot"/> is called
+    /// and the snapshot history has reached <see cref="MaxHistorySize"/>.
+    /// </summary>
+    /// <value>
+    /// Default value is <see cref="ConsistentHashing.HistoryLimitBehavior.RemoveOldest"/> (FIFO removal).
+    /// </value>
+    /// <remarks>
+    /// <para>
+    /// <strong>RemoveOldest (default):</strong> When the limit is reached, the oldest snapshot is automatically
+    /// removed to make room for the new one. This provides FIFO (First-In-First-Out) behavior and allows
+    /// continuous snapshot creation without manual intervention.
+    /// </para>
+    /// <para>
+    /// <strong>ThrowError:</strong> When the limit is reached, <see cref="HashRing{T}.CreateConfigurationSnapshot"/>
+    /// throws <see cref="HashRingHistoryLimitExceededException"/>. Use this when you need explicit control
+    /// over snapshot management or want to detect when the limit is reached.
+    /// </para>
+    /// <para>
+    /// See <see cref="HistoryLimitBehavior"/> for more details on each behavior.
+    /// </para>
+    /// </remarks>
+    public HistoryLimitBehavior HistoryLimitBehavior { get; set; } = HistoryLimitBehavior.RemoveOldest;
 
     /// <summary>
     /// Gets or sets the hash algorithm to use.

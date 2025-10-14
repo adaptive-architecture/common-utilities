@@ -4,6 +4,16 @@ namespace AdaptArch.Common.Utilities.ConsistentHashing;
 
 /// <summary>
 /// A consistent hash ring implementation for distributing keys across servers.
+/// <para>
+/// <strong>Snapshot-Based Lookups:</strong> All key lookups (<see cref="GetServer(byte[])"/>, <see cref="TryGetServer"/>, <see cref="GetServers"/>)
+/// use configuration snapshots created via <see cref="CreateConfigurationSnapshot"/>.
+/// The current ring configuration is not used for lookups until a snapshot is created.
+/// </para>
+/// <para>
+/// <strong>Always-On History:</strong> Snapshot history management is always enabled.
+/// When the history limit (<see cref="MaxHistorySize"/>) is reached, behavior is determined by
+/// <see cref="HistoryLimitBehavior"/> (default: FIFO removal of oldest snapshots).
+/// </para>
 /// </summary>
 /// <typeparam name="T">The type of server identifiers.</typeparam>
 public sealed class HashRing<T> where T : IEquatable<T>
@@ -14,49 +24,74 @@ public sealed class HashRing<T> where T : IEquatable<T>
     private readonly ConcurrentDictionary<T, int> _serverVirtualNodes = new();
     private volatile List<VirtualNode<T>> _sortedVirtualNodes = [];
 
-    // Version-aware fields
-    private readonly HistoryManager<T>? _historyManager;
+    // Snapshot management - always enabled
+    private readonly HistoryManager<T> _historyManager;
+    private readonly HistoryLimitBehavior _historyLimitBehavior;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HashRing{T}"/> class with SHA-1 hash algorithm.
+    /// Uses default snapshot history settings: max 3 snapshots with FIFO removal.
     /// </summary>
+    /// <remarks>
+    /// Snapshot history is always enabled. Call <see cref="CreateConfigurationSnapshot"/> after
+    /// adding servers to enable key lookups.
+    /// </remarks>
     public HashRing() : this(new Sha1HashAlgorithm(), 42)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HashRing{T}"/> class with a custom hash algorithm.
+    /// Uses default snapshot history settings: max 3 snapshots with FIFO removal.
     /// </summary>
     /// <param name="hashAlgorithm">The hash algorithm to use.</param>
+    /// <remarks>
+    /// Snapshot history is always enabled. Call <see cref="CreateConfigurationSnapshot"/> after
+    /// adding servers to enable key lookups.
+    /// </remarks>
     public HashRing(IHashAlgorithm hashAlgorithm) : this(hashAlgorithm, 42)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HashRing{T}"/> class with a custom hash algorithm and default virtual nodes.
+    /// Uses default snapshot history settings: max 3 snapshots with FIFO removal.
     /// </summary>
     /// <param name="hashAlgorithm">The hash algorithm to use.</param>
     /// <param name="defaultVirtualNodes">The default number of virtual nodes per server.</param>
+    /// <remarks>
+    /// Snapshot history is always enabled. Call <see cref="CreateConfigurationSnapshot"/> after
+    /// adding servers to enable key lookups.
+    /// </remarks>
     public HashRing(IHashAlgorithm hashAlgorithm, int defaultVirtualNodes)
     {
         ArgumentNullException.ThrowIfNull(hashAlgorithm);
         _hashAlgorithm = hashAlgorithm;
         _defaultVirtualNodes = defaultVirtualNodes;
+
+        // Initialize snapshot management with defaults
+        _historyManager = new HistoryManager<T>(maxSize: 3);
+        _historyLimitBehavior = HistoryLimitBehavior.RemoveOldest;
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HashRing{T}"/> class with the specified options.
     /// </summary>
     /// <param name="options">The configuration options for the hash ring.</param>
+    /// <remarks>
+    /// Snapshot history is always enabled. Configure <see cref="HashRingOptions.MaxHistorySize"/> and
+    /// <see cref="HashRingOptions.HistoryLimitBehavior"/> to control snapshot management.
+    /// Call <see cref="CreateConfigurationSnapshot"/> after adding servers to enable key lookups.
+    /// </remarks>
     public HashRing(HashRingOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
         _hashAlgorithm = options.HashAlgorithm;
         _defaultVirtualNodes = options.DefaultVirtualNodes;
 
-        // Initialize version-aware features
-        IsVersionHistoryEnabled = options.EnableVersionHistory;
-        _historyManager = IsVersionHistoryEnabled ? new HistoryManager<T>(options.MaxHistorySize) : null;
+        // Snapshot management is always enabled
+        _historyManager = new HistoryManager<T>(options.MaxHistorySize);
+        _historyLimitBehavior = options.HistoryLimitBehavior;
     }
 
     /// <summary>
@@ -75,21 +110,16 @@ public sealed class HashRing<T> where T : IEquatable<T>
     public int VirtualNodeCount => _sortedVirtualNodes.Count;
 
     /// <summary>
-    /// Gets whether version history is enabled for this hash ring.
+    /// Gets the current number of configuration snapshots stored in history.
+    /// Snapshot history is always enabled for all HashRing instances.
     /// </summary>
-    public bool IsVersionHistoryEnabled { get; }
+    public int HistoryCount => _historyManager.Count;
 
     /// <summary>
-    /// Gets the current number of historical configurations stored.
-    /// Returns 0 if version history is not enabled.
+    /// Gets the maximum number of configuration snapshots that can be stored.
+    /// Snapshot history is always enabled for all HashRing instances.
     /// </summary>
-    public int HistoryCount => _historyManager?.Count ?? 0;
-
-    /// <summary>
-    /// Gets the maximum number of historical configurations that can be stored.
-    /// Returns 0 if version history is not enabled.
-    /// </summary>
-    public int MaxHistorySize => _historyManager?.MaxSize ?? 0;
+    public int MaxHistorySize => _historyManager.MaxSize;
 
     /// <summary>
     /// Adds a server to the hash ring with the default number of virtual nodes.
@@ -250,31 +280,39 @@ public sealed class HashRing<T> where T : IEquatable<T>
 
     /// <summary>
     /// Gets the server that should handle the specified key.
+    /// This method ONLY uses configuration snapshots created via <see cref="CreateConfigurationSnapshot"/>.
+    /// The current ring configuration is ignored until a snapshot is created.
     /// </summary>
     /// <param name="key">The key to find a server for.</param>
-    /// <returns>The server that should handle the key.</returns>
-    /// <exception cref="InvalidOperationException">Thrown when no servers are available.</exception>
+    /// <returns>The server that should handle the key from available snapshots.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when key is null.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when no configuration snapshots are available.
+    /// Call <see cref="CreateConfigurationSnapshot"/> after adding servers to enable lookups.
+    /// </exception>
     public T GetServer(byte[] key)
     {
         ArgumentNullException.ThrowIfNull(key);
 
-        var virtualNodes = _sortedVirtualNodes;
-        if (virtualNodes.Count == 0)
+        if (!_historyManager.HasSnapshots)
         {
-            throw new InvalidOperationException("No servers available in the hash ring.");
+            throw new InvalidOperationException(
+                "No configuration snapshots available. Call CreateConfigurationSnapshot() after adding servers.");
         }
 
-        uint hash = ComputeKeyHash(key);
-        int index = FindServerIndex(virtualNodes, hash);
-        return virtualNodes[index].Server;
+        return _historyManager.GetSnapshotsReverse()
+            .Select(snapshot => snapshot.GetServer(key))
+            .First();
     }
 
     /// <summary>
-    /// Tries to get the server that should handle the specified key.
+    /// Tries to get the server that should handle the specified key from available snapshots.
+    /// This method ONLY uses configuration snapshots, not the current ring configuration.
     /// </summary>
     /// <param name="key">The key to find a server for.</param>
     /// <param name="server">When this method returns, contains the server if found; otherwise, the default value.</param>
-    /// <returns>true if a server was found; otherwise, false.</returns>
+    /// <returns>true if a server was found in snapshots; otherwise, false.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when key is null.</exception>
     public bool TryGetServer(byte[] key, out T? server)
     {
         ArgumentNullException.ThrowIfNull(key);
@@ -293,40 +331,61 @@ public sealed class HashRing<T> where T : IEquatable<T>
 
     /// <summary>
     /// Gets multiple servers that should handle the specified key, in preference order.
+    /// This method ONLY uses configuration snapshots, not the current ring configuration.
     /// </summary>
     /// <param name="key">The key to find servers for.</param>
     /// <param name="count">The maximum number of servers to return.</param>
-    /// <returns>An enumerable of servers in preference order.</returns>
+    /// <returns>An enumerable of servers in preference order from available snapshots.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when key is null.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when no configuration snapshots are available.</exception>
     public IEnumerable<T> GetServers(byte[] key, int count)
     {
         ArgumentNullException.ThrowIfNull(key);
         ArgumentOutOfRangeException.ThrowIfLessThan(count, 0);
 
+        if (!_historyManager.HasSnapshots)
+        {
+            throw new InvalidOperationException(
+                "No configuration snapshots available. Call CreateConfigurationSnapshot() after adding servers.");
+        }
+
         return GetServersCore(key, count);
     }
 
-    private IEnumerable<T> GetServersCore(byte[] key, int count)
+    private List<T> GetServersCore(byte[] key, int count)
     {
-        var virtualNodes = _sortedVirtualNodes;
-        if (virtualNodes.Count == 0)
+        if (count == 0)
         {
-            yield break;
+            return [];
         }
 
-        uint hash = ComputeKeyHash(key);
-        int startIndex = FindServerIndex(virtualNodes, hash);
-        var seenServers = new HashSet<T>();
-
-        for (int i = 0; i < virtualNodes.Count && seenServers.Count < count; i++)
+        // Get servers from the latest snapshot by walking the ring
+        var virtualNodes = _historyManager.GetSnapshotsReverse()[0].VirtualNodes;
+        if (virtualNodes.Count == 0)
         {
-            int currentIndex = (startIndex + i) % virtualNodes.Count;
-            T server = virtualNodes[currentIndex].Server;
+            return [];
+        }
+
+        var keyHash = ComputeKeyHash(key);
+        var seenServers = new HashSet<T>();
+        var result = new List<T>();
+
+        // Find the starting index (first virtual node with hash >= keyHash)
+        int startIndex = FindServerIndex([.. virtualNodes], keyHash);
+
+        // Walk the ring starting from startIndex to find distinct servers
+        for (int i = 0; i < virtualNodes.Count && result.Count < count; i++)
+        {
+            int index = (startIndex + i) % virtualNodes.Count;
+            var server = virtualNodes[index].Server;
 
             if (seenServers.Add(server))
             {
-                yield return server;
+                result.Add(server);
             }
         }
+
+        return result;
     }
 
     private void RebuildVirtualNodes()
@@ -357,7 +416,7 @@ public sealed class HashRing<T> where T : IEquatable<T>
         return BitConverter.ToUInt32(hashBytes, 0);
     }
 
-    private static int FindServerIndex(List<VirtualNode<T>> virtualNodes, uint hash)
+    internal static int FindServerIndex(List<VirtualNode<T>> virtualNodes, uint hash)
     {
         int left = 0;
         int right = virtualNodes.Count - 1;
@@ -386,176 +445,48 @@ public sealed class HashRing<T> where T : IEquatable<T>
 
     /// <summary>
     /// Creates a snapshot of the current configuration and stores it in history.
+    /// If the current configuration is identical to the most recent snapshot, no new snapshot is created.
+    /// Snapshot history is always enabled. When the history limit is reached, behavior depends on
+    /// the <see cref="HistoryLimitBehavior"/> setting (FIFO removal or exception).
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when version history is not enabled.</exception>
-    /// <exception cref="HashRingHistoryLimitExceededException">Thrown when creating the snapshot would exceed the history limit.</exception>
+    /// <exception cref="HashRingHistoryLimitExceededException">
+    /// Thrown when creating the snapshot would exceed the history limit and
+    /// <see cref="HistoryLimitBehavior"/> is set to <see cref="ConsistentHashing.HistoryLimitBehavior.ThrowError"/>.
+    /// </exception>
     public void CreateConfigurationSnapshot()
     {
-        if (!IsVersionHistoryEnabled)
-        {
-            throw new InvalidOperationException("Cannot create configuration snapshot because version history is not enabled. " +
-                "Enable version history by setting EnableVersionHistory to true in HashRingOptions.");
-        }
-
         lock (_lock)
         {
             var servers = _serverVirtualNodes.Keys.ToArray();
             var virtualNodes = _sortedVirtualNodes.ToList();
-            var snapshot = new ConfigurationSnapshot<T>(servers, virtualNodes, DateTime.UtcNow, _hashAlgorithm);
 
-            _historyManager!.Add(snapshot);
+            // Check if current state matches the most recent snapshot (deduplication)
+            if (_historyManager.TryGetLatest(out var latestSnapshot)
+                && latestSnapshot != null
+                && latestSnapshot.Servers.Count == servers.Length
+                && latestSnapshot.VirtualNodes.Count == virtualNodes.Count
+                && new HashSet<T>(latestSnapshot.Servers).SetEquals(servers))
+            {
+                // Configuration hasn't changed, skip creating duplicate snapshot
+                return;
+            }
+
+            var snapshot = new ConfigurationSnapshot<T>(servers, virtualNodes, DateTime.UtcNow, _hashAlgorithm);
+            _historyManager.Add(snapshot, _historyLimitBehavior);
         }
     }
 
     /// <summary>
-    /// Clears all historical configurations, retaining only the current configuration.
+    /// Clears all configuration snapshots from history.
+    /// After calling this method, <see cref="GetServer(byte[])"/> and related methods will throw
+    /// <see cref="InvalidOperationException"/> until a new snapshot is created with <see cref="CreateConfigurationSnapshot"/>.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when version history is not enabled.</exception>
     public void ClearHistory()
     {
-        if (!IsVersionHistoryEnabled)
-        {
-            throw new InvalidOperationException("Cannot clear history because version history is not enabled. " +
-                "Enable version history by setting EnableVersionHistory to true in HashRingOptions.");
-        }
-
         lock (_lock)
         {
-            _historyManager!.Clear();
+            _historyManager.Clear();
         }
     }
 
-    /// <summary>
-    /// Gets server candidates that should handle the specified key, including servers from historical configurations.
-    /// </summary>
-    /// <param name="key">The key to find servers for.</param>
-    /// <returns>Server candidates with current server first, followed by unique servers from historical configurations.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when key is null.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when no servers are available in any configuration.</exception>
-    public ServerCandidateResult<T> GetServerCandidates(byte[] key)
-    {
-        ArgumentNullException.ThrowIfNull(key);
-
-        lock (_lock)
-        {
-            var candidates = new List<T>();
-            var configurationCount = 1; // Current configuration always counts
-            var hasHistory = HasHistory();
-
-            // Get server from current configuration
-            if (!IsEmpty)
-            {
-                var currentServer = GetServer(key);
-                candidates.Add(currentServer);
-            }
-            else if (!hasHistory)
-            {
-                throw new InvalidOperationException("No servers are available in the current configuration and no history exists.");
-            }
-
-            // Get servers from historical configurations
-            if (hasHistory)
-            {
-                var snapshots = _historyManager!.GetSnapshots();
-                configurationCount += snapshots.Count;
-
-                foreach (var snapshot in snapshots)
-                {
-                    try
-                    {
-                        var historicalServer = snapshot.GetServer(key);
-
-                        // Add only if not already in candidates (deduplication)
-                        if (!candidates.Contains(historicalServer))
-                        {
-                            candidates.Add(historicalServer);
-                        }
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        // Skip snapshots with no servers
-                    }
-                }
-            }
-
-            if (candidates.Count == 0)
-            {
-                throw new InvalidOperationException("No servers are available in any configuration.");
-            }
-
-            return new ServerCandidateResult<T>(candidates.AsReadOnly(), configurationCount, hasHistory);
-        }
-    }
-
-    /// <summary>
-    /// Gets multiple server candidates that should handle the specified key from current and historical configurations.
-    /// </summary>
-    /// <param name="key">The key to find servers for.</param>
-    /// <param name="maxCandidates">The maximum number of unique server candidates to return.</param>
-    /// <returns>Server candidates in priority order, with deduplication across configurations.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when key is null.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when maxCandidates is less than 0.</exception>
-    public ServerCandidateResult<T> GetServerCandidates(byte[] key, int maxCandidates)
-    {
-        ArgumentNullException.ThrowIfNull(key);
-        ArgumentOutOfRangeException.ThrowIfNegative(maxCandidates);
-
-        if (maxCandidates == 0)
-        {
-            lock (_lock)
-            {
-                var configurationCount = 1; // Current configuration always counts
-                var hasHistory = HasHistory();
-
-                if (hasHistory)
-                {
-                    configurationCount += _historyManager!.Count;
-                }
-
-                return new ServerCandidateResult<T>([], configurationCount, hasHistory);
-            }
-        }
-
-        // Get all candidates first, then limit
-        var allCandidates = GetServerCandidates(key);
-
-        if (maxCandidates >= allCandidates.Servers.Count)
-        {
-            return allCandidates;
-        }
-
-        // Take only the first maxCandidates
-        var limitedServers = new T[maxCandidates];
-        for (int i = 0; i < maxCandidates; i++)
-        {
-            limitedServers[i] = allCandidates.Servers[i];
-        }
-
-        return new ServerCandidateResult<T>(limitedServers, allCandidates.ConfigurationCount, allCandidates.HasHistory);
-    }
-
-    /// <summary>
-    /// Tries to get server candidates that should handle the specified key from current and historical configurations.
-    /// </summary>
-    /// <param name="key">The key to find servers for.</param>
-    /// <param name="result">When this method returns, contains the server candidates if found; otherwise, null.</param>
-    /// <returns>true if server candidates were found; otherwise, false.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when key is null.</exception>
-    public bool TryGetServerCandidates(byte[] key, out ServerCandidateResult<T>? result)
-    {
-        ArgumentNullException.ThrowIfNull(key);
-
-        try
-        {
-            result = GetServerCandidates(key);
-            return true;
-        }
-        catch (InvalidOperationException)
-        {
-            result = null;
-            return false;
-        }
-    }
-
-    private bool HasHistory() => IsVersionHistoryEnabled && _historyManager!.HasSnapshots;
 }

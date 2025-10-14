@@ -14,6 +14,7 @@ public class ConcurrencyIntegrationTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         var testKeys = Enumerable.Range(1, 100).Select(i => $"key{i}").ToArray();
         var expectedMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
@@ -54,6 +55,7 @@ public class ConcurrencyIntegrationTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         var readResults = new ConcurrentBag<(string key, string server)>();
         var testKeys = Enumerable.Range(1, 50).Select(i => $"key{i}").ToArray();
@@ -83,16 +85,19 @@ public class ConcurrencyIntegrationTests
             {
                 await Task.Delay(25);
                 ring.Add("server3");
+                ring.CreateConfigurationSnapshot();
             }, TestContext.Current.CancellationToken),
             Task.Run(async () =>
             {
                 await Task.Delay(50);
                 ring.Add("server4");
+                ring.CreateConfigurationSnapshot();
             }, TestContext.Current.CancellationToken),
             Task.Run(async () =>
             {
                 await Task.Delay(75);
                 ring.Remove("server1");
+                ring.CreateConfigurationSnapshot();
             }, TestContext.Current.CancellationToken)
         };
 
@@ -191,6 +196,7 @@ public class ConcurrencyIntegrationTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         var operationResults = new ConcurrentBag<string>();
         const string testKey = "test_key";
@@ -224,6 +230,7 @@ public class ConcurrencyIntegrationTests
             {
                 await Task.Delay(Random.Shared.Next(10, 80));
                 ring.Add($"server{serverNum}");
+                ring.CreateConfigurationSnapshot();
                 operationResults.Add($"ADD:server{serverNum}");
             }, TestContext.Current.CancellationToken));
         }
@@ -233,6 +240,7 @@ public class ConcurrencyIntegrationTests
         {
             await Task.Delay(150);
             bool removed = ring.Remove("server1");
+            ring.CreateConfigurationSnapshot();
             operationResults.Add($"REMOVE:server1:{removed}");
         }, TestContext.Current.CancellationToken));
 
@@ -273,6 +281,7 @@ public class ConcurrencyIntegrationTests
         // Arrange
         var ring = new HashRing<string>();
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
 
         var results = new ConcurrentBag<(bool success, string server)>();
         const string testKey = "test_key";
@@ -290,6 +299,7 @@ public class ConcurrencyIntegrationTests
         {
             await Task.Delay(25); // Remove server partway through reads
             ring.Remove("server1");
+            ring.ClearHistory(); // Clear snapshots so subsequent TryGetServer calls will fail
         }, TestContext.Current.CancellationToken);
 
         await Task.WhenAll([.. readTasks, .. new[] { removeTask }]);
@@ -321,6 +331,7 @@ public class ConcurrencyIntegrationTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         var stringResults = new ConcurrentBag<string>();
         var guidResults = new ConcurrentBag<string>();

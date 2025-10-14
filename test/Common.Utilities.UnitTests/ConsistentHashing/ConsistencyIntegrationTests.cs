@@ -12,6 +12,7 @@ public class ConsistencyIntegrationTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         const string testKey = "user123";
 
@@ -36,6 +37,7 @@ public class ConsistencyIntegrationTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         var testKeys = new[] { "user1", "user2", "user3", "user4", "user5" };
 
@@ -63,13 +65,16 @@ public class ConsistencyIntegrationTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         var testKeys = Enumerable.Range(1, 100).Select(i => $"user{i}").ToArray();
         var initialMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
 
         // Act - Remove and re-add server
         ring.Remove("server2");
+        ring.CreateConfigurationSnapshot();
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Get new mapping
         var finalMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
@@ -90,6 +95,7 @@ public class ConsistencyIntegrationTests
         ring.Add("server1", 100);
         ring.Add("server2", 200);
         ring.Add("server3", 300);
+        ring.CreateConfigurationSnapshot();
 
         const string testKey = "consistent_key";
 
@@ -114,10 +120,12 @@ public class ConsistencyIntegrationTests
         sha1Ring.Add("server1");
         sha1Ring.Add("server2");
         sha1Ring.Add("server3");
+        sha1Ring.CreateConfigurationSnapshot();
 
         md5Ring.Add("server1");
         md5Ring.Add("server2");
         md5Ring.Add("server3");
+        md5Ring.CreateConfigurationSnapshot();
 
         const string testKey = "algorithm_test";
 
@@ -147,6 +155,7 @@ public class ConsistencyIntegrationTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         var emptyKey = Array.Empty<byte>();
 
@@ -169,6 +178,7 @@ public class ConsistencyIntegrationTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
 
         var largeKey = new byte[10000];
         new Random(42).NextBytes(largeKey); // Deterministic random data
@@ -196,6 +206,7 @@ public class ConsistencyIntegrationTests
         var ring = new HashRing<string>();
         ring.Add("server1", virtualNodes);
         ring.Add("server2", virtualNodes);
+        ring.CreateConfigurationSnapshot();
 
         var testKeys = new[] { "key1", "key2", "key3", "key4", "key5" };
 
@@ -220,6 +231,7 @@ public class ConsistencyIntegrationTests
         var ring = new HashRing<string>();
         ring.Add("server1");
         ring.Add("server1"); // Adding the same server again should replace
+        ring.CreateConfigurationSnapshot();
 
         const string testKey = "duplicate_test";
 

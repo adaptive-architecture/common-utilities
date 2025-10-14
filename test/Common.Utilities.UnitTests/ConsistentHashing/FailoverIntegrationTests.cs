@@ -15,6 +15,7 @@ public class FailoverIntegrationTests
         ring.Add("server2");
         ring.Add("server3");
         ring.Add("server4");
+        ring.CreateConfigurationSnapshot();
 
         var testKeys = Enumerable.Range(1, 1000).Select(i => $"key{i}").ToArray();
         var initialMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
@@ -24,6 +25,7 @@ public class FailoverIntegrationTests
 
         // Act - Remove server2
         bool removed = ring.Remove("server2");
+        ring.CreateConfigurationSnapshot();
 
         // Assert removal was successful
         Assert.True(removed);
@@ -61,6 +63,7 @@ public class FailoverIntegrationTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         var testKeys = new[] { "key1", "key2", "key3", "key4", "key5" };
         var initialMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
@@ -88,6 +91,7 @@ public class FailoverIntegrationTests
         // Arrange
         var ring = new HashRing<string>();
         ring.Add("server1");
+        ring.CreateConfigurationSnapshot();
 
         var testKey = new byte[] { 1, 2, 3 };
 
@@ -99,6 +103,7 @@ public class FailoverIntegrationTests
 
         // Act - Remove the only server
         bool removed = ring.Remove("server1");
+        ring.CreateConfigurationSnapshot(); // Create snapshot with empty ring
 
         // Assert - Ring should be empty
         Assert.True(removed);
@@ -119,6 +124,7 @@ public class FailoverIntegrationTests
         {
             ring.Add($"server{i}");
         }
+        ring.CreateConfigurationSnapshot();
 
         var testKeys = Enumerable.Range(1, 1000).Select(i => $"key{i}").ToArray();
 
@@ -135,6 +141,7 @@ public class FailoverIntegrationTests
 
             // Remove server
             ring.Remove(serverToRemove);
+            ring.CreateConfigurationSnapshot();
 
             // Get distribution after removal
             var afterMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
@@ -172,6 +179,7 @@ public class FailoverIntegrationTests
         ring.Add("small", 50);   // Small server
         ring.Add("medium", 100); // Medium server
         ring.Add("large", 200);  // Large server
+        ring.CreateConfigurationSnapshot();
 
         var testKeys = Enumerable.Range(1, 1000).Select(i => $"key{i}").ToArray();
         var initialMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
@@ -181,6 +189,7 @@ public class FailoverIntegrationTests
 
         // Act - Remove medium server
         ring.Remove("medium");
+        ring.CreateConfigurationSnapshot();
 
         var finalMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
         var finalDistribution = new Dictionary<string, int>();
@@ -210,6 +219,7 @@ public class FailoverIntegrationTests
         ring.Add("server1");
         ring.Add("server2");
         ring.Add("server3");
+        ring.CreateConfigurationSnapshot();
 
         var testKeys = Enumerable.Range(1, 1000).Select(i => $"key{i}").ToArray();
         var initialMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
@@ -219,10 +229,12 @@ public class FailoverIntegrationTests
 
         // Server fails
         ring.Remove("server2");
+        ring.CreateConfigurationSnapshot();
         _ = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
 
         // Server recovers
         ring.Add("server2");
+        ring.CreateConfigurationSnapshot();
         var recoveryMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
 
         // Assert - After recovery, most keys should return to original mapping
@@ -250,6 +262,7 @@ public class FailoverIntegrationTests
         {
             ring.Add($"server{i}");
         }
+        ring.CreateConfigurationSnapshot();
 
         var testKeys = Enumerable.Range(1, 1000).Select(i => $"key{i}").ToArray();
         _ = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
@@ -258,6 +271,7 @@ public class FailoverIntegrationTests
         ring.Remove("server1");
         ring.Remove("server3");
         ring.Remove("server5");
+        ring.CreateConfigurationSnapshot();
 
         var finalMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
 
