@@ -7,6 +7,7 @@ namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 /// </summary>
 public sealed class HashRingHistoryLimitIntegrationTests
 {
+    private static readonly string[] ServerOneTwo = ["server1", "server2"];
     [Fact]
     public void FillHistory_WithFIFO_OldestSnapshotsRemoved()
     {
@@ -231,7 +232,7 @@ public sealed class HashRingHistoryLimitIntegrationTests
         var key = new byte[] { 1, 2, 3, 4 };
         var server = ring.GetServer(key);
         Assert.NotNull(server);
-        Assert.Contains(server, new[] { "server1", "server2" });
+        Assert.Contains(server, ServerOneTwo);
     }
 
     [Fact]

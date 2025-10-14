@@ -8,6 +8,8 @@ namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 /// </summary>
 public sealed class HashRingSnapshotOnlyTests
 {
+    private static readonly string[] ServerOneTwo = ["server1", "server2"];
+    private static readonly string[] ServerOneTwoThree = ["server1", "server2", "server3"];
     [Fact]
     public void GetServer_WithNoSnapshots_ThrowsInvalidOperationException()
     {
@@ -131,7 +133,7 @@ public sealed class HashRingSnapshotOnlyTests
 
         // Assert
         Assert.NotNull(server);
-        Assert.Contains(server, new[] { "server1", "server2" });
+        Assert.Contains(server, ServerOneTwo);
     }
 
     [Fact]
@@ -186,6 +188,6 @@ public sealed class HashRingSnapshotOnlyTests
 
         // Assert
         Assert.Equal(2, servers.Count);
-        Assert.All(servers, server => Assert.Contains(server, new[] { "server1", "server2", "server3" }));
+        Assert.All(servers, server => Assert.Contains(server, ServerOneTwoThree));
     }
 }

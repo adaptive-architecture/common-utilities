@@ -7,6 +7,8 @@ namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 /// </summary>
 public sealed class HashRingSnapshotLookupTests
 {
+    private static readonly string[] ServerOneTwo = ["server1", "server2"];
+    private static readonly string[] ServerOneTwoThree = ["server1", "server2", "server3"];
     [Fact]
     public void GetServer_OnlyUsesSnapshots_IgnoresCurrentConfig()
     {
@@ -81,7 +83,7 @@ public sealed class HashRingSnapshotLookupTests
 
         // Assert - Same server should be returned (snapshot unchanged)
         Assert.Equal(initialServer, laterServer);
-        Assert.Contains(laterServer, new[] { "server1", "server2" });
+        Assert.Contains(laterServer, ServerOneTwo);
     }
 
     [Fact]
@@ -100,7 +102,7 @@ public sealed class HashRingSnapshotLookupTests
         var servers = ring.GetServers(key, 5).ToList();
 
         // Assert - Should only return servers from snapshot (server1, server2)
-        Assert.All(servers, server => Assert.Contains(server, new[] { "server1", "server2" }));
+        Assert.All(servers, server => Assert.Contains(server, ServerOneTwo));
         Assert.DoesNotContain("server3", servers);
     }
 
@@ -199,7 +201,7 @@ public sealed class HashRingSnapshotLookupTests
 
         // Assert - Should distribute across multiple servers
         Assert.True(results.Count > 1, "Expected distribution across multiple servers");
-        Assert.All(results, server => Assert.Contains(server, new[] { "server1", "server2", "server3" }));
+        Assert.All(results, server => Assert.Contains(server, ServerOneTwoThree));
     }
 
     [Fact]
@@ -264,7 +266,7 @@ public sealed class HashRingSnapshotLookupTests
 
         // Assert - Should successfully find a server
         Assert.NotNull(server);
-        Assert.Contains(server, new[] { "server1", "server2" });
+        Assert.Contains(server, ServerOneTwo);
     }
 
     /// <summary>

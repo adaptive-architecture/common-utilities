@@ -104,7 +104,7 @@ public sealed class HashRingConcurrencyTests
         var exceptions = new System.Collections.Concurrent.ConcurrentBag<Exception>();
 
         // Act - Multiple threads creating snapshots concurrently
-        var tasks = Enumerable.Range(0, 10).Select(i => Task.Run(() =>
+        var tasks = Enumerable.Range(0, 10).Select(_ => Task.Run(() =>
         {
             try
             {

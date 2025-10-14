@@ -80,10 +80,7 @@ public sealed class VersionAwareConcurrencyTests
 
         var firstResult = results.First();
         // All concurrent queries should return same server for same key
-        Assert.All(results, result =>
-        {
-            Assert.Equal(firstResult, result);
-        });
+        Assert.All(results, result => Assert.Equal(firstResult, result));
     }
 
     [Fact]
