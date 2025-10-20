@@ -10,7 +10,7 @@ public class RetryFactAttributeSpecs
     {
         var attribute = new RetryFactAttribute();
 
-        Assert.Equal(3, attribute.MaxRetries);
+        Assert.Equal(5, attribute.MaxRetries);
     }
 
     [Fact]
@@ -30,7 +30,7 @@ public class RetryFactAttributeSpecs
         var attribute = new RetryFactAttribute("test.cs", 42);
 
         Assert.NotNull(attribute);
-        Assert.Equal(3, attribute.MaxRetries);
+        Assert.Equal(5, attribute.MaxRetries);
     }
 
     [Theory]

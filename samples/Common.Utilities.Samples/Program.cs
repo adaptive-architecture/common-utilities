@@ -1,22 +1,9 @@
-﻿using System.Collections.Concurrent;
+﻿using AdaptArch.Common.Utilities.AspNetCore.Middlewares.VersionedStaticFiles;
 using AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Configuration;
-using AdaptArch.Common.Utilities.Jobs.Contracts;
 using AdaptArch.Common.Utilities.Samples.ConsistentHashing;
-using AdaptArch.Common.Utilities.Samples.Hosting.BackgroundWorkers;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using AdaptArch.Common.Utilities.Samples.Jobs;
 
-Console.WriteLine("=== AdaptArch Common Utilities Samples ===\n");
-
-// Run Consistent Hashing Examples
-DatabaseRoutingExample.RunExample();
-HttpRoutingExample.RunExample();
-HistoryManagementExample.RunExample();
-
-Console.WriteLine("=== Background Worker Examples ===");
-
-var builder = Host.CreateApplicationBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
@@ -25,63 +12,85 @@ builder.Services
     .AddOptions<RepeatingWorkerConfiguration>()
     .BindConfiguration("jobWorkers");
 
+// Add background jobs
 builder.Services
     .AddSingleton<WorkersState>()
     .AddBackgroundJobs()
-    // This will cause the service to generate 2 random numbers per minute since it takes 15 seconds to generate a number
-    // and there is a 15 second delay between each execution.
     .WithDelayedJob<RandomNumberGeneratorJob>()
-
-    // This will cause the service to generate 4 random numbers per minute since it takes 15 seconds to generate a number
-    // and the wait period will have already elapsed by the time the finishes.
-    //.WithPeriodicJob<RandomNumberGeneratorJob>()
-
     .WithPeriodicJob<ReporterJob>();
 
-var host = builder.Build();
-host.Run();
-Console.WriteLine("Application started!");
-
-namespace AdaptArch.Common.Utilities.Samples.Hosting.BackgroundWorkers
+// Configure versioned static files middleware
+builder.Services.AddVersionedStaticFiles(options =>
 {
-    internal class WorkersState
-    {
-        public ConcurrentBag<int> Numbers { get; set; } = [];
-    }
+    options.StaticFilesPathPrefix = "/static/";
+    options.StaticFilesDirectory = "wwwroot/static";
+    options.VersionCookieNamePrefix = ".aa_sfv";
+    options.UseCacheDuration = ctx => ctx.RequestPath.EndsWith(".html", StringComparison.OrdinalIgnoreCase)
+        ? TimeSpan.Zero
+        : TimeSpan.FromHours(1);
+});
 
-    internal class ReporterJob : IJob
-    {
-        private readonly WorkersState _state;
-        private readonly TimeProvider _timeProvider;
+var app = builder.Build();
 
-        public ReporterJob(WorkersState state, TimeProvider timeProvider)
+// Run console examples on startup
+Console.WriteLine("=== AdaptArch Common Utilities Samples ===\n");
+Console.WriteLine("=== Consistent Hashing Examples ===");
+DatabaseRoutingExample.RunExample();
+HttpRoutingExample.RunExample();
+HistoryManagementExample.RunExample();
+Console.WriteLine("\n=== Background Worker Examples ===");
+Console.WriteLine("Background jobs started (RandomNumberGenerator + Reporter)\n");
+
+// Configure HTTP request pipeline
+app.UseVersionedStaticFiles();
+
+// Serve static files from wwwroot
+app.UseStaticFiles();
+
+// Map sample endpoints
+app.MapGet("/", () => Results.Redirect("/index.html"));
+
+app.MapGet("/api/version", (HttpContext context) =>
+{
+    return context.Request.Cookies
+        .Where(c => c.Key.StartsWith(".aa_sfv_v_"))
+        .OrderBy(c => c.Key)
+        .ToDictionary(c => c.Key, c =>
         {
-            _state = state;
-            _timeProvider = timeProvider;
-        }
+            var versionPayload = VersionCookiePayload.TryParse(c.Value, out var vp) ? vp : null;
+            return new
+            {
+                versionPayload?.Version,
+                versionPayload?.DateModified
+            };
+        });
+});
 
-        public async Task ExecuteAsync(CancellationToken cancellationToken)
-        {
-            await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken).ConfigureAwait(false);
+app.MapGet("/api/set-version/{directory}/{version}", (string directory, string version, HttpContext context) =>
+{
+    var cookieName = $".aa_sfv_v_{directory}";
+    var timestamp = (long)(DateTime.UtcNow - DateTime.UnixEpoch).TotalSeconds;
+    var cookieValue = $"{timestamp}~{version}";
 
-            Console.WriteLine($"[{_timeProvider.GetUtcNow():O}] Current lucky numbers are: {String.Join(", ", _state.Numbers)}");
-            _state.Numbers.Clear();
-        }
-    }
-
-    internal class RandomNumberGeneratorJob : IJob
+    context.Response.Cookies.Append(cookieName, cookieValue, new CookieOptions
     {
-        private readonly WorkersState _state;
+        HttpOnly = true,
+        Secure = context.Request.IsHttps,
+        SameSite = SameSiteMode.Strict,
+        MaxAge = TimeSpan.FromDays(30)
+    });
 
-        public RandomNumberGeneratorJob(WorkersState state) => _state = state;
+    return Results.Ok(new { Success = true, CookieName = cookieName, CookieValue = cookieValue });
+});
 
-        private static readonly Random s_random = new();
-        public async Task ExecuteAsync(CancellationToken cancellationToken)
-        {
-            // Simulate some work
-            await Task.Delay(TimeSpan.FromSeconds(15), cancellationToken).ConfigureAwait(false);
+app.MapGet("/api/clear-version/{directory}", (string directory, HttpContext context) =>
+{
+    var cookieName = $".aa_sfv_v_{directory}";
+    context.Response.Cookies.Delete(cookieName);
+    return Results.Ok(new { Success = true, CookieName = cookieName, Cleared = true });
+});
 
-            _state.Numbers.Add(s_random.Next());
-        }
-    }
-}
+Console.WriteLine($"\nASP.NET Core app listening on: {String.Join(", ", builder.Configuration["ASPNETCORE_URLS"]?.Split(';') ?? ["http://localhost:5000"])}");
+Console.WriteLine("Navigate to http://localhost:5000 to see the versioned static files demo\n");
+
+await app.RunAsync();

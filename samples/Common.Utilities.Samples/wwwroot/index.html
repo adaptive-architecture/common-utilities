@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Versioned Static Files Middleware Demo</title>
+  <link rel="stylesheet" href="/static/app/styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>🎨 Versioned Static Files Middleware Demo</h1>
+
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+      <h2 style="margin-top: 0;">Current Version Info</h2>
+      <p><strong>CSS Version:</strong> Check the background gradient color</p>
+      <p><strong>JavaScript Version:</strong> <span id="js-version" class="version-badge">Loading...</span></p>
+      <p style="margin: 0;"><strong>Cookie:</strong> <code id="cookie-info"
+          style="background: #fff; padding: 4px 8px; border-radius: 4px;">No version cookie set</code></p>
+    </div>
+
+    <div
+      style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffc107;">
+      <h3 style="margin-top: 0;">🚀 How It Works</h3>
+      <p>The <strong>VersionedStaticFilesMiddleware</strong> intercepts requests to
+        <code>/static/{directory}/{file}</code> and rewrites them to <code>/static/{version}/{directory}/{file}</code>
+        based on:
+      </p>
+      <ol style="margin-bottom: 0;">
+        <li><strong>Cookie version</strong> (if present and not overridden)</li>
+        <li><strong>Default version</strong> from <code>version.json</code> file (fallback)</li>
+      </ol>
+    </div>
+
+    <div
+      style="background: #e7f3ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #2196F3;">
+      <h3 style="margin-top: 0;">🎯 Try It Out</h3>
+      <p>Select a version below to set a cookie and reload the page to see the changes:</p>
+
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+        <button onclick="setVersion('v1.0.0')"
+          style="padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1em;">
+          v1.0.0 (Default)
+        </button>
+        <button onclick="setVersion('v1.2.3')"
+          style="padding: 12px 24px; background: #11998e; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1em;">
+          v1.2.3 (Current)
+        </button>
+        <button onclick="setVersion('v2.0.0')"
+          style="padding: 12px 24px; background: #ee0979; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1em;">
+          v2.0.0 (Beta)
+        </button>
+        <button onclick="clearVersion()"
+          style="padding: 12px 24px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1em;">
+          Clear Cookie
+        </button>
+      </div>
+
+      <p style="font-size: 0.9em; color: #666; margin: 0;">
+        💡 <strong>Tip:</strong> Open the browser's DevTools Network tab and refresh to see the middleware rewriting
+        requests!
+      </p>
+    </div>
+
+    <div
+      style="background: #d4edda; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #28a745;">
+      <h3 style="margin-top: 0;">📦 Version Details</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+        <div style="background: white; padding: 15px; border-radius: 6px;">
+          <h4 style="margin-top: 0; color: #667eea;">v1.0.0 (Default)</h4>
+          <p style="margin: 0; font-size: 0.9em;">Purple gradient background</p>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 6px;">
+          <h4 style="margin-top: 0; color: #11998e;">v1.2.3 (Current)</h4>
+          <p style="margin: 0; font-size: 0.9em;">Green gradient background</p>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 6px;">
+          <h4 style="margin-top: 0; color: #ee0979;">v2.0.0 (Beta)</h4>
+          <p style="margin: 0; font-size: 0.9em;">Red/Orange gradient background</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+      <h3 style="margin-top: 0;">📚 API Endpoints</h3>
+      <ul style="font-family: monospace; font-size: 0.9em;">
+        <li><code>GET /api/version</code> - Get current app version info</li>
+        <li><code>GET /api/set-version/{directory}/{version}</code> - Set version cookie</li>
+        <li><code>GET /api/clear-version/{directory}</code> - Clear version cookie</li>
+      </ul>
+    </div>
+
+    <div
+      style="background: #e8eaf6; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3f51b5;">
+      <h3 style="margin-top: 0;">⚙️ Configuration Example</h3>
+      <pre
+        style="background: #263238; color: #aed581; padding: 15px; border-radius: 6px; overflow-x: auto; font-size: 0.9em;"><code>// In Program.cs
+builder.Services.AddVersionedStaticFiles(options =>
+{
+    options.StaticFilesPathPrefix = "/static/";
+    options.StaticFilesDirectory = "wwwroot/static";
+    options.VersionCookieNamePrefix = ".aa_sfv";
+});
+
+app.UseVersionedStaticFiles();
+app.UseStaticFiles();</code></pre>
+    </div>
+  </div>
+
+  <script src="/static/app/app.js"></script>
+  <script>
+    function updateCookieDisplay() {
+      const cookies = document.cookie.split(';');
+      const versionCookie = cookies.find(c => c.trim().startsWith('.aa_sfv_v_app='));
+      const cookieInfo = document.getElementById('cookie-info');
+
+      if (versionCookie) {
+        const cookieValue = versionCookie.split('=')[1];
+        cookieInfo.textContent = cookieValue;
+        cookieInfo.style.background = '#d4edda';
+      } else {
+        cookieInfo.textContent = 'No version cookie available';
+        cookieInfo.style.background = '#fff';
+      }
+    }
+
+    async function setVersion(version) {
+      try {
+        const response = await fetch(`/api/set-version/app/${version}`);
+        const result = await response.json();
+        console.log('Version cookie set:', result);
+        location.reload();
+      } catch (error) {
+        console.error('Error setting version:', error);
+        alert('Failed to set version cookie');
+      }
+    }
+
+    async function clearVersion() {
+      try {
+        const response = await fetch('/api/clear-version/app');
+        const result = await response.json();
+        console.log('Version cookie cleared:', result);
+        location.reload();
+      } catch (error) {
+        console.error('Error clearing version:', error);
+        alert('Failed to clear version cookie');
+      }
+    }
+
+    // Update cookie display on load
+    updateCookieDisplay();
+  </script>
+</body>
+
+</html>

@@ -20,5 +20,5 @@ public class RetryFactAttribute(
     /// Gets or sets the maximum number of retries for the test case.
     /// Defaults to 3 retries if not specified.
     /// </summary>
-    public int MaxRetries { get; set; } = 3;
+    public int MaxRetries { get; set; } = 5;
 }

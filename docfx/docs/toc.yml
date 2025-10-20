@@ -37,5 +37,7 @@
     href: background-jobs.md
   - name: Asp.Net Response Rewrite
     href: asp-dotnet-response-rewrite.md
+  - name: Asp.Net Versioned Static Files
+    href: asp-dotnet-versioned-static-files.md
   - name: xUnit Testing Utilities
     href: xunit-utilities.md

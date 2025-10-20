@@ -9,7 +9,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// <summary>
 /// Extension methods for adding the response rewrite middleware to the application pipeline.
 /// </summary>
-public static class RegistrationExtensions
+public static partial class RegistrationExtensions
 {
     /// <summary>
     /// Add the response rewriter factory to the service collection.

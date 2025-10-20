@@ -5,7 +5,7 @@ namespace AdaptArch.Common.Utilities.ConsistentHashing;
 /// <summary>
 /// A consistent hash ring implementation for distributing keys across servers.
 /// <para>
-/// <strong>Snapshot-Based Lookups:</strong> All key lookups (<see cref="GetServer(byte[])"/>, <see cref="TryGetServer"/>, <see cref="GetServers"/>)
+/// <strong>Snapshot-Based Lookups:</strong> All key lookups (<see cref="GetServer(global::System.Byte[])"/>, <see cref="TryGetServer"/>, <see cref="GetServers"/>)
 /// use configuration snapshots created via <see cref="CreateConfigurationSnapshot"/>.
 /// The current ring configuration is not used for lookups until a snapshot is created.
 /// </para>
@@ -478,7 +478,7 @@ public sealed class HashRing<T> where T : IEquatable<T>
 
     /// <summary>
     /// Clears all configuration snapshots from history.
-    /// After calling this method, <see cref="GetServer(byte[])"/> and related methods will throw
+    /// After calling this method, <see cref="GetServer(global::System.Byte[])"/> and related methods will throw
     /// <see cref="InvalidOperationException"/> until a new snapshot is created with <see cref="CreateConfigurationSnapshot"/>.
     /// </summary>
     public void ClearHistory()

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Versioned Static Files Demo - v2.0.0</title>
+  <link rel="stylesheet" href="styles.css?v=2.0.0">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Versioned Static Files Demo</h1>
+    <p>This is a demonstration of versioned static file serving using the VersionedStaticFilesMiddleware.</p>
+
+    <div style="margin: 20px 0;">
+      <h2>Version Information</h2>
+      <p>
+        <strong>HTML Version:</strong>
+        <span class="version-badge">v2.0.0</span>
+      </p>
+      <p>
+        <strong>JavaScript Version:</strong>
+        <span id="js-version">Loading...</span>
+      </p>
+    </div>
+
+    <div style="margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 8px;">
+      <h3>About This Version</h3>
+      <p>Version 2.0.0 is the beta version. This version includes new features and breaking changes. Use with caution in
+        production environments.</p>
+    </div>
+  </div>
+
+  <script src="app.js?v=2.0.0"></script>
+</body>
+
+</html>

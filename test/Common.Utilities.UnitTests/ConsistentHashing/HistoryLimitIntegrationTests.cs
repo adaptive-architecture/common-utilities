@@ -1,4 +1,4 @@
-namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
+﻿namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 
 using System.Text;
 using AdaptArch.Common.Utilities.ConsistentHashing;

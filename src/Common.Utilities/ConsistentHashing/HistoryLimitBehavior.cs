@@ -1,4 +1,4 @@
-namespace AdaptArch.Common.Utilities.ConsistentHashing;
+﻿namespace AdaptArch.Common.Utilities.ConsistentHashing;
 
 /// <summary>
 /// Specifies the behavior when <see cref="HashRing{T}.CreateConfigurationSnapshot"/> is called
