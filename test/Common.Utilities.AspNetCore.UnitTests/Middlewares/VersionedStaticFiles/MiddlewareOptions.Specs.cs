@@ -53,7 +53,7 @@ public sealed class MiddlewareOptionsSpecs : IDisposable
         var customFunctionCalled = false;
         var options = new MiddlewareOptions
         {
-            UseConfiguredVersion = context =>
+            UseConfiguredVersion = _ =>
             {
                 customFunctionCalled = true;
                 return true;
@@ -87,8 +87,8 @@ public sealed class MiddlewareOptionsSpecs : IDisposable
         };
 
         var httpContext = new DefaultHttpContext();
-        var expectedDirectory = "app";
-        var expectedPath = "/static/app/index.js";
+        const string expectedDirectory = "app";
+        const string expectedPath = "/static/app/index.js";
 
         var context = new MiddlewareOptions.MiddlewareContext
         {
@@ -209,7 +209,7 @@ public sealed class MiddlewareOptionsSpecs : IDisposable
         var expectedDuration = TimeSpan.FromHours(1);
         var options = new MiddlewareOptions
         {
-            UseCacheDuration = context =>
+            UseCacheDuration = _ =>
             {
                 customFunctionCalled = true;
                 return expectedDuration;
@@ -243,8 +243,8 @@ public sealed class MiddlewareOptionsSpecs : IDisposable
         };
 
         var httpContext = new DefaultHttpContext();
-        var expectedDirectory = "app";
-        var expectedPath = "/static/app/index.js";
+        const string expectedDirectory = "app";
+        const string expectedPath = "/static/app/index.js";
 
         var context = new MiddlewareOptions.MiddlewareContext
         {
@@ -679,7 +679,7 @@ public sealed class MiddlewareOptionsSpecs : IDisposable
         );
 
         var cookieExpiration = TimeSpan.FromHours(4);
-        var customPrefix = ".custom_prefix_";
+        const string customPrefix = ".custom_prefix_";
         var beforeRequest = DateTimeOffset.UtcNow;
 
         var cookies = await CaptureCookies(

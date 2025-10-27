@@ -360,7 +360,7 @@ public sealed class VersionedStaticFilesMiddlewareSpecs : IDisposable
                 StaticFilesPathPrefix = "/static/",
                 StaticFilesDirectory = _tempDirectory,
                 VersionCookieNamePrefix = ".version",
-                UseConfiguredVersion = ctx =>
+                UseConfiguredVersion = _ =>
                 {
                     middlewareProcessed = true;
                     return false;
@@ -573,7 +573,7 @@ public sealed class VersionedStaticFilesMiddlewareSpecs : IDisposable
                 StaticFilesPathPrefix = "/static/",
                 StaticFilesDirectory = _tempDirectory,
                 VersionCookieNamePrefix = ".version",
-                UseConfiguredVersion = ctx =>
+                UseConfiguredVersion = _ =>
                 {
                     middlewareProcessed = true;
                     return false;

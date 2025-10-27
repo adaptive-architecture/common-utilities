@@ -71,7 +71,7 @@ public class RegistrationExtensionsSpecs
     {
         var services = new ServiceCollection();
 
-        var result = services.AddVersionedStaticFiles(options => { });
+        var result = services.AddVersionedStaticFiles(_ => { });
 
         Assert.Same(services, result);
     }
@@ -82,7 +82,7 @@ public class RegistrationExtensionsSpecs
         IServiceCollection services = null!;
 
         var exception = Assert.Throws<ArgumentNullException>(() =>
-            services.AddVersionedStaticFiles(options => { }));
+            services.AddVersionedStaticFiles(_ => { }));
 
         Assert.Equal("services", exception.ParamName);
     }
@@ -143,7 +143,7 @@ public class RegistrationExtensionsSpecs
     {
         var services = new ServiceCollection();
 
-        services.AddVersionedStaticFiles(options => { });
+        services.AddVersionedStaticFiles(_ => { });
 
         var serviceProvider = services.BuildServiceProvider();
         var registeredOptions = serviceProvider.GetService<MiddlewareOptions>();
@@ -180,7 +180,7 @@ public class RegistrationExtensionsSpecs
         var services = new ServiceCollection();
         services.AddLogging();
 
-        services.AddVersionedStaticFiles(options => { });
+        services.AddVersionedStaticFiles(_ => { });
 
         var serviceProvider = services.BuildServiceProvider();
         var provider = serviceProvider.GetService<IStaticAssetsProvider>();
@@ -195,7 +195,7 @@ public class RegistrationExtensionsSpecs
         var services = new ServiceCollection();
         var customProvider = new TestStaticAssetsProvider();
 
-        services.AddVersionedStaticFiles(options => { }, customProvider);
+        services.AddVersionedStaticFiles(_ => { }, customProvider);
 
         var serviceProvider = services.BuildServiceProvider();
         var provider = serviceProvider.GetService<IStaticAssetsProvider>();
@@ -210,7 +210,7 @@ public class RegistrationExtensionsSpecs
         var services = new ServiceCollection();
         var customProvider = new TestStaticAssetsProvider();
 
-        services.AddVersionedStaticFiles(options => { }, customProvider);
+        services.AddVersionedStaticFiles(_ => { }, customProvider);
 
         var serviceProvider = services.BuildServiceProvider();
         var instance1 = serviceProvider.GetService<IStaticAssetsProvider>();
