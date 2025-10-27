@@ -212,6 +212,7 @@ public class VersionedStaticFilesMiddleware
 
     private Task SetResponseCookies(MiddlewareOptions.MiddlewareContext middlewareContext, VersionCookiePayload versionInfo, bool newerVersionExists, TimeSpan cacheDuration)
     {
+#pragma warning disable S2092, S3330 // The following cookies are not security sensitive.
         middlewareContext.HttpContext.Response.Cookies.Append(GetVersionCookieName(middlewareContext.Directory),
             versionInfo.ToString(),
             new CookieOptions
@@ -231,6 +232,7 @@ public class VersionedStaticFilesMiddleware
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTimeOffset.UtcNow.Add(_options.CookieExpiration)
             });
+#pragma warning disable S2092, S3330
 
         if (cacheDuration > TimeSpan.Zero)
         {
