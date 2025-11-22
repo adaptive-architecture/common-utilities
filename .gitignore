@@ -356,5 +356,5 @@ MigrationBackup/
 coverage/
 *.lcov
 
-.claude/*.local.json
+.claude
 specs
