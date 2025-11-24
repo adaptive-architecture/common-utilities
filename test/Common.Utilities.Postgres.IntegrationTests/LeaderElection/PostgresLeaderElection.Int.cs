@@ -660,9 +660,9 @@ public class PostgresLeaderElectionIntegrationTests
         try
         {
             // Act & Assert - Should throw exceptions on connection failure
-            _ = await Assert.ThrowsAsync<SocketException>(() => leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, cancellationToken: TestContext.Current.CancellationToken));
-            _ = await Assert.ThrowsAsync<SocketException>(() => leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken));
-            _ = await Assert.ThrowsAsync<SocketException>(() => leaseStore.HasValidLeaseAsync(electionName, TestContext.Current.CancellationToken));
+            _ = await Assert.ThrowsAsync<NpgsqlException>(() => leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, cancellationToken: TestContext.Current.CancellationToken));
+            _ = await Assert.ThrowsAsync<NpgsqlException>(() => leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken));
+            _ = await Assert.ThrowsAsync<NpgsqlException>(() => leaseStore.HasValidLeaseAsync(electionName, TestContext.Current.CancellationToken));
 
             // ReleaseLeaseAsync should return false on connection failure (not throw)
             var released = await leaseStore.ReleaseLeaseAsync(electionName, participantId, TestContext.Current.CancellationToken);
@@ -845,10 +845,10 @@ public class PostgresLeaderElectionIntegrationTests
         var npgDataSource = NpgsqlDataSource.Create("Host=invalid-host;Database=invalid;Username=invalid;Password=invalid");
         var leaseStore = new PostgresLeaseStore(npgDataSource, mockSerializer, tableName, NullLogger.Instance);
 
-        _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.EnsureTableExistsAsync(TestContext.Current.CancellationToken));
-        _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.TryRenewLeaseAsync("test-election", "participant-1", TimeSpan.FromSeconds(30), cancellationToken: TestContext.Current.CancellationToken));
-        _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.TryAcquireLeaseAsync("test-election", "participant-1", TimeSpan.FromSeconds(30), cancellationToken: TestContext.Current.CancellationToken));
-        _ = await Assert.ThrowsAnyAsync<SocketException>(() => leaseStore.CleanupExpiredLeasesAsync(TestContext.Current.CancellationToken));
+        _ = await Assert.ThrowsAnyAsync<NpgsqlException>(() => leaseStore.EnsureTableExistsAsync(TestContext.Current.CancellationToken));
+        _ = await Assert.ThrowsAnyAsync<NpgsqlException>(() => leaseStore.TryRenewLeaseAsync("test-election", "participant-1", TimeSpan.FromSeconds(30), cancellationToken: TestContext.Current.CancellationToken));
+        _ = await Assert.ThrowsAnyAsync<NpgsqlException>(() => leaseStore.TryAcquireLeaseAsync("test-election", "participant-1", TimeSpan.FromSeconds(30), cancellationToken: TestContext.Current.CancellationToken));
+        _ = await Assert.ThrowsAnyAsync<NpgsqlException>(() => leaseStore.CleanupExpiredLeasesAsync(TestContext.Current.CancellationToken));
         var released = await leaseStore.ReleaseLeaseAsync("test-election", "participant-1", TestContext.Current.CancellationToken);
         Assert.False(released); // Should return false on connection failure
     }

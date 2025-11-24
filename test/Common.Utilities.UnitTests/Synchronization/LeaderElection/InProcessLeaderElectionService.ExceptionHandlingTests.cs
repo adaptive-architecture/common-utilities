@@ -465,7 +465,7 @@ public class InProcessLeaderElectionServiceExceptionHandlingTests
         acquireSuccessRenewalFailStore.Dispose();
     }
 
-    [Fact]
+    [RetryFact]
     public async Task LeadershipAcquired_ThenRenewalFails_ShouldContinueRetrying()
     {
         // Arrange

@@ -9,8 +9,13 @@ fi
 rm -rf ./coverage/*
 rm -rf ./test/TestResults
 
+# Build first to avoid file locking issues during parallel test execution
+dotnet clean --nologo
+dotnet build --nologo
+
 dotnet test \
   --nologo \
+  --no-build \
   --filter \"FullyQualifiedName!~AdaptArch.Common.Utilities.Samples\" \
   -p:CollectCoverage=\"true\" \
   -p:CoverletOutputFormat=\"json,lcov,opencover\"  \
