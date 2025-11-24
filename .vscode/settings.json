@@ -6,6 +6,7 @@
     "finalizer",
     "Finalizers",
     "lcov",
+    "nologo",
     "Npgsql",
     "nupkg",
     "opencover",

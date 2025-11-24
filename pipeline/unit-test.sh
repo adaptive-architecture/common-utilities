@@ -4,14 +4,14 @@
 if [ -n "$CI" ]; then
   echo "Disabling TESTCONTAINERS RUYK"
   export TESTCONTAINERS_RYUK_DISABLED=true
+else
+  # Build first to avoid file locking issues during parallel test execution
+  dotnet clean --nologo
+  dotnet build --nologo --no-incremental
 fi
 
 rm -rf ./coverage/*
 rm -rf ./test/TestResults
-
-# Build first to avoid file locking issues during parallel test execution
-dotnet clean --nologo
-dotnet build --nologo
 
 dotnet test \
   --nologo \
