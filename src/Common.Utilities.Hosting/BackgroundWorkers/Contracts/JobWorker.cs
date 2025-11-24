@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Contracts;
 
-internal abstract partial class JobWorker<T> : BackgroundService
+internal abstract class JobWorker<T> : BackgroundService
     where T : IJob
 {
     private readonly IScopeFactory _scopeFactory;
@@ -23,12 +23,6 @@ internal abstract partial class JobWorker<T> : BackgroundService
     private CancellationTokenSource? _configurationChangeTokenSource;
     protected readonly ILogger Logger;
     protected RepeatingWorkerConfiguration Configuration { get; private set; }
-
-    [LoggerMessage(Level = LogLevel.Debug, Message = "{JobName} execution for was cancelled.")]
-    private partial void LogExecutionCancelled(Exception ex, string jobName);
-
-    [LoggerMessage(Level = LogLevel.Error, Message = "{JobName} execution failed.")]
-    private partial void LogExecutionFailed(Exception ex, string jobName);
 
     protected JobWorker(IScopeFactory scopeFactory, IOptionsMonitor<RepeatingWorkerConfiguration> options, TimeProvider timeProvider, ILogger logger)
     {
@@ -77,11 +71,17 @@ internal abstract partial class JobWorker<T> : BackgroundService
             }
             catch (OperationCanceledException ex)
             {
-                LogExecutionCancelled(ex, GetNamespacedName(typeof(T)));
+                if (Logger.IsEnabled(LogLevel.Debug))
+                {
+                    Logger.LogDebug(ex, "{JobName} execution was cancelled.", GetNamespacedName(typeof(T)));
+                }
             }
             catch (Exception ex)
             {
-                LogExecutionFailed(ex, GetNamespacedName(typeof(T)));
+                if (Logger.IsEnabled(LogLevel.Error))
+                {
+                    Logger.LogError(ex, "{JobName} execution failed with exception: {ExceptionMessage}", GetNamespacedName(typeof(T)), ex.Message);
+                }
             }
             finally
             {
