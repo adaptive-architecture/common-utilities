@@ -7,7 +7,7 @@ if [ -n "$CI" ]; then
 else
   # Build first to avoid file locking issues during parallel test execution
   dotnet clean --nologo
-  dotnet build --nologo --no-incremental
+  dotnet build --nologo
 fi
 
 rm -rf ./coverage/*
