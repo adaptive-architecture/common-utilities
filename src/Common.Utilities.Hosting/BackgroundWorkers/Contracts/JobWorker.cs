@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace AdaptArch.Common.Utilities.Hosting.BackgroundWorkers.Contracts;
 
-internal abstract class JobWorker<T> : BackgroundService
+internal abstract partial class JobWorker<T> : BackgroundService
     where T : IJob
 {
     private readonly IScopeFactory _scopeFactory;
@@ -23,13 +23,22 @@ internal abstract class JobWorker<T> : BackgroundService
     private CancellationTokenSource? _configurationChangeTokenSource;
     protected readonly ILogger Logger;
     protected RepeatingWorkerConfiguration Configuration { get; private set; }
+    protected readonly string JobName;
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "{JobName} execution for was cancelled.")]
+    private partial void LogExecutionCancelled(Exception ex, string jobName);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "{JobName} execution failed.")]
+    private partial void LogExecutionFailed(Exception ex, string jobName);
 
     protected JobWorker(IScopeFactory scopeFactory, IOptionsMonitor<RepeatingWorkerConfiguration> options, TimeProvider timeProvider, ILogger logger)
     {
         _scopeFactory = scopeFactory;
         _options = options;
 
-        Configuration = GetConfiguration();
+        var type = typeof(T);
+        JobName = $"{type.Namespace}.{type.Name}";
+        Configuration = _options.CurrentValue.GetConfiguration(JobName);
         _ = _options.OnChange(_ => HandleConfigurationChange(false));
         Logger = logger;
         _timeProvider = timeProvider;
@@ -71,17 +80,11 @@ internal abstract class JobWorker<T> : BackgroundService
             }
             catch (OperationCanceledException ex)
             {
-                if (Logger.IsEnabled(LogLevel.Debug))
-                {
-                    Logger.LogDebug(ex, "{JobName} execution was cancelled.", GetNamespacedName(typeof(T)));
-                }
+                LogExecutionCancelled(ex, JobName);
             }
             catch (Exception ex)
             {
-                if (Logger.IsEnabled(LogLevel.Error))
-                {
-                    Logger.LogError(ex, "{JobName} execution failed with exception: {ExceptionMessage}", GetNamespacedName(typeof(T)), ex.Message);
-                }
+                LogExecutionFailed(ex, JobName);
             }
             finally
             {
@@ -92,7 +95,7 @@ internal abstract class JobWorker<T> : BackgroundService
 
     protected async Task ExecuteJobAsync(CancellationToken cancellationToken)
     {
-        var scope = _scopeFactory.CreateScope(GetNamespacedName(typeof(T)));
+        var scope = _scopeFactory.CreateScope(JobName);
         try
         {
             var job = scope.ServiceProvider.GetRequiredService<T>();
@@ -150,7 +153,7 @@ internal abstract class JobWorker<T> : BackgroundService
                 return;
             }
 
-            Configuration = GetConfiguration();
+            Configuration = _options.CurrentValue.GetConfiguration(JobName);
             SetTimerPeriodCore(useInitialDelay);
             _configurationChangeTokenSource?.Cancel();
         }
@@ -210,11 +213,4 @@ internal abstract class JobWorker<T> : BackgroundService
             now = _timeProvider.GetUtcNow().DateTime;
         } while (_nextExecutionTime > now);
     }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private RepeatingWorkerConfiguration GetConfiguration() =>
-        _options.CurrentValue.GetConfiguration(GetNamespacedName(typeof(T)));
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static string GetNamespacedName(Type type) => $"{type.Namespace}.{type.Name}";
 }
