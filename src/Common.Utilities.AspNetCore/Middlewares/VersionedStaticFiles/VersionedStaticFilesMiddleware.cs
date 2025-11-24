@@ -11,13 +11,55 @@ namespace AdaptArch.Common.Utilities.AspNetCore.Middlewares.VersionedStaticFiles
 /// If the cookie is present, it modifies the request path to include the version before passing it to the next middleware.
 /// If the cookie is absent or malformed, it serves the version based on a the version defined in the `version.json` file in the static files directory.
 /// </summary>
-public class VersionedStaticFilesMiddleware
+public partial class VersionedStaticFilesMiddleware
 {
     const string HttpPathDelimiter = "/";
     private readonly RequestDelegate _next;
     private readonly MiddlewareOptions _options;
     private readonly ILogger<VersionedStaticFilesMiddleware> _logger;
     private readonly IStaticAssetsProvider _provider;
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Processing static file request: {RequestPath}")]
+    private partial void LogProcessingRequest(string requestPath);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Extracted target directory: {TargetDirectory}")]
+    private partial void LogExtractedDirectory(string targetDirectory);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Found version cookie for directory '{TargetDirectory}': Version={Version}, DateModified={DateModified}")]
+    private partial void LogFoundVersionCookie(string targetDirectory, string version, DateTime dateModified);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "No valid version cookie found for directory '{TargetDirectory}'")]
+    private partial void LogNoVersionCookie(string targetDirectory);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Version resolution strategy - UseConfiguredVersion: {UseConfiguredVersion}, CacheDuration: {CacheDuration}")]
+    private partial void LogVersionResolutionStrategy(bool useConfiguredVersion, TimeSpan cacheDuration);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Using configured version - clearing cookie version for directory '{TargetDirectory}'")]
+    private partial void LogUsingConfiguredVersion(string targetDirectory);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Ensuring target directory exists: {TargetDirectory}")]
+    private partial void LogEnsuringTargetDirectory(string targetDirectory);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Read configured version from file - Directory: {TargetDirectory}, Version: {Version}, Timestamp: {Timestamp}")]
+    private partial void LogConfiguredVersionFromFile(string targetDirectory, string version, DateTime timestamp);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "No configured version file found for directory: {TargetDirectory}")]
+    private partial void LogNoConfiguredVersionFile(string targetDirectory);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Using configured version {Version} for directory '{TargetDirectory}'")]
+    private partial void LogUsingVersion(string version, string targetDirectory);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Newer version available: {NewerVersionExists} - Current: {CurrentVersion}@{CurrentDate}, Configured: {ConfiguredVersion}@{ConfiguredDate}")]
+    private partial void LogNewerVersionCheck(bool newerVersionExists, string currentVersion, DateTime currentDate, string? configuredVersion, DateTime? configuredDate);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Ensuring version subdirectory exists - Directory: {TargetDirectory}, Version: {Version}")]
+    private partial void LogEnsuringVersionDirectory(string targetDirectory, string version);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Rewriting request path - Original: {OriginalPath}, New: {NewPath}, Version: {Version}")]
+    private partial void LogRewritingPath(string originalPath, string newPath, string version);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "No version info available for directory '{TargetDirectory}' - skipping path rewrite")]
+    private partial void LogSkippingPathRewrite(string targetDirectory);
 
     /// <summary>
     /// Constructor for the VersionedStaticFilesMiddleware.
@@ -58,7 +100,7 @@ public class VersionedStaticFilesMiddleware
 
     private async Task ProcessStaticFileRequestAsync(HttpContext context, string currentPath)
     {
-        _logger.LogDebug("Processing static file request: {RequestPath}", currentPath);
+        LogProcessingRequest(currentPath);
 
         var (targetDirectory, targetDirectoryStartIndex, targetDirectoryEndIndex) = ExtractTargetDirectory(currentPath);
 
@@ -81,7 +123,7 @@ public class VersionedStaticFilesMiddleware
         }
         else
         {
-            _logger.LogDebug("No version info available for directory '{TargetDirectory}' - skipping path rewrite", targetDirectory);
+            LogSkippingPathRewrite(targetDirectory);
         }
     }
 
@@ -92,7 +134,7 @@ public class VersionedStaticFilesMiddleware
         var targetDirectoryEndIndex = currentPath.IndexOf('/', staticPrefixLength);
         var targetDirectory = currentPath[targetDirectoryStartIndex..targetDirectoryEndIndex];
 
-        _logger.LogDebug("Extracted target directory: {TargetDirectory}", targetDirectory);
+        LogExtractedDirectory(targetDirectory);
 
         return (targetDirectory, targetDirectoryStartIndex, targetDirectoryEndIndex);
     }
@@ -106,12 +148,11 @@ public class VersionedStaticFilesMiddleware
 
         if (versionInfo != null)
         {
-            _logger.LogDebug("Found version cookie for directory '{TargetDirectory}': Version={Version}, DateModified={DateModified}",
-                targetDirectory, versionInfo.Version, versionInfo.DateModified);
+            LogFoundVersionCookie(targetDirectory, versionInfo.Version, versionInfo.DateModified);
         }
         else
         {
-            _logger.LogDebug("No valid version cookie found for directory '{TargetDirectory}'", targetDirectory);
+            LogNoVersionCookie(targetDirectory);
         }
 
         return versionInfo;
@@ -123,16 +164,15 @@ public class VersionedStaticFilesMiddleware
         var useConfiguredVersion = (versionInfo == null) || _options.UseConfiguredVersion(middlewareContext);
         var cacheDuration = _options.UseCacheDuration(middlewareContext);
 
-        _logger.LogDebug("Version resolution strategy - UseConfiguredVersion: {UseConfiguredVersion}, CacheDuration: {CacheDuration}",
-            useConfiguredVersion, cacheDuration);
+        LogVersionResolutionStrategy(useConfiguredVersion, cacheDuration);
 
         if (useConfiguredVersion)
         {
-            _logger.LogDebug("Using configured version - clearing cookie version for directory '{TargetDirectory}'", targetDirectory);
+            LogUsingConfiguredVersion(targetDirectory);
             versionInfo = null;
         }
 
-        _logger.LogDebug("Ensuring target directory exists: {TargetDirectory}", targetDirectory);
+        LogEnsuringTargetDirectory(targetDirectory);
         await _provider.EnsureDirectoryExistsAsync(targetDirectory, context.RequestAborted)
             .ConfigureAwait(false);
 
@@ -149,12 +189,11 @@ public class VersionedStaticFilesMiddleware
     {
         if (configuredVersion != null)
         {
-            _logger.LogDebug("Read configured version from file - Directory: {TargetDirectory}, Version: {Version}, Timestamp: {Timestamp}",
-                targetDirectory, configuredVersion.Version, configuredVersion.Timestamp);
+            LogConfiguredVersionFromFile(targetDirectory, configuredVersion.Version, configuredVersion.Timestamp);
         }
         else
         {
-            _logger.LogDebug("No configured version file found for directory: {TargetDirectory}", targetDirectory);
+            LogNoConfiguredVersionFile(targetDirectory);
         }
     }
 
@@ -163,8 +202,7 @@ public class VersionedStaticFilesMiddleware
     {
         if (versionInfo == null && configuredVersion != null)
         {
-            _logger.LogInformation("Using configured version {Version} for directory '{TargetDirectory}'",
-                configuredVersion.Version, targetDirectory);
+            LogUsingVersion(configuredVersion.Version, targetDirectory);
 
             return new VersionCookiePayload
             {
@@ -183,15 +221,14 @@ public class VersionedStaticFilesMiddleware
         var newerVersionExists = (configuredVersion?.Timestamp ?? DateTime.MinValue) > versionInfo.DateModified;
         var cacheDuration = _options.UseCacheDuration(middlewareContext);
 
-        _logger.LogDebug("Newer version available: {NewerVersionExists} - Current: {CurrentVersion}@{CurrentDate}, Configured: {ConfiguredVersion}@{ConfiguredDate}",
+        LogNewerVersionCheck(
             newerVersionExists,
             versionInfo.Version,
             versionInfo.DateModified,
             configuredVersion?.Version,
             configuredVersion?.Timestamp);
 
-        _logger.LogDebug("Ensuring version subdirectory exists - Directory: {TargetDirectory}, Version: {Version}",
-            middlewareContext.Directory, versionInfo.Version);
+        LogEnsuringVersionDirectory(middlewareContext.Directory, versionInfo.Version);
 
         await _provider.EnsureVersionDirectoryExistsAsync(middlewareContext.Directory, versionInfo.Version, middlewareContext.HttpContext.RequestAborted)
             .ConfigureAwait(false);
@@ -204,8 +241,7 @@ public class VersionedStaticFilesMiddleware
             + versionInfo.Version
             + middlewareContext.RequestPath[targetDirectoryEndIndex..];
 
-        _logger.LogInformation("Rewriting request path - Original: {OriginalPath}, New: {NewPath}, Version: {Version}",
-            middlewareContext.RequestPath, newPath, versionInfo.Version);
+        LogRewritingPath(middlewareContext.RequestPath, newPath, versionInfo.Version);
 
         middlewareContext.HttpContext.Request.Path = newPath;
     }

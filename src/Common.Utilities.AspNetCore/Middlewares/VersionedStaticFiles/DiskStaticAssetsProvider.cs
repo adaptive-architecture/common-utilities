@@ -7,10 +7,22 @@ namespace AdaptArch.Common.Utilities.AspNetCore.Middlewares.VersionedStaticFiles
 /// Disk-based implementation of IStaticAssetsProvider.
 /// Reads static assets from the local file system.
 /// </summary>
-public class DiskStaticAssetsProvider : IStaticAssetsProvider
+public partial class DiskStaticAssetsProvider : IStaticAssetsProvider
 {
     private readonly string _baseDirectory;
     private readonly ILogger<DiskStaticAssetsProvider> _logger;
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Version file not found at path: {FilePath}")]
+    private partial void LogVersionFileNotFound(string filePath);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Creating directory: {DirectoryPath}")]
+    private partial void LogCreatingDirectory(string directoryPath);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Creating version directory: {VersionDirectoryPath}")]
+    private partial void LogCreatingVersionDirectory(string versionDirectoryPath);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Error reading or deserializing version file at path: {FilePath}")]
+    private partial void LogVersionFileError(Exception ex, string filePath);
 
     /// <summary>
     /// Initializes a new instance of the DiskStaticAssetsProvider class.
@@ -33,7 +45,7 @@ public class DiskStaticAssetsProvider : IStaticAssetsProvider
 
         if (!File.Exists(filePath))
         {
-            _logger.LogWarning("Version file not found at path: {FilePath}", filePath);
+            LogVersionFileNotFound(filePath);
             return Task.FromResult<VersionFilePayload?>(null);
         }
 
@@ -47,7 +59,7 @@ public class DiskStaticAssetsProvider : IStaticAssetsProvider
 
         if (!Directory.Exists(directoryPath))
         {
-            _logger.LogInformation("Creating directory: {DirectoryPath}", directoryPath);
+            LogCreatingDirectory(directoryPath);
             Directory.CreateDirectory(directoryPath);
         }
 
@@ -61,7 +73,7 @@ public class DiskStaticAssetsProvider : IStaticAssetsProvider
 
         if (!Directory.Exists(versionDirectoryPath))
         {
-            _logger.LogInformation("Creating version directory: {VersionDirectoryPath}", versionDirectoryPath);
+            LogCreatingVersionDirectory(versionDirectoryPath);
             Directory.CreateDirectory(versionDirectoryPath);
         }
 
@@ -90,7 +102,7 @@ public class DiskStaticAssetsProvider : IStaticAssetsProvider
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error reading or deserializing version file at path: {FilePath}", filePath);
+            LogVersionFileError(ex, filePath);
         }
 
         return result;
