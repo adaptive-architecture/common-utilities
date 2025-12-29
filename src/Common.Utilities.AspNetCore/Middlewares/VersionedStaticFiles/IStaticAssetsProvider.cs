@@ -1,4 +1,4 @@
-namespace AdaptArch.Common.Utilities.AspNetCore.Middlewares.VersionedStaticFiles;
+﻿namespace AdaptArch.Common.Utilities.AspNetCore.Middlewares.VersionedStaticFiles;
 
 /// <summary>
 /// Provides access to static assets (version files and directories).

@@ -1,4 +1,4 @@
-using AdaptArch.Common.Utilities.AspNetCore.Middlewares.VersionedStaticFiles;
+﻿using AdaptArch.Common.Utilities.AspNetCore.Middlewares.VersionedStaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Xunit;

@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
 namespace AdaptArch.Common.Utilities.AspNetCore.Middlewares.VersionedStaticFiles;

@@ -1,4 +1,4 @@
-using AdaptArch.Common.Utilities.AspNetCore.Extensions;
+﻿using AdaptArch.Common.Utilities.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Http;
 using Xunit;
 
