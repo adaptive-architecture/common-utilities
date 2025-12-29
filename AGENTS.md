@@ -39,7 +39,7 @@ common-utilities/
 ```
 
 ### Technology Stack
-- **Framework**: .NET 9.0 with preview language features
+- **Framework**: .NET 10.0 (`net10.0`) with `LangVersion=latest`
 - **Solution Format**: Modern .slnx format
 - **Build System**: MSBuild with shared `Directory.Build.props`
 - **Packaging**: NuGet packages under `AdaptArch.Common.Utilities.*` namespace
@@ -97,7 +97,7 @@ Public APIs MUST follow consistent patterns across all libraries. Extension meth
 ## Quality Standards
 
 All code MUST meet the following non-negotiable quality standards:
-- Target framework: .NET 9.0 with preview language features enabled
+- Target framework: .NET 10.0 (`net10.0`) with `LangVersion=latest`
 - Warnings treated as errors across all projects
 - Roslynator analyzers enabled with strict rules
 - SonarCloud quality gate compliance required
@@ -135,7 +135,7 @@ This constitution supersedes all other development practices and guidelines. All
 ### Design Patterns
 - Use `InternalsVisibleTo` for test project access
 - Consistent naming: `AdaptArch.Common.Utilities.<Module>`
-- Preview language features enabled (.NET 9)
+- Latest language features enabled (`LangVersion=latest`)
 - Roslynator analyzers enforce style
 
 ### Testing Patterns

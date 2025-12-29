@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>latest</LangVersion>
     <Authors>Adaptive Architecture Contributors</Authors>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>

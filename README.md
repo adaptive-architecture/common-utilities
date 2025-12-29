@@ -1,6 +1,9 @@
 # common-utilities
 A set of common utilities to be used across projects and reduce amount of time wasted on cross cutting concerns.
 
+## Requirements
+- .NET SDK 10.x (`net10.0`, `LangVersion=latest`)
+
 ## Status
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=adaptive-architecture_common-utilities&metric=alert_status)](https://sonarcloud.io/dashboard?id=adaptive-architecture_common-utilities)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=adaptive-architecture_common-utilities&metric=coverage)](https://sonarcloud.io/summary/new_code?id=adaptive-architecture_common-utilities)
