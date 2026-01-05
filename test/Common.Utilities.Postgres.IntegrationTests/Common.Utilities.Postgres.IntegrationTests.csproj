@@ -8,11 +8,13 @@
   <ItemGroup Condition="'$(CONFIGURATION)' == 'Debug' Or '$(BuildDocFx)' == 'true'">
     <ProjectReference Include="..\..\src\Common.Utilities\Common.Utilities.csproj" />
     <ProjectReference Include="..\..\src\Common.Utilities.Postgres\Common.Utilities.Postgres.csproj" />
+    <ProjectReference Include="..\..\src\Common.Utilities.xUnit\Common.Utilities.xUnit.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(CONFIGURATION)' == 'Release' And '$(BuildDocFx)' != 'true'">
     <PackageReference Include="AdaptArch.Common.Utilities" />
     <PackageReference Include="AdaptArch.Common.Utilities.Postgres" />
+    <PackageReference Include="AdaptArch.Common.Utilities.xUnit" />
   </ItemGroup>
 
 </Project>

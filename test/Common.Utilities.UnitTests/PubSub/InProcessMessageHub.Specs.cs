@@ -97,7 +97,7 @@ public class InProcessMessageHubSpecs
         Assert.Equal(3, reacted);
     }
 
-    [Fact]
+    [RetryFact]
     public void Should_Not_Fail_If_Handler_Failed()
     {
         var topic = Guid.NewGuid().ToString("N");

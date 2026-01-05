@@ -95,7 +95,7 @@ public static class HttpRoutingExample
         Console.WriteLine("Distribution of 10,000 requests across servers:");
         foreach (var kvp in distribution)
         {
-            var percentage = (kvp.Value * 100.0) / 10000;
+            var percentage = kvp.Value * 100.0 / 10000;
             Console.WriteLine($"  {kvp.Key}: {kvp.Value} requests ({percentage:F1}%)");
         }
         Console.WriteLine();

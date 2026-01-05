@@ -101,7 +101,7 @@ public static class DatabaseRoutingExample
         Console.WriteLine("Distribution of 1000 users across servers:");
         foreach (var kvp in serverCounts)
         {
-            var percentage = (kvp.Value * 100.0) / 1000;
+            var percentage = kvp.Value * 100.0 / 1000;
             Console.WriteLine($"  {kvp.Key}: {kvp.Value} users ({percentage:F1}%)");
         }
 

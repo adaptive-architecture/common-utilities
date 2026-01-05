@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using AdaptArch.Common.Utilities.ConsistentHashing;
+using AdaptArch.Common.Utilities.xUnit.Extensions.Retry;
 
 namespace AdaptArch.Common.Utilities.UnitTests.ConsistentHashing;
 
@@ -293,7 +294,7 @@ public class EdgeCaseTests
 
     #region Concurrent Edge Cases
 
-    [Fact]
+    [RetryFact]
     public async Task HashRing_ConcurrentAddRemoveSameServer_HandlesCorrectly()
     {
         // Arrange

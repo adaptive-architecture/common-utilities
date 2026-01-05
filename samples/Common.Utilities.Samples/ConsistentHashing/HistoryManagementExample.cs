@@ -467,7 +467,7 @@ public class ProductionHashRingService
 
     private double GetHistoryUsagePercent()
     {
-        return (_ring.HistoryCount * 100.0) / _ring.MaxHistorySize;
+        return _ring.HistoryCount * 100.0 / _ring.MaxHistorySize;
     }
 
     private void ClearHistoryWithLogging()

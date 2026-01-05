@@ -751,7 +751,7 @@ public class HashRingExtensionsComprehensiveTests
         // Assert - Each server should get roughly 20% of keys (within reasonable bounds)
         foreach (var kvp in distribution)
         {
-            var percentage = (kvp.Value * 100.0) / sampleSize;
+            var percentage = kvp.Value * 100.0 / sampleSize;
             Assert.True(percentage >= 5 && percentage <= 35,
                 $"Server {kvp.Key} got {percentage:F1}% of keys, expected 10-30%");
         }
