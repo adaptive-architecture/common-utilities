@@ -11,9 +11,7 @@ public class RedisFixture : IDisposable
 
     public RedisFixture()
     {
-        _container = new RedisBuilder()
-            //.WithImage("redis:7.2")
-            .WithImage("valkey/valkey:8")
+        _container = new RedisBuilder("valkey/valkey:8") // "redis:7.2"
             .WithPortBinding(6379, true)
             .Build();
 

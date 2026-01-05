@@ -11,8 +11,7 @@ public class PostgresFixture : IDisposable
 
     public PostgresFixture()
     {
-        _container = new PostgreSqlBuilder()
-            .WithImage("postgres:16")
+        _container = new PostgreSqlBuilder("postgres:16")
             .WithDatabase("testdb")
             .WithUsername("testuser")
             .WithPassword("testpassword")
