@@ -19,17 +19,17 @@ A thread-safe wrapper that provides exclusive access to a resource using lock se
 ```csharp
 using AdaptArch.Common.Utilities.Synchronization;
 
-// Create exclusive access wrapper around your resource
-var counter = new ExclusiveAccess<int>(0);
+// Create exclusive access wrapper around your resource (T must be a reference type)
+var list = new ExclusiveAccess<List<int>>(new List<int>(), TimeSpan.FromSeconds(5));
 
 // Thread-safe operations
 await Task.Run(() =>
 {
-    using (var locked = counter.Lock())
+    using (var locked = list.Lock())
     {
         // Only one thread can execute this block at a time
-        locked.Resource++;
-        Console.WriteLine($"Counter value: {locked.Resource}");
+        locked.Value.Add(42);
+        Console.WriteLine($"Count: {locked.Value.Count}");
     }
 });
 ```
@@ -37,14 +37,14 @@ await Task.Run(() =>
 ### With Timeout
 
 ```csharp
-var sharedResource = new ExclusiveAccess<List<string>>(new List<string>());
+var sharedResource = new ExclusiveAccess<List<string>>(new List<string>(), TimeSpan.FromSeconds(5));
 
 try
 {
-    // Attempt to acquire lock with 5-second timeout
-    using (var locked = sharedResource.Lock(TimeSpan.FromSeconds(5)))
+    // Timeout was configured in the constructor
+    using (var locked = sharedResource.Lock())
     {
-        locked.Resource.Add("New item");
+        locked.Value.Add("New item");
         // Simulate some work
         await Task.Delay(1000);
     }
@@ -58,14 +58,14 @@ catch (TimeoutException)
 ### Async Operations
 
 ```csharp
-var asyncResource = new ExclusiveAccess<Dictionary<string, object>>(new Dictionary<string, object>());
+var asyncResource = new ExclusiveAccess<Dictionary<string, object>>(new Dictionary<string, object>(), TimeSpan.FromSeconds(5));
 
 using (var locked = asyncResource.Lock())
 {
     // Perform async operations while holding the lock
     var data = await FetchDataAsync();
-    locked.Resource["timestamp"] = DateTime.UtcNow;
-    locked.Resource["data"] = data;
+    locked.Value["timestamp"] = DateTime.UtcNow;
+    locked.Value["data"] = data;
 }
 ```
 
@@ -76,7 +76,7 @@ The interface returned by `ExclusiveAccess<T>.Lock()` that provides access to th
 ```csharp
 public interface ILockedResource<out T> : IDisposable
 {
-    T Resource { get; }
+    T Value { get; }
 }
 ```
 
@@ -97,14 +97,14 @@ public class ThreadSafeCache<TKey, TValue>
 
     public ThreadSafeCache()
     {
-        _cache = new ExclusiveAccess<Dictionary<TKey, TValue>>(new Dictionary<TKey, TValue>());
+        _cache = new ExclusiveAccess<Dictionary<TKey, TValue>>(new Dictionary<TKey, TValue>(), TimeSpan.FromSeconds(5));
     }
 
     public void Set(TKey key, TValue value)
     {
         using (var locked = _cache.Lock())
         {
-            locked.Resource[key] = value;
+            locked.Value[key] = value;
         }
     }
 
@@ -112,7 +112,7 @@ public class ThreadSafeCache<TKey, TValue>
     {
         using (var locked = _cache.Lock())
         {
-            return locked.Resource.TryGetValue(key, out value);
+            return locked.Value.TryGetValue(key, out value);
         }
     }
 
@@ -120,7 +120,7 @@ public class ThreadSafeCache<TKey, TValue>
     {
         using (var locked = _cache.Lock())
         {
-            locked.Resource.Remove(key);
+            locked.Value.Remove(key);
         }
     }
 
@@ -130,7 +130,7 @@ public class ThreadSafeCache<TKey, TValue>
         {
             using (var locked = _cache.Lock())
             {
-                return locked.Resource.Count;
+                return locked.Value.Count;
             }
         }
     }
@@ -146,14 +146,14 @@ public class StatisticsCounter
 
     public StatisticsCounter()
     {
-        _state = new ExclusiveAccess<CounterState>(new CounterState());
+        _state = new ExclusiveAccess<CounterState>(new CounterState(), TimeSpan.FromSeconds(5));
     }
 
     public void Increment(int value = 1)
     {
         using (var locked = _state.Lock())
         {
-            var state = locked.Resource;
+            var state = locked.Value;
             state.Count += value;
             state.Total += value;
             state.LastUpdated = DateTime.UtcNow;
@@ -167,7 +167,7 @@ public class StatisticsCounter
     {
         using (var locked = _state.Lock())
         {
-            var state = locked.Resource;
+            var state = locked.Value;
             return new CounterSnapshot
             {
                 Count = state.Count,
@@ -182,10 +182,10 @@ public class StatisticsCounter
     {
         using (var locked = _state.Lock())
         {
-            locked.Resource.Count = 0;
-            locked.Resource.Total = 0;
-            locked.Resource.MaxIncrement = 0;
-            locked.Resource.LastUpdated = DateTime.UtcNow;
+            locked.Value.Count = 0;
+            locked.Value.Total = 0;
+            locked.Value.MaxIncrement = 0;
+            locked.Value.LastUpdated = DateTime.UtcNow;
         }
     }
 
@@ -219,19 +219,17 @@ public class ResourcePool<T> where T : class
 
     public ResourcePool(Func<T> resourceFactory, Action<T> resourceDisposer = null, int maxSize = 10)
     {
-        _availableResources = new ExclusiveAccess<Queue<T>>(new Queue<T>());
+        _availableResources = new ExclusiveAccess<Queue<T>>(new Queue<T>(), TimeSpan.FromSeconds(30));
         _resourceFactory = resourceFactory;
         _resourceDisposer = resourceDisposer ?? (_ => { });
         _maxSize = maxSize;
     }
 
-    public T Acquire(TimeSpan timeout = default)
+    public T Acquire()
     {
-        timeout = timeout == default ? TimeSpan.FromSeconds(30) : timeout;
-
-        using (var locked = _availableResources.Lock(timeout))
+        using (var locked = _availableResources.Lock())
         {
-            var queue = locked.Resource;
+            var queue = locked.Value;
             
             if (queue.Count > 0)
             {
@@ -249,7 +247,7 @@ public class ResourcePool<T> where T : class
 
         using (var locked = _availableResources.Lock())
         {
-            var queue = locked.Resource;
+            var queue = locked.Value;
             
             if (queue.Count < _maxSize)
             {
@@ -267,7 +265,7 @@ public class ResourcePool<T> where T : class
     {
         using (var locked = _availableResources.Lock())
         {
-            var queue = locked.Resource;
+            var queue = locked.Value;
             
             while (queue.Count > 0)
             {
@@ -291,19 +289,19 @@ public class ConditionalAccess<T>
 
     public ConditionalAccess(T resource, Func<T, bool> condition)
     {
-        _resource = new ExclusiveAccess<T>(resource);
+        _resource = new ExclusiveAccess<T>(resource, TimeSpan.FromSeconds(5));
         _condition = condition;
     }
 
-    public bool TryExecute(Action<T> action, TimeSpan timeout = default)
+    public bool TryExecute(Action<T> action)
     {
         try
         {
-            using (var locked = _resource.Lock(timeout))
+            using (var locked = _resource.Lock())
             {
-                if (_condition(locked.Resource))
+                if (_condition(locked.Value))
                 {
-                    action(locked.Resource);
+                    action(locked.Value);
                     return true;
                 }
                 return false;
@@ -321,10 +319,10 @@ var conditionalResource = new ConditionalAccess<List<string>>(
     new List<string>(), 
     list => list.Count < 100); // Only allow access if list has less than 100 items
 
-bool success = conditionalResource.TryExecute(list => 
+bool success = conditionalResource.TryExecute(list =>
 {
     list.Add("New item");
-}, TimeSpan.FromSeconds(1));
+});
 ```
 
 ### Read-Write Separation Pattern
@@ -336,30 +334,30 @@ public class ReadWriteResource<T>
 
     public ReadWriteResource(T resource)
     {
-        _resource = new ExclusiveAccess<T>(resource);
+        _resource = new ExclusiveAccess<T>(resource, TimeSpan.FromSeconds(5));
     }
 
-    public TResult Read<TResult>(Func<T, TResult> reader, TimeSpan timeout = default)
+    public TResult Read<TResult>(Func<T, TResult> reader)
     {
-        using (var locked = _resource.Lock(timeout))
+        using (var locked = _resource.Lock())
         {
-            return reader(locked.Resource);
+            return reader(locked.Value);
         }
     }
 
-    public void Write(Action<T> writer, TimeSpan timeout = default)
+    public void Write(Action<T> writer)
     {
-        using (var locked = _resource.Lock(timeout))
+        using (var locked = _resource.Lock())
         {
-            writer(locked.Resource);
+            writer(locked.Value);
         }
     }
 
-    public TResult ReadWrite<TResult>(Func<T, TResult> operation, TimeSpan timeout = default)
+    public TResult ReadWrite<TResult>(Func<T, TResult> operation)
     {
-        using (var locked = _resource.Lock(timeout))
+        using (var locked = _resource.Lock())
         {
-            return operation(locked.Resource);
+            return operation(locked.Value);
         }
     }
 }
@@ -390,7 +388,7 @@ string lastItem = readWriteList.ReadWrite(list =>
 using (var locked = resource.Lock())
 {
     // This blocks all other threads for a long time
-    await SomeSlowDatabaseOperation(locked.Resource);
+    await SomeSlowDatabaseOperation(locked.Value);
 }
 
 // ✅ Good: Minimize lock duration
@@ -398,7 +396,7 @@ var data = PrepareData();
 using (var locked = resource.Lock())
 {
     // Quick operation while holding lock
-    locked.Resource.Update(data);
+    locked.Value.Update(data);
 }
 await SomeSlowDatabaseOperation(data);
 ```
@@ -416,9 +414,8 @@ using (var locked1 = resource1.Lock())
 }
 
 // ✅ Good: Acquire all locks at once or use ordering
-var lockTimeout = TimeSpan.FromSeconds(5);
-using (var locked1 = resource1.Lock(lockTimeout))
-using (var locked2 = resource2.Lock(lockTimeout))
+using (var locked1 = resource1.Lock())
+using (var locked2 = resource2.Lock())
 {
     // Operations
 }
@@ -436,3 +433,8 @@ using (var locked2 = resource2.Lock(lockTimeout))
 8. **Test under load**: Verify behavior under concurrent access scenarios
 
 These synchronization utilities provide a foundation for building thread-safe applications while maintaining simplicity and avoiding common concurrency pitfalls.
+
+## Related Documentation
+
+- [Extension Methods](extension-methods.md)
+- [Leader Election](leader-election.md)

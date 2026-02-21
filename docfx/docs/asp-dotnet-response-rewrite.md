@@ -104,5 +104,8 @@ app
     });
 
 app.Run();
-Console.WriteLine("Application started!");
 ```
+
+## Related Documentation
+
+- [Asp.Net Versioned Static Files](asp-dotnet-versioned-static-files.md)

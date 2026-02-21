@@ -61,7 +61,11 @@ public class MyHandler
     return Task.CompletedTask;
   }
 }
-
-
 ```
+
+## Related Documentation
+
+- [In-Process PubSub](in-process-pubsub.md)
+- [Redis Message Bus](redis-message-bus.md)
+- [Background Jobs](background-jobs.md)
 

@@ -29,9 +29,9 @@ string original = Encoding.UTF8.GetString(decoded);
 string lowerCase = "jbswy3dpeblw64tmmqqq====";
 byte[] decoded = Base32.Decode(lowerCase); // Works fine
 
-// Validate Base32 strings
-bool isValid = Base32.IsValidBase32String("JBSWY3DPEBLW64TMMQQQ===="); // true
-bool isInvalid = Base32.IsValidBase32String("Invalid@String!"); // false
+// Subset encoding/decoding with offset and count
+byte[] data = new byte[] { 72, 101, 108, 108, 111 }; // "Hello"
+string partial = Base32.Encode(data, offset: 0, count: 3);
 
 // Working with ReadOnlySpan<byte> for performance
 ReadOnlySpan<byte> dataSpan = stackalloc byte[] { 72, 101, 108, 108, 111 }; // "Hello"
@@ -117,14 +117,14 @@ byte[] decodedBase64Url = base64UrlEncoder.Decode(base64UrlResult);
 ```csharp
 public class HexEncoder : IEncoder
 {
-    public string Encode(ReadOnlySpan<byte> data)
+    public string Encode(byte[] input)
     {
-        return Convert.ToHexString(data);
+        return Convert.ToHexString(input);
     }
 
-    public byte[] Decode(ReadOnlySpan<char> encodedData)
+    public byte[] Decode(string input)
     {
-        return Convert.FromHexString(encodedData);
+        return Convert.FromHexString(input);
     }
 }
 
@@ -190,3 +190,7 @@ public static string EncodeFileChunked(string filePath)
 4. **Use Span&lt;T&gt;**: Leverage span-based overloads for better performance with large datasets
 
 5. **Consider context**: Base64Url is generally preferred in modern web applications due to its URL-safety
+
+## Related Documentation
+
+- [Extension Methods](extension-methods.md)

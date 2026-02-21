@@ -1,0 +1,39 @@
+# Common Utilities
+
+> A comprehensive collection of .NET utilities and extensions designed to reduce boilerplate code and accelerate development. These packages provide solutions for common cross-cutting concerns in modern .NET applications.
+
+## Packages
+
+- [AdaptArch.Common.Utilities](https://www.nuget.org/packages/AdaptArch.Common.Utilities): Core utilities — encoding, extensions, consistent hashing, synchronization, PubSub, and global abstractions
+- [AdaptArch.Common.Utilities.Configuration](https://www.nuget.org/packages/AdaptArch.Common.Utilities.Configuration): Configuration extensions for Microsoft.Extensions.Configuration with custom providers and dynamic reloading
+- [AdaptArch.Common.Utilities.Hosting](https://www.nuget.org/packages/AdaptArch.Common.Utilities.Hosting): Hosting extensions for Microsoft.Extensions.Hosting with background jobs and handler discovery
+- [AdaptArch.Common.Utilities.AspNetCore](https://www.nuget.org/packages/AdaptArch.Common.Utilities.AspNetCore): ASP.NET Core extensions for response rewriting and HttpContext utilities
+- [AdaptArch.Common.Utilities.Redis](https://www.nuget.org/packages/AdaptArch.Common.Utilities.Redis): Redis integrations built on StackExchange.Redis for distributed PubSub
+- [AdaptArch.Common.Utilities.Postgres](https://www.nuget.org/packages/AdaptArch.Common.Utilities.Postgres): PostgreSQL database utilities and extensions
+- [AdaptArch.Common.Utilities.xUnit](https://www.nuget.org/packages/AdaptArch.Common.Utilities.xUnit): xUnit testing utilities and extensions
+
+## Core Utilities
+
+- [Extension Methods](https://adaptive-architecture.github.io/common-utilities/docs/extension-methods.html): Enhanced DateTime, Dictionary, Task, JSON, and Exception utilities
+- [Encoding Utilities](https://adaptive-architecture.github.io/common-utilities/docs/encoding-utilities.html): RFC-compliant Base32 and Base64Url encoding
+- [Consistent Hashing](https://adaptive-architecture.github.io/common-utilities/docs/consistent-hashing.html): Distributed key-to-server mapping with minimal redistribution
+- [Consistent Hashing — History Management](https://adaptive-architecture.github.io/common-utilities/docs/consistent-hashing-history-management.html): Snapshot history management for consistent hashing
+- [Global Abstractions](https://adaptive-architecture.github.io/common-utilities/docs/global-abstractions.html): Testable wrappers for DateTime, Random, and UUID generation
+- [Delay and Jitter](https://adaptive-architecture.github.io/common-utilities/docs/delay-and-jitter.html): Exponential backoff and retry strategies
+- [Synchronization Utilities](https://adaptive-architecture.github.io/common-utilities/docs/synchronization-utilities.html): Thread-safe exclusive access utilities
+- [Leader Election](https://adaptive-architecture.github.io/common-utilities/docs/leader-election.html): Distributed leader election framework
+- [Leader Election — Getting Started](https://adaptive-architecture.github.io/common-utilities/docs/leader-election-getting-started.html): Quick start guide for leader election
+- [Leader Election — Advanced Configuration](https://adaptive-architecture.github.io/common-utilities/docs/leader-election-advanced.html): Advanced leader election options
+- [Leader Election — PostgreSQL Implementation](https://adaptive-architecture.github.io/common-utilities/docs/leader-election-postgresql.html): PostgreSQL-backed leader election
+- [Leader Election — Troubleshooting](https://adaptive-architecture.github.io/common-utilities/docs/leader-election-troubleshooting.html): Leader election troubleshooting guide
+- [In-Process PubSub](https://adaptive-architecture.github.io/common-utilities/docs/in-process-pubsub.html): In-process publish-subscribe messaging
+
+## Specialized Features
+
+- [Handler Discovery](https://adaptive-architecture.github.io/common-utilities/docs/handler-discovery.html): Automatic registration of pub/sub message handlers
+- [Redis Message Bus](https://adaptive-architecture.github.io/common-utilities/docs/redis-message-bus.html): Redis-backed distributed message hub
+- [Custom Configuration Provider](https://adaptive-architecture.github.io/common-utilities/docs/custom-configuration-provider.html): Integrate any data source as configuration
+- [Background Jobs](https://adaptive-architecture.github.io/common-utilities/docs/background-jobs.html): Periodic and delayed job execution
+- [Asp.Net Response Rewrite](https://adaptive-architecture.github.io/common-utilities/docs/asp-dotnet-response-rewrite.html): Middleware for transforming HTTP responses
+- [Asp.Net Versioned Static Files](https://adaptive-architecture.github.io/common-utilities/docs/asp-dotnet-versioned-static-files.html): Cache-busting versioned static file serving
+- [xUnit Testing Utilities](https://adaptive-architecture.github.io/common-utilities/docs/xunit-utilities.html): Testing utilities and extensions for xUnit

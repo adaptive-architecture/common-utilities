@@ -6,6 +6,9 @@
     href: encoding-utilities.md
   - name: Consistent Hashing
     href: consistent-hashing.md
+    items:
+    - name: History Management
+      href: consistent-hashing-history-management.md
   - name: Global Abstractions
     href: global-abstractions.md
   - name: Delay and Jitter

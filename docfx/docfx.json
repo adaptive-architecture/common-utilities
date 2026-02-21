@@ -29,7 +29,8 @@
     "resource": [
       {
         "files": [
-          "images/**"
+          "images/**",
+          "llm.txt"
         ]
       }
     ],

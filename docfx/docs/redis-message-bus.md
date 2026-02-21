@@ -64,7 +64,7 @@ builder.Services
   .AddSingleton<IMessageHub>(svc => svc.GetService<RedisMessageHub>())
   .AddSingleton<IMessageHubAsync>(svc => svc.GetService<RedisMessageHub>())
 
-services.AddSingleton<MyMessageHandler>();
+builder.Services.AddSingleton<MyMessageHandler>();
 
 var app = builder.Build();
 
@@ -148,9 +148,7 @@ jsonSerializerOptions.TypeInfoResolverChain.Add(DefaultJsonSerializerContext.Def
 // Configure the JsonDataSerializer with the custom context
 var jsonSerializer = new JsonDataSerializer(new MyAppJsonSerializerContext(jsonSerializerOptions));
 
-builder.Services.AddSingleton(new RedisMessageHubOptions {
-  DataSerializer = jsonSerializer
-});
+builder.Services.AddSingleton(new RedisMessageHubOptions(jsonSerializer));
 
 builder.Services.AddSingleton<IMessageHubAsync, RedisMessageHub>();
 ```
@@ -189,12 +187,10 @@ var jsonSerializer = new JsonDataSerializer(
     new MyAppJsonSerializerContext(jsonSerializerOptions));
 
 // Configure Redis message hub with custom serializer
-builder.Services.AddSingleton(new RedisMessageHubOptions {
-    DataSerializer = jsonSerializer
-});
+builder.Services.AddSingleton(new RedisMessageHubOptions(jsonSerializer));
 
 builder.Services.AddSingleton<IMessageHubAsync, RedisMessageHub>();
-services.AddSingleton<MyMessageHandler>();
+builder.Services.AddSingleton<MyMessageHandler>();
 
 var app = builder.Build();
 ```
@@ -245,20 +241,23 @@ public class MyMessageHandler
 
   public Task StartListeningAsync(CancellationToken cancellationToken)
   {
-    // Store the subscriptionId so we can latter unsubscribe.
+    // Store the subscriptionId so we can later unsubscribe.
     subscriptionId = _messageHub.Subscribe<SayHello>(MessageName,
       (m, _) => HandleMessageAsync(m.Data, CancellationToken.None));
+    return Task.CompletedTask;
   }
 
   public Task StopListeningAsync(CancellationToken cancellationToken)
   {
     // Use the subscription id to unsubscribe.
     _messageHub.Unsubscribe(subscriptionId);
+    return Task.CompletedTask;
   }
 
   public Task PublishAsync(SayHello command, CancellationToken cancellationToken)
   {
     _messageHub.Publish(MessageName, command);
+    return Task.CompletedTask;
   }
 
   private Task HandleMessageAsync(SayHello command, CancellationToken cancellationToken)
@@ -269,3 +268,8 @@ public class MyMessageHandler
   }
 }
 ```
+
+## Related Documentation
+
+- [In-Process PubSub](in-process-pubsub.md)
+- [Handler Discovery](handler-discovery.md)

@@ -5,8 +5,8 @@ The Common.Utilities package provides abstractions for common global dependencie
 ## Overview
 
 Global abstractions solve the problem of testing code that depends on:
-- Current system time (`DateTime.Now`, `DateTime.UtcNow`)
-- Random number generation (`Random`, `System.Security.Cryptography.RandomNumberGenerator`)
+- Current system time (`DateTime.UtcNow`)
+- Random number generation (`Random`)
 - Unique identifier generation (`Guid.NewGuid()`)
 
 By abstracting these dependencies, you can easily mock them in unit tests and have better control over their behavior.
@@ -22,10 +22,7 @@ using AdaptArch.Common.Utilities.GlobalAbstractions.Contracts;
 
 public interface IDateTimeProvider
 {
-    DateTime Now { get; }
     DateTime UtcNow { get; }
-    DateTimeOffset OffsetNow { get; }
-    DateTimeOffset OffsetUtcNow { get; }
 }
 ```
 
@@ -63,6 +60,8 @@ services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 ### Testing with Mocks
 
+The `DateTimeMockProvider` accepts an array of `DateTime` values and cycles through them on each access to `UtcNow`:
+
 ```csharp
 using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks;
 
@@ -71,9 +70,8 @@ public void CreateOrder_SetsCorrectTimestamp()
 {
     // Arrange
     var fixedTime = new DateTime(2023, 1, 15, 10, 30, 0, DateTimeKind.Utc);
-    var mockProvider = new DateTimeMockProvider();
-    mockProvider.SetUtcNow(fixedTime);
-    
+    var mockProvider = new DateTimeMockProvider([fixedTime]);
+
     var orderService = new OrderService(mockProvider);
 
     // Act
@@ -82,18 +80,6 @@ public void CreateOrder_SetsCorrectTimestamp()
     // Assert
     Assert.AreEqual(fixedTime, order.CreatedAt);
 }
-```
-
-### TimeProvider Integration
-
-For .NET 8+ applications, there's also a wrapper for the new `TimeProvider` class:
-
-```csharp
-using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations;
-
-// Use with .NET 8+ TimeProvider
-services.AddSingleton<TimeProvider>(TimeProvider.System);
-services.AddSingleton<IDateTimeProvider, TimeProviderWrapper>();
 ```
 
 ## Random Number Generation
@@ -107,11 +93,7 @@ using AdaptArch.Common.Utilities.GlobalAbstractions.Contracts;
 
 public interface IRandomGenerator
 {
-    int Next();
-    int Next(int maxValue);
     int Next(int minValue, int maxValue);
-    double NextDouble();
-    void NextBytes(byte[] buffer);
 }
 ```
 
@@ -131,17 +113,10 @@ public class GameService
     {
         return _randomGenerator.Next(1, 7); // 1-6 inclusive
     }
-
-    public string GenerateSessionId()
-    {
-        var bytes = new byte[16];
-        _randomGenerator.NextBytes(bytes);
-        return Convert.ToBase64String(bytes);
-    }
 }
 
-// Service registration
-services.AddSingleton<IRandomGenerator, RandomGenerator>();
+// Service registration — RandomGenerator requires a Random instance
+services.AddSingleton<IRandomGenerator>(RandomGenerator.Instance);
 ```
 
 ### Deterministic Testing
@@ -158,8 +133,8 @@ public void RollDice_WithSeededRandom_ReturnsExpectedValue()
     // Act
     var result = gameService.RollDice();
 
-    // Assert
-    Assert.AreEqual(6, result); // Known result for seed 42
+    // Assert — known result for seed 42
+    Assert.That(result, Is.InRange(1, 6));
 }
 ```
 
@@ -174,7 +149,7 @@ using AdaptArch.Common.Utilities.GlobalAbstractions.Contracts;
 
 public interface IUuidProvider
 {
-    string GenerateUuid();
+    string New();
 }
 ```
 
@@ -206,7 +181,7 @@ public class DocumentService
     {
         return new Document
         {
-            Id = _uuidProvider.GenerateUuid(),
+            Id = _uuidProvider.New(),
             Title = title,
             Content = content
         };
@@ -216,6 +191,8 @@ public class DocumentService
 
 ### Testing with Mock UUIDs
 
+The `UuidMockProvider` accepts an array of `Guid` values and cycles through them on each call to `New()`, returning the dashed format:
+
 ```csharp
 using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks;
 
@@ -223,57 +200,62 @@ using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations.Mocks;
 public void CreateDocument_GeneratesCorrectId()
 {
     // Arrange
-    var expectedId = "test-document-id-123";
-    var mockProvider = new UuidMockProvider();
-    mockProvider.SetNextUuid(expectedId);
-    
+    var expectedGuid = Guid.Parse("550e8400-e29b-41d4-a716-446655440000");
+    var mockProvider = new UuidMockProvider([expectedGuid]);
+
     var documentService = new DocumentService(mockProvider);
 
     // Act
     var document = documentService.CreateDocument("Test", "Content");
 
     // Assert
-    Assert.AreEqual(expectedId, document.Id);
+    Assert.AreEqual("550e8400-e29b-41d4-a716-446655440000", document.Id);
 }
 ```
 
 ## Mock Providers for Testing
 
-All abstractions come with built-in mock implementations for testing scenarios.
+All abstractions come with built-in mock implementations that extend `MockProvider<T>`. Mock providers accept an array of values via their constructor and cycle through them on each access.
 
 ### DateTimeMockProvider
 
 ```csharp
-var mockProvider = new DateTimeMockProvider();
+// Provide a sequence of times — UtcNow cycles through them
+var mockProvider = new DateTimeMockProvider([
+    new DateTime(2023, 6, 15, 12, 0, 0, DateTimeKind.Utc),
+    new DateTime(2023, 6, 15, 13, 0, 0, DateTimeKind.Utc),
+    new DateTime(2023, 6, 15, 14, 0, 0, DateTimeKind.Utc)
+]);
 
-// Set specific times
-mockProvider.SetNow(new DateTime(2023, 6, 15, 14, 30, 0));
-mockProvider.SetUtcNow(new DateTime(2023, 6, 15, 12, 30, 0, DateTimeKind.Utc));
-
-// Advance time during tests
-mockProvider.AdvanceBy(TimeSpan.FromHours(1));
+var first = mockProvider.UtcNow;  // 12:00
+var second = mockProvider.UtcNow; // 13:00
+var third = mockProvider.UtcNow;  // 14:00
+var fourth = mockProvider.UtcNow; // wraps back to 12:00
 ```
 
 ### UuidMockProvider
 
 ```csharp
-var mockProvider = new UuidMockProvider();
+// Provide a sequence of GUIDs — New() cycles through them
+var mockProvider = new UuidMockProvider([
+    Guid.Parse("00000000-0000-0000-0000-000000000001"),
+    Guid.Parse("00000000-0000-0000-0000-000000000002")
+]);
 
-// Set specific UUIDs
-mockProvider.SetNextUuid("fixed-uuid-for-test");
-
-// Use sequential UUIDs
-mockProvider.SetSequentialUuids("uuid-1", "uuid-2", "uuid-3");
+var first = mockProvider.New();  // "00000000-0000-0000-0000-000000000001"
+var second = mockProvider.New(); // "00000000-0000-0000-0000-000000000002"
 ```
 
-### Generic MockProvider&lt;T&gt;
+### Custom MockProvider&lt;T&gt;
 
-For creating custom mock implementations:
+For creating custom mock implementations that cycle through a collection:
 
 ```csharp
-public class CustomMockProvider<T> : MockProvider<T>
+public class CustomMockProvider : MockProvider<string>
 {
-    // Implement custom mocking logic
+    public CustomMockProvider(string[] items) : base(items) { }
+
+    public string NextValue() => GetNextValue();
 }
 ```
 
@@ -290,9 +272,9 @@ public void ConfigureServices(IServiceCollection services)
 {
     // Production implementations
     services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-    services.AddSingleton<IRandomGenerator, RandomGenerator>();
+    services.AddSingleton<IRandomGenerator>(RandomGenerator.Instance);
     services.AddSingleton<IUuidProvider, DashedUuidProvider>();
-    
+
     // Your business services
     services.AddScoped<OrderService>();
     services.AddScoped<GameService>();
@@ -305,16 +287,17 @@ public void ConfigureServices(IServiceCollection services)
 ```csharp
 public void ConfigureTestServices(IServiceCollection services)
 {
-    // Mock implementations for testing
-    services.AddSingleton<IDateTimeProvider, DateTimeMockProvider>();
+    var fixedTime = new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+    services.AddSingleton<IDateTimeProvider>(new DateTimeMockProvider([fixedTime]));
     services.AddSingleton<IRandomGenerator>(new RandomGenerator(new Random(42))); // Seeded
-    services.AddSingleton<IUuidProvider, UuidMockProvider>();
+    services.AddSingleton<IUuidProvider>(new UuidMockProvider([Guid.NewGuid()]));
 }
 ```
 
 ## Best Practices
 
-1. **Always use abstractions**: Avoid direct calls to `DateTime.Now`, `Random`, or `Guid.NewGuid()` in business logic
+1. **Always use abstractions**: Avoid direct calls to `DateTime.UtcNow`, `Random`, or `Guid.NewGuid()` in business logic
 
 2. **Register as singletons**: These providers are stateless and safe to use as singletons
 
@@ -323,7 +306,5 @@ public void ConfigureTestServices(IServiceCollection services)
 4. **Use UTC for storage**: Always use `UtcNow` for database storage and API responses
 
 5. **Mock time in tests**: Use fixed times in tests to ensure consistent, predictable results
-
-6. **Consider time zones**: Use `DateTimeOffset` when working with user time zones
 
 These abstractions provide a foundation for writing testable, maintainable code by removing dependencies on global system state.

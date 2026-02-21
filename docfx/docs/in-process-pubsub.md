@@ -23,24 +23,29 @@ using AdaptArch.Common.Utilities.PubSub.Contracts;
 // Synchronous interface
 public interface IMessageHub
 {
-    string Subscribe<T>(string topic, MessageHandler<T> handler);
-    void Publish<T>(string topic, T message);
-    void Unsubscribe(string subscriptionId);
+    string Subscribe<TMessageData>(string topic, MessageHandler<TMessageData> handler)
+        where TMessageData : class;
+    void Publish<TMessageData>(string topic, TMessageData data)
+        where TMessageData : class;
+    void Unsubscribe(string id);
 }
 
 // Asynchronous interface
 public interface IMessageHubAsync
 {
-    string Subscribe<T>(string topic, MessageHandler<T> handler);
-    Task PublishAsync<T>(string topic, T message);
-    void Unsubscribe(string subscriptionId);
+    Task<string> SubscribeAsync<TMessageData>(string topic, MessageHandler<TMessageData> handler, CancellationToken cancellationToken)
+        where TMessageData : class;
+    Task PublishAsync<TMessageData>(string topic, TMessageData data, CancellationToken cancellationToken)
+        where TMessageData : class;
+    Task UnsubscribeAsync(string id, CancellationToken cancellationToken);
 }
 ```
 
 ### Message Handler Delegate
 
 ```csharp
-public delegate Task MessageHandler<in T>(IMessage<T> message, CancellationToken cancellationToken);
+public delegate Task MessageHandler<in TMessage>(IMessage<TMessage> message, CancellationToken cancellationToken)
+    where TMessage : class;
 ```
 
 ## Basic Usage
@@ -71,7 +76,7 @@ public class OrderService
         _messageHub = messageHub;
     }
 
-    public async Task ProcessOrderAsync(Order order)
+    public async Task ProcessOrderAsync(Order order, CancellationToken cancellationToken = default)
     {
         // Process the order
         await ProcessOrderLogic(order);
@@ -83,7 +88,7 @@ public class OrderService
             CustomerId = order.CustomerId,
             Amount = order.Amount,
             ProcessedAt = DateTime.UtcNow
-        });
+        }, cancellationToken);
     }
 }
 
@@ -111,16 +116,17 @@ public class EmailNotificationService
         _messageHub = messageHub;
     }
 
-    public void StartListening()
+    public async Task StartListeningAsync(CancellationToken cancellationToken = default)
     {
-        _subscriptionId = _messageHub.Subscribe<OrderProcessedEvent>("order.processed", HandleOrderProcessed);
+        _subscriptionId = await _messageHub.SubscribeAsync<OrderProcessedEvent>(
+            "order.processed", HandleOrderProcessed, cancellationToken);
     }
 
-    public void StopListening()
+    public async Task StopListeningAsync(CancellationToken cancellationToken = default)
     {
         if (_subscriptionId != null)
         {
-            _messageHub.Unsubscribe(_subscriptionId);
+            await _messageHub.UnsubscribeAsync(_subscriptionId, cancellationToken);
             _subscriptionId = null;
         }
     }
@@ -185,10 +191,10 @@ Multiple components can subscribe to the same topic:
 ```csharp
 public class AuditService
 {
-    public void StartListening(IMessageHubAsync messageHub)
+    public async Task StartListeningAsync(IMessageHubAsync messageHub, CancellationToken cancellationToken = default)
     {
         // Both EmailNotificationService and AuditService will receive the same messages
-        messageHub.Subscribe<OrderProcessedEvent>("order.processed", HandleOrderProcessed);
+        await messageHub.SubscribeAsync<OrderProcessedEvent>("order.processed", HandleOrderProcessed, cancellationToken);
     }
 
     private async Task HandleOrderProcessed(IMessage<OrderProcessedEvent> message, CancellationToken cancellationToken)
@@ -221,7 +227,7 @@ private async Task HandleOrderProcessed(IMessage<OrderProcessedEvent> message, C
             OrderId = message.Data.OrderId,
             Error = ex.Message,
             FailedAt = DateTime.UtcNow
-        });
+        }, cancellationToken);
     }
 }
 ```
@@ -257,12 +263,12 @@ public class EventRouter
         _messageHub = messageHub;
     }
 
-    public void SetupRouting()
+    public async Task SetupRoutingAsync(CancellationToken cancellationToken = default)
     {
         // Route different order events to different topics
-        _messageHub.Subscribe<OrderCreatedEvent>("order.created", RouteOrderCreated);
-        _messageHub.Subscribe<OrderUpdatedEvent>("order.updated", RouteOrderUpdated);
-        _messageHub.Subscribe<OrderCancelledEvent>("order.cancelled", RouteOrderCancelled);
+        await _messageHub.SubscribeAsync<OrderCreatedEvent>("order.created", RouteOrderCreated, cancellationToken);
+        await _messageHub.SubscribeAsync<OrderUpdatedEvent>("order.updated", RouteOrderUpdated, cancellationToken);
+        await _messageHub.SubscribeAsync<OrderCancelledEvent>("order.cancelled", RouteOrderCancelled, cancellationToken);
     }
 
     private async Task RouteOrderCreated(IMessage<OrderCreatedEvent> message, CancellationToken cancellationToken)
@@ -272,14 +278,14 @@ public class EventRouter
         {
             OrderId = message.Data.OrderId,
             Amount = message.Data.Amount
-        });
+        }, cancellationToken);
 
         // Route to inventory reservation
         await _messageHub.PublishAsync("inventory.reserve", new InventoryReservationRequest
         {
             OrderId = message.Data.OrderId,
             Items = message.Data.Items
-        });
+        }, cancellationToken);
     }
 }
 ```
@@ -289,9 +295,9 @@ public class EventRouter
 ```csharp
 public class PriorityOrderHandler
 {
-    public void StartListening(IMessageHubAsync messageHub)
+    public async Task StartListeningAsync(IMessageHubAsync messageHub, CancellationToken cancellationToken = default)
     {
-        messageHub.Subscribe<OrderCreatedEvent>("order.created", HandleHighPriorityOrders);
+        await messageHub.SubscribeAsync<OrderCreatedEvent>("order.created", HandleHighPriorityOrders, cancellationToken);
     }
 
     private async Task HandleHighPriorityOrders(IMessage<OrderCreatedEvent> message, CancellationToken cancellationToken)
@@ -314,7 +320,7 @@ public class BatchProcessor
     private readonly Timer _flushTimer;
     private readonly SemaphoreSlim _semaphore = new(1, 1);
 
-    public BatchProcessor(IMessageHubAsync messageHub)
+    public BatchProcessor(IMessageHub messageHub)
     {
         messageHub.Subscribe<OrderProcessedEvent>("order.processed", HandleOrderProcessed);
         
@@ -382,7 +388,7 @@ public async Task ProcessOrder_PublishesOrderProcessedEvent()
     await orderService.ProcessOrderAsync(order);
 
     // Assert
-    mockMessageHub.Verify(hub => hub.PublishAsync("order.processed", It.IsAny<OrderProcessedEvent>()), Times.Once);
+    mockMessageHub.Verify(hub => hub.PublishAsync("order.processed", It.IsAny<OrderProcessedEvent>(), It.IsAny<CancellationToken>()), Times.Once);
 }
 ```
 
@@ -405,14 +411,15 @@ public async Task OrderProcessing_IntegrationTest()
 
     // Set up message handling
     var messagesReceived = new List<OrderProcessedEvent>();
-    messageHub.Subscribe<OrderProcessedEvent>("order.processed", async (message, ct) =>
+    await messageHub.SubscribeAsync<OrderProcessedEvent>("order.processed", (message, ct) =>
     {
         messagesReceived.Add(message.Data);
-    });
+        return Task.CompletedTask;
+    }, CancellationToken.None);
 
     // Act
     var orderService = serviceProvider.GetService<OrderService>();
-    await orderService.ProcessOrderAsync(new Order { Id = "TEST-ORDER" });
+    await orderService.ProcessOrderAsync(new Order { Id = "TEST-ORDER" }, CancellationToken.None);
 
     // Wait for async processing
     await Task.Delay(100);
@@ -435,3 +442,8 @@ public async Task OrderProcessing_IntegrationTest()
 8. **Use cancellation tokens**: Respect cancellation tokens in message handlers
 
 The in-process pub/sub system provides a robust foundation for building event-driven applications while maintaining simplicity and testability.
+
+## Related Documentation
+
+- [Redis Message Bus](redis-message-bus.md)
+- [Handler Discovery](handler-discovery.md)

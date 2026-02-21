@@ -45,7 +45,7 @@ public class DbConfigurationValuesDataProvider: IDataProvider
 
       using (var command = new SqlCommand("SELECT key, value FROM configuration_values", connection))
       {
-        using (var reader = await command.ExecuteReaderAsync(cancellationToken)) ExecuteScalarAsync
+        using (var reader = await command.ExecuteReaderAsync(cancellationToken))
         {
           while (reader.Read())
           {
@@ -69,7 +69,7 @@ public class DbConfigurationValuesDataProvider: IDataProvider
 
       using (SqlCommand command = new SqlCommand("SELECT MAX(modified_date) FROM configuration_values", connection))
       {
-        var lastModified = await command.ExecuteScalarAsync<DateTime>(cancellationToken);
+        var lastModified = (DateTime)(await command.ExecuteScalarAsync(cancellationToken))!;
         return lastModified.ToString("O");
       }
     }
@@ -172,3 +172,7 @@ With the above options added to the configuration the parsed values are:
 |CentralConfiguration:SectionA:bar|2|
 |CentralConfiguration:SectionA:buzz|3|
 |CentralConfiguration:SectionB:foo:bar|buzz|
+
+## Related Documentation
+
+- [Background Jobs](background-jobs.md)

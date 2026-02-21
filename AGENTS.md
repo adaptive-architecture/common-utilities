@@ -172,6 +172,17 @@ When implementing new features:
 
 5. Add sample demonstrating real-world usage
 
+### LLM.txt (`docfx/llm.txt`)
+
+The `docfx/llm.txt` file follows the [llmstxt.org](https://llmstxt.org/) specification and is served at the root of the GitHub
+Pages site. It provides a machine-readable summary of the project documentation for AI agents.
+
+- **Keep it in sync** with documentation changes: when docs pages are added, removed, or renamed, update `llm.txt` accordingly
+- It is included in the site build via the `resource` section in `docfx/docfx.json`
+- Links must point to the rendered HTML pages at
+`https://adaptive-architecture.github.io/common-utilities/docs/<page>.html`
+- Follow the spec structure: H1 (project name), blockquote (summary), body (packages), H2 sections (file lists with URLs)
+
 ### Running Integration Tests
 
 Integration tests for Redis and Postgres use TestContainers:

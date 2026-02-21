@@ -877,39 +877,41 @@ static void LogLeaderInfo(LeaderInfo? leader, string prefix)
 ### LeaderElectionOptions Properties
 
 ```csharp
-public class LeaderElectionOptions
+public sealed record LeaderElectionOptions
 {
     /// <summary>
     /// How long a lease lasts before it expires (default: 30 seconds)
     /// </summary>
-    public TimeSpan LeaseDuration { get; set; } = TimeSpan.FromSeconds(30);
+    public TimeSpan LeaseDuration { get; init; } = TimeSpan.FromSeconds(30);
 
     /// <summary>
     /// How often the leader renews its lease (default: 10 seconds)
     /// </summary>
-    public TimeSpan RenewalInterval { get; set; } = TimeSpan.FromSeconds(10);
+    public TimeSpan RenewalInterval { get; init; } = TimeSpan.FromSeconds(10);
 
     /// <summary>
     /// How often non-leaders retry to acquire leadership (default: 5 seconds)
     /// </summary>
-    public TimeSpan RetryInterval { get; set; } = TimeSpan.FromSeconds(5);
+    public TimeSpan RetryInterval { get; init; } = TimeSpan.FromSeconds(5);
 
     /// <summary>
     /// Maximum time to wait for lease operations (default: 5 seconds)
     /// </summary>
-    public TimeSpan OperationTimeout { get; set; } = TimeSpan.FromSeconds(5);
+    public TimeSpan OperationTimeout { get; init; } = TimeSpan.FromSeconds(5);
 
     /// <summary>
     /// Whether to automatically start the election loop (default: true)
     /// </summary>
-    public bool EnableContinuousCheck { get; set; } = true;
+    public bool EnableContinuousCheck { get; init; } = true;
 
     /// <summary>
     /// Custom metadata to attach to the lease
     /// </summary>
-    public IReadOnlyDictionary<string, string>? Metadata { get; set; }
+    public IReadOnlyDictionary<string, string>? Metadata { get; init; }
 }
 ```
+
+> **Note**: `LeaderElectionOptions` is a `sealed record`. The `Validate()` method returns a new corrected instance if the `LeaseDuration` is less than 5 seconds (defaults to 30s) or if timing intervals exceed the lease duration.
 
 ### Creating Options with the Create Method
 

@@ -58,10 +58,11 @@ A comprehensive collection of .NET utilities and extensions designed to reduce b
 
 ## Quick Start
 
-```csharp
-// Install the core package
+```bash
 dotnet add package AdaptArch.Common.Utilities
+```
 
+```csharp
 // Basic usage examples
 using AdaptArch.Common.Utilities.Extensions;
 using AdaptArch.Common.Utilities.GlobalAbstractions.Contracts;
@@ -69,14 +70,15 @@ using AdaptArch.Common.Utilities.PubSub.Contracts;
 using AdaptArch.Common.Utilities.ConsistentHashing;
 
 // Extension methods
-var timestamp = DateTime.UtcNow.ToUnixTimestampMilliseconds();
-var config = settings.GetValueOrDefault("ApiUrl", "https://localhost");
+var timestamp = DateTime.UtcNow.ToUnixTimeMilliseconds();
+var config = settings.GetValueOrDefault("ApiUrl", key => "https://localhost");
 ProcessDataAsync().Forget(); // Fire-and-forget
 
 // Consistent hashing for load balancing
 var ring = new HashRing<string>();
 ring.Add("server1.example.com");
 ring.Add("server2.example.com");
+ring.CreateConfigurationSnapshot();
 string server = ring.GetServer("user-12345"); // Always routes to same server
 
 // Testable abstractions
@@ -86,8 +88,8 @@ public class OrderService
 }
 
 // PubSub messaging
-await messageHub.PublishAsync("order.created", orderEvent);
-messageHub.Subscribe<OrderEvent>("order.created", HandleOrder);
+await messageHub.PublishAsync("order.created", orderEvent, CancellationToken.None);
+await messageHub.SubscribeAsync<OrderEvent>("order.created", HandleOrder, CancellationToken.None);
 ```
 
 ## Getting Started

@@ -123,7 +123,6 @@ builder.Services
 
 var host = builder.Build();
 host.Run();
-Console.WriteLine("Application started!");
 
 ```
 
@@ -133,3 +132,9 @@ The `WithDelayedJob` call will register a worker that will execute the job and t
 
 The `WithPeriodicJob` call will register a worker that will execute the job every `Interval` period of time.
 If the job takes longer than the actual interval, the worker perform the next execution of the job as soon as the previous execution completes.
+
+## Related Documentation
+
+- [Delay and Jitter](delay-and-jitter.md)
+- [In-Process PubSub](in-process-pubsub.md)
+- [Handler Discovery](handler-discovery.md)

@@ -14,14 +14,14 @@ Delay and jitter generation is essential for:
 
 ### IDelayGenerator
 
-The core interface for generating delay sequences:
+The core interface for generating delay sequences. It returns an enumerable of `TimeSpan` values:
 
 ```csharp
 using AdaptArch.Common.Utilities.Delay.Contracts;
 
 public interface IDelayGenerator
 {
-    TimeSpan GenerateDelay(int attempt);
+    IEnumerable<TimeSpan> GetDelays();
 }
 ```
 
@@ -34,10 +34,11 @@ using AdaptArch.Common.Utilities.Delay.Contracts;
 
 public enum DelayType
 {
-    Constant,           // Fixed delay for each attempt
-    Linear,             // Linearly increasing delay
-    PowerOfTwo,         // Exponential backoff: 2^attempt
-    PowerOfE            // Natural exponential backoff: e^attempt
+    Unknown = 0,        // Unknown type
+    Constant = 1,       // Fixed delay for each iteration
+    Linear = 2,         // Linearly increasing delay
+    PowerOf2 = 3,       // Exponential backoff: iteration^2
+    PowerOfE = 4        // Natural exponential backoff: iteration^e
 }
 ```
 
@@ -50,26 +51,19 @@ using AdaptArch.Common.Utilities.Delay.Contracts;
 // Create delay generator with exponential backoff
 var options = new DelayGeneratorOptions
 {
-    DelayType = DelayType.PowerOfTwo,
-    BaseDelay = TimeSpan.FromSeconds(1),
-    MaxDelay = TimeSpan.FromMinutes(5)
+    DelayType = DelayType.PowerOf2,
+    DelayInterval = TimeSpan.FromSeconds(1),
+    MaxIterations = 5
 };
 
 var delayGenerator = new DelayGenerator(options);
 
-// Generate delays for retry attempts
-for (int attempt = 0; attempt < 5; attempt++)
+// Enumerate the generated delays
+foreach (var delay in delayGenerator.GetDelays())
 {
-    TimeSpan delay = delayGenerator.GenerateDelay(attempt);
-    Console.WriteLine($"Attempt {attempt}: delay {delay}");
+    Console.WriteLine($"Delay: {delay}");
+    await Task.Delay(delay);
 }
-
-// Output:
-// Attempt 0: delay 00:00:01  (1 second)
-// Attempt 1: delay 00:00:02  (2 seconds)
-// Attempt 2: delay 00:00:04  (4 seconds)
-// Attempt 3: delay 00:00:08  (8 seconds)
-// Attempt 4: delay 00:00:16  (16 seconds)
 ```
 
 ### Delay Strategies
@@ -80,10 +74,11 @@ for (int attempt = 0; attempt < 5; attempt++)
 var options = new DelayGeneratorOptions
 {
     DelayType = DelayType.Constant,
-    BaseDelay = TimeSpan.FromSeconds(5)
+    DelayInterval = TimeSpan.FromSeconds(5),
+    MaxIterations = 3
 };
 
-// All attempts will have 5-second delays
+// All iterations will have 5-second delays
 ```
 
 #### Linear Delay
@@ -92,10 +87,11 @@ var options = new DelayGeneratorOptions
 var options = new DelayGeneratorOptions
 {
     DelayType = DelayType.Linear,
-    BaseDelay = TimeSpan.FromSeconds(2)
+    DelayInterval = TimeSpan.FromSeconds(2),
+    MaxIterations = 5
 };
 
-// Delays: 2s, 4s, 6s, 8s, 10s...
+// Delays scale linearly: 0*2s, 1*2s, 2*2s, 3*2s, 4*2s
 ```
 
 #### Exponential Backoff (Power of 2)
@@ -103,12 +99,12 @@ var options = new DelayGeneratorOptions
 ```csharp
 var options = new DelayGeneratorOptions
 {
-    DelayType = DelayType.PowerOfTwo,
-    BaseDelay = TimeSpan.FromSeconds(1),
-    MaxDelay = TimeSpan.FromMinutes(10)
+    DelayType = DelayType.PowerOf2,
+    DelayInterval = TimeSpan.FromSeconds(1),
+    MaxIterations = 5
 };
 
-// Delays: 1s, 2s, 4s, 8s, 16s, 32s, 64s, 128s, 256s, 512s, 600s (capped)
+// Delays: 0^2*1s, 1^2*1s, 2^2*1s, 3^2*1s, 4^2*1s = 0s, 1s, 4s, 9s, 16s
 ```
 
 #### Natural Exponential Backoff
@@ -117,11 +113,11 @@ var options = new DelayGeneratorOptions
 var options = new DelayGeneratorOptions
 {
     DelayType = DelayType.PowerOfE,
-    BaseDelay = TimeSpan.FromSeconds(1),
-    MaxDelay = TimeSpan.FromMinutes(5)
+    DelayInterval = TimeSpan.FromSeconds(1),
+    MaxIterations = 5
 };
 
-// Delays: 1s, ~2.7s, ~7.4s, ~20.1s, ~54.6s, 300s (capped)
+// Delays increase following iteration^e pattern
 ```
 
 ### DelayGeneratorOptions
@@ -131,9 +127,26 @@ Configure delay generation behavior:
 ```csharp
 public class DelayGeneratorOptions
 {
-    public DelayType DelayType { get; set; } = DelayType.PowerOfTwo;
-    public TimeSpan BaseDelay { get; set; } = TimeSpan.FromSeconds(1);
-    public TimeSpan MaxDelay { get; set; } = TimeSpan.FromMinutes(5);
+    // Maximum number of iterations to generate delays (default: 5)
+    public int MaxIterations { get; set; } = 5;
+
+    // Starting iteration index (default: 0)
+    public int Current { get; set; } = 0;
+
+    // Base interval for delay calculation
+    public TimeSpan DelayInterval { get; set; } = TimeSpan.Zero;
+
+    // Type of delay progression
+    public DelayType DelayType { get; set; } = DelayType.Constant;
+
+    // Jitter generator (default: ZeroJitterGenerator)
+    public IJitterGenerator JitterGenerator { get; set; } = ZeroJitterGenerator.Instance;
+
+    // Lower boundary for jitter percentage [0, 1] (default: 0.02)
+    public float JitterLowerBoundary { get; set; } = 0.02f;
+
+    // Upper boundary for jitter percentage [0, 1] (default: 0.27)
+    public float JitterUpperBoundary { get; set; } = 0.27f;
 }
 ```
 
@@ -148,21 +161,25 @@ using AdaptArch.Common.Utilities.Delay.Contracts;
 
 public interface IJitterGenerator
 {
-    TimeSpan ApplyJitter(TimeSpan delay);
+    TimeSpan New(TimeSpan baseValue, float lowerBoundary, float upperBoundary);
 }
 ```
+
+The jitter generator returns a `TimeSpan` that represents a positive or negative offset. The offset is a percentage of the `baseValue`, where the percentage is randomly chosen between `lowerBoundary` and `upperBoundary` (values between 0 and 1).
 
 ### Basic Jitter Usage
 
 ```csharp
 using AdaptArch.Common.Utilities.Delay.Implementations;
+using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations;
 
-var jitterGenerator = new JitterGenerator();
+var jitterGenerator = new JitterGenerator(RandomGenerator.Instance);
 
 TimeSpan baseDelay = TimeSpan.FromSeconds(10);
-TimeSpan jitteredDelay = jitterGenerator.ApplyJitter(baseDelay);
+TimeSpan jitter = jitterGenerator.New(baseDelay, lowerBoundary: 0.05f, upperBoundary: 0.25f);
 
-// jitteredDelay will be between 5-15 seconds (±50% of base delay)
+// jitter will be ±5-25% of baseDelay
+TimeSpan jitteredDelay = baseDelay + jitter;
 ```
 
 ### Zero Jitter
@@ -170,52 +187,82 @@ TimeSpan jitteredDelay = jitterGenerator.ApplyJitter(baseDelay);
 For scenarios where you need deterministic delays:
 
 ```csharp
-var zeroJitter = new ZeroJitterGenerator();
-TimeSpan delay = zeroJitter.ApplyJitter(TimeSpan.FromSeconds(10));
-// delay will always be exactly 10 seconds
+var zeroJitter = ZeroJitterGenerator.Instance;
+TimeSpan jitter = zeroJitter.New(TimeSpan.FromSeconds(10), 0f, 1f);
+// jitter will always be TimeSpan.Zero
 ```
 
 ## Combining Delay and Jitter
+
+The `DelayGeneratorOptions` integrates jitter directly. When a `JitterGenerator` is set on the options, each delay from `GetDelays()` automatically includes jitter:
+
+```csharp
+using AdaptArch.Common.Utilities.Delay.Implementations;
+using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations;
+
+var options = new DelayGeneratorOptions
+{
+    DelayType = DelayType.PowerOf2,
+    DelayInterval = TimeSpan.FromSeconds(1),
+    MaxIterations = 5,
+    JitterGenerator = new JitterGenerator(RandomGenerator.Instance),
+    JitterLowerBoundary = 0.05f,
+    JitterUpperBoundary = 0.25f
+};
+
+var delayGenerator = new DelayGenerator(options);
+
+// Each delay includes jitter automatically
+foreach (var delay in delayGenerator.GetDelays())
+{
+    await Task.Delay(delay);
+}
+```
 
 ### Complete Retry Logic Example
 
 ```csharp
 using AdaptArch.Common.Utilities.Delay.Implementations;
 using AdaptArch.Common.Utilities.Delay.Contracts;
+using AdaptArch.Common.Utilities.GlobalAbstractions.Implementations;
 
 public class RetryService
 {
-    private readonly IDelayGenerator _delayGenerator;
-    private readonly IJitterGenerator _jitterGenerator;
+    private readonly DelayGeneratorOptions _delayOptions;
 
-    public RetryService(IDelayGenerator delayGenerator, IJitterGenerator jitterGenerator)
+    public RetryService(DelayGeneratorOptions delayOptions)
     {
-        _delayGenerator = delayGenerator;
-        _jitterGenerator = jitterGenerator;
+        _delayOptions = delayOptions;
     }
 
     public async Task<T> ExecuteWithRetryAsync<T>(
-        Func<Task<T>> operation, 
-        int maxAttempts = 3,
+        Func<Task<T>> operation,
         CancellationToken cancellationToken = default)
     {
-        Exception lastException = null;
+        Exception? lastException = null;
+        var delayGenerator = new DelayGenerator(_delayOptions);
 
-        for (int attempt = 0; attempt < maxAttempts; attempt++)
+        // First attempt without delay
+        try
+        {
+            return await operation();
+        }
+        catch (Exception ex)
+        {
+            lastException = ex;
+        }
+
+        // Retry with generated delays
+        foreach (var delay in delayGenerator.GetDelays())
         {
             try
             {
+                await Task.Delay(delay, cancellationToken);
                 return await operation();
             }
-            catch (Exception ex) when (attempt < maxAttempts - 1)
+            catch (Exception ex)
             {
                 lastException = ex;
-                
-                // Calculate delay with jitter
-                TimeSpan baseDelay = _delayGenerator.GenerateDelay(attempt);
-                TimeSpan jitteredDelay = _jitterGenerator.ApplyJitter(baseDelay);
-                
-                await Task.Delay(jitteredDelay, cancellationToken);
             }
         }
 
@@ -227,70 +274,23 @@ public class RetryService
 ### Usage Example
 
 ```csharp
-// Configure delay and jitter
+// Configure delay with jitter
 var delayOptions = new DelayGeneratorOptions
 {
-    DelayType = DelayType.PowerOfTwo,
-    BaseDelay = TimeSpan.FromSeconds(1),
-    MaxDelay = TimeSpan.FromMinutes(2)
+    DelayType = DelayType.PowerOf2,
+    DelayInterval = TimeSpan.FromSeconds(1),
+    MaxIterations = 5,
+    JitterGenerator = new JitterGenerator(RandomGenerator.Instance)
 };
 
-var delayGenerator = new DelayGenerator(delayOptions);
-var jitterGenerator = new JitterGenerator();
-var retryService = new RetryService(delayGenerator, jitterGenerator);
+var retryService = new RetryService(delayOptions);
 
 // Use in your application
 var result = await retryService.ExecuteWithRetryAsync(async () =>
 {
     // This might fail and will be retried with exponential backoff + jitter
     return await httpClient.GetStringAsync("https://api.example.com/data");
-}, maxAttempts: 5);
-```
-
-## Dependency Injection Setup
-
-### Service Registration
-
-```csharp
-using Microsoft.Extensions.DependencyInjection;
-using AdaptArch.Common.Utilities.Delay.Implementations;
-using AdaptArch.Common.Utilities.Delay.Contracts;
-
-public void ConfigureServices(IServiceCollection services)
-{
-    // Configure delay options
-    services.Configure<DelayGeneratorOptions>(options =>
-    {
-        options.DelayType = DelayType.PowerOfTwo;
-        options.BaseDelay = TimeSpan.FromSeconds(1);
-        options.MaxDelay = TimeSpan.FromMinutes(5);
-    });
-
-    // Register delay and jitter generators
-    services.AddSingleton<IDelayGenerator, DelayGenerator>();
-    services.AddSingleton<IJitterGenerator, JitterGenerator>();
-    
-    // Register retry service
-    services.AddScoped<RetryService>();
-}
-```
-
-### Configuration from Settings
-
-```json
-{
-  "DelayGenerator": {
-    "DelayType": "PowerOfTwo",
-    "BaseDelay": "00:00:01",
-    "MaxDelay": "00:05:00"
-  }
-}
-```
-
-```csharp
-// In ConfigureServices
-services.Configure<DelayGeneratorOptions>(
-    configuration.GetSection("DelayGenerator"));
+});
 ```
 
 ## Advanced Scenarios
@@ -300,74 +300,11 @@ services.Configure<DelayGeneratorOptions>(
 ```csharp
 public class CustomDelayGenerator : IDelayGenerator
 {
-    public TimeSpan GenerateDelay(int attempt)
+    public IEnumerable<TimeSpan> GetDelays()
     {
-        // Implement custom delay logic
-        return TimeSpan.FromSeconds(Math.Min(attempt * attempt, 60));
-    }
-}
-```
-
-### Conditional Jitter
-
-```csharp
-public class ConditionalJitterGenerator : IJitterGenerator
-{
-    private readonly IJitterGenerator _jitterGenerator;
-    private readonly IJitterGenerator _zeroJitterGenerator;
-
-    public ConditionalJitterGenerator()
-    {
-        _jitterGenerator = new JitterGenerator();
-        _zeroJitterGenerator = new ZeroJitterGenerator();
-    }
-
-    public TimeSpan ApplyJitter(TimeSpan delay)
-    {
-        // Only apply jitter for delays longer than 5 seconds
-        if (delay > TimeSpan.FromSeconds(5))
+        for (int i = 0; i < 5; i++)
         {
-            return _jitterGenerator.ApplyJitter(delay);
-        }
-        
-        return _zeroJitterGenerator.ApplyJitter(delay);
-    }
-}
-```
-
-### Circuit Breaker Integration
-
-```csharp
-public class CircuitBreakerService
-{
-    private readonly IDelayGenerator _delayGenerator;
-    private DateTime _lastFailureTime;
-    private int _failureCount;
-
-    public async Task<T> ExecuteAsync<T>(Func<Task<T>> operation)
-    {
-        // Check if circuit is open
-        if (_failureCount >= 5)
-        {
-            TimeSpan circuitOpenDelay = _delayGenerator.GenerateDelay(_failureCount - 5);
-            
-            if (DateTime.UtcNow - _lastFailureTime < circuitOpenDelay)
-            {
-                throw new InvalidOperationException("Circuit breaker is open");
-            }
-        }
-
-        try
-        {
-            var result = await operation();
-            _failureCount = 0; // Reset on success
-            return result;
-        }
-        catch
-        {
-            _failureCount++;
-            _lastFailureTime = DateTime.UtcNow;
-            throw;
+            yield return TimeSpan.FromSeconds(Math.Min(i * i, 60));
         }
     }
 }
@@ -375,12 +312,17 @@ public class CircuitBreakerService
 
 ## Best Practices
 
-1. **Use exponential backoff**: PowerOfTwo strategy is ideal for most retry scenarios
-2. **Always set max delay**: Prevent indefinitely long delays
-3. **Add jitter**: Prevents thundering herd problems in distributed systems
+1. **Use exponential backoff**: `PowerOf2` strategy is ideal for most retry scenarios
+2. **Add jitter**: Set a `JitterGenerator` on options to prevent thundering herd problems
+3. **Limit iterations**: Set `MaxIterations` to prevent indefinitely long retry loops
 4. **Consider the operation**: Different operations may need different delay strategies
 5. **Monitor retry patterns**: Track retry attempts to identify systemic issues
 6. **Respect cancellation tokens**: Always support cancellation in retry logic
 7. **Log retry attempts**: Include attempt numbers and delays in logs for debugging
 
 These utilities provide a robust foundation for implementing resilient retry logic and backoff strategies in your applications.
+
+## Related Documentation
+
+- [Background Jobs](background-jobs.md)
+- [Leader Election](leader-election.md)

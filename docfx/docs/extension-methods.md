@@ -15,17 +15,17 @@ using AdaptArch.Common.Utilities.Extensions;
 
 // From milliseconds
 double timestampMs = 1640995200000; // 2022-01-01 00:00:00 UTC
-DateTime dateFromMs = timestampMs.ToDateTimeFromUnixTimestampMilliseconds();
+DateTime dateFromMs = timestampMs.AsUnixTimeMilliseconds();
 
 long timestampMsLong = 1640995200000L;
-DateTime dateFromMsLong = timestampMsLong.ToDateTimeFromUnixTimestampMilliseconds();
+DateTime dateFromMsLong = timestampMsLong.AsUnixTimeMilliseconds();
 
-// From seconds  
+// From seconds
 double timestampSec = 1640995200; // 2022-01-01 00:00:00 UTC
-DateTime dateFromSec = timestampSec.ToDateTimeFromUnixTimestampSeconds();
+DateTime dateFromSec = timestampSec.AsUnixTimeSeconds();
 
 ulong timestampSecUlong = 1640995200UL;
-DateTime dateFromSecUlong = timestampSecUlong.ToDateTimeFromUnixTimestampSeconds();
+DateTime dateFromSecUlong = timestampSecUlong.AsUnixTimeSeconds();
 ```
 
 ## Dictionary Extensions
@@ -45,12 +45,12 @@ var settings = new Dictionary<string, string>
     ["Timeout"] = "30"
 };
 
-// Get value or return default
-string apiUrl = settings.GetValueOrDefault("ApiUrl", "https://localhost");
-string missing = settings.GetValueOrDefault("MissingKey", "DefaultValue");
+// Get value or return default (factory receives the key)
+string apiUrl = settings.GetValueOrDefault("ApiUrl", key => "https://localhost");
+string missing = settings.GetValueOrDefault("MissingKey", key => "DefaultValue");
 
-// Try get with default
-bool found = settings.TryGetValueOrDefault("Timeout", "60", out string timeout);
+// Try get with default (factory receives the key)
+bool found = settings.TryGetValueOrDefault("Timeout", key => "60", out string timeout);
 ```
 
 ### Factory-Based Defaults
@@ -58,15 +58,15 @@ bool found = settings.TryGetValueOrDefault("Timeout", "60", out string timeout);
 Use factory methods to create default values only when needed:
 
 ```csharp
-// Factory method called only if key is missing
-var expensiveDefault = settings.GetValueOrDefault("CacheKey", () => 
+// Factory method receives the key and is called only if key is missing
+var expensiveDefault = settings.GetValueOrDefault("CacheKey", key =>
 {
     // This expensive operation only runs if key is missing
     return GenerateExpensiveDefault();
 });
 
-// Try get with factory
-bool found = settings.TryGetValueOrDefault("ConfigPath", () => 
+// Try get with factory (factory receives the key)
+bool found = settings.TryGetValueOrDefault("ConfigPath", key =>
 {
     return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "myapp");
 }, out string configPath);
@@ -86,12 +86,6 @@ using AdaptArch.Common.Utilities.Extensions;
 // Fire-and-forget - no UnobservedTaskException
 ProcessDataAsync().Forget();
 
-// With explicit error handling
-ProcessDataAsync().Forget(ex => 
-{
-    _logger.LogError(ex, "Background processing failed");
-});
-
 async Task ProcessDataAsync()
 {
     await Task.Delay(1000);
@@ -101,14 +95,14 @@ async Task ProcessDataAsync()
 
 ### Synchronous Execution of Async Code
 
-Safely run async code synchronously when needed:
+Safely run async code synchronously when needed. `RunSync()` is an extension method on `Func<Task>`, not on `Task` directly:
 
 ```csharp
-// Run async method synchronously
-var result = GetDataAsync().RunSync();
+// Run async method synchronously using a Func<Task> factory
+((Func<Task<string>>)GetDataAsync).RunSync();
 
-// With custom synchronization context
-var resultWithContext = GetDataAsync().RunSync(customSyncContext);
+// Or more commonly
+((Func<Task>)(() => GetDataAsync())).RunSync();
 
 async Task<string> GetDataAsync()
 {
@@ -165,3 +159,8 @@ optionalValue.ThrowNotSupportedIfNotNull("Optional value must be null in this co
 ```
 
 These extensions are designed to reduce boilerplate code and provide safer, more expressive ways to handle common programming patterns in .NET applications.
+
+## Related Documentation
+
+- [Global Abstractions](global-abstractions.md)
+- [Synchronization Utilities](synchronization-utilities.md)

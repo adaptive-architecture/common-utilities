@@ -722,10 +722,10 @@ public class ResilientLeaseStore : ILeaseStore
                ex is OperationCanceledException ||
                ex is SocketException ||
                ex is HttpRequestException ||
-               (ex is SqlException sqlEx && IsTransientSqlException(sqlEx));
+               (ex is NpgsqlException sqlEx && IsTransientNpgsqlException(sqlEx));
     }
 
-    private static bool IsTransientSqlException(SqlException sqlEx)
+    private static bool IsTransientNpgsqlException(NpgsqlException sqlEx)
     {
         var transientErrorNumbers = new[] { 2, 20, 64, 233, 10053, 10054, 10060, 40197, 40501, 40613 };
         return transientErrorNumbers.Contains(sqlEx.Number);
