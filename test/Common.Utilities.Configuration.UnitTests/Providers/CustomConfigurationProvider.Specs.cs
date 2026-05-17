@@ -35,9 +35,10 @@ public class CustomConfigurationProviderSpecs
     private readonly IDataProvider _dataProviderMock = Substitute.For<IDataProvider>();
     private readonly Exception _getHashException = new ApplicationException();
     private readonly TimeSpan _poolingInterval = TimeSpan.FromMilliseconds(100);
-    private readonly TimeSpan _waitInterval = TimeSpan.FromMilliseconds(120);
+    private readonly SemaphoreSlim _poolingPermit = new(0);
 
     private int _hash;
+    private int _completedControlledHashReads;
     private string GetHashValue() => (++_hash).ToString("D");
     private string GetConstantHashValue() => _hash.ToString("D");
     private IReadOnlyDictionary<string, string> GetReadValue() => new Dictionary<string, string>
@@ -53,16 +54,35 @@ public class CustomConfigurationProviderSpecs
         Assert.Equal("bar", customConfiguration!.CurrentValue.Data.Bar);
     }
 
-    private async Task AssertConfigurationValuesPooling(IOptionsMonitor<CustomConfigurationSection> customConfiguration, string hash, bool wait)
+    private async Task AssertConfigurationValuesPooling(
+        IOptionsMonitor<CustomConfigurationSection> customConfiguration,
+        string hash,
+        bool wait,
+        int expectedHashReads,
+        Func<bool> extraCondition = null)
     {
         if (wait)
         {
-            await Task.Delay(_waitInterval);
+            _ = _poolingPermit.Release();
         }
+
+        await WaitUntilAsync(() =>
+            Volatile.Read(ref _completedControlledHashReads) >= expectedHashReads
+            && customConfiguration!.CurrentValue.Hash == hash
+            && (extraCondition?.Invoke() ?? true));
 
         Assert.Equal(hash, customConfiguration!.CurrentValue.Hash);
         Assert.Equal("foo", customConfiguration!.CurrentValue.Data.Foo);
         Assert.Equal("bar", customConfiguration!.CurrentValue.Data.Bar);
+    }
+
+    private static async Task WaitUntilAsync(Func<bool> condition)
+    {
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        while (!condition())
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(10), timeout.Token);
+        }
     }
 
     private ServiceProvider BuildServiceProvider(Action<CustomConfigurationSource> configureSource, string customConfigurationSectionName = "")
@@ -105,6 +125,33 @@ public class CustomConfigurationProviderSpecs
     {
         var results = GetSequence(func, count, exceptionIndex);
         _ = _dataProviderMock.GetHashAsync(Arg.Any<CancellationToken>()).ReturnsForAnyArgs(results[0], [.. results.Skip(1)]);
+    }
+
+    private void SetupControlledGetHashSequence(Func<string> func, int exceptionCall = -1)
+    {
+        _ = _dataProviderMock.GetHashAsync(Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs(callInfo => GetControlledHashValueAsync(func, exceptionCall, callInfo.Arg<CancellationToken>()));
+    }
+
+    private async Task<string> GetControlledHashValueAsync(Func<string> func, int exceptionCall, CancellationToken cancellationToken)
+    {
+        var call = Volatile.Read(ref _completedControlledHashReads) + 1;
+        if (call > 1)
+        {
+            await _poolingPermit.WaitAsync(cancellationToken);
+        }
+
+        try
+        {
+            if (call == exceptionCall)
+                throw _getHashException;
+
+            return func();
+        }
+        finally
+        {
+            _ = Interlocked.Increment(ref _completedControlledHashReads);
+        }
     }
 
     private void SetupReadDataSequence(Func<IReadOnlyDictionary<string, string>> func, int count, int exceptionIndex = -1)
@@ -214,15 +261,15 @@ public class CustomConfigurationProviderSpecs
     [RetryFact]
     public async Task Should_Pool_Configuration_Changes()
     {
-        SetupGetHashSequence(GetHashValue, 3);
+        SetupControlledGetHashSequence(GetHashValue);
         SetupReadDataSequence(GetReadValue, 3);
 
         var sp = BuildServiceProvider(_ => { });
         var customConfiguration = sp.GetService<IOptionsMonitor<CustomConfigurationSection>>();
 
-        await AssertConfigurationValuesPooling(customConfiguration, "1", false);
-        await AssertConfigurationValuesPooling(customConfiguration, "2", true);
-        await AssertConfigurationValuesPooling(customConfiguration, "3", true);
+        await AssertConfigurationValuesPooling(customConfiguration, "1", false, 1);
+        await AssertConfigurationValuesPooling(customConfiguration, "2", true, 2);
+        await AssertConfigurationValuesPooling(customConfiguration, "3", true, 3);
 
         _ = await _dataProviderMock.Received(3).GetHashAsync(Arg.Any<CancellationToken>());
         _ = await _dataProviderMock.Received(3).ReadDataAsync(Arg.Any<CancellationToken>());
@@ -231,14 +278,14 @@ public class CustomConfigurationProviderSpecs
     [RetryFact]
     public async Task Should_Pool_Configuration_Changes_But_Not_Read_If_Same_Hash()
     {
-        SetupGetHashSequence(GetConstantHashValue, 2);
+        SetupControlledGetHashSequence(GetConstantHashValue);
         SetupReadDataSequence(GetReadValue, 3);
 
         var sp = BuildServiceProvider(_ => { });
         var customConfiguration = sp.GetService<IOptionsMonitor<CustomConfigurationSection>>();
 
-        await AssertConfigurationValuesPooling(customConfiguration, "0", false);
-        await AssertConfigurationValuesPooling(customConfiguration, "0", true);
+        await AssertConfigurationValuesPooling(customConfiguration, "0", false, 1);
+        await AssertConfigurationValuesPooling(customConfiguration, "0", true, 2);
 
         _ = await _dataProviderMock.Received(2).GetHashAsync(Arg.Any<CancellationToken>());
         _ = await _dataProviderMock.Received(1).ReadDataAsync(Arg.Any<CancellationToken>());
@@ -247,7 +294,7 @@ public class CustomConfigurationProviderSpecs
     [RetryFact]
     public async Task Should_Pool_Configuration_Changes_But_DisablePooling_On_Error()
     {
-        SetupGetHashSequence(GetHashValue, 4, 2);
+        SetupControlledGetHashSequence(GetHashValue, 3);
         SetupReadDataSequence(GetReadValue, 4);
 
         var exceptions = new List<Exception>();
@@ -267,10 +314,10 @@ public class CustomConfigurationProviderSpecs
         });
         var customConfiguration = sp.GetService<IOptionsMonitor<CustomConfigurationSection>>();
 
-        await AssertConfigurationValuesPooling(customConfiguration, "1", false);
-        await AssertConfigurationValuesPooling(customConfiguration, "2", true);
-        await AssertConfigurationValuesPooling(customConfiguration, "2", true);
-        await AssertConfigurationValuesPooling(customConfiguration, "2", true);
+        await AssertConfigurationValuesPooling(customConfiguration, "1", false, 1);
+        await AssertConfigurationValuesPooling(customConfiguration, "2", true, 2);
+        await AssertConfigurationValuesPooling(customConfiguration, "2", true, 3, () => exceptions.Count != 0);
+        await AssertConfigurationValuesPooling(customConfiguration, "2", true, 3, () => exceptions.Count != 0);
 
         Assert.NotEmpty(exceptions);
         Assert.True(exceptions[0] is ApplicationException);

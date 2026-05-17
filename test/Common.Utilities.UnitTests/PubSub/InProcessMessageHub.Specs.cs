@@ -19,18 +19,20 @@ public class InProcessMessageHubSpecs
     {
         var topic = Guid.NewGuid().ToString("N");
         var reacted = 0;
+        using var messageHandled = new ManualResetEventSlim();
         var hub = GetHub();
 
         var subscriptionId = hub.Subscribe<object>(topic, (_, _) =>
         {
-            reacted++;
+            _ = Interlocked.Increment(ref reacted);
+            messageHandled.Set();
             return Task.CompletedTask;
         });
 
         hub.Publish<object>(topic, null);
         hub.Publish<object>("other-topic", null);
 
-        Thread.Sleep(TimeSpan.FromMilliseconds(10));
+        Assert.True(messageHandled.Wait(TimeSpan.FromSeconds(5)));
         Assert.Equal(1, reacted);
 
         hub.Unsubscribe(subscriptionId);
