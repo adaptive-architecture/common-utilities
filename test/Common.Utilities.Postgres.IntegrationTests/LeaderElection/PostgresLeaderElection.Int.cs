@@ -745,28 +745,16 @@ public class PostgresLeaderElectionIntegrationTests
     }
 
     [Fact]
-    public async Task PostgresLeaseStore_Should_Handle_Invalid_Table_Name()
+    public void PostgresLeaseStore_Should_Reject_Invalid_Table_Name()
     {
         // Arrange
         var serializer = new ReflectionStringJsonDataSerializer();
         const string invalidTableName = "invalid-table-name-with-spaces and special chars!";
-        var leaseStore = new PostgresLeaseStore(_fixture.DataSource, serializer, invalidTableName, NullLogger.Instance);
 
-        var electionName = $"test-election-{Guid.NewGuid()}";
-        const string participantId = "participant-1";
-        var leaseDuration = TimeSpan.FromSeconds(30);
-
-        try
-        {
-            // Act & Assert - Should throw exceptions on SQL syntax error
-            _ = await Assert.ThrowsAsync<PostgresException>(() => leaseStore.TryAcquireLeaseAsync(electionName, participantId, leaseDuration, cancellationToken: TestContext.Current.CancellationToken));
-            _ = await Assert.ThrowsAsync<PostgresException>(() => leaseStore.GetCurrentLeaseAsync(electionName, TestContext.Current.CancellationToken));
-            _ = await Assert.ThrowsAsync<PostgresException>(() => leaseStore.HasValidLeaseAsync(electionName, TestContext.Current.CancellationToken));
-        }
-        finally
-        {
-            leaseStore.Dispose();
-        }
+        // Act & Assert - The table name is interpolated into SQL, so anything that is
+        // not a plain PostgreSQL identifier must be rejected at construction time.
+        _ = Assert.Throws<ArgumentException>(() =>
+            new PostgresLeaseStore(_fixture.DataSource, serializer, invalidTableName, NullLogger.Instance));
     }
 
     [Fact]
