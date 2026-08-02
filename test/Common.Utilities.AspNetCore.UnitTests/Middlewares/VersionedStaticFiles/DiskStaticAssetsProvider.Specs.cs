@@ -34,6 +34,38 @@ public sealed class DiskStaticAssetsProviderSpecs : IDisposable
         }
     }
 
+    [Theory]
+    [InlineData("..")]
+    [InlineData("../outside")]
+    [InlineData("/tmp/absolute")]
+    public async Task EnsureDirectoryExistsAsync_Should_Reject_Directories_Outside_The_Base(string targetDirectory)
+    {
+        var provider = new DiskStaticAssetsProvider(_options, _logger);
+
+        _ = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            provider.EnsureDirectoryExistsAsync(targetDirectory, TestContext.Current.CancellationToken));
+    }
+
+    [Theory]
+    [InlineData("app", "../..")]
+    [InlineData("app", "/tmp/absolute")]
+    public async Task EnsureVersionDirectoryExistsAsync_Should_Reject_Versions_Outside_The_Base(string targetDirectory, string version)
+    {
+        var provider = new DiskStaticAssetsProvider(_options, _logger);
+
+        _ = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            provider.EnsureVersionDirectoryExistsAsync(targetDirectory, version, TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task ReadVersionFileAsync_Should_Reject_Directories_Outside_The_Base()
+    {
+        var provider = new DiskStaticAssetsProvider(_options, _logger);
+
+        _ = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            provider.ReadVersionFileAsync("../outside", TestContext.Current.CancellationToken));
+    }
+
     [Fact]
     public async Task EnsureDirectoryExistsAsync_Should_Create_Directory_When_It_Does_Not_Exist()
     {

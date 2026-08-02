@@ -17,7 +17,9 @@ public static class HttpContextExtensions
         var connection = context.Connection;
         if (connection.RemoteIpAddress == null && connection.LocalIpAddress == null)
         {
-            return true;
+            // Fail closed: without address information (in-memory transports, unix
+            // sockets, some proxies) the request cannot be proven local.
+            return false;
         }
 
         if (connection.RemoteIpAddress != null)

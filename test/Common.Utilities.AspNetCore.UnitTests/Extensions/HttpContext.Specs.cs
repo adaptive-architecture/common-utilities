@@ -8,12 +8,14 @@ namespace AdaptArch.Common.Utilities.AspNetCore.UnitTests.Extensions;
 public class HttpContextSpecs
 {
     [Fact]
-    public void Should_Return_True_If_Null()
+    public void Should_Return_False_If_No_Address_Information()
     {
+        // Fail closed: a transport that does not populate connection addresses
+        // (in-memory, unix sockets, some proxies) must not be treated as local.
         var context = new DefaultHttpContext();
         context.Connection.RemoteIpAddress = context.Connection.LocalIpAddress = null;
 
-        Assert.True(context.IsLocal());
+        Assert.False(context.IsLocal());
     }
 
     [Fact]

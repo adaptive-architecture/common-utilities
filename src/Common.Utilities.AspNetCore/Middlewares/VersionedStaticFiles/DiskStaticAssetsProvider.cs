@@ -10,6 +10,7 @@ namespace AdaptArch.Common.Utilities.AspNetCore.Middlewares.VersionedStaticFiles
 public partial class DiskStaticAssetsProvider : IStaticAssetsProvider
 {
     private readonly string _baseDirectory;
+    private readonly string _fullBaseDirectory;
     private readonly ILogger<DiskStaticAssetsProvider> _logger;
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Version file not found at path: {FilePath}")]
@@ -35,6 +36,7 @@ public partial class DiskStaticAssetsProvider : IStaticAssetsProvider
         ArgumentNullException.ThrowIfNull(logger);
 
         _baseDirectory = options.StaticFilesDirectory;
+        _fullBaseDirectory = Path.GetFullPath(_baseDirectory);
         _logger = logger;
     }
 
@@ -113,14 +115,14 @@ public partial class DiskStaticAssetsProvider : IStaticAssetsProvider
     /// </summary>
     /// <param name="targetDirectory">The target directory.</param>
     protected string GetVersionFilePath(string targetDirectory) =>
-        Path.Combine(_baseDirectory, targetDirectory, "version.json");
+        GetContainedPath(targetDirectory, "version.json");
 
     /// <summary>
     /// Gets the full path to the target directory.
     /// </summary>
     /// <param name="targetDirectory">The target directory.</param>
     protected string GetDirectoryPath(string targetDirectory) =>
-        Path.Combine(_baseDirectory, targetDirectory);
+        GetContainedPath(targetDirectory);
 
     /// <summary>
     /// Gets the full path to the versioned directory for the specified target directory and version.
@@ -128,5 +130,20 @@ public partial class DiskStaticAssetsProvider : IStaticAssetsProvider
     /// <param name="targetDirectory">The target directory.</param>
     /// <param name="version">The version string.</param>
     protected string GetVersionDirectoryPath(string targetDirectory, string version) =>
-        Path.Combine(_baseDirectory, targetDirectory, version);
+        GetContainedPath(targetDirectory, version);
+
+    private string GetContainedPath(params string[] segments)
+    {
+        // Path.Combine neither neutralizes ".." nor rejects rooted segments (it re-bases
+        // on them), so the resolved path must be verified to stay inside the base directory.
+        var fullPath = Path.GetFullPath(Path.Combine([_baseDirectory, .. segments]));
+
+        if (!String.Equals(fullPath, _fullBaseDirectory, StringComparison.Ordinal)
+            && !fullPath.StartsWith(_fullBaseDirectory + Path.DirectorySeparatorChar, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException("The resolved path is outside of the static files directory.");
+        }
+
+        return fullPath;
+    }
 }

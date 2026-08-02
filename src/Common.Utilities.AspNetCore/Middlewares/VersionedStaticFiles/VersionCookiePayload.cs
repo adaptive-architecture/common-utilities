@@ -40,13 +40,18 @@ public class VersionCookiePayload
             var separatorIndex = trimmedValue.IndexOf(DataSeparator);
             if (separatorIndex > 0 && Int64.TryParse(trimmedValue.AsSpan(0, separatorIndex), out var unixTimestamp))
             {
-                var dateModified = DateTime.UnixEpoch.AddSeconds(unixTimestamp);
-                result = new VersionCookiePayload
+                // The cookie is attacker-controlled and the version becomes part of a
+                // filesystem path and the rewritten request path - enforce a strict allowlist.
+                var version = trimmedValue[(separatorIndex + 1)..];
+                if (PathSegment.IsValid(version))
                 {
-                    DateModified = dateModified,
-                    Version = trimmedValue[(separatorIndex + 1)..]
-                };
-                return true;
+                    result = new VersionCookiePayload
+                    {
+                        DateModified = DateTime.UnixEpoch.AddSeconds(unixTimestamp),
+                        Version = version
+                    };
+                    return true;
+                }
             }
         }
 

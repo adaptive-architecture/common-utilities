@@ -88,6 +88,58 @@ public sealed class VersionedStaticFilesMiddlewareSpecs : IDisposable
         Assert.Equal("/static/app/index.js", capturedPath);
     }
 
+    [Theory]
+    [InlineData("/static/app.js")] // file directly under the prefix - no target directory
+    [InlineData("/static/")] // the bare prefix
+    public async Task It_Should_Pass_Through_Paths_Directly_Under_The_Prefix(string requestPath)
+    {
+        // These used to throw ArgumentOutOfRangeException (HTTP 500) because there is no
+        // second path separator after the prefix.
+        var capturedPath = await CaptureModifiedPath(
+            new MiddlewareOptions
+            {
+                StaticFilesPathPrefix = "/static/",
+                StaticFilesDirectory = _tempDirectory,
+                VersionCookieNamePrefix = ".version"
+            },
+            requestPath);
+
+        Assert.Equal(requestPath, capturedPath);
+    }
+
+    [Fact]
+    public async Task It_Should_Ignore_Cookie_With_Path_Traversal_Version()
+    {
+        var appDirectory = Path.Combine(_tempDirectory, "app");
+        Directory.CreateDirectory(appDirectory);
+        var escapedDirectory = Path.Combine(Path.GetTempPath(), $"vsf_escaped_{Guid.NewGuid()}");
+
+        try
+        {
+            var capturedPath = await CaptureModifiedPath(
+                new MiddlewareOptions
+                {
+                    StaticFilesPathPrefix = "/static/",
+                    StaticFilesDirectory = _tempDirectory,
+                    VersionCookieNamePrefix = ".version"
+                },
+                "/static/app/index.js",
+                $".version_v_app=1609459200~../../{Path.GetFileName(escapedDirectory)}");
+
+            // A traversal version must neither rewrite the request path nor create
+            // directories outside of the static files directory.
+            Assert.Equal("/static/app/index.js", capturedPath);
+            Assert.False(Directory.Exists(escapedDirectory));
+        }
+        finally
+        {
+            if (Directory.Exists(escapedDirectory))
+            {
+                Directory.Delete(escapedDirectory, true);
+            }
+        }
+    }
+
     [Fact]
     public async Task It_Should_Not_Modify_Path_For_Non_Static_Files()
     {
