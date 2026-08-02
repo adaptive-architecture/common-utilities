@@ -46,6 +46,7 @@ public static class TaskExtensions
     public static void RunSync(this Func<Task?> taskFactory, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(taskFactory);
+        cancellationToken.ThrowIfCancellationRequested();
         var previousContext = SynchronizationContext.Current;
         var newContext = new SingleThreadSynchronizationContext();
 
@@ -60,7 +61,8 @@ public static class TaskExtensions
             }
             else
             {
-                _ = task.ContinueWith(_ => newContext.OperationCompleted(), cancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+                // The continuation must run for canceled tasks too, otherwise the pump below never completes.
+                _ = task.ContinueWith(_ => newContext.OperationCompleted(), CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
                 newContext.RunOnCurrentThread();
                 task.GetAwaiter().GetResult();
             }
@@ -80,6 +82,7 @@ public static class TaskExtensions
     public static T? RunSync<T>(this Func<Task<T?>?> taskFactory, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(taskFactory);
+        cancellationToken.ThrowIfCancellationRequested();
         var previousContext = SynchronizationContext.Current;
         var newContext = new SingleThreadSynchronizationContext();
 
@@ -95,7 +98,8 @@ public static class TaskExtensions
             }
             else
             {
-                _ = task.ContinueWith(_ => newContext.OperationCompleted(), cancellationToken, TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
+                // The continuation must run for canceled tasks too, otherwise the pump below never completes.
+                _ = task.ContinueWith(_ => newContext.OperationCompleted(), CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
                 newContext.RunOnCurrentThread();
                 return task.GetAwaiter().GetResult();
             }

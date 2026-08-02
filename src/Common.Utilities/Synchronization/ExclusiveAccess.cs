@@ -44,6 +44,7 @@ public sealed class ExclusiveAccess<T> : IDisposable
     {
         private readonly SemaphoreSlim _semaphore;
         private T? _value;
+        private int _disposed;
 
         /// <summary>
         /// Constructor.
@@ -71,6 +72,13 @@ public sealed class ExclusiveAccess<T> : IDisposable
         /// </summary>
         private void Dispose(bool disposing)
         {
+            // The semaphore must be released exactly once, otherwise a double dispose
+            // would allow two callers to hold the "exclusive" resource at the same time.
+            if (Interlocked.Exchange(ref _disposed, 1) != 0)
+            {
+                return;
+            }
+
             if (disposing)
             {
                 _value = null;

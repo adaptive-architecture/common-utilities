@@ -294,15 +294,7 @@ public sealed class HashRing<T> where T : IEquatable<T>
     {
         ArgumentNullException.ThrowIfNull(key);
 
-        if (!_historyManager.HasSnapshots)
-        {
-            throw new InvalidOperationException(
-                "No configuration snapshots available. Call CreateConfigurationSnapshot() after adding servers.");
-        }
-
-        return _historyManager.GetSnapshotsReverse()
-            .Select(snapshot => snapshot.GetServer(key))
-            .First();
+        return GetLatestSnapshot().GetServer(key);
     }
 
     /// <summary>
@@ -343,16 +335,28 @@ public sealed class HashRing<T> where T : IEquatable<T>
         ArgumentNullException.ThrowIfNull(key);
         ArgumentOutOfRangeException.ThrowIfLessThan(count, 0);
 
-        if (!_historyManager.HasSnapshots)
-        {
-            throw new InvalidOperationException(
-                "No configuration snapshots available. Call CreateConfigurationSnapshot() after adding servers.");
-        }
-
-        return GetServersCore(key, count);
+        return GetServersCore(GetLatestSnapshot(), key, count);
     }
 
-    private List<T> GetServersCore(byte[] key, int count)
+    /// <summary>
+    /// Gets the most recent configuration snapshot. Snapshots are immutable, so lookups
+    /// can safely run outside the lock once the snapshot reference is obtained.
+    /// </summary>
+    private ConfigurationSnapshot<T> GetLatestSnapshot()
+    {
+        lock (_lock)
+        {
+            if (_historyManager.TryGetLatest(out var snapshot) && snapshot != null)
+            {
+                return snapshot;
+            }
+        }
+
+        throw new InvalidOperationException(
+            "No configuration snapshots available. Call CreateConfigurationSnapshot() after adding servers.");
+    }
+
+    private List<T> GetServersCore(ConfigurationSnapshot<T> snapshot, byte[] key, int count)
     {
         if (count == 0)
         {
@@ -360,7 +364,7 @@ public sealed class HashRing<T> where T : IEquatable<T>
         }
 
         // Get servers from the latest snapshot by walking the ring
-        var virtualNodes = _historyManager.GetSnapshotsReverse()[0].VirtualNodes;
+        var virtualNodes = snapshot.VirtualNodes;
         if (virtualNodes.Count == 0)
         {
             return [];
@@ -371,7 +375,7 @@ public sealed class HashRing<T> where T : IEquatable<T>
         var result = new List<T>();
 
         // Find the starting index (first virtual node with hash >= keyHash)
-        int startIndex = FindServerIndex([.. virtualNodes], keyHash);
+        int startIndex = FindServerIndex(virtualNodes, keyHash);
 
         // Walk the ring starting from startIndex to find distinct servers
         for (int i = 0; i < virtualNodes.Count && result.Count < count; i++)
@@ -416,7 +420,7 @@ public sealed class HashRing<T> where T : IEquatable<T>
         return BitConverter.ToUInt32(hashBytes, 0);
     }
 
-    internal static int FindServerIndex(List<VirtualNode<T>> virtualNodes, uint hash)
+    internal static int FindServerIndex(IReadOnlyList<VirtualNode<T>> virtualNodes, uint hash)
     {
         int left = 0;
         int right = virtualNodes.Count - 1;

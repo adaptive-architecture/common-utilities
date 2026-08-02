@@ -70,6 +70,20 @@ public class TaskSpecs
     }
 
     [Fact]
+    public void Task_Void_RunSync_Should_Propagate_Cancellation()
+    {
+        Func<Task> taskFactory = static () => Task.FromCanceled(new CancellationToken(canceled: true));
+        _ = Assert.Throws<TaskCanceledException>(() => taskFactory.RunSync(cancellationToken: TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public void Task_Value_RunSync_Should_Propagate_Cancellation()
+    {
+        Func<Task<bool>> taskFactory = static () => Task.FromCanceled<bool>(new CancellationToken(canceled: true));
+        _ = Assert.Throws<TaskCanceledException>(() => _ = taskFactory.RunSync(cancellationToken: TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
     public void SingleThreadSynchronizationContext_Should_Return_The_Same_Instance_When_Cloning()
     {
         var context = new SingleThreadSynchronizationContext();

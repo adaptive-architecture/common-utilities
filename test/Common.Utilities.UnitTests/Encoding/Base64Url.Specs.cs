@@ -76,4 +76,16 @@ public class Base64UrlSpecs
     {
         _ = Assert.Throws<ArgumentOutOfRangeException>(() => _ = Base64Url.Encode([], 0, [], -1, 0));
     }
+
+    [Fact]
+    public void Decode_Throws_ArgumentNull_Exception_1()
+    {
+        _ = Assert.Throws<ArgumentNullException>(() => _ = Base64Url.Decode(null));
+    }
+
+    [Fact]
+    public void Decode_Throws_ArgumentNull_Exception_2()
+    {
+        _ = Assert.Throws<ArgumentNullException>(() => _ = Base64Url.Decode(null, 0, 0));
+    }
 }

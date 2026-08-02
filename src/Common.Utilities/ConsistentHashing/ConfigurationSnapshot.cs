@@ -52,7 +52,8 @@ internal sealed class ConfigurationSnapshot<T> where T : IEquatable<T>
         CreatedAt = createdAt;
         _hashAlgorithm = hashAlgorithm;
 
-        _sortedVirtualNodes = [.. virtualNodes.OrderBy(node => node.Hash)];
+        _sortedVirtualNodes = [.. virtualNodes];
+        _sortedVirtualNodes.Sort();
     }
 
     /// <summary>
@@ -73,14 +74,9 @@ internal sealed class ConfigurationSnapshot<T> where T : IEquatable<T>
 
         var keyHash = ComputeKeyHash(key);
 
-        // Find the first virtual node with hash >= keyHash (clockwise traversal)
-        var index = _sortedVirtualNodes.FindIndex(node => node.Hash >= keyHash);
-
-        // If no node found, wrap around to the first node (ring property)
-        if (index == -1)
-        {
-            index = 0;
-        }
+        // Binary search for the first virtual node with hash >= keyHash (clockwise traversal),
+        // wrapping around to the first node (ring property).
+        var index = HashRing<T>.FindServerIndex(_sortedVirtualNodes, keyHash);
 
         return _sortedVirtualNodes[index].Server;
     }

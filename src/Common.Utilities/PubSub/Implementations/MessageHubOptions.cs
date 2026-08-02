@@ -20,6 +20,14 @@ public abstract class MessageHubOptions
     public virtual IMessageBuilder<T> GetMessageBuilder<T>()
         where T : class
     {
-        return new MessageBuilder<T>(new DateTimeProvider(), new UnDashedUuidProvider());
+        return DefaultMessageBuilder<T>.Instance;
+    }
+
+    // The default builder and its providers are stateless; cache one per message type
+    // instead of allocating a builder + providers on every publish.
+    private static class DefaultMessageBuilder<T>
+        where T : class
+    {
+        public static readonly IMessageBuilder<T> Instance = new MessageBuilder<T>(new DateTimeProvider(), new UnDashedUuidProvider());
     }
 }

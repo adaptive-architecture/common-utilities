@@ -151,6 +151,41 @@ public class Base32Specs
         _ = Assert.Throws<FormatException>(() => _ = Base32.Decode("ORSXG1A="));
     }
 
+    [Fact]
+    public void Encode_Buffer_Validation_Accounts_For_Padding()
+    {
+        // Encoding 1 byte writes a full padded 8-char group; a smaller buffer must be rejected up front.
+        _ = Assert.Throws<ArgumentException>(() => _ = Base32.Encode([1], 0, new char[7], 0, 1));
+    }
+
+    [Fact]
+    public void Encode_Writes_Full_Padded_Group()
+    {
+        var output = new char[8];
+        var written = Base32.Encode([1], 0, output, 0, 1);
+
+        Assert.Equal(8, written);
+        Assert.Equal("AE======", new string(output));
+    }
+
+    [Theory]
+    [InlineData("AB======")] // 1 decoded byte, but the trailing character carries non-zero leftover bits
+    [InlineData("NRXXEZLNEBUXA43VNV======")] // valid payload with non-canonical final character
+    public void Decode_Throws_On_NonCanonical_Trailing_Bits(string encoded)
+    {
+        _ = Assert.Throws<FormatException>(() => _ = Base32.Decode(encoded));
+    }
+
+    [Theory]
+    [InlineData("A")] // remainder 1 is never produced by a valid encoder
+    [InlineData("AAA")] // remainder 3
+    [InlineData("AAAAAA")] // remainder 6
+    [InlineData("AAAAAAAA$")] // trailing character past the last full byte must still be validated
+    public void Decode_Throws_On_Invalid_Length(string encoded)
+    {
+        _ = Assert.Throws<FormatException>(() => _ = Base32.Decode(encoded));
+    }
+
     private static byte[] GetRandomByteArray(int length)
     {
         byte[] bytes = new byte[length];

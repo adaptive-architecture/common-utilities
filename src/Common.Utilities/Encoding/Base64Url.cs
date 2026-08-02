@@ -19,7 +19,10 @@ public static class Base64Url
     /// Throws <see cref="FormatException"/> if the input is malformed.
     /// </remarks>
     public static byte[] Decode(string input)
-        => BclBase64Url.DecodeFromChars(input);
+    {
+        ArgumentNullException.ThrowIfNull(input);
+        return BclBase64Url.DecodeFromChars(input);
+    }
 
     /// <summary>
     /// Decodes a base64url-encoded substring of a given string.
@@ -33,7 +36,10 @@ public static class Base64Url
     /// Throws <see cref="FormatException"/> if the input is malformed.
     /// </remarks>
     public static byte[] Decode(string input, int offset, int count)
-        => BclBase64Url.DecodeFromChars(input.AsSpan(offset, count));
+    {
+        ArgumentNullException.ThrowIfNull(input);
+        return BclBase64Url.DecodeFromChars(input.AsSpan(offset, count));
+    }
 
     /// <summary>
     /// Encodes <paramref name="input"/> using base64url encoding.
