@@ -17,7 +17,7 @@ public class JsonDataSerializer : IStringDataSerializer
     /// <inheritdoc />
     public JsonDataSerializer(JsonSerializerContext? jsonSerializerContext = null)
     {
-        _jsonSerializerContext = jsonSerializerContext ?? new DefaultPostgresJsonSerializerContext();
+        _jsonSerializerContext = jsonSerializerContext ?? DefaultPostgresJsonSerializerContext.Default;
     }
 
     /// <inheritdoc />

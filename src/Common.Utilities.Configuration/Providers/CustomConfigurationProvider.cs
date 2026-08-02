@@ -5,7 +5,7 @@ using TaskExtensions = AdaptArch.Common.Utilities.Extensions.TaskExtensions;
 namespace AdaptArch.Common.Utilities.Configuration.Providers;
 
 /// <inheritdoc />
-public class CustomConfigurationProvider : ConfigurationProvider
+public class CustomConfigurationProvider : ConfigurationProvider, IDisposable
 {
     private readonly IDataProvider _dataProvider;
     private readonly CustomConfigurationProviderOptions _options;
@@ -15,6 +15,7 @@ public class CustomConfigurationProvider : ConfigurationProvider
     private string _dataHash = String.Empty;
     private Task? _pollingTask;
     private CancellationTokenSource? _cancellationTokenSource;
+    private bool _disposed;
 
     /// <summary>
     /// Constructor.
@@ -118,11 +119,21 @@ public class CustomConfigurationProvider : ConfigurationProvider
     {
         lock (_poolingStateLock)
         {
-            if (_options.PoolingInterval <= TimeSpan.Zero || _pollingTask != null)
+            if (_disposed || _options.PoolingInterval <= TimeSpan.Zero || _pollingTask != null)
                 return;
 
             _cancellationTokenSource = new CancellationTokenSource();
             _pollingTask = PollForChangesAsync(_cancellationTokenSource.Token);
+
+            // Only clear the reference once the loop has actually stopped, so a subsequent
+            // EnablePooling can never start a second poller alongside one that is still winding down.
+            _ = _pollingTask.ContinueWith(_ =>
+            {
+                lock (_poolingStateLock)
+                {
+                    _pollingTask = null;
+                }
+            }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
         }
     }
 
@@ -136,7 +147,8 @@ public class CustomConfigurationProvider : ConfigurationProvider
             _cancellationTokenSource.Cancel();
             _cancellationTokenSource.Dispose();
             _cancellationTokenSource = null;
-            _pollingTask = null;
+            // _pollingTask is cleared by the continuation set up in EnablePooling once the
+            // in-flight loop observes the cancellation and completes.
         }
     }
 
@@ -154,5 +166,39 @@ public class CustomConfigurationProvider : ConfigurationProvider
                 // Ignore all exceptions.
             }
         }
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Releases the resources used by the provider, stopping the background polling loop.
+    /// </summary>
+    /// <param name="disposing">true to release managed resources.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed || !disposing)
+        {
+            return;
+        }
+
+        lock (_poolingStateLock)
+        {
+            _disposed = true;
+            // ConfigurationRoot disposes providers that implement IDisposable; without this,
+            // the CTS and the polling loop would outlive the provider forever.
+            if (_cancellationTokenSource != null)
+            {
+                _cancellationTokenSource.Cancel();
+                _cancellationTokenSource.Dispose();
+                _cancellationTokenSource = null;
+            }
+        }
+
+        _loadingStateSemaphore.Dispose();
     }
 }

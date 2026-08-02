@@ -127,6 +127,26 @@ public class RedisMessageHubSpecs
     }
 
     [Fact]
+    public void Should_Route_Malformed_Payload_To_Error_Handler()
+    {
+        Exception captured = null;
+        var options = new RedisMessageHubOptions
+        {
+            OnMessageHandlerError = (ex, _) => captured = ex
+        };
+        var hub = new RedisMessageHub(_cm, options);
+
+        _ = hub.Subscribe<object>("topic_A", TopicHandler);
+
+        // A malformed payload must not throw inside the Redis callback and must not
+        // invoke the user handler; it should surface via OnMessageHandlerError.
+        _handler!.Invoke("topic_A".ToChannel(), "this-is-not-json");
+
+        Assert.NotNull(captured);
+        Assert.Equal(0, _handlerReactions);
+    }
+
+    [Fact]
     public async Task Should_Subscribe_And_Unsubscribe_MessageHandler_Async()
     {
         VerifySubscriberCalled(0);

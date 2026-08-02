@@ -18,7 +18,7 @@ public class JsonDataSerializer : IDataSerializer
     /// <inheritdoc />
     public JsonDataSerializer(JsonSerializerContext? jsonSerializerContext = null)
     {
-        _jsonSerializerContext = jsonSerializerContext ?? new DefaultJsonSerializerContext();
+        _jsonSerializerContext = jsonSerializerContext ?? DefaultJsonSerializerContext.Default;
     }
 
     /// <inheritdoc />
