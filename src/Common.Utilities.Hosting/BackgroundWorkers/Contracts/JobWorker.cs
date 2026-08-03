@@ -113,7 +113,7 @@ internal abstract partial class JobWorker<T> : BackgroundService
 
     protected void SetTimerPeriod(bool useInitialDelay)
     {
-        _ = _configurationChangeLock.Wait(TimeSpan.FromSeconds(5));
+        _ = _configurationChangeLock.Wait(TimeSpan.FromSeconds(5), CancellationToken.None);
         try
         {
             SetTimerPeriodCore(useInitialDelay);
@@ -148,7 +148,7 @@ internal abstract partial class JobWorker<T> : BackgroundService
 
     private void HandleConfigurationChange(bool useInitialDelay)
     {
-        _ = _configurationChangeLock.Wait(TimeSpan.FromSeconds(5));
+        _ = _configurationChangeLock.Wait(TimeSpan.FromSeconds(5), CancellationToken.None);
         try
         {
             if (_stopRequested)
@@ -184,7 +184,7 @@ internal abstract partial class JobWorker<T> : BackgroundService
 
     private void DisposeConfigurationCts()
     {
-        _ = _configurationChangeLock.Wait(TimeSpan.FromSeconds(1));
+        _ = _configurationChangeLock.Wait(TimeSpan.FromSeconds(1), CancellationToken.None);
         try
         {
             if (_configurationChangeTokenSource?.IsCancellationRequested == true)
