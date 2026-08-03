@@ -4,7 +4,9 @@ internal class Base32EncodingHelper : Base
 {
     private const string MalformedInput = "Malformed input: Input string contains invalid characters at index {0}.";
     private const int BitsPerChar = 5;
-    private const int InputGroupSize = 8;
+    private const int BitsPerByte = 8;
+    private const int BytesPerGroup = 5;
+    private const int CharsPerGroup = 8;
     private const string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
     protected override byte[] DecodeCore(string input, int offset, int count)
@@ -28,44 +30,49 @@ internal class Base32EncodingHelper : Base
             return [];
         }
 
+        // A valid encoder never produces a final group of 1, 3 or 6 characters.
+        if ((count % CharsPerGroup) is 1 or 3 or 6)
+        {
+            throw new FormatException(String.Format(MalformedInput, offset + count - 1));
+        }
+
         var output = new byte[GetArraySizeRequiredToDecode(count)];
 
-        var bitIndex = 0;
-        var inputIndex = offset;
-        var outputBits = 0;
+        var bitBuffer = 0;
+        var bitCount = 0;
         var outputIndex = 0;
-        while (outputIndex < output.Length)
+        for (var i = 0; i < count; i++)
         {
-            var byteIndex = Alphabet.IndexOf(input[inputIndex], StringComparison.OrdinalIgnoreCase);
+            var byteIndex = Alphabet.IndexOf(input[offset + i], StringComparison.OrdinalIgnoreCase);
             if (byteIndex < 0)
             {
-                throw new FormatException(String.Format(MalformedInput, inputIndex));
+                throw new FormatException(String.Format(MalformedInput, offset + i));
             }
 
-            var bits = Math.Min(BitsPerChar - bitIndex, InputGroupSize - outputBits);
-            output[outputIndex] <<= bits;
-            output[outputIndex] |= (byte)(byteIndex >> (BitsPerChar - (bitIndex + bits)));
-
-            bitIndex += bits;
-            if (bitIndex >= BitsPerChar)
+            bitBuffer = (bitBuffer << BitsPerChar) | byteIndex;
+            bitCount += BitsPerChar;
+            if (bitCount >= BitsPerByte)
             {
-                inputIndex++;
-                bitIndex = 0;
-            }
-
-            outputBits += bits;
-            if (outputBits >= InputGroupSize)
-            {
-                outputIndex++;
-                outputBits = 0;
+                bitCount -= BitsPerByte;
+                output[outputIndex++] = (byte)(bitBuffer >> bitCount);
             }
         }
+
+        // Bits left over after the last full byte must be zero, otherwise several
+        // distinct strings would decode to the same bytes (non-canonical encoding).
+        if (bitCount > 0 && (bitBuffer & ((1 << bitCount) - 1)) != 0)
+        {
+            throw new FormatException(String.Format(MalformedInput, offset + count - 1));
+        }
+
         return output;
     }
     protected override int GetArraySizeRequiredToEncode(int count)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(count);
-        return Convert.ToInt32(Math.Ceiling(count * (float)InputGroupSize / BitsPerChar));
+        // The encoder always writes full padded groups: 8 characters for every started 5 input bytes.
+        var groups = (((long)count) + BytesPerGroup - 1) / BytesPerGroup;
+        return checked((int)(groups * CharsPerGroup));
     }
 
     // SONAR: Methods should not have too many parameters
@@ -134,7 +141,7 @@ internal class Base32EncodingHelper : Base
     private static int GetArraySizeRequiredToDecode(int count)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(count);
-        return Convert.ToInt32(Math.Floor(count * (float)BitsPerChar / InputGroupSize));
+        return (int)((long)count * BitsPerChar / BitsPerByte);
     }
 }
 
@@ -208,7 +215,7 @@ public static class Base32
     /// </param>
     /// <param name="count">The number of <c>byte</c>s from <paramref name="input"/> to encode.</param>
     /// <returns>
-    /// The number of characters written to <paramref name="output"/>, less any padding characters.
+    /// The number of characters written to <paramref name="output"/>, including padding characters.
     /// </returns>
     public static int Encode(byte[] input, int offset, char[] output, int outputOffset, int count)
         => s_helper.Encode(input, offset, output, outputOffset, count);

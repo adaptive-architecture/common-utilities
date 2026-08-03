@@ -25,4 +25,22 @@ public class ExclusiveAccessSpecs
 
         GC.Collect();
     }
+
+    [Fact]
+    public void Lock_Dispose_Should_Be_Idempotent()
+    {
+        var value = new object();
+        using var exclusiveAccess = new ExclusiveAccess<object>(value, TimeSpan.FromMilliseconds(100));
+
+        var firstLock = exclusiveAccess.Lock();
+        firstLock.Dispose();
+        firstLock.Dispose(); // A second dispose must be a no-op, not a second semaphore release.
+
+        var secondLock = exclusiveAccess.Lock();
+
+        // If the double dispose had over-released the semaphore, this would acquire a second "exclusive" lock.
+        _ = Assert.Throws<TimeoutException>(() => _ = exclusiveAccess.Lock());
+
+        secondLock.Dispose();
+    }
 }

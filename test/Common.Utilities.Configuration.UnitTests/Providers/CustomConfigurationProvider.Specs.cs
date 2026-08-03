@@ -325,4 +325,41 @@ public class CustomConfigurationProviderSpecs
         _ = await _dataProviderMock.Received(3).GetHashAsync(Arg.Any<CancellationToken>());
         _ = await _dataProviderMock.Received(2).ReadDataAsync(Arg.Any<CancellationToken>());
     }
+
+    [Fact]
+    public void Provider_Should_Be_Disposable_And_Idempotent()
+    {
+        var provider = new CustomConfigurationProvider(_dataProviderMock, new CustomConfigurationProviderOptions());
+
+        // ConfigurationRoot disposes providers that implement IDisposable.
+        _ = Assert.IsType<IDisposable>(provider, exactMatch: false);
+
+        provider.Dispose();
+        provider.Dispose(); // Must not throw on a second dispose.
+    }
+
+    [Fact]
+    public async Task Dispose_Should_Stop_Background_Polling()
+    {
+        _ = _dataProviderMock.GetHashAsync(Arg.Any<CancellationToken>()).Returns(_ => Task.FromResult(GetHashValue()));
+        _ = _dataProviderMock.ReadDataAsync(Arg.Any<CancellationToken>())
+            .Returns(_ => Task.FromResult(GetReadValue()));
+
+        var provider = new CustomConfigurationProvider(_dataProviderMock, new CustomConfigurationProviderOptions
+        {
+            PoolingInterval = TimeSpan.FromMilliseconds(20)
+        });
+
+        provider.Load(); // starts the polling loop
+        await Task.Delay(100, TestContext.Current.CancellationToken);
+        provider.Dispose();
+
+        _ = await _dataProviderMock.ReceivedWithAnyArgs().GetHashAsync(Arg.Any<CancellationToken>());
+
+        _dataProviderMock.ClearReceivedCalls();
+        await Task.Delay(150, TestContext.Current.CancellationToken);
+
+        // After dispose the loop must have stopped: no further reads.
+        _ = await _dataProviderMock.DidNotReceiveWithAnyArgs().GetHashAsync(Arg.Any<CancellationToken>());
+    }
 }

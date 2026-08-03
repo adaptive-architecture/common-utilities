@@ -102,7 +102,15 @@ public partial class VersionedStaticFilesMiddleware
     {
         LogProcessingRequest(currentPath);
 
-        var (targetDirectory, targetDirectoryStartIndex, targetDirectoryEndIndex) = ExtractTargetDirectory(currentPath);
+        var target = ExtractTargetDirectory(currentPath);
+        if (target == null)
+        {
+            // No usable target directory (path directly under the prefix, or a segment
+            // that is not safe to use in a filesystem path) - leave the request untouched.
+            return;
+        }
+
+        var (targetDirectory, targetDirectoryStartIndex, targetDirectoryEndIndex) = target.Value;
 
         var versionInfo = ExtractVersionFromCookie(context, targetDirectory);
 
@@ -127,12 +135,23 @@ public partial class VersionedStaticFilesMiddleware
         }
     }
 
-    private (string targetDirectory, int startIndex, int endIndex) ExtractTargetDirectory(string currentPath)
+    private (string targetDirectory, int startIndex, int endIndex)? ExtractTargetDirectory(string currentPath)
     {
         var staticPrefixLength = _options.StaticFilesPathPrefix.Length;
         var targetDirectoryStartIndex = staticPrefixLength;
         var targetDirectoryEndIndex = currentPath.IndexOf('/', staticPrefixLength);
+        if (targetDirectoryEndIndex < 0)
+        {
+            // e.g. "/static/app.js" or "/static/" - there is no target directory segment.
+            return null;
+        }
+
         var targetDirectory = currentPath[targetDirectoryStartIndex..targetDirectoryEndIndex];
+        if (!PathSegment.IsValid(targetDirectory))
+        {
+            // The directory becomes part of a filesystem path and a cookie name.
+            return null;
+        }
 
         LogExtractedDirectory(targetDirectory);
 
@@ -268,7 +287,7 @@ public partial class VersionedStaticFilesMiddleware
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTimeOffset.UtcNow.Add(_options.CookieExpiration)
             });
-#pragma warning disable S2092, S3330
+#pragma warning restore S2092, S3330
 
         if (cacheDuration > TimeSpan.Zero)
         {

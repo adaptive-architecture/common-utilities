@@ -51,6 +51,7 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
         if (registration is { Handler: Action<RedisChannel, RedisValue> redisHandler })
         {
             GetSubscriber().Unsubscribe(registration.Topic.ToChannel(), redisHandler);
+            _registry.Remove(id);
         }
     }
 
@@ -79,6 +80,7 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
         if (registration is { Handler: Action<RedisChannel, RedisValue> redisHandler })
         {
             await GetSubscriber().UnsubscribeAsync(registration.Topic.ToChannel(), redisHandler).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
+            _registry.Remove(id);
         }
     }
 
@@ -99,10 +101,35 @@ public class RedisMessageHub : MessageHub<RedisMessageHubOptions>
         where TMessageData : class
     {
         var safeHandler = WrapHandler(handler);
-        return (_, value) =>
+        return (channel, value) =>
         {
-            var message = DeserializeMessage<TMessageData>(value);
+            Message<TMessageData> message;
+            try
+            {
+                // Deserialization runs inside the Redis subscription callback; a malformed
+                // payload must route to the error handler instead of throwing here.
+                message = DeserializeMessage<TMessageData>(value);
+            }
+            catch (Exception ex)
+            {
+                InvokeErrorHandler(channel, ex);
+                return;
+            }
+
             safeHandler.Invoke(message, CancellationToken.None).Forget();
         };
+    }
+
+    private void InvokeErrorHandler(RedisChannel channel, Exception ex)
+    {
+        try
+        {
+            var errorMessage = new Message<object>(String.Empty, DateTime.UtcNow, channel.ToString(), ex);
+            Options.OnMessageHandlerError?.Invoke(ex, errorMessage);
+        }
+        catch
+        {
+            // If the error callback itself fails there is nothing more to do.
+        }
     }
 }

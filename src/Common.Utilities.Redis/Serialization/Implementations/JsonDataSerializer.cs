@@ -18,7 +18,7 @@ public class JsonDataSerializer : IDataSerializer
     /// <inheritdoc />
     public JsonDataSerializer(JsonSerializerContext? jsonSerializerContext = null)
     {
-        _jsonSerializerContext = jsonSerializerContext ?? new DefaultJsonSerializerContext();
+        _jsonSerializerContext = jsonSerializerContext ?? DefaultJsonSerializerContext.Default;
     }
 
     /// <inheritdoc />
@@ -32,8 +32,10 @@ public class JsonDataSerializer : IDataSerializer
             throw new ArgumentNullException(nameof(data));
         }
 
-        using var ms = new MemoryStream(data!);
-        var obj = JsonSerializer.Deserialize(ms, typeof(T), _jsonSerializerContext!);
+        // Deserialize straight from the payload bytes (the IsNullOrEmpty guard above
+        // means the byte[] is never null; the '?? []' keeps the compiler happy without
+        // a null-forgiving operator, and avoids copying through a MemoryStream).
+        var obj = JsonSerializer.Deserialize((byte[]?)data ?? [], typeof(T), _jsonSerializerContext!);
         if (obj == default)
         {
             return default;

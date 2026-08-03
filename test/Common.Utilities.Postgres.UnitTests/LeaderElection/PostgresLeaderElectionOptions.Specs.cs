@@ -147,7 +147,6 @@ public class PostgresLeaderElectionOptionsSpecs
     [Theory]
     [InlineData("valid_table")]
     [InlineData("ValidTable")]
-    [InlineData("valid-table")]
     [InlineData("_valid_table")]
     [InlineData("table123")]
     [InlineData("Table_123")]
@@ -174,6 +173,8 @@ public class PostgresLeaderElectionOptionsSpecs
     [InlineData("table;name")]
     [InlineData("table'name")]
     [InlineData("table\"name")]
+    [InlineData("table-name")] // '-' is not valid in an unquoted PostgreSQL identifier
+    [InlineData("a234567890123456789012345678901234567890123456789012345678901234")] // 64 chars > 63-char identifier limit
     public void Validate_WithInvalidTableNames_ShouldThrowInvalidOperationException(string tableName)
     {
         // Arrange

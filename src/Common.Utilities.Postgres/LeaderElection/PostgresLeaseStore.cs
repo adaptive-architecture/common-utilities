@@ -36,6 +36,15 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
         _serializer = serializer;
         _tableName = tableName ?? "leader_election_leases";
         _logger = logger ?? NullLogger.Instance;
+
+        // The table name is interpolated into every SQL statement (identifiers cannot be
+        // parameterized), so it must be a plain PostgreSQL identifier.
+        if (!PostgresIdentifier.IsValid(_tableName))
+        {
+            throw new ArgumentException(
+                "Table name must be a valid PostgreSQL identifier: start with a letter or underscore, contain only letters, digits or underscores, and be at most 63 characters long.",
+                nameof(tableName));
+        }
     }
 
     /// <inheritdoc/>
@@ -84,11 +93,14 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
                 ["now"] = DateTime.UtcNow
             };
 #pragma warning restore S1192 // Define a constant instead of using this literal
-            await using var reader = await ExecuteReaderAsync(sql, parameters, metadata, cancellationToken).ConfigureAwait(false);
-
             // If the lease was acquired, the reader will have a row
             // If the lease was not acquired, the reader will be empty
-            if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+            var acquired = await ExecuteReaderAsync(
+                sql, parameters, metadata,
+                static (reader, ct) => reader.ReadAsync(ct),
+                cancellationToken).ConfigureAwait(false);
+
+            if (acquired)
             {
                 _logger.LogDebug("Acquired lease for election {ElectionName} by participant {ParticipantId}",
                     electionName, participantId);
@@ -156,9 +168,12 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
             };
 #pragma warning restore S1192 // Define a constant instead of using this literal
 
-            await using var reader = await ExecuteReaderAsync(sql, parameters, metadata, cancellationToken).ConfigureAwait(false);
+            var renewed = await ExecuteReaderAsync(
+                sql, parameters, metadata,
+                static (reader, ct) => reader.ReadAsync(ct),
+                cancellationToken).ConfigureAwait(false);
 
-            if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+            if (renewed)
             {
                 _logger.LogTrace("Renewed lease for election {ElectionName} by participant {ParticipantId}",
                 electionName, participantId);
@@ -255,36 +270,14 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
             };
 #pragma warning restore S1192 // Define a constant instead of using this literal
 
-            await using var reader = await ExecuteReaderAsync(sql, parameters, null, cancellationToken).ConfigureAwait(false);
+            leaderInfo = await ExecuteReaderAsync(
+                sql, parameters, null,
+                ReadLeaderInfoAsync,
+                cancellationToken).ConfigureAwait(false);
 
-            if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
-            {
-                var participantId = reader.GetString(0);
-                var acquiredAt = reader.GetDateTime(1);
-                var expiresAt = reader.GetDateTime(2);
-                var metadataJson = await reader.IsDBNullAsync(3, cancellationToken)
-                    .ConfigureAwait(false)
-                    ? null
-                    : reader.GetString(3);
-
-                IReadOnlyDictionary<string, string>? metadata = null;
-                if (!String.IsNullOrEmpty(metadataJson))
-                {
-                    metadata = _serializer.Deserialize<Dictionary<string, string>>(metadataJson);
-                }
-
-                leaderInfo = new LeaderInfo
-                {
-                    ParticipantId = participantId,
-                    AcquiredAt = acquiredAt,
-                    ExpiresAt = expiresAt,
-                    Metadata = metadata
-                };
-            }
-            else
+            if (leaderInfo == null)
             {
                 _logger.LogDebug("No current lease found for election {ElectionName}", electionName);
-                leaderInfo = null;
             }
         }
         catch (Exception ex)
@@ -408,20 +401,25 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
         }
     }
 
-    private async Task<NpgsqlDataReader> ExecuteReaderAsync(
+    private async Task<T> ExecuteReaderAsync<T>(
         string sql,
         Dictionary<string, object> parameters,
         IReadOnlyDictionary<string, string>? metadata,
+        Func<NpgsqlDataReader, CancellationToken, Task<T>> handleResult,
         CancellationToken cancellationToken)
     {
-        var connection = await _dataSource.OpenConnectionAsync(cancellationToken).ConfigureAwait(false);
+        // Connection, command and reader must all be disposed here: disposing only the
+        // reader does not return the pooled connection, and the election loop would
+        // exhaust the pool one connection per call.
+        await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken).ConfigureAwait(false);
         var formattedSql = String.Format(sql, _tableName);
-        var command = new NpgsqlCommand(formattedSql, connection);
+        await using var command = new NpgsqlCommand(formattedSql, connection);
 
         AddParameters(command, parameters);
         AddMetadataParameter(command, "metadata_json", metadata, _serializer);
 
-        return await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
+        return await handleResult(reader, cancellationToken).ConfigureAwait(false);
     }
 
     private async Task<int> ExecuteNonQueryAsync(
@@ -436,6 +434,36 @@ public class PostgresLeaseStore : ILeaseStore, IDisposable
         AddParameters(command, parameters);
 
         return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    private async Task<LeaderInfo?> ReadLeaderInfoAsync(NpgsqlDataReader reader, CancellationToken cancellationToken)
+    {
+        if (!await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+        {
+            return null;
+        }
+
+        var participantId = reader.GetString(0);
+        var acquiredAt = reader.GetDateTime(1);
+        var expiresAt = reader.GetDateTime(2);
+        var metadataJson = await reader.IsDBNullAsync(3, cancellationToken)
+            .ConfigureAwait(false)
+            ? null
+            : reader.GetString(3);
+
+        IReadOnlyDictionary<string, string>? metadata = null;
+        if (!String.IsNullOrEmpty(metadataJson))
+        {
+            metadata = _serializer.Deserialize<Dictionary<string, string>>(metadataJson);
+        }
+
+        return new LeaderInfo
+        {
+            ParticipantId = participantId,
+            AcquiredAt = acquiredAt,
+            ExpiresAt = expiresAt,
+            Metadata = metadata
+        };
     }
 
     private static void AddParameters(NpgsqlCommand command, Dictionary<string, object> parameters)

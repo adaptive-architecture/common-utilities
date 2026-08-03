@@ -75,7 +75,7 @@ public class PostgresLeaderElectionOptions
         // Validate table name to prevent SQL injection
         if (!IsValidTableName(TableName))
         {
-            throw new InvalidOperationException("TableName contains invalid characters. Only alphanumeric characters, underscores, and hyphens are allowed.");
+            throw new InvalidOperationException("TableName contains invalid characters. It must be a valid PostgreSQL identifier: start with a letter or underscore, contain only letters, digits or underscores, and be at most 63 characters long.");
         }
 
         if (ConnectionTimeout <= TimeSpan.Zero)
@@ -96,16 +96,5 @@ public class PostgresLeaderElectionOptions
         return this;
     }
 
-    private static bool IsValidTableName(string tableName)
-    {
-        if (String.IsNullOrWhiteSpace(tableName))
-            return false;
-
-        // Allow alphanumeric characters, underscores, and hyphens
-        // Start with letter or underscore
-        if (!Char.IsLetter(tableName[0]) && tableName[0] != '_')
-            return false;
-
-        return tableName.All(c => Char.IsLetterOrDigit(c) || c == '_' || c == '-');
-    }
+    private static bool IsValidTableName(string tableName) => PostgresIdentifier.IsValid(tableName);
 }

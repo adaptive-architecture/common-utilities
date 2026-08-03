@@ -49,6 +49,32 @@ public class PostgresLeaseStoreSpecs
         leaseStore.Dispose();
     }
 
+    [Theory]
+    [InlineData("valid_table")]
+    [InlineData("_leases")]
+    [InlineData("Table123")]
+    public void Constructor_WithValidTableName_ShouldSucceed(string tableName)
+    {
+        using var leaseStore = new PostgresLeaseStore(_mockDataSource, _mockSerializer, tableName, _mockLogger);
+        Assert.NotNull(leaseStore);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("leases; DROP TABLE users; --")]
+    [InlineData("bad-name")]
+    [InlineData("1starts_with_digit")]
+    [InlineData("has space")]
+    [InlineData("quo\"te")]
+    [InlineData("a234567890123456789012345678901234567890123456789012345678901234")] // 64 chars > 63-char identifier limit
+    public void Constructor_WithInvalidTableName_ShouldThrowArgumentException(string tableName)
+    {
+        // The table name is interpolated into SQL statements; anything that is not a
+        // plain PostgreSQL identifier must be rejected up front.
+        _ = Assert.Throws<ArgumentException>(() =>
+            new PostgresLeaseStore(_mockDataSource, _mockSerializer, tableName, _mockLogger));
+    }
+
     [Fact]
     public void Constructor_WithNullLogger_ShouldUseNullLogger()
     {

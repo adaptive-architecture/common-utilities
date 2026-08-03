@@ -30,6 +30,13 @@ public class InProcessMessageHubOptionsSpecs
     }
 
     [Fact]
+    public void GetMessageBuilder_Should_Return_A_Cached_Instance()
+    {
+        var opt = new InProcessMessageHubOptions();
+        Assert.Same(opt.GetMessageBuilder<object>(), opt.GetMessageBuilder<object>());
+    }
+
+    [Fact]
     public void MaxDegreeOfParallelism_Should_Equal_Processor_Count()
     {
         var opt = new InProcessMessageHubOptions();

@@ -117,19 +117,19 @@ public class VersionCookiePayloadSpecs
     }
 
     [Fact]
-    public void It_Should_Handle_Empty_Version_String()
+    public void It_Should_Return_False_For_Empty_Version_String()
     {
         const int timestamp = 1609459200;
         var cookieValue = $"{timestamp}~";
 
         var result = VersionCookiePayload.TryParse(cookieValue, out var payload);
 
-        Assert.True(result);
+        Assert.False(result);
         Assert.Equal(String.Empty, payload.Version);
     }
 
     [Fact]
-    public void It_Should_Handle_Version_With_Multiple_Separators()
+    public void It_Should_Return_False_For_Version_With_Multiple_Separators()
     {
         const int timestamp = 1609459200;
         const string version = "v1~2~3";
@@ -137,8 +137,39 @@ public class VersionCookiePayloadSpecs
 
         var result = VersionCookiePayload.TryParse(cookieValue, out var payload);
 
-        Assert.True(result);
-        Assert.Equal(version, payload.Version);
+        Assert.False(result);
+        Assert.Equal(String.Empty, payload.Version);
+    }
+
+    [Theory]
+    [InlineData(".")]
+    [InlineData("..")]
+    [InlineData("../v1.2.3")]
+    [InlineData("..%2F..%2Fetc")]
+    [InlineData("/etc/passwd")]
+    [InlineData("a/b")]
+    [InlineData("a\\b")]
+    [InlineData("v1 2.3")]
+    [InlineData("v1;2")]
+    public void It_Should_Return_False_For_Unsafe_Version_Values(string version)
+    {
+        // The version is used to build filesystem paths and the rewritten request path;
+        // anything outside a strict allowlist must be rejected.
+        var cookieValue = $"1609459200~{version}";
+
+        var result = VersionCookiePayload.TryParse(cookieValue, out var payload);
+
+        Assert.False(result);
+        Assert.Equal(String.Empty, payload.Version);
+    }
+
+    [Fact]
+    public void It_Should_Return_False_For_Version_Longer_Than_64_Characters()
+    {
+        var version = new string('a', 65);
+        var cookieValue = $"1609459200~{version}";
+
+        Assert.False(VersionCookiePayload.TryParse(cookieValue, out _));
     }
 
     [Fact]

@@ -21,6 +21,7 @@ internal abstract partial class JobWorker<T> : BackgroundService
     private DateTime _nextExecutionTime;
     private bool _stopRequested;
     private CancellationTokenSource? _configurationChangeTokenSource;
+    private readonly IDisposable? _optionsChangeSubscription;
     protected readonly ILogger Logger;
     protected RepeatingWorkerConfiguration Configuration { get; private set; }
     protected readonly string JobName;
@@ -39,7 +40,9 @@ internal abstract partial class JobWorker<T> : BackgroundService
         var type = typeof(T);
         JobName = $"{type.Namespace}.{type.Name}";
         Configuration = _options.CurrentValue.GetConfiguration(JobName);
-        _ = _options.OnChange(_ => HandleConfigurationChange(false));
+        // Keep the subscription so it can be unhooked on dispose; otherwise the callback
+        // (which captures this) keeps firing after the worker stops.
+        _optionsChangeSubscription = _options.OnChange(_ => HandleConfigurationChange(false));
         Logger = logger;
         _timeProvider = timeProvider;
         _timer = new PeriodicTimer(BackgroundServiceGlobals.OneDay, timeProvider);
@@ -110,7 +113,7 @@ internal abstract partial class JobWorker<T> : BackgroundService
 
     protected void SetTimerPeriod(bool useInitialDelay)
     {
-        _ = _configurationChangeLock.Wait(TimeSpan.FromSeconds(5));
+        _ = _configurationChangeLock.Wait(TimeSpan.FromSeconds(5), CancellationToken.None);
         try
         {
             SetTimerPeriodCore(useInitialDelay);
@@ -145,7 +148,7 @@ internal abstract partial class JobWorker<T> : BackgroundService
 
     private void HandleConfigurationChange(bool useInitialDelay)
     {
-        _ = _configurationChangeLock.Wait(TimeSpan.FromSeconds(5));
+        _ = _configurationChangeLock.Wait(TimeSpan.FromSeconds(5), CancellationToken.None);
         try
         {
             if (_stopRequested)
@@ -181,10 +184,10 @@ internal abstract partial class JobWorker<T> : BackgroundService
 
     private void DisposeConfigurationCts()
     {
-        _ = _configurationChangeLock.Wait(TimeSpan.FromSeconds(1));
+        _ = _configurationChangeLock.Wait(TimeSpan.FromSeconds(1), CancellationToken.None);
         try
         {
-            if (_configurationChangeTokenSource!.IsCancellationRequested)
+            if (_configurationChangeTokenSource?.IsCancellationRequested == true)
             {
                 _configurationChangeTokenSource.Dispose();
             }
@@ -193,6 +196,16 @@ internal abstract partial class JobWorker<T> : BackgroundService
         {
             _ = _configurationChangeLock.Release();
         }
+    }
+
+    public override void Dispose()
+    {
+        _optionsChangeSubscription?.Dispose();
+        _timer.Dispose();
+        _configurationChangeTokenSource?.Dispose();
+        _configurationChangeLock.Dispose();
+        base.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     private async ValueTask WaitForNextExecutionTime(CancellationToken token)
