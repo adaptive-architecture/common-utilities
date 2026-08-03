@@ -332,7 +332,7 @@ public class CustomConfigurationProviderSpecs
         var provider = new CustomConfigurationProvider(_dataProviderMock, new CustomConfigurationProviderOptions());
 
         // ConfigurationRoot disposes providers that implement IDisposable.
-        Assert.IsAssignableFrom<IDisposable>(provider);
+        _ = Assert.IsType<IDisposable>(provider, exactMatch: false);
 
         provider.Dispose();
         provider.Dispose(); // Must not throw on a second dispose.

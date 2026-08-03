@@ -12,32 +12,38 @@ public sealed class HashRingSnapshotConcurrencySpecs
         ring.CreateConfigurationSnapshot();
 
         var key = System.Text.Encoding.UTF8.GetBytes("some-key");
-        using var cts = new CancellationTokenSource();
 
+        // The writer performs a bounded number of mutation cycles; the reader runs
+        // concurrently until the writer finishes. Unsynchronized reads of the snapshot
+        // history would surface here as InvalidOperationException ("collection was
+        // modified") or index errors. The ring always contains "anchor", so every
+        // snapshot can serve lookups.
+        const int mutationCycles = 500;
         var writer = Task.Run(() =>
         {
-            var i = 0;
-            while (!cts.IsCancellationRequested)
+            for (var i = 0; i < mutationCycles; i++)
             {
                 var server = $"server-{i % 3}";
                 ring.Add(server);
                 ring.CreateConfigurationSnapshot();
                 _ = ring.Remove(server);
                 ring.CreateConfigurationSnapshot();
-                i++;
             }
         }, TestContext.Current.CancellationToken);
 
-        // The ring always contains "anchor", so every snapshot can serve lookups.
-        // Unsynchronized reads of the snapshot history would surface here as
-        // InvalidOperationException ("collection was modified") or index errors.
-        for (var i = 0; i < 100_000; i++)
+        var reads = 0;
+        string lastServer = null;
+        while (!writer.IsCompleted)
         {
-            _ = ring.GetServer(key);
-            _ = ring.GetServers(key, 2).ToList();
+            lastServer = ring.GetServer(key);
+            Assert.NotEmpty(ring.GetServers(key, 2));
+            reads++;
         }
 
-        cts.Cancel();
         await writer;
+
+        // The concurrent reads completed without throwing and always resolved a server.
+        Assert.True(reads > 0);
+        Assert.NotNull(lastServer);
     }
 }
