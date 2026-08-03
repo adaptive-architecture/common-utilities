@@ -329,7 +329,7 @@ public abstract class LeaderElectionServiceBase : ILeaderElectionService
     {
         if (!_isDisposed)
         {
-            await StopAsync().ConfigureAwait(false);
+            await StopAsync(CancellationToken.None).ConfigureAwait(false);
 
             _cancellationTokenSource.Dispose();
             _isDisposed = true;

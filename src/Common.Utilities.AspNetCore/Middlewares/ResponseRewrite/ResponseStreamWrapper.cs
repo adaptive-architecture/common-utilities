@@ -87,7 +87,7 @@ internal sealed class ResponseStreamWrapper : Stream
         var rewrote = await TryRewriteAsync(buffer, cancellationToken);
         if (!rewrote && _originalBodyFeature != null)
         {
-            await _originalBodyFeature!.Stream.WriteAsync(buffer, cancellationToken);
+            await _originalBodyFeature.Stream.WriteAsync(buffer, cancellationToken);
         }
     }
 
@@ -120,7 +120,7 @@ internal sealed class ResponseStreamWrapper : Stream
 
         if (_context!.Response.ContentLength != null)
         {
-            _context!.Response.Headers.ContentLength = null;
+            _context.Response.Headers.ContentLength = null;
         }
     }
 

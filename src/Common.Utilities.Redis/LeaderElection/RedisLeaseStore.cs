@@ -234,7 +234,7 @@ public class RedisLeaseStore : ILeaseStore, IDisposable
             {
                 return null;
             }
-            var leaderInfo = _serializer.Deserialize<LeaderInfo>(leaseData!);
+            var leaderInfo = _serializer.Deserialize<LeaderInfo>(leaseData);
             // Check if the lease has expired (Redis might not have cleaned it up yet)
             if (leaderInfo!.IsValid)
             {
