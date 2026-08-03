@@ -27,7 +27,7 @@ public class JsonDataSerializer : IStringDataSerializer
         {
             return default;
         }
-        var obj = JsonSerializer.Deserialize(data!, typeof(T), _jsonSerializerContext!);
+        var obj = JsonSerializer.Deserialize(data, typeof(T), _jsonSerializerContext!);
         if (obj == default)
         {
             return default;
