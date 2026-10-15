@@ -72,31 +72,30 @@ public class InProcessMessageHubSpecs
     public void Should_Be_Able_To_Subscribe_Multiple_Times()
     {
         var topic = Guid.NewGuid().ToString("N");
-        var reacted = 0;
+        using var handled = new CountdownEvent(3);
         var hub = GetHub();
 
         _ = hub.Subscribe<object>(topic, (_, _) =>
         {
-            reacted++;
+            handled.Signal();
             return Task.CompletedTask;
         });
 
         _ = hub.Subscribe<object>(topic, (_, _) =>
         {
-            reacted++;
+            handled.Signal();
             return Task.CompletedTask;
         });
 
         _ = hub.Subscribe<object>(topic, (_, _) =>
         {
-            reacted++;
+            handled.Signal();
             return Task.CompletedTask;
         });
 
         hub.Publish<object>(topic, null);
 
-        Thread.Sleep(TimeSpan.FromMilliseconds(50));
-        Assert.Equal(3, reacted);
+        Assert.True(handled.Wait(TimeSpan.FromSeconds(5)));
     }
 
     [RetryFact]
