@@ -17,6 +17,7 @@ dotnet test \
   --no-build \
   --coverlet \
   --coverlet-include "[AdaptArch.*]*" \
+  --coverlet-exclude "[*Tests]*" \
   --coverlet-output-format json \
   --coverlet-output-format lcov \
   --coverlet-output-format opencover \

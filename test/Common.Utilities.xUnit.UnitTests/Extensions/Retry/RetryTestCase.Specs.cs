@@ -87,8 +87,9 @@ public class RetryTestCaseSpecs
         var testCase = CreateTestCase();
         var aggregator = new ExceptionAggregator();
         using var messageBus = new MessageBus("Test", NullMessageSink.Instance, false);
-        var expected = await RetryTestCaseRunner.Instance.Run(testCase.MaxRetries, testCase, messageBus, aggregator, new CancellationTokenSource(), nameof(Run_ShouldCallRetryTestCaseRunner), null, ExplicitOption.Off, ParallelMode.None, ExecutionScheduler.CreateUnlimited(), [], new FixtureMappingManager("Test", parentMappingManager: null));
-        var actual = await testCase.Run(ExplicitOption.Off, messageBus, [], aggregator, new CancellationTokenSource(), ParallelMode.None, ExecutionScheduler.CreateUnlimited(), new FixtureMappingManager("Test", parentMappingManager: null));
+        using var cancellationTokenSource = new CancellationTokenSource();
+        var expected = await RetryTestCaseRunner.Instance.Run(testCase.MaxRetries, testCase, messageBus, aggregator, cancellationTokenSource, nameof(Run_ShouldCallRetryTestCaseRunner), null, ExplicitOption.Off, ParallelMode.None, ExecutionScheduler.CreateUnlimited(), [], new FixtureMappingManager("Test", parentMappingManager: null));
+        var actual = await testCase.Run(ExplicitOption.Off, messageBus, [], aggregator, cancellationTokenSource, ParallelMode.None, ExecutionScheduler.CreateUnlimited(), new FixtureMappingManager("Test", parentMappingManager: null));
 
         Assert.Equal(expected.Total, actual.Total);
     }

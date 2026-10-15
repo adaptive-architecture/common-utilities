@@ -85,8 +85,7 @@ public class RetryTheoryDiscovererSpecs
             testMethodArguments);
 
         // Assert
-        Assert.Single(result);
-        var testCase = Assert.IsType<RetryTestCase>(result.First());
+        var testCase = Assert.IsType<RetryTestCase>(Assert.Single(result));
         Assert.Equal(5, testCase.MaxRetries);
         Assert.Equal(testMethodArguments, testCase.TestMethodArguments);
     }
@@ -110,8 +109,7 @@ public class RetryTheoryDiscovererSpecs
             testMethodArguments);
 
         // Assert
-        Assert.Single(result);
-        var testCase = Assert.IsType<RetryTestCase>(result.First());
+        var testCase = Assert.IsType<RetryTestCase>(Assert.Single(result));
         Assert.Equal(3, testCase.MaxRetries);
     }
 
@@ -143,11 +141,9 @@ public class RetryTheoryDiscovererSpecs
             testMethodArguments);
 
         // Assert
-        Assert.Single(retryResult);
-        Assert.Single(standardResult);
 
-        var retryTestCase = Assert.IsType<RetryTestCase>(retryResult.First());
-        var standardTestCase = Assert.IsType<XunitTestCase>(standardResult.First());
+        var retryTestCase = Assert.IsType<RetryTestCase>(Assert.Single(retryResult));
+        var standardTestCase = Assert.IsType<XunitTestCase>(Assert.Single(standardResult));
 
         Assert.Equal(7, retryTestCase.MaxRetries);
         Assert.NotEqual(retryTestCase.GetType(), standardTestCase.GetType());
@@ -168,8 +164,7 @@ public class RetryTheoryDiscovererSpecs
             theoryAttribute);
 
         // Assert
-        Assert.Single(result);
-        var testCase = Assert.IsType<RetryDelayEnumeratedTestCase>(result.First());
+        var testCase = Assert.IsType<RetryDelayEnumeratedTestCase>(Assert.Single(result));
         Assert.Equal(4, testCase.MaxRetries);
     }
 
@@ -192,8 +187,7 @@ public class RetryTheoryDiscovererSpecs
             theoryAttribute);
 
         // Assert
-        Assert.Single(result);
-        var testCase = Assert.IsType<XunitTestCase>(result.First());
+        var testCase = Assert.IsType<XunitTestCase>(Assert.Single(result));
         Assert.Equal("Test is skipped", testCase.SkipReason);
     }
 
@@ -212,8 +206,7 @@ public class RetryTheoryDiscovererSpecs
             theoryAttribute);
 
         // Assert
-        Assert.Single(result);
-        var testCase = Assert.IsType<RetryDelayEnumeratedTestCase>(result.First());
+        var testCase = Assert.IsType<RetryDelayEnumeratedTestCase>(Assert.Single(result));
         Assert.Equal(3, testCase.MaxRetries);
     }
 
@@ -239,11 +232,9 @@ public class RetryTheoryDiscovererSpecs
             standardTheoryAttribute);
 
         // Assert
-        Assert.Single(retryResult);
-        Assert.Single(standardResult);
 
-        var retryTestCase = Assert.IsType<RetryDelayEnumeratedTestCase>(retryResult.First());
-        var standardTestCase = Assert.IsType<XunitDelayEnumeratedTheoryTestCase>(standardResult.First());
+        var retryTestCase = Assert.IsType<RetryDelayEnumeratedTestCase>(Assert.Single(retryResult));
+        var standardTestCase = Assert.IsType<XunitDelayEnumeratedTheoryTestCase>(Assert.Single(standardResult));
 
         Assert.Equal(8, retryTestCase.MaxRetries);
         Assert.NotEqual(retryTestCase.GetType(), standardTestCase.GetType());
@@ -272,8 +263,7 @@ public class RetryTheoryDiscovererSpecs
             testMethodArguments);
 
         // Assert
-        Assert.Single(result);
-        var testCase = Assert.IsType<RetryTestCase>(result.First());
+        var testCase = Assert.IsType<RetryTestCase>(Assert.Single(result));
         Assert.Equal(maxRetries, testCase.MaxRetries);
     }
 
@@ -296,8 +286,7 @@ public class RetryTheoryDiscovererSpecs
             theoryAttribute);
 
         // Assert
-        Assert.Single(result);
-        var testCase = Assert.IsType<RetryDelayEnumeratedTestCase>(result.First());
+        var testCase = Assert.IsType<RetryDelayEnumeratedTestCase>(Assert.Single(result));
         Assert.Equal(maxRetries, testCase.MaxRetries);
     }
 
@@ -320,8 +309,7 @@ public class RetryTheoryDiscovererSpecs
             testMethodArguments);
 
         // Assert
-        Assert.Single(result);
-        var testCase = Assert.IsType<RetryTestCase>(result.First());
+        var testCase = Assert.IsType<RetryTestCase>(Assert.Single(result));
         Assert.Equal(3, testCase.MaxRetries); // Default value
     }
 
@@ -340,8 +328,7 @@ public class RetryTheoryDiscovererSpecs
             nonRetryTheoryAttribute);
 
         // Assert
-        Assert.Single(result);
-        var testCase = Assert.IsType<RetryDelayEnumeratedTestCase>(result.First());
+        var testCase = Assert.IsType<RetryDelayEnumeratedTestCase>(Assert.Single(result));
         Assert.Equal(3, testCase.MaxRetries); // Default value
     }
 }
