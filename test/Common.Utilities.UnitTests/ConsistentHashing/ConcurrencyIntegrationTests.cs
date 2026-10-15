@@ -43,8 +43,7 @@ public class ConcurrencyIntegrationTests
         foreach (var key in testKeys)
         {
             var distinctResults = results[key].Distinct().ToArray();
-            Assert.Single(distinctResults);
-            Assert.Equal(expectedMapping[key], distinctResults[0]);
+            Assert.Equal(expectedMapping[key], Assert.Single(distinctResults));
         }
     }
 
@@ -149,7 +148,7 @@ public class ConcurrencyIntegrationTests
         Assert.Equal(serverCount, ring.Servers.Count);
 
         // Verify all expected servers are present
-        for (int i = 1; i <= serverCount; i++)
+        for (var i = 1; i <= serverCount; i++)
         {
             Assert.Contains($"server{i}", ring.Servers);
         }
@@ -163,7 +162,7 @@ public class ConcurrencyIntegrationTests
         const int serverCount = 15;
 
         // Add servers first
-        for (int i = 1; i <= serverCount; i++)
+        for (var i = 1; i <= serverCount; i++)
         {
             ring.Add($"server{i}");
         }
@@ -205,7 +204,7 @@ public class ConcurrencyIntegrationTests
         var tasks = new List<Task>();
 
         // Add read operations
-        for (int i = 0; i < 30; i++)
+        for (var i = 0; i < 30; i++)
         {
             tasks.Add(Task.Run(async () =>
             {
@@ -223,9 +222,9 @@ public class ConcurrencyIntegrationTests
         }
 
         // Add server addition operations
-        for (int i = 3; i <= 7; i++)
+        for (var i = 3; i <= 7; i++)
         {
-            int serverNum = i; // Capture loop variable
+            var serverNum = i; // Capture loop variable
             tasks.Add(Task.Run(async () =>
             {
                 await Task.Delay(Random.Shared.Next(10, 80));
@@ -239,18 +238,18 @@ public class ConcurrencyIntegrationTests
         tasks.Add(Task.Run(async () =>
         {
             await Task.Delay(150);
-            bool removed = ring.Remove("server1");
+            var removed = ring.Remove("server1");
             ring.CreateConfigurationSnapshot();
             operationResults.Add($"REMOVE:server1:{removed}");
         }, TestContext.Current.CancellationToken));
 
         // Add contains checks
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
             tasks.Add(Task.Run(async () =>
             {
                 await Task.Delay(Random.Shared.Next(1, 120));
-                bool contains = ring.Contains("server2");
+                var contains = ring.Contains("server2");
                 operationResults.Add($"CONTAINS:server2:{contains}");
             }, TestContext.Current.CancellationToken));
         }
@@ -291,7 +290,7 @@ public class ConcurrencyIntegrationTests
         {
             await Task.Delay(Random.Shared.Next(1, 100));
 
-            bool success = ring.TryGetServer(testKey, out string server);
+            var success = ring.TryGetServer(testKey, out var server);
             results.Add((success, server));
         }).ToArray();
 
@@ -345,7 +344,7 @@ public class ConcurrencyIntegrationTests
         var tasks = new List<Task>();
 
         // String key calls
-        for (int i = 0; i < 20; i++)
+        for (var i = 0; i < 20; i++)
         {
             tasks.Add(Task.Run(async () =>
             {
@@ -356,7 +355,7 @@ public class ConcurrencyIntegrationTests
         }
 
         // Guid key calls
-        for (int i = 0; i < 20; i++)
+        for (var i = 0; i < 20; i++)
         {
             tasks.Add(Task.Run(async () =>
             {
@@ -367,7 +366,7 @@ public class ConcurrencyIntegrationTests
         }
 
         // Int key calls
-        for (int i = 0; i < 20; i++)
+        for (var i = 0; i < 20; i++)
         {
             tasks.Add(Task.Run(async () =>
             {
@@ -384,13 +383,9 @@ public class ConcurrencyIntegrationTests
         var distinctGuidResults = guidResults.Distinct().ToArray();
         var distinctIntResults = intResults.Distinct().ToArray();
 
-        Assert.Single(distinctStringResults);
-        Assert.Single(distinctGuidResults);
-        Assert.Single(distinctIntResults);
-
         // All results should be valid servers
-        Assert.Contains(distinctStringResults[0], ring.Servers);
-        Assert.Contains(distinctGuidResults[0], ring.Servers);
-        Assert.Contains(distinctIntResults[0], ring.Servers);
+        Assert.Contains(Assert.Single(distinctStringResults), ring.Servers);
+        Assert.Contains(Assert.Single(distinctGuidResults), ring.Servers);
+        Assert.Contains(Assert.Single(distinctIntResults), ring.Servers);
     }
 }

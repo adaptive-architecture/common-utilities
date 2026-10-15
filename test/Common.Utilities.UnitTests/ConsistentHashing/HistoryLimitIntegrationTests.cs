@@ -22,7 +22,7 @@ public sealed class HistoryLimitIntegrationTests
 
         hashRing.Add("server-base");
 
-        for (int i = 0; i < maxHistorySize; i++)
+        for (var i = 0; i < maxHistorySize; i++)
         {
             hashRing.CreateConfigurationSnapshot();
             hashRing.Add($"server-{i + 1}");
@@ -104,14 +104,14 @@ public sealed class HistoryLimitIntegrationTests
         };
         var hashRing = new HashRing<string>(options);
 
-        for (int i = 1; i <= 5; i++)
+        for (var i = 1; i <= 5; i++)
         {
             hashRing.Add($"server-{i}");
         }
 
         var testKey = Encoding.UTF8.GetBytes("multi-limit-test");
 
-        for (int i = 0; i < 3; i++)
+        for (var i = 0; i < 3; i++)
         {
             hashRing.CreateConfigurationSnapshot();
             hashRing.Add($"new-server-{i}");
@@ -189,10 +189,10 @@ public sealed class HistoryLimitIntegrationTests
         hashRing.CreateConfigurationSnapshot(); // Create initial snapshot
         var testKey = Encoding.UTF8.GetBytes("stress-test-key");
 
-        int successfulSnapshots = 1; // Count the initial snapshot
-        int rejectedSnapshots = 0;
+        var successfulSnapshots = 1; // Count the initial snapshot
+        var rejectedSnapshots = 0;
 
-        for (int i = 0; i < operationCount; i++)
+        for (var i = 0; i < operationCount; i++)
         {
             try
             {

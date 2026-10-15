@@ -16,7 +16,7 @@ public class EdgeCaseTests
         const int serverCount = 100; // Reduced from 1000 to avoid timeouts
 
         // Act - Add many servers
-        for (int i = 1; i <= serverCount; i++)
+        for (var i = 1; i <= serverCount; i++)
         {
             ring.Add($"server{i:D3}");
         }
@@ -50,7 +50,7 @@ public class EdgeCaseTests
 
         // Test distribution still works
         var servers = new HashSet<string>();
-        for (int i = 0; i < 1000; i++)
+        for (var i = 0; i < 1000; i++)
         {
             var server = ring.GetServer($"key{i}");
             servers.Add(server);
@@ -75,7 +75,7 @@ public class EdgeCaseTests
         Assert.Equal(10000, ring.VirtualNodeCount);
 
         // All keys should route to the single server
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             var server = ring.GetServer($"key{i}");
             Assert.Equal("single-server", server);
@@ -97,7 +97,7 @@ public class EdgeCaseTests
         // Act - Route many keys (should be fast due to single server)
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
-        for (int i = 0; i < 1000; i++) // Reduced from 10000
+        for (var i = 0; i < 1000; i++) // Reduced from 10000
         {
             var server = ring.GetServer($"key{i}");
             Assert.Equal("server1", server);
@@ -118,7 +118,7 @@ public class EdgeCaseTests
         const string testKey = "consistent-key";
 
         // Act & Assert - Repeatedly add and remove servers
-        for (int iteration = 0; iteration < 10; iteration++) // Reduced from 100
+        for (var iteration = 0; iteration < 10; iteration++) // Reduced from 100
         {
             // Add servers
             ring.Add("server1");
@@ -252,7 +252,7 @@ public class EdgeCaseTests
         Assert.Equal(serverGuids.Length, ring.Servers.Count);
 
         // Test routing
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             var key = $"test-key-{i}";
             var server = ring.GetServer(key);
@@ -310,7 +310,7 @@ public class EdgeCaseTests
         var tasks = new List<Task>();
 
         // Add tasks
-        for (int i = 0; i < 50; i++)
+        for (var i = 0; i < 50; i++)
         {
             tasks.Add(Task.Run(() =>
             {
@@ -327,7 +327,7 @@ public class EdgeCaseTests
         }
 
         // Remove tasks
-        for (int i = 0; i < 50; i++)
+        for (var i = 0; i < 50; i++)
         {
             tasks.Add(Task.Run(() =>
             {
@@ -367,7 +367,7 @@ public class EdgeCaseTests
         var modifyTasks = new List<Task>();
 
         // Many read operations
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             readTasks.Add(Task.Run(async () =>
             {
@@ -386,9 +386,9 @@ public class EdgeCaseTests
         }
 
         // Fewer modification operations
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
-            int serverIndex = i;
+            var serverIndex = i;
             modifyTasks.Add(Task.Run(async () =>
             {
                 await Task.Delay(Random.Shared.Next(5, 25), TestContext.Current.CancellationToken);
@@ -448,7 +448,7 @@ public class EdgeCaseTests
     {
         // Arrange
         var ring = new HashRing<string>();
-        for (int i = 1; i <= 5; i++) // 5 servers total
+        for (var i = 1; i <= 5; i++) // 5 servers total
         {
             ring.Add($"server{i}");
         }
@@ -507,7 +507,7 @@ public class EdgeCaseTests
             {
                 // Simple hash based on key content
                 uint hashValue = 0;
-                foreach (byte b in key)
+                foreach (var b in key)
                 {
                     hashValue = (hashValue * 31) + b;
                 }

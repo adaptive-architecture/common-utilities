@@ -141,7 +141,7 @@ public class HashRingContractTests
         ring.Add("server2");
 
         // Act
-        bool removed = ring.Remove("server1");
+        var removed = ring.Remove("server1");
 
         // Assert
         Assert.True(removed);
@@ -158,7 +158,7 @@ public class HashRingContractTests
         ring.Add("server1");
 
         // Act
-        bool removed = ring.Remove("server2");
+        var removed = ring.Remove("server2");
 
         // Assert
         Assert.False(removed);
@@ -233,7 +233,7 @@ public class HashRingContractTests
         var key = new byte[] { 1, 2, 3, 4 };
 
         // Act
-        string server = ring.GetServer(key);
+        var server = ring.GetServer(key);
 
         // Assert
         Assert.NotNull(server);
@@ -252,9 +252,9 @@ public class HashRingContractTests
         var key = new byte[] { 1, 2, 3, 4 };
 
         // Act
-        string server1 = ring.GetServer(key);
-        string server2 = ring.GetServer(key);
-        string server3 = ring.GetServer(key);
+        var server1 = ring.GetServer(key);
+        var server2 = ring.GetServer(key);
+        var server3 = ring.GetServer(key);
 
         // Assert
         Assert.Equal(server1, server2);
@@ -294,7 +294,7 @@ public class HashRingContractTests
         var key = new byte[] { 1, 2, 3, 4 };
 
         // Act
-        bool success = ring.TryGetServer(key, out string server);
+        var success = ring.TryGetServer(key, out var server);
 
         // Assert
         Assert.True(success);
@@ -310,7 +310,7 @@ public class HashRingContractTests
         var key = new byte[] { 1, 2, 3, 4 };
 
         // Act
-        bool success = ring.TryGetServer(key, out string server);
+        var success = ring.TryGetServer(key, out var server);
 
         // Assert
         Assert.False(success);

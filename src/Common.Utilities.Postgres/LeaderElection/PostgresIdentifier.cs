@@ -1,4 +1,4 @@
-namespace AdaptArch.Common.Utilities.Postgres.LeaderElection;
+﻿namespace AdaptArch.Common.Utilities.Postgres.LeaderElection;
 
 /// <summary>
 /// Validation for PostgreSQL identifiers that are interpolated into SQL statements.

@@ -121,7 +121,7 @@ public sealed class HashRingHistoryLimitIntegrationTests
 
         // Before adding 3rd snapshot, get possible servers
         var serversBeforeThird = new HashSet<string>();
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             var testKey = new byte[] { (byte)i, 2, 3, 4 };
             serversBeforeThird.Add(ring.GetServer(testKey));
@@ -137,7 +137,7 @@ public sealed class HashRingHistoryLimitIntegrationTests
 
         // Now get possible servers
         var serversAfterThird = new HashSet<string>();
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             var testKey = new byte[] { (byte)i, 2, 3, 4 };
             serversAfterThird.Add(ring.GetServer(testKey));
@@ -158,7 +158,7 @@ public sealed class HashRingHistoryLimitIntegrationTests
         Assert.Equal(3, ring.MaxHistorySize); // Default max size
 
         // Act - Fill beyond default limit
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
         {
             ring.Add($"server{i}");
             ring.CreateConfigurationSnapshot();
@@ -186,7 +186,7 @@ public sealed class HashRingHistoryLimitIntegrationTests
         var ring = new HashRing<string>(options);
 
         // Act - Create 7 snapshots
-        for (int i = 0; i < 7; i++)
+        for (var i = 0; i < 7; i++)
         {
             ring.Add($"server{i}");
             ring.CreateConfigurationSnapshot();
@@ -261,7 +261,7 @@ public sealed class HashRingHistoryLimitIntegrationTests
 
         // Only latest snapshot should be available (C)
         var results = new HashSet<string>();
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             var key = new byte[] { (byte)i, 2, 3, 4 };
             results.Add(ring.GetServer(key));

@@ -56,7 +56,7 @@ public sealed class HashRingConcurrencyTests
         {
             try
             {
-                for (int j = 0; j < 10; j++)
+                for (var j = 0; j < 10; j++)
                 {
                     var key = new byte[] { (byte)i, (byte)j, 3, 4 };
                     var server = ring.GetServer(key);
@@ -152,7 +152,7 @@ public sealed class HashRingConcurrencyTests
         var results = new HashSet<string>();
         await Task.Run(() =>
         {
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 var key = new byte[] { (byte)i, 2, 3, 4 };
                 results.Add(ring.GetServer(key));
@@ -247,7 +247,7 @@ public sealed class HashRingConcurrencyTests
         {
             try
             {
-                for (int j = 0; j < 20; j++)
+                for (var j = 0; j < 20; j++)
                 {
                     var key = new byte[] { (byte)i, (byte)j, 3, 4 };
                     // TryGetServer to avoid exceptions after clear

@@ -44,7 +44,7 @@ public static class DatabaseRoutingExample
 
         // Demonstrate consistency - same user ID always goes to same database
         Console.WriteLine("Consistency check (same user ID multiple times):");
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
         {
             var dbServer = dbRing.GetServer("user-12345");
             Console.WriteLine($"  Attempt {i + 1}: user-12345 -> {dbServer}");
@@ -91,7 +91,7 @@ public static class DatabaseRoutingExample
         }
 
         // Simulate routing 1000 users
-        for (int i = 1; i <= 1000; i++)
+        for (var i = 1; i <= 1000; i++)
         {
             var userId = $"user-{i:D5}";
             var dbServer = dbRing.GetServer(userId);

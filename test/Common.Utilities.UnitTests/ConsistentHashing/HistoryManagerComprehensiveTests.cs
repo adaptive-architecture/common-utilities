@@ -98,7 +98,7 @@ public sealed class HistoryManagerComprehensiveTests
         Assert.Equal(3, retrievedSnapshots.Count);
 
         // Verify order is maintained (chronological - oldest first)
-        for (int i = 0; i < snapshots.Length; i++)
+        for (var i = 0; i < snapshots.Length; i++)
         {
             Assert.Equal(snapshots[i], retrievedSnapshots[i]);
         }
@@ -144,7 +144,7 @@ public sealed class HistoryManagerComprehensiveTests
         var manager = new HistoryManager<string>(limit);
 
         // Add exactly to the limit
-        for (int i = 0; i < limit; i++)
+        for (var i = 0; i < limit; i++)
         {
             manager.Add(CreateTestSnapshot($"server{i}"), HistoryLimitBehavior.ThrowError);
         }
@@ -307,7 +307,7 @@ public sealed class HistoryManagerComprehensiveTests
         var reverse = manager.GetSnapshotsReverse();
 
         Assert.Equal(forward.Count, reverse.Count);
-        for (int i = 0; i < forward.Count; i++)
+        for (var i = 0; i < forward.Count; i++)
         {
             Assert.Equal(forward[i], reverse[reverse.Count - 1 - i]);
         }
@@ -386,7 +386,7 @@ public sealed class HistoryManagerComprehensiveTests
     {
         var manager = new HistoryManager<string>(maxSize);
 
-        for (int i = 0; i < added; i++)
+        for (var i = 0; i < added; i++)
         {
             manager.Add(CreateTestSnapshot($"server{i}"), HistoryLimitBehavior.ThrowError);
         }
@@ -404,7 +404,7 @@ public sealed class HistoryManagerComprehensiveTests
     {
         var manager = new HistoryManager<string>(maxSize);
 
-        for (int i = 0; i < maxSize; i++)
+        for (var i = 0; i < maxSize; i++)
         {
             manager.Add(CreateTestSnapshot($"server{i}"), HistoryLimitBehavior.ThrowError);
         }
@@ -517,7 +517,7 @@ public sealed class HistoryManagerComprehensiveTests
 
         // Add many snapshots
         const int snapshotsToAdd = 5000;
-        for (int i = 0; i < snapshotsToAdd; i++)
+        for (var i = 0; i < snapshotsToAdd; i++)
         {
             manager.Add(CreateTestSnapshot($"server{i}"), HistoryLimitBehavior.ThrowError);
         }
@@ -537,7 +537,7 @@ public sealed class HistoryManagerComprehensiveTests
         var timestamps = new List<DateTime>();
 
         // Add snapshots with specific timestamps
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
         {
             var timestamp = DateTime.UtcNow.AddMinutes(i);
             timestamps.Add(timestamp);
@@ -545,13 +545,13 @@ public sealed class HistoryManagerComprehensiveTests
         }
 
         var snapshots = manager.GetSnapshots();
-        for (int i = 0; i < snapshots.Count; i++)
+        for (var i = 0; i < snapshots.Count; i++)
         {
             Assert.Equal(timestamps[i], snapshots[i].CreatedAt);
         }
 
         var reverseSnapshots = manager.GetSnapshotsReverse();
-        for (int i = 0; i < reverseSnapshots.Count; i++)
+        for (var i = 0; i < reverseSnapshots.Count; i++)
         {
             Assert.Equal(timestamps[timestamps.Count - 1 - i], reverseSnapshots[i].CreatedAt);
         }
@@ -567,7 +567,7 @@ public sealed class HistoryManagerComprehensiveTests
         var manager = new HistoryManager<string>(100);
 
         // Pre-populate with some snapshots
-        for (int i = 0; i < 50; i++)
+        for (var i = 0; i < 50; i++)
         {
             manager.Add(CreateTestSnapshot($"server{i}"), HistoryLimitBehavior.ThrowError);
         }
@@ -576,13 +576,13 @@ public sealed class HistoryManagerComprehensiveTests
         var exceptions = new List<Exception>();
 
         // Multiple concurrent read operations
-        for (int i = 0; i < 20; i++)
+        for (var i = 0; i < 20; i++)
         {
             tasks.Add(Task.Run(() =>
             {
                 try
                 {
-                    for (int j = 0; j < 100; j++)
+                    for (var j = 0; j < 100; j++)
                     {
                         var snapshots = manager.GetSnapshots();
                         var reverseSnapshots = manager.GetSnapshotsReverse();
@@ -625,9 +625,9 @@ public sealed class HistoryManagerComprehensiveTests
         var successfulAdds = 0;
 
         // Multiple concurrent add operations
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
-            int taskId = i; // Capture loop variable
+            var taskId = i; // Capture loop variable
             tasks.Add(Task.Run(() =>
             {
                 try
@@ -670,8 +670,7 @@ public sealed class HistoryManagerComprehensiveTests
 
         Assert.Equal(1, manager.Count);
         var snapshots = manager.GetSnapshots();
-        Assert.Single(snapshots);
-        Assert.Contains(42, snapshots[0].Servers);
+        Assert.Contains(42, Assert.Single(snapshots).Servers);
     }
 
     [Fact]
@@ -685,8 +684,7 @@ public sealed class HistoryManagerComprehensiveTests
 
         Assert.Equal(1, manager.Count);
         var snapshots = manager.GetSnapshots();
-        Assert.Single(snapshots);
-        Assert.Contains(serverId, snapshots[0].Servers);
+        Assert.Contains(serverId, Assert.Single(snapshots).Servers);
     }
 
     #endregion

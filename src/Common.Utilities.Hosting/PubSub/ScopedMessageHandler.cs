@@ -23,6 +23,6 @@ internal class ScopedMessageHandler<TMessage>
 
         var handlerInvocation = (Task)_handlerMethod.Invoke(handlerImplementation, [message, cancellationToken])!;
 
-        await handlerInvocation.ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
+        await handlerInvocation.ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
     }
 }

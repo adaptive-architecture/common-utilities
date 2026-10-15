@@ -132,7 +132,7 @@ public sealed class HashRingFindServerIndexTests
     {
         // Arrange - Create many nodes to ensure binary search path
         var virtualNodes = new List<VirtualNode<string>>();
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             virtualNodes.Add(new VirtualNode<string>((uint)(i * 100), $"server{i}"));
         }

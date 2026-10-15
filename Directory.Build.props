@@ -6,6 +6,7 @@
     <Authors>Adaptive Architecture Contributors</Authors>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <RootNamespace>AdaptArch.$(MSBuildProjectName)</RootNamespace>
     <PackageId>AdaptArch.$(MSBuildProjectName)</PackageId>
     <AssemblyName>AdaptArch.$(MSBuildProjectName)</AssemblyName>

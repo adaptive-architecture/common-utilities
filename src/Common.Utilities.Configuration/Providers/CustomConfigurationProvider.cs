@@ -46,12 +46,12 @@ public class CustomConfigurationProvider : ConfigurationProvider, IDisposable
     {
         try
         {
-            await _loadingStateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
-            var hash = await _dataProvider.GetHashAsync(cancellationToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
+            await _loadingStateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
+            var hash = await _dataProvider.GetHashAsync(cancellationToken).ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
             if (String.Equals(hash, _dataHash))
                 return;
 
-            var data = await _dataProvider.ReadDataAsync(cancellationToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
+            var data = await _dataProvider.ReadDataAsync(cancellationToken).ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
             Data = ProcessData(data);
             _dataHash = hash;
 
@@ -158,8 +158,8 @@ public class CustomConfigurationProvider : ConfigurationProvider, IDisposable
         {
             try
             {
-                await Task.Delay(_options.PoolingInterval, cancellationToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
-                await LoadAsyncCore(true, cancellationToken).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
+                await Task.Delay(_options.PoolingInterval, cancellationToken).ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
+                await LoadAsyncCore(true, cancellationToken).ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
             }
             catch
             {

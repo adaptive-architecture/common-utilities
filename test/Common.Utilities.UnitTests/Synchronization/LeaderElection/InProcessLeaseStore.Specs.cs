@@ -569,7 +569,7 @@ public class InProcessLeaseStoreSpecs
                 var participantId = $"participant-{i}";
                 var successCount = 0;
 
-                for (int j = 0; j < iterationCount; j++)
+                for (var j = 0; j < iterationCount; j++)
                 {
                     var electionName = $"election-{j % 5}"; // Multiple elections
                     var lease = await store.TryAcquireLeaseAsync(electionName, participantId, TimeSpan.FromMilliseconds(100));

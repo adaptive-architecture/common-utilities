@@ -253,11 +253,11 @@ public class IHashAlgorithmInterfaceTests
 
         // Act
         var tasks = new Task[threadCount];
-        for (int i = 0; i < threadCount; i++)
+        for (var i = 0; i < threadCount; i++)
         {
             tasks[i] = Task.Run(() =>
             {
-                for (int j = 0; j < operationsPerThread; j++)
+                for (var j = 0; j < operationsPerThread; j++)
                 {
                     var hash = algorithm.ComputeHash(testData);
                     results.Add(hash);
@@ -290,7 +290,7 @@ public class IHashAlgorithmInterfaceTests
         // Act
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
-        for (int i = 0; i < iterations; i++)
+        for (var i = 0; i < iterations; i++)
         {
             var hash = algorithm.ComputeHash(testData);
         }
@@ -317,7 +317,7 @@ public class IHashAlgorithmInterfaceTests
 
             // Return a simple hash based on the key's length and content
             var hash = new byte[16];
-            for (int i = 0; i < 16; i++)
+            for (var i = 0; i < 16; i++)
             {
                 hash[i] = (byte)((key.Length + i + (key.Length > 0 ? key[0] : 0)) % 256);
             }

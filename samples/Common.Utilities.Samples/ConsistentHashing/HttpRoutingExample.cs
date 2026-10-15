@@ -50,7 +50,7 @@ public static class HttpRoutingExample
         // Demonstrate sticky sessions - same session always goes to same server
         Console.WriteLine("Sticky session consistency check:");
         const string testSession = "session-abc123";
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
         {
             var server = loadBalancer.RouteRequest(testSession);
             Console.WriteLine($"  Request {i + 1}: {testSession} -> {server}");
@@ -193,7 +193,7 @@ public class HttpLoadBalancer
 
         // Generate sample requests
         var random = new Random(42); // Fixed seed for reproducible results
-        for (int i = 0; i < sampleSize; i++)
+        for (var i = 0; i < sampleSize; i++)
         {
             var sessionId = $"session-{random.Next(100000):D6}";
             if (_ring.TryGetServer(sessionId, out var server) && server != null)

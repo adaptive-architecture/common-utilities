@@ -323,7 +323,7 @@ public class RedisLeaderElectionIntegrationTests
             var secondLeaderAcquired = false;
             RedisLeaderElectionService secondLeader = null;
 
-            for (int attempt = 0; attempt < 3 && !secondLeaderAcquired; attempt++)
+            for (var attempt = 0; attempt < 3 && !secondLeaderAcquired; attempt++)
             {
                 foreach (var service in remainingServices)
                 {

@@ -320,7 +320,7 @@ public sealed class HashRingComprehensiveTests
         var server1 = ring.GetServer(key);
 
         // Call multiple times
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
             var server = ring.GetServer(key);
             Assert.Equal(server1, server);
@@ -727,15 +727,15 @@ public sealed class HashRingComprehensiveTests
         var tasks = new List<Task>();
 
         // Add initial servers
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
         {
             ring.Add($"initial-{i}");
         }
 
         // Concurrent AddRange operations
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
-            int taskId = i;
+            var taskId = i;
             tasks.Add(Task.Run(() =>
             {
                 try
@@ -756,9 +756,9 @@ public sealed class HashRingComprehensiveTests
         }
 
         // Concurrent RemoveRange operations
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
         {
-            int taskId = i;
+            var taskId = i;
             tasks.Add(Task.Run(() =>
             {
                 try
@@ -834,7 +834,7 @@ public sealed class HashRingComprehensiveTests
         var ring = new HashRing<string>();
 
         // Add 100 servers
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             ring.Add($"server-{i:D3}");
         }
@@ -842,7 +842,7 @@ public sealed class HashRingComprehensiveTests
 
         // Test 1000 different keys
         var serverCounts = new Dictionary<string, int>();
-        for (int i = 0; i < 1000; i++)
+        for (var i = 0; i < 1000; i++)
         {
             var key = Encoding.UTF8.GetBytes($"key-{i}");
             var server = ring.GetServer(key);
@@ -865,21 +865,21 @@ public sealed class HashRingComprehensiveTests
         var tasks = new List<Task>();
 
         // Add initial servers
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
             ring.Add($"initial-server-{i}");
         }
         ring.CreateConfigurationSnapshot();
 
         // Concurrent read operations
-        for (int i = 0; i < 50; i++)
+        for (var i = 0; i < 50; i++)
         {
-            int taskId = i;
+            var taskId = i;
             tasks.Add(Task.Run(() =>
             {
                 try
                 {
-                    for (int j = 0; j < 100; j++)
+                    for (var j = 0; j < 100; j++)
                     {
                         var key = Encoding.UTF8.GetBytes($"thread-{taskId}-key-{j}");
                         var server = ring.GetServer(key);
@@ -897,9 +897,9 @@ public sealed class HashRingComprehensiveTests
         }
 
         // Concurrent write operations
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
-            int taskId = i;
+            var taskId = i;
             tasks.Add(Task.Run(() =>
             {
                 try
@@ -937,7 +937,7 @@ public sealed class HashRingComprehensiveTests
         ring.Add("server1");
 
         // Create snapshots up to the limit
-        for (int i = 0; i < Math.Min(snapshotsToCreate, maxSize); i++)
+        for (var i = 0; i < Math.Min(snapshotsToCreate, maxSize); i++)
         {
             ring.CreateConfigurationSnapshot();
             ring.Add($"server-{i + 2}");

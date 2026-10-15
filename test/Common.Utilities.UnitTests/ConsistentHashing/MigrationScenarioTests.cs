@@ -183,7 +183,7 @@ public sealed class MigrationScenarioTests
     private static List<byte[]> GenerateTestKeys(string prefix, int count)
     {
         var keys = new List<byte[]>();
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             keys.Add(Encoding.UTF8.GetBytes($"{prefix}{i:D4}"));
         }

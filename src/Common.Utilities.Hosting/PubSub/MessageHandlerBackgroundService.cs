@@ -47,7 +47,7 @@ internal class MessageHandlerBackgroundService : IHostedService
                 cancellationToken
             ])!;
 
-            _subscriptionIds.Add(await resultTask.ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding));
+            _subscriptionIds.Add(await resultTask.ConfigureAwait(ConfigureAwaitOptions.ForceYielding));
         }
     }
 
@@ -59,7 +59,7 @@ internal class MessageHandlerBackgroundService : IHostedService
                     CancellationToken = cancellationToken,
                     MaxDegreeOfParallelism = Environment.ProcessorCount * 2
                 },
-                async (id, ct) => await _messageHub.UnsubscribeAsync(id, ct).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding))
-            .ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
+                async (id, ct) => await _messageHub.UnsubscribeAsync(id, ct).ConfigureAwait(ConfigureAwaitOptions.ForceYielding))
+            .ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
     }
 }

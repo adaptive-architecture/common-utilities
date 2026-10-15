@@ -19,7 +19,7 @@ public static class HashRingExtensions
         ArgumentNullException.ThrowIfNull(ring);
         ArgumentNullException.ThrowIfNull(key);
 
-        byte[] keyBytes = System.Text.Encoding.UTF8.GetBytes(key);
+        var keyBytes = System.Text.Encoding.UTF8.GetBytes(key);
         return ring.GetServer(keyBytes);
     }
 
@@ -34,7 +34,7 @@ public static class HashRingExtensions
     {
         ArgumentNullException.ThrowIfNull(ring);
 
-        byte[] keyBytes = key.ToByteArray();
+        var keyBytes = key.ToByteArray();
         return ring.GetServer(keyBytes);
     }
 
@@ -49,7 +49,7 @@ public static class HashRingExtensions
     {
         ArgumentNullException.ThrowIfNull(ring);
 
-        byte[] keyBytes = BitConverter.GetBytes(key);
+        var keyBytes = BitConverter.GetBytes(key);
         return ring.GetServer(keyBytes);
     }
 
@@ -64,7 +64,7 @@ public static class HashRingExtensions
     {
         ArgumentNullException.ThrowIfNull(ring);
 
-        byte[] keyBytes = BitConverter.GetBytes(key);
+        var keyBytes = BitConverter.GetBytes(key);
         return ring.GetServer(keyBytes);
     }
 
@@ -85,7 +85,7 @@ public static class HashRingExtensions
         ArgumentNullException.ThrowIfNull(ring);
         ArgumentNullException.ThrowIfNull(key);
 
-        byte[] keyBytes = System.Text.Encoding.UTF8.GetBytes(key);
+        var keyBytes = System.Text.Encoding.UTF8.GetBytes(key);
         return ring.TryGetServer(keyBytes, out server);
     }
 
@@ -101,7 +101,7 @@ public static class HashRingExtensions
     {
         ArgumentNullException.ThrowIfNull(ring);
 
-        byte[] keyBytes = key.ToByteArray();
+        var keyBytes = key.ToByteArray();
         return ring.TryGetServer(keyBytes, out server);
     }
 
@@ -117,7 +117,7 @@ public static class HashRingExtensions
     {
         ArgumentNullException.ThrowIfNull(ring);
 
-        byte[] keyBytes = BitConverter.GetBytes(key);
+        var keyBytes = BitConverter.GetBytes(key);
         return ring.TryGetServer(keyBytes, out server);
     }
 
@@ -133,7 +133,7 @@ public static class HashRingExtensions
     {
         ArgumentNullException.ThrowIfNull(ring);
 
-        byte[] keyBytes = BitConverter.GetBytes(key);
+        var keyBytes = BitConverter.GetBytes(key);
         return ring.TryGetServer(keyBytes, out server);
     }
 
@@ -154,7 +154,7 @@ public static class HashRingExtensions
         ArgumentNullException.ThrowIfNull(ring);
         ArgumentNullException.ThrowIfNull(key);
 
-        byte[] keyBytes = System.Text.Encoding.UTF8.GetBytes(key);
+        var keyBytes = System.Text.Encoding.UTF8.GetBytes(key);
         return ring.GetServers(keyBytes, count);
     }
 
@@ -170,7 +170,7 @@ public static class HashRingExtensions
     {
         ArgumentNullException.ThrowIfNull(ring);
 
-        byte[] keyBytes = key.ToByteArray();
+        var keyBytes = key.ToByteArray();
         return ring.GetServers(keyBytes, count);
     }
 
@@ -186,7 +186,7 @@ public static class HashRingExtensions
     {
         ArgumentNullException.ThrowIfNull(ring);
 
-        byte[] keyBytes = BitConverter.GetBytes(key);
+        var keyBytes = BitConverter.GetBytes(key);
         return ring.GetServers(keyBytes, count);
     }
 
@@ -202,7 +202,7 @@ public static class HashRingExtensions
     {
         ArgumentNullException.ThrowIfNull(ring);
 
-        byte[] keyBytes = BitConverter.GetBytes(key);
+        var keyBytes = BitConverter.GetBytes(key);
         return ring.GetServers(keyBytes, count);
     }
 

@@ -22,7 +22,7 @@ public sealed class HashRingSnapshotLookupTests
 
         // Sample the key 100 times - should ONLY return server1
         var results = new HashSet<string>();
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             var testKey = new byte[] { (byte)i, 2, 3, 4 };
             results.Add(ring.GetServer(testKey));
@@ -50,7 +50,7 @@ public sealed class HashRingSnapshotLookupTests
 
         // Act - Sample multiple keys
         var results = new HashSet<string>();
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             var testKey = new byte[] { (byte)i, 2, 3, 4 };
             results.Add(ring.GetServer(testKey));
@@ -124,7 +124,7 @@ public sealed class HashRingSnapshotLookupTests
 
         // Sample multiple keys to ensure we can get server2
         var results = new HashSet<string>();
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             var testKey = new byte[] { (byte)i, 2, 3, 4 };
             results.Add(ring.GetServer(testKey));
@@ -149,7 +149,7 @@ public sealed class HashRingSnapshotLookupTests
 
         // Sample keys
         var results = new HashSet<string>();
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             var testKey = new byte[] { (byte)i, 2, 3, 4 };
             results.Add(ring.GetServer(testKey));
@@ -193,7 +193,7 @@ public sealed class HashRingSnapshotLookupTests
 
         // Act - Get servers for multiple different keys
         var results = new HashSet<string>();
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             var key = new byte[] { (byte)i, (byte)(i % 256), 3, 4 };
             results.Add(ring.GetServer(key));
@@ -259,7 +259,7 @@ public sealed class HashRingSnapshotLookupTests
 
         // Create a different key that produces the same hash
         // We need to find bytes that sum to the same value
-        byte[] matchingKey = CreateKeyWithHash(targetHash);
+        var matchingKey = CreateKeyWithHash(targetHash);
 
         // Act - This should hit the exact match case (lines 429-431)
         var server = ring.GetServer(matchingKey);
@@ -296,10 +296,10 @@ public sealed class HashRingSnapshotLookupTests
         {
             // Split into multiple bytes
             var result = new List<byte>();
-            uint remaining = targetHash;
+            var remaining = targetHash;
             while (remaining > 0)
             {
-                byte b = (byte)Math.Min(remaining, 255);
+                var b = (byte)Math.Min(remaining, 255);
                 result.Add(b);
                 remaining -= b;
             }
