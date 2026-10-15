@@ -31,7 +31,7 @@ public class TestCallTracker
 public static class HelperTests
 {
 
-    public static XunitTestAssembly GetXunitTestAssembly() => new(typeof(TestCallTracker).Assembly);
+    public static XunitTestAssembly GetXunitTestAssembly() => new(typeof(TestCallTracker).Assembly, configFilePath: null);
     public static XunitTestCollection GetXunitTestCollection() => new(GetXunitTestAssembly(), null, true, "HelperTests Collection");
     public static XunitTestClass GetXunitTestClass() => new(typeof(TestCallTracker), GetXunitTestCollection());
     public static XunitTestMethod GetXunitTestMethod() => GetXunitTestMethod_Helper_Success();

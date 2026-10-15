@@ -38,7 +38,7 @@ public class RetryTestCaseRunnerSpecs
     {
         // Arrange
         var testCase = HelperTests.GetXunitTestCase(HelperTests.GetXunitTestMethod_Helper_Failure());
-        var messageBus = new MessageBus(NullMessageSink.Instance, false);
+        using var messageBus = new MessageBus("Test", NullMessageSink.Instance, false);
         var aggregator = new ExceptionAggregator();
         var cancellationTokenSource = new CancellationTokenSource();
         var constructorArguments = Array.Empty<object>();
@@ -53,7 +53,10 @@ public class RetryTestCaseRunnerSpecs
             displayName: "TestName",
             skipReason: null,
             explicitOption: ExplicitOption.Off,
-            constructorArguments: constructorArguments
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: constructorArguments,
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         // Assert
@@ -71,7 +74,7 @@ public class RetryTestCaseRunnerSpecs
     {
         // Arrange
         var testCase = HelperTests.GetXunitTestCase(HelperTests.GetXunitTestMethod_Helper_Failure());
-        var messageBus = new MessageBus(NullMessageSink.Instance, false);
+        using var messageBus = new MessageBus("Test", NullMessageSink.Instance, false);
         var aggregator = new ExceptionAggregator();
         aggregator.Add(new InvalidOperationException(exceptionMessage));
 
@@ -88,7 +91,10 @@ public class RetryTestCaseRunnerSpecs
             displayName: "TestName",
             skipReason: null,
             explicitOption: ExplicitOption.Off,
-            constructorArguments: constructorArguments
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: constructorArguments,
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         // Assert
@@ -102,7 +108,7 @@ public class RetryTestCaseRunnerSpecs
         // Arrange
         var testCase = Substitute.For<IXunitTestCase>();
         var test = Substitute.For<IXunitTest>();
-        var messageBus = new MessageBus(NullMessageSink.Instance, false);
+        using var messageBus = new MessageBus("Test", NullMessageSink.Instance, false);
         var aggregator = new ExceptionAggregator();
         var cancellationTokenSource = new CancellationTokenSource();
         var constructorArguments = Array.Empty<object>();
@@ -120,7 +126,10 @@ public class RetryTestCaseRunnerSpecs
             displayName: "TestName",
             skipReason: null,
             explicitOption: ExplicitOption.Off,
-            constructorArguments: constructorArguments
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: constructorArguments,
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         // Assert - The test should succeed without retries
@@ -135,7 +144,7 @@ public class RetryTestCaseRunnerSpecs
         // Arrange
         var testCase = Substitute.For<IXunitTestCase>();
         var test = Substitute.For<IXunitTest>();
-        var messageBus = new MessageBus(NullMessageSink.Instance, false);
+        using var messageBus = new MessageBus("Test", NullMessageSink.Instance, false);
         var aggregator = new ExceptionAggregator();
         var cancellationTokenSource = new CancellationTokenSource();
         var constructorArguments = Array.Empty<object>();
@@ -153,7 +162,10 @@ public class RetryTestCaseRunnerSpecs
             displayName: "TestName",
             skipReason: null,
             explicitOption: ExplicitOption.Off,
-            constructorArguments: constructorArguments
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: constructorArguments,
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         // Assert - Test should execute (default maxRetries = 3 is used)
@@ -166,7 +178,7 @@ public class RetryTestCaseRunnerSpecs
         // Arrange
         var testCase = Substitute.For<IXunitTestCase>();
         var test = Substitute.For<IXunitTest>();
-        var messageBus = new MessageBus(NullMessageSink.Instance, false);
+        using var messageBus = new MessageBus("Test", NullMessageSink.Instance, false);
         var aggregator = new ExceptionAggregator();
         var cancellationTokenSource = new CancellationTokenSource();
         var constructorArguments = Array.Empty<object>();
@@ -184,7 +196,10 @@ public class RetryTestCaseRunnerSpecs
             displayName: "TestName",
             skipReason: null,
             explicitOption: ExplicitOption.Off,
-            constructorArguments: constructorArguments
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: constructorArguments,
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         // Assert - Test should execute (default maxRetries = 3 is used)
@@ -201,7 +216,7 @@ public class RetryTestCaseRunnerSpecs
         // Arrange
         var testCase = Substitute.For<IXunitTestCase>();
         var test = Substitute.For<IXunitTest>();
-        var messageBus = new MessageBus(NullMessageSink.Instance, false);
+        using var messageBus = new MessageBus("Test", NullMessageSink.Instance, false);
         var aggregator = new ExceptionAggregator();
         var cancellationTokenSource = new CancellationTokenSource();
         var constructorArguments = Array.Empty<object>();
@@ -219,7 +234,10 @@ public class RetryTestCaseRunnerSpecs
             displayName: "TestName",
             skipReason: null,
             explicitOption: ExplicitOption.Off,
-            constructorArguments: constructorArguments
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: constructorArguments,
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         // Assert - Test should execute with the specified maxRetries
@@ -232,7 +250,7 @@ public class RetryTestCaseRunnerSpecs
         // Arrange
         var testCase = Substitute.For<IXunitTestCase>();
         var test = Substitute.For<IXunitTest>();
-        var messageBus = new MessageBus(NullMessageSink.Instance, false);
+        using var messageBus = new MessageBus("Test", NullMessageSink.Instance, false);
         var aggregator = new ExceptionAggregator();
         var cancellationTokenSource = new CancellationTokenSource();
         var constructorArguments = Array.Empty<object>();
@@ -251,7 +269,10 @@ public class RetryTestCaseRunnerSpecs
             displayName: "TestName",
             skipReason: skipReason,
             explicitOption: ExplicitOption.Off,
-            constructorArguments: constructorArguments
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: constructorArguments,
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         // Assert - Test should handle skip reason properly
@@ -264,7 +285,7 @@ public class RetryTestCaseRunnerSpecs
         // Arrange
         var testCase = Substitute.For<IXunitTestCase>();
         var test = Substitute.For<IXunitTest>();
-        var messageBus = new MessageBus(NullMessageSink.Instance, false);
+        using var messageBus = new MessageBus("Test", NullMessageSink.Instance, false);
         var aggregator = new ExceptionAggregator();
         var cancellationTokenSource = new CancellationTokenSource();
         var constructorArguments = Array.Empty<object>();
@@ -282,7 +303,10 @@ public class RetryTestCaseRunnerSpecs
             displayName: "TestName",
             skipReason: null,
             explicitOption: ExplicitOption.On,
-            constructorArguments: constructorArguments
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: constructorArguments,
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         // Assert - Test should handle explicit option properly
@@ -295,7 +319,7 @@ public class RetryTestCaseRunnerSpecs
         // Arrange
         var testCase = Substitute.For<IXunitTestCase>();
         var test = Substitute.For<IXunitTest>();
-        var messageBus = new MessageBus(NullMessageSink.Instance, false);
+        using var messageBus = new MessageBus("Test", NullMessageSink.Instance, false);
         var aggregator = new ExceptionAggregator();
         var cancellationTokenSource = new CancellationTokenSource();
         var constructorArguments = new object[] { "arg1", 42, true };
@@ -313,7 +337,10 @@ public class RetryTestCaseRunnerSpecs
             displayName: "TestName",
             skipReason: null,
             explicitOption: ExplicitOption.Off,
-            constructorArguments: constructorArguments
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: constructorArguments,
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         // Assert - Test should handle constructor arguments properly
@@ -328,7 +355,7 @@ public class RetryTestCaseRunnerSpecs
         var test1 = Substitute.For<IXunitTest>();
         var test2 = Substitute.For<IXunitTest>();
         var test3 = Substitute.For<IXunitTest>();
-        var messageBus = new MessageBus(NullMessageSink.Instance, false);
+        using var messageBus = new MessageBus("Test", NullMessageSink.Instance, false);
         var aggregator = new ExceptionAggregator();
         var cancellationTokenSource = new CancellationTokenSource();
         var constructorArguments = Array.Empty<object>();
@@ -348,7 +375,10 @@ public class RetryTestCaseRunnerSpecs
             displayName: "TestName",
             skipReason: null,
             explicitOption: ExplicitOption.Off,
-            constructorArguments: constructorArguments
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: constructorArguments,
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         // Assert - All tests should be handled
@@ -360,7 +390,7 @@ public class RetryTestCaseRunnerSpecs
     {
         // Arrange
         var testCase = Substitute.For<IXunitTestCase>();
-        var messageBus = new MessageBus(NullMessageSink.Instance, false);
+        using var messageBus = new MessageBus("Test", NullMessageSink.Instance, false);
         var aggregator = new ExceptionAggregator();
         var cancellationTokenSource = new CancellationTokenSource();
         var constructorArguments = Array.Empty<object>();
@@ -377,7 +407,10 @@ public class RetryTestCaseRunnerSpecs
             displayName: "TestName",
             skipReason: null,
             explicitOption: ExplicitOption.Off,
-            constructorArguments: constructorArguments
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: constructorArguments,
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         // Assert - Should handle empty test collection gracefully
@@ -390,7 +423,7 @@ public class RetryTestCaseRunnerSpecs
         // Arrange
         var testCase = Substitute.For<IXunitTestCase>();
         var test = Substitute.For<IXunitTest>();
-        var messageBus = new MessageBus(NullMessageSink.Instance, false);
+        using var messageBus = new MessageBus("Test", NullMessageSink.Instance, false);
         var aggregator = new ExceptionAggregator();
         var cancellationTokenSource = new CancellationTokenSource();
         var constructorArguments = Array.Empty<object>();
@@ -411,7 +444,10 @@ public class RetryTestCaseRunnerSpecs
             displayName: "TestName",
             skipReason: null,
             explicitOption: ExplicitOption.Off,
-            constructorArguments: constructorArguments
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: constructorArguments,
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         // Assert - Should handle cancellation appropriately

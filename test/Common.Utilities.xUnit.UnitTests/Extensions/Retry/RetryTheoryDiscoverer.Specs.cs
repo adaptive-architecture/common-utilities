@@ -19,7 +19,7 @@ public class TransparentTheoryDiscoverer : TheoryDiscoverer
         ITheoryDataRow dataRow,
         object[] testMethodArguments)
     {
-        return CreateTestCasesForDataRow(discoveryOptions, testMethod, theoryAttribute, dataRow, testMethodArguments);
+        return CreateTestCasesForDataRow(discoveryOptions, testMethod, theoryAttribute, dataRow, testMethodArguments, null);
     }
 
     public ValueTask<IReadOnlyCollection<IXunitTestCase>> CallCreateTestCasesForTheory(
@@ -43,7 +43,7 @@ public class TransparentRetryTheoryDiscoverer : RetryTheoryDiscoverer
         ITheoryDataRow dataRow,
         object[] testMethodArguments)
     {
-        return CreateTestCasesForDataRow(discoveryOptions, testMethod, theoryAttribute, dataRow, testMethodArguments);
+        return CreateTestCasesForDataRow(discoveryOptions, testMethod, theoryAttribute, dataRow, testMethodArguments, null);
     }
 
     public ValueTask<IReadOnlyCollection<IXunitTestCase>> CallCreateTestCasesForTheory(

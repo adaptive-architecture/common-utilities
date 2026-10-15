@@ -529,7 +529,7 @@ public class RedisLeaseStoreSpecs
         const string participantId = "participant-1";
         var leaseDuration = TimeSpan.FromMinutes(5);
 
-        var timeoutException = new RedisTimeoutException("Operation timed out", CommandStatus.Unknown);
+        var timeoutException = new RedisTimeoutException(CommandFlags.None, "Operation timed out", CommandStatus.Unknown);
         _ = _database.StringSetAsync(Arg.Any<RedisKey>(), Arg.Any<RedisValue>(), Arg.Any<TimeSpan?>(), Arg.Any<When>())
             .Returns<Task<bool>>(_ => throw timeoutException);
 
@@ -548,7 +548,7 @@ public class RedisLeaseStoreSpecs
         const string participantId = "participant-1";
         var leaseDuration = TimeSpan.FromMinutes(5);
 
-        var connectionException = new RedisConnectionException(ConnectionFailureType.SocketFailure, "Connection lost");
+        var connectionException = new RedisConnectionException(ConnectionFailureType.SocketFailure, CommandFlags.None, "Connection lost", null, CommandStatus.Unknown);
         _ = _database.ScriptEvaluateAsync(Arg.Any<string>(), Arg.Any<RedisKey[]>(), Arg.Any<RedisValue[]>(), Arg.Any<CommandFlags>())
             .Returns<Task<RedisResult>>(_ => throw connectionException);
 

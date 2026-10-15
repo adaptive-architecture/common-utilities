@@ -19,10 +19,11 @@ public class RetryTheoryDiscoverer : TheoryDiscoverer
         IXunitTestMethod testMethod,
         ITheoryAttribute theoryAttribute,
         ITheoryDataRow dataRow,
-        object?[] testMethodArguments)
+        object?[] testMethodArguments,
+        string? index)
     {
         var maxRetries = (theoryAttribute as RetryTheoryAttribute)?.MaxRetries ?? 3;
-        var details = TestIntrospectionHelper.GetTestCaseDetailsForTheoryDataRow(discoveryOptions, testMethod, theoryAttribute, dataRow, testMethodArguments);
+        var details = TestIntrospectionHelper.GetTestCaseDetailsForTheoryDataRow(discoveryOptions, testMethod, theoryAttribute, dataRow, testMethodArguments, index);
         var traits = TestIntrospectionHelper.GetTraits(testMethod, dataRow);
         var testCase = new RetryTestCase(
             maxRetries,

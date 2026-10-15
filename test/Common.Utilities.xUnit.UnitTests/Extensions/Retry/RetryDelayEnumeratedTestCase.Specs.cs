@@ -102,7 +102,10 @@ public class RetryDelayEnumeratedTestCaseSpecs
             displayName: "Test",
             skipReason: null,
             explicitOption: ExplicitOption.On,
-            constructorArguments: []
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: [],
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         var actual = testCase.Run(
@@ -110,7 +113,10 @@ public class RetryDelayEnumeratedTestCaseSpecs
             messageBus: messageBus,
             constructorArguments: [],
             aggregator: aggregator,
-            cancellationTokenSource: new CancellationTokenSource()
+            cancellationTokenSource: new CancellationTokenSource(),
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         Assert.Equal(expected.ToString(), actual.ToString());
