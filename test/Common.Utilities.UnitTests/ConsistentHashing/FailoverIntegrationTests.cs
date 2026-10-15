@@ -24,7 +24,7 @@ public class FailoverIntegrationTests
         var server2Keys = testKeys.Where(key => initialMapping[key] == "server2").ToArray();
 
         // Act - Remove server2
-        bool removed = ring.Remove("server2");
+        var removed = ring.Remove("server2");
         ring.CreateConfigurationSnapshot();
 
         // Assert removal was successful
@@ -69,7 +69,7 @@ public class FailoverIntegrationTests
         var initialMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
 
         // Act - Try to remove non-existent server
-        bool removed = ring.Remove("server99");
+        var removed = ring.Remove("server99");
 
         // Assert - Removal should return false
         Assert.False(removed);
@@ -98,11 +98,11 @@ public class FailoverIntegrationTests
         // Verify server exists and can serve requests
         Assert.Single(ring.Servers);
         Assert.False(ring.IsEmpty);
-        string server = ring.GetServer(testKey);
+        var server = ring.GetServer(testKey);
         Assert.Equal("server1", server);
 
         // Act - Remove the only server
-        bool removed = ring.Remove("server1");
+        var removed = ring.Remove("server1");
         ring.CreateConfigurationSnapshot(); // Create snapshot with empty ring
 
         // Assert - Ring should be empty
@@ -120,7 +120,7 @@ public class FailoverIntegrationTests
     {
         // Arrange
         var ring = new HashRing<string>();
-        for (int i = 1; i <= 5; i++)
+        for (var i = 1; i <= 5; i++)
         {
             ring.Add($"server{i}");
         }
@@ -258,7 +258,7 @@ public class FailoverIntegrationTests
     {
         // Arrange
         var ring = new HashRing<string>();
-        for (int i = 1; i <= 6; i++)
+        for (var i = 1; i <= 6; i++)
         {
             ring.Add($"server{i}");
         }

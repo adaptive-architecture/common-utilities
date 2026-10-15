@@ -24,8 +24,7 @@ public class RetryFactDiscovererSpecs
 
         var result = await discoverer.Discover(TestFrameworkOptions.Empty(), testMethod, factAttribute);
 
-        Assert.Single(result);
-        var testCase = Assert.IsType<RetryTestCase>(result.First());
+        var testCase = Assert.IsType<RetryTestCase>(Assert.Single(result));
         Assert.Equal(5, testCase.MaxRetries);
     }
 }

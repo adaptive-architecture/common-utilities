@@ -440,7 +440,7 @@ public sealed class HashRingHistoryLimitExceededExceptionComprehensiveTests
         ring.Add("server1");
 
         // Fill to capacity
-        for (int i = 0; i < historyLimit; i++)
+        for (var i = 0; i < historyLimit; i++)
         {
             ring.CreateConfigurationSnapshot();
             ring.Add($"server{i + 2}");
@@ -505,9 +505,7 @@ public sealed class HashRingHistoryLimitExceededExceptionComprehensiveTests
         }
 
         Assert.NotNull(caughtException);
-        Assert.IsType<HashRingHistoryLimitExceededException>(caughtException);
-
-        var specificException = (HashRingHistoryLimitExceededException)caughtException;
+        var specificException = Assert.IsType<HashRingHistoryLimitExceededException>(caughtException);
         Assert.Equal(1, specificException.MaxHistorySize);
         Assert.Equal(1, specificException.CurrentCount);
     }
@@ -523,7 +521,7 @@ public sealed class HashRingHistoryLimitExceededExceptionComprehensiveTests
         ring.CreateConfigurationSnapshot();
         ring.Add("server3"); // Add server to create a different snapshot
 
-        bool filterMatched = false;
+        var filterMatched = false;
 
         try
         {
@@ -547,7 +545,7 @@ public sealed class HashRingHistoryLimitExceededExceptionComprehensiveTests
         var startTime = DateTime.UtcNow;
 
         // Create many exceptions to test performance
-        for (int i = 0; i < 1000; i++)
+        for (var i = 0; i < 1000; i++)
         {
             var exception = new HashRingHistoryLimitExceededException(i, i - 1);
             Assert.NotNull(exception);

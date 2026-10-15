@@ -294,13 +294,13 @@ public class RedisLeaderElectionServiceProviderSpecs
         var tasks = new List<Task>();
 
         // Act
-        for (int i = 0; i < threadCount; i++)
+        for (var i = 0; i < threadCount; i++)
         {
-            int threadIndex = i;
+            var threadIndex = i;
             tasks.Add(Task.Run(() =>
             {
                 var threadElections = new List<ILeaderElectionService>();
-                for (int j = 0; j < electionsPerThread; j++)
+                for (var j = 0; j < electionsPerThread; j++)
                 {
                     var election = provider.CreateElection(
                         $"election-{threadIndex}-{j}",

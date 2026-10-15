@@ -43,7 +43,7 @@ public static class HistoryManagementExample
         Console.WriteLine($"Initial setup - History: {fifoRing.HistoryCount}/{fifoRing.MaxHistorySize}");
 
         // Fill up the history - FIFO will automatically remove oldest
-        for (int i = 1; i <= 5; i++)
+        for (var i = 1; i <= 5; i++)
         {
             fifoRing.CreateConfigurationSnapshot();
             fifoRing.Add($"server-{i + 2}");
@@ -64,7 +64,7 @@ public static class HistoryManagementExample
         Console.WriteLine($"Initial setup - History: {errorRing.HistoryCount}/{errorRing.MaxHistorySize}");
 
         // Fill up the history
-        for (int i = 1; i <= 3; i++)
+        for (var i = 1; i <= 3; i++)
         {
             errorRing.CreateConfigurationSnapshot();
             errorRing.Add($"server-{i + 2}");
@@ -109,7 +109,7 @@ public static class HistoryManagementExample
         ring.Add("primary-server");
 
         // Simulate a deployment with many servers
-        for (int i = 1; i <= 10; i++)
+        for (var i = 1; i <= 10; i++)
         {
             // Check if we're approaching the limit
             if (ring.HistoryCount >= ring.MaxHistorySize - 1)

@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace AdaptArch.Common.Utilities.AspNetCore.Middlewares.VersionedStaticFiles;
 

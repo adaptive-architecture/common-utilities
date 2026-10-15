@@ -53,8 +53,8 @@ public class InProcessMessageHub : MessageHub<InProcessMessageHubOptions>
                 MaxDegreeOfParallelism = Math.Max(1, Options.MaxDegreeOfParallelism),
                 CancellationToken = cancellationToken
             },
-            async (h, ct) => await h.Invoke(messageBuilder.Build(topic, data), ct).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding)
-        ).ConfigureAwait(ConfigureAwaitOptions.None | ConfigureAwaitOptions.ForceYielding);
+            async (h, ct) => await h.Invoke(messageBuilder.Build(topic, data), ct).ConfigureAwait(ConfigureAwaitOptions.ForceYielding)
+        ).ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
     }
 
     /// <inheritdoc />

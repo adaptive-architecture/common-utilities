@@ -158,7 +158,7 @@ public sealed class HashRing<T> where T : IEquatable<T>
 
         lock (_lock)
         {
-            bool removed = _serverVirtualNodes.TryRemove(server, out _);
+            var removed = _serverVirtualNodes.TryRemove(server, out _);
             if (removed)
             {
                 RebuildVirtualNodes();
@@ -237,7 +237,7 @@ public sealed class HashRing<T> where T : IEquatable<T>
 
         lock (_lock)
         {
-            int removedCount = 0;
+            var removedCount = 0;
             foreach (var server in serverList)
             {
                 if (_serverVirtualNodes.TryRemove(server, out _))
@@ -375,12 +375,12 @@ public sealed class HashRing<T> where T : IEquatable<T>
         var result = new List<T>();
 
         // Find the starting index (first virtual node with hash >= keyHash)
-        int startIndex = FindServerIndex(virtualNodes, keyHash);
+        var startIndex = FindServerIndex(virtualNodes, keyHash);
 
         // Walk the ring starting from startIndex to find distinct servers
-        for (int i = 0; i < virtualNodes.Count && result.Count < count; i++)
+        for (var i = 0; i < virtualNodes.Count && result.Count < count; i++)
         {
-            int index = (startIndex + i) % virtualNodes.Count;
+            var index = (startIndex + i) % virtualNodes.Count;
             var server = virtualNodes[index].Server;
 
             if (seenServers.Add(server))
@@ -398,14 +398,14 @@ public sealed class HashRing<T> where T : IEquatable<T>
 
         foreach (var kvp in _serverVirtualNodes)
         {
-            T server = kvp.Key;
-            int virtualNodeCount = kvp.Value;
+            var server = kvp.Key;
+            var virtualNodeCount = kvp.Value;
 
-            for (int i = 0; i < virtualNodeCount; i++)
+            for (var i = 0; i < virtualNodeCount; i++)
             {
-                string virtualNodeKey = $"{server}:{i}";
-                byte[] keyBytes = System.Text.Encoding.UTF8.GetBytes(virtualNodeKey);
-                uint hash = ComputeKeyHash(keyBytes);
+                var virtualNodeKey = $"{server}:{i}";
+                var keyBytes = System.Text.Encoding.UTF8.GetBytes(virtualNodeKey);
+                var hash = ComputeKeyHash(keyBytes);
                 newVirtualNodes.Add(new VirtualNode<T>(hash, server));
             }
         }
@@ -416,19 +416,19 @@ public sealed class HashRing<T> where T : IEquatable<T>
 
     private uint ComputeKeyHash(byte[] key)
     {
-        byte[] hashBytes = _hashAlgorithm.ComputeHash(key);
+        var hashBytes = _hashAlgorithm.ComputeHash(key);
         return BitConverter.ToUInt32(hashBytes, 0);
     }
 
     internal static int FindServerIndex(IReadOnlyList<VirtualNode<T>> virtualNodes, uint hash)
     {
-        int left = 0;
-        int right = virtualNodes.Count - 1;
+        var left = 0;
+        var right = virtualNodes.Count - 1;
 
         while (left <= right)
         {
-            int mid = left + ((right - left) / 2);
-            uint midHash = virtualNodes[mid].Hash;
+            var mid = left + ((right - left) / 2);
+            var midHash = virtualNodes[mid].Hash;
 
             if (midHash == hash)
             {

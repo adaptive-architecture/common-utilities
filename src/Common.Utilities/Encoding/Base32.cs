@@ -87,9 +87,9 @@ internal class Base32EncodingHelper : Base
         }
 
         var charsWritten = 0;
-        for (int offset = 0; offset < input.Length;)
+        for (var offset = 0; offset < input.Length;)
         {
-            int numCharsToOutput = GetNextGroup(input, ref offset, out byte a, out byte b, out byte c, out byte d, out byte e, out byte f, out byte g, out byte h);
+            var numCharsToOutput = GetNextGroup(input, ref offset, out var a, out var b, out var c, out var d, out var e, out var f, out var g, out var h);
 
             output[charsWritten + 7] = (numCharsToOutput >= 8) ? Alphabet[h] : '=';
             output[charsWritten + 6] = (numCharsToOutput >= 7) ? Alphabet[g] : '=';

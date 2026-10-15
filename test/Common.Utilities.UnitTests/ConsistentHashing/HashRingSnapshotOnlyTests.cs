@@ -58,7 +58,7 @@ public sealed class HashRingSnapshotOnlyTests
         var key = new byte[] { 1, 2, 3, 4 };
 
         // Act
-        bool success = ring.TryGetServer(key, out string server);
+        var success = ring.TryGetServer(key, out var server);
 
         // Assert
         Assert.False(success);
@@ -96,7 +96,7 @@ public sealed class HashRingSnapshotOnlyTests
         var key = new byte[] { 1, 2, 3, 4 };
 
         // Act
-        bool success = ring.TryGetServer(key, out string server);
+        var success = ring.TryGetServer(key, out var server);
 
         // Assert
         Assert.False(success);
@@ -147,7 +147,7 @@ public sealed class HashRingSnapshotOnlyTests
         var key = new byte[] { 1, 2, 3, 4 };
 
         // Act
-        bool success = ring.TryGetServer(key, out string server);
+        var success = ring.TryGetServer(key, out var server);
 
         // Assert
         Assert.True(success);

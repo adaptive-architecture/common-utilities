@@ -180,7 +180,7 @@ public class RedistributionIntegrationTests
         var distributionHistory = new List<Dictionary<string, int>>();
 
         // Act - Add servers one by one and track distribution at each step
-        for (int i = 1; i <= 5; i++)
+        for (var i = 1; i <= 5; i++)
         {
             ring.Add($"server{i}");
             ring.CreateConfigurationSnapshot();

@@ -18,15 +18,14 @@ public class ConsistencyIntegrationTests
 
         // Act - Get server multiple times
         var results = new List<string>();
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             results.Add(ring.GetServer(testKey));
         }
 
         // Assert - All results should be identical
         var distinctResults = results.Distinct().ToList();
-        Assert.Single(distinctResults);
-        Assert.Contains(distinctResults[0], ring.Servers);
+        Assert.Contains(Assert.Single(distinctResults), ring.Servers);
     }
 
     [Fact]
@@ -45,7 +44,7 @@ public class ConsistencyIntegrationTests
         var initialMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
 
         // Act - Get mapping multiple times
-        for (int attempt = 0; attempt < 10; attempt++)
+        for (var attempt = 0; attempt < 10; attempt++)
         {
             var currentMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
 
@@ -101,7 +100,7 @@ public class ConsistencyIntegrationTests
 
         // Act - Get server multiple times
         var results = new HashSet<string>();
-        for (int i = 0; i < 50; i++)
+        for (var i = 0; i < 50; i++)
         {
             results.Add(ring.GetServer(testKey));
         }
@@ -133,19 +132,16 @@ public class ConsistencyIntegrationTests
         var sha1Results = new HashSet<string>();
         var md5Results = new HashSet<string>();
 
-        for (int i = 0; i < 20; i++)
+        for (var i = 0; i < 20; i++)
         {
             sha1Results.Add(sha1Ring.GetServer(testKey));
             md5Results.Add(md5Ring.GetServer(testKey));
         }
 
         // Assert - Each algorithm should be consistent with itself
-        Assert.Single(sha1Results);
-        Assert.Single(md5Results);
-
         // Different algorithms may produce different results (this is expected)
-        Assert.Contains(sha1Results.Single(), sha1Ring.Servers);
-        Assert.Contains(md5Results.Single(), md5Ring.Servers);
+        Assert.Contains(Assert.Single(sha1Results), sha1Ring.Servers);
+        Assert.Contains(Assert.Single(md5Results), md5Ring.Servers);
     }
 
     [Fact]
@@ -161,14 +157,13 @@ public class ConsistencyIntegrationTests
 
         // Act - Get server multiple times with empty key
         var results = new HashSet<string>();
-        for (int i = 0; i < 20; i++)
+        for (var i = 0; i < 20; i++)
         {
             results.Add(ring.GetServer(emptyKey));
         }
 
         // Assert - Should always return the same server even for empty key
-        Assert.Single(results);
-        Assert.Contains(results.Single(), ring.Servers);
+        Assert.Contains(Assert.Single(results), ring.Servers);
     }
 
     [Fact]
@@ -185,14 +180,13 @@ public class ConsistencyIntegrationTests
 
         // Act - Get server multiple times with large key
         var results = new HashSet<string>();
-        for (int i = 0; i < 20; i++)
+        for (var i = 0; i < 20; i++)
         {
             results.Add(ring.GetServer(largeKey));
         }
 
         // Assert - Should always return the same server
-        Assert.Single(results);
-        Assert.Contains(results.Single(), ring.Servers);
+        Assert.Contains(Assert.Single(results), ring.Servers);
     }
 
     [Theory]
@@ -214,7 +208,7 @@ public class ConsistencyIntegrationTests
         var initialMapping = testKeys.ToDictionary(key => key, key => ring.GetServer(key));
 
         // Act - Verify consistency over multiple attempts
-        for (int attempt = 0; attempt < 10; attempt++)
+        for (var attempt = 0; attempt < 10; attempt++)
         {
             foreach (var key in testKeys)
             {

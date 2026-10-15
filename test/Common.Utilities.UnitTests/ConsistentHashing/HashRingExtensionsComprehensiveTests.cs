@@ -16,7 +16,7 @@ public class HashRingExtensionsComprehensiveTests
         ring.CreateConfigurationSnapshot();
 
         // Act
-        bool success = ring.TryGetServer(12345, out string server);
+        var success = ring.TryGetServer(12345, out var server);
 
         // Assert
         Assert.True(success);
@@ -31,7 +31,7 @@ public class HashRingExtensionsComprehensiveTests
         var ring = new HashRing<string>();
 
         // Act
-        bool success = ring.TryGetServer(12345, out string server);
+        var success = ring.TryGetServer(12345, out var server);
 
         // Assert
         Assert.False(success);
@@ -49,9 +49,9 @@ public class HashRingExtensionsComprehensiveTests
         const int testKey = 67890;
 
         // Act
-        bool success1 = ring.TryGetServer(testKey, out string server1);
-        bool success2 = ring.TryGetServer(testKey, out string server2);
-        bool success3 = ring.TryGetServer(testKey, out string server3);
+        var success1 = ring.TryGetServer(testKey, out var server1);
+        var success2 = ring.TryGetServer(testKey, out var server2);
+        var success3 = ring.TryGetServer(testKey, out var server3);
 
         // Assert
         Assert.True(success1);
@@ -71,7 +71,7 @@ public class HashRingExtensionsComprehensiveTests
         ring.CreateConfigurationSnapshot();
 
         // Act
-        bool success = ring.TryGetServer(1234567890123L, out string server);
+        var success = ring.TryGetServer(1234567890123L, out var server);
 
         // Assert
         Assert.True(success);
@@ -86,7 +86,7 @@ public class HashRingExtensionsComprehensiveTests
         var ring = new HashRing<string>();
 
         // Act
-        bool success = ring.TryGetServer(1234567890123L, out string server);
+        var success = ring.TryGetServer(1234567890123L, out var server);
 
         // Assert
         Assert.False(success);
@@ -104,9 +104,9 @@ public class HashRingExtensionsComprehensiveTests
         const long testKey = 9876543210987L;
 
         // Act
-        bool success1 = ring.TryGetServer(testKey, out string server1);
-        bool success2 = ring.TryGetServer(testKey, out string server2);
-        bool success3 = ring.TryGetServer(testKey, out string server3);
+        var success1 = ring.TryGetServer(testKey, out var server1);
+        var success2 = ring.TryGetServer(testKey, out var server2);
+        var success3 = ring.TryGetServer(testKey, out var server3);
 
         // Assert
         Assert.True(success1);
@@ -131,7 +131,7 @@ public class HashRingExtensionsComprehensiveTests
         ring.CreateConfigurationSnapshot();
 
         // Act
-        bool success = ring.TryGetServer(key, out string server);
+        var success = ring.TryGetServer(key, out var server);
 
         // Assert
         Assert.True(success);
@@ -154,7 +154,7 @@ public class HashRingExtensionsComprehensiveTests
         ring.CreateConfigurationSnapshot();
 
         // Act
-        bool success = ring.TryGetServer(key, out string server);
+        var success = ring.TryGetServer(key, out var server);
 
         // Assert
         Assert.True(success);
@@ -353,7 +353,7 @@ public class HashRingExtensionsComprehensiveTests
         // Assert - Results should be identical
         Assert.Equal(servers1.Count, servers2.Count);
         Assert.Equal(servers2.Count, servers3.Count);
-        for (int i = 0; i < servers1.Count; i++)
+        for (var i = 0; i < servers1.Count; i++)
         {
             Assert.Equal(servers1[i], servers2[i]);
             Assert.Equal(servers2[i], servers3[i]);
@@ -547,15 +547,10 @@ public class HashRingExtensionsComprehensiveTests
         Assert.Equal("only-server", guidServer);
 
         // Act & Assert - GetServers methods
-        Assert.Single(ring.GetServers(stringKey, 1));
-        Assert.Single(ring.GetServers(intKey, 1));
-        Assert.Single(ring.GetServers(longKey, 1));
-        Assert.Single(ring.GetServers(guidKey, 1));
-
-        Assert.Equal("only-server", ring.GetServers(stringKey, 1).First());
-        Assert.Equal("only-server", ring.GetServers(intKey, 1).First());
-        Assert.Equal("only-server", ring.GetServers(longKey, 1).First());
-        Assert.Equal("only-server", ring.GetServers(guidKey, 1).First());
+        Assert.Equal("only-server", Assert.Single(ring.GetServers(stringKey, 1)));
+        Assert.Equal("only-server", Assert.Single(ring.GetServers(intKey, 1)));
+        Assert.Equal("only-server", Assert.Single(ring.GetServers(longKey, 1)));
+        Assert.Equal("only-server", Assert.Single(ring.GetServers(guidKey, 1)));
     }
 
     [Fact]
@@ -591,8 +586,7 @@ public class HashRingExtensionsComprehensiveTests
             Assert.Equal(server, tryServer);
 
             var servers = ring.GetServers(specialString, 1).ToList();
-            Assert.Single(servers);
-            Assert.Equal(server, servers[0]);
+            Assert.Equal(server, Assert.Single(servers));
         }
     }
 
@@ -697,7 +691,7 @@ public class HashRingExtensionsComprehensiveTests
     {
         // Arrange
         var ring = new HashRing<string>();
-        for (int i = 1; i <= 10; i++)
+        for (var i = 1; i <= 10; i++)
         {
             ring.Add($"server{i}");
         }
@@ -707,7 +701,7 @@ public class HashRingExtensionsComprehensiveTests
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
         // Act - Test different key types
-        for (int i = 0; i < keyCount; i++)
+        for (var i = 0; i < keyCount; i++)
         {
             ring.GetServer($"string-key-{i}");
             ring.GetServer(i);
@@ -742,7 +736,7 @@ public class HashRingExtensionsComprehensiveTests
         const int sampleSize = 1000;
 
         // Act - Test distribution with string keys
-        for (int i = 0; i < sampleSize; i++)
+        for (var i = 0; i < sampleSize; i++)
         {
             var server = ring.GetServer($"key-{i}");
             distribution[server]++;

@@ -188,7 +188,7 @@ public class Base32Specs
 
     private static byte[] GetRandomByteArray(int length)
     {
-        byte[] bytes = new byte[length];
+        var bytes = new byte[length];
         _rng.GetBytes(bytes);
         return bytes;
     }

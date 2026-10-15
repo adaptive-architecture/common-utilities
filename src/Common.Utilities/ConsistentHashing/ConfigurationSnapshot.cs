@@ -83,7 +83,7 @@ internal sealed class ConfigurationSnapshot<T> where T : IEquatable<T>
 
     private uint ComputeKeyHash(byte[] key)
     {
-        byte[] hashBytes = _hashAlgorithm.ComputeHash(key);
+        var hashBytes = _hashAlgorithm.ComputeHash(key);
         return BitConverter.ToUInt32(hashBytes, 0);
     }
 }

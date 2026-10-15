@@ -19,7 +19,7 @@ public sealed class VersionAwareConcurrencyTests
         };
         var hashRing = new HashRing<string>(options);
 
-        for (int i = 1; i <= 5; i++)
+        for (var i = 1; i <= 5; i++)
         {
             hashRing.Add($"server-{i}");
         }
@@ -31,7 +31,7 @@ public sealed class VersionAwareConcurrencyTests
         {
             try
             {
-                for (int j = 0; j < 5; j++)
+                for (var j = 0; j < 5; j++)
                 {
                     hashRing.CreateConfigurationSnapshot();
                     hashRing.Add($"thread-{i}-server-{j}");
@@ -120,7 +120,7 @@ public sealed class VersionAwareConcurrencyTests
         {
             try
             {
-                for (int i = 0; i < 10; i++)
+                for (var i = 0; i < 10; i++)
                 {
                     if (hashRing.TryGetServer(testKey, out var server))
                     {
@@ -200,7 +200,7 @@ public sealed class VersionAwareConcurrencyTests
         };
         var hashRing = new HashRing<string>(options);
 
-        for (int i = 1; i <= 4; i++)
+        for (var i = 1; i <= 4; i++)
         {
             hashRing.Add($"max-server-{i}");
         }
@@ -279,7 +279,7 @@ public sealed class VersionAwareConcurrencyTests
         {
             try
             {
-                for (int i = 0; i < 8; i++)
+                for (var i = 0; i < 8; i++)
                 {
                     if (hashRing.TryGetServer(testKey, out var server))
                     {

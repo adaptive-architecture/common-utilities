@@ -73,7 +73,7 @@ public class VirtualNodeTests
         var node2 = new VirtualNode<string>(100u, "server2"); // Different server, same hash
 
         // Act
-        int result = node1.CompareTo(node2);
+        var result = node1.CompareTo(node2);
 
         // Assert
         Assert.Equal(0, result);
@@ -87,7 +87,7 @@ public class VirtualNodeTests
         var node2 = new VirtualNode<string>(200u, "server2");
 
         // Act
-        int result = node1.CompareTo(node2);
+        var result = node1.CompareTo(node2);
 
         // Assert
         Assert.True(result < 0);
@@ -101,7 +101,7 @@ public class VirtualNodeTests
         var node2 = new VirtualNode<string>(100u, "server2");
 
         // Act
-        int result = node1.CompareTo(node2);
+        var result = node1.CompareTo(node2);
 
         // Assert
         Assert.True(result > 0);
@@ -114,7 +114,7 @@ public class VirtualNodeTests
         var node = new VirtualNode<string>(100u, "server1");
 
         // Act
-        int result = node.CompareTo(null);
+        var result = node.CompareTo(null);
 
         // Assert
         Assert.Equal(1, result);
@@ -233,8 +233,8 @@ public class VirtualNodeTests
         var node2 = new VirtualNode<string>(100u, "server1");
 
         // Act
-        int hashCode1 = node1.GetHashCode();
-        int hashCode2 = node2.GetHashCode();
+        var hashCode1 = node1.GetHashCode();
+        var hashCode2 = node2.GetHashCode();
 
         // Assert
         Assert.Equal(hashCode1, hashCode2);
@@ -248,8 +248,8 @@ public class VirtualNodeTests
         var node2 = new VirtualNode<string>(200u, "server2");
 
         // Act
-        int hashCode1 = node1.GetHashCode();
-        int hashCode2 = node2.GetHashCode();
+        var hashCode1 = node1.GetHashCode();
+        var hashCode2 = node2.GetHashCode();
 
         // Assert
         // Note: Hash codes MAY be different, but they don't have to be
@@ -266,8 +266,8 @@ public class VirtualNodeTests
         var node2 = new VirtualNode<string>(100u, "server2");
 
         // Act
-        int hashCode1 = node1.GetHashCode();
-        int hashCode2 = node2.GetHashCode();
+        var hashCode1 = node1.GetHashCode();
+        var hashCode2 = node2.GetHashCode();
 
         // Assert
         // These should be different since the servers are different
@@ -281,9 +281,9 @@ public class VirtualNodeTests
         var node = new VirtualNode<string>(100u, "server1");
 
         // Act
-        int hashCode1 = node.GetHashCode();
-        int hashCode2 = node.GetHashCode();
-        int hashCode3 = node.GetHashCode();
+        var hashCode1 = node.GetHashCode();
+        var hashCode2 = node.GetHashCode();
+        var hashCode3 = node.GetHashCode();
 
         // Assert
         Assert.Equal(hashCode1, hashCode2);
@@ -313,7 +313,7 @@ public class VirtualNodeTests
         nodes.Sort();
 
         // Assert
-        for (int i = 0; i < nodes.Count; i++)
+        for (var i = 0; i < nodes.Count; i++)
         {
             Assert.Equal(expectedOrder[i], nodes[i].Hash);
         }
@@ -435,7 +435,7 @@ public class VirtualNodeTests
         // Create many different nodes
         for (uint i = 0; i < 1000; i += 10)
         {
-            for (int j = 1; j <= 5; j++)
+            for (var j = 1; j <= 5; j++)
             {
                 var node = new VirtualNode<string>(i, $"server{j}");
                 nodes.Add(node);
@@ -445,7 +445,7 @@ public class VirtualNodeTests
 
         // Act & Assert
         // We should have a reasonable distribution of hash codes (most should be unique)
-        double uniquePercentage = (double)hashCodes.Count / nodes.Count;
+        var uniquePercentage = (double)hashCodes.Count / nodes.Count;
         Assert.True(uniquePercentage > 0.95, $"Hash code distribution is poor: {uniquePercentage:P}");
     }
 

@@ -554,7 +554,7 @@ public class InProcessLeaderElectionServiceBasicTests
         const int serviceCount = 10;
         var services = new List<InProcessLeaderElectionService>();
 
-        for (int i = 0; i < serviceCount; i++)
+        for (var i = 0; i < serviceCount; i++)
         {
             services.Add(new InProcessLeaderElectionService(
                 leaseStore,
@@ -664,13 +664,13 @@ public class InProcessLeaderElectionServiceBasicTests
         var tasks = new List<Task>();
 
         // Multiple concurrent starts
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
         {
             tasks.Add(service.StartAsync(TestContext.Current.CancellationToken));
         }
 
         // Multiple concurrent stops
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
         {
             tasks.Add(service.StopAsync(TestContext.Current.CancellationToken));
         }
@@ -756,7 +756,7 @@ public class InProcessLeaderElectionServiceBasicTests
             options);
 
         // Act & Assert - Rapid start/stop sequence
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
             await service.StartAsync(TestContext.Current.CancellationToken);
             await Task.Delay(5, TestContext.Current.CancellationToken); // Brief delay to let election loop potentially start

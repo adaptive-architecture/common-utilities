@@ -16,7 +16,7 @@ public class HashRingExtensionsContractTests
         ring.CreateConfigurationSnapshot();
 
         // Act
-        string server = ring.GetServer("user123");
+        var server = ring.GetServer("user123");
 
         // Assert
         Assert.NotNull(server);
@@ -34,9 +34,9 @@ public class HashRingExtensionsContractTests
         ring.CreateConfigurationSnapshot();
 
         // Act
-        string server1 = ring.GetServer("user123");
-        string server2 = ring.GetServer("user123");
-        string server3 = ring.GetServer("user123");
+        var server1 = ring.GetServer("user123");
+        var server2 = ring.GetServer("user123");
+        var server3 = ring.GetServer("user123");
 
         // Assert
         Assert.Equal(server1, server2);
@@ -74,7 +74,7 @@ public class HashRingExtensionsContractTests
         ring.CreateConfigurationSnapshot();
 
         // Act
-        bool success = ring.TryGetServer("user123", out string server);
+        var success = ring.TryGetServer("user123", out var server);
 
         // Assert
         Assert.True(success);
@@ -89,7 +89,7 @@ public class HashRingExtensionsContractTests
         var ring = new HashRing<string>();
 
         // Act
-        bool success = ring.TryGetServer("user123", out string server);
+        var success = ring.TryGetServer("user123", out var server);
 
         // Assert
         Assert.False(success);
@@ -111,7 +111,7 @@ public class HashRingExtensionsContractTests
         var guid = Guid.NewGuid();
 
         // Act
-        string server = ring.GetServer(guid);
+        var server = ring.GetServer(guid);
 
         // Assert
         Assert.NotNull(server);
@@ -130,9 +130,9 @@ public class HashRingExtensionsContractTests
         var guid = Guid.NewGuid();
 
         // Act
-        string server1 = ring.GetServer(guid);
-        string server2 = ring.GetServer(guid);
-        string server3 = ring.GetServer(guid);
+        var server1 = ring.GetServer(guid);
+        var server2 = ring.GetServer(guid);
+        var server3 = ring.GetServer(guid);
 
         // Assert
         Assert.Equal(server1, server2);
@@ -160,7 +160,7 @@ public class HashRingExtensionsContractTests
         var guid = Guid.NewGuid();
 
         // Act
-        bool success = ring.TryGetServer(guid, out string server);
+        var success = ring.TryGetServer(guid, out var server);
 
         // Assert
         Assert.True(success);
@@ -176,7 +176,7 @@ public class HashRingExtensionsContractTests
         var guid = Guid.NewGuid();
 
         // Act
-        bool success = ring.TryGetServer(guid, out string server);
+        var success = ring.TryGetServer(guid, out var server);
 
         // Assert
         Assert.False(success);
@@ -197,7 +197,7 @@ public class HashRingExtensionsContractTests
         ring.CreateConfigurationSnapshot();
 
         // Act
-        string server = ring.GetServer(12345);
+        var server = ring.GetServer(12345);
 
         // Assert
         Assert.NotNull(server);
@@ -215,9 +215,9 @@ public class HashRingExtensionsContractTests
         ring.CreateConfigurationSnapshot();
 
         // Act
-        string server1 = ring.GetServer(12345);
-        string server2 = ring.GetServer(12345);
-        string server3 = ring.GetServer(12345);
+        var server1 = ring.GetServer(12345);
+        var server2 = ring.GetServer(12345);
+        var server3 = ring.GetServer(12345);
 
         // Assert
         Assert.Equal(server1, server2);
@@ -248,7 +248,7 @@ public class HashRingExtensionsContractTests
         ring.CreateConfigurationSnapshot();
 
         // Act
-        string server = ring.GetServer(1234567890L);
+        var server = ring.GetServer(1234567890L);
 
         // Assert
         Assert.NotNull(server);
@@ -266,9 +266,9 @@ public class HashRingExtensionsContractTests
         ring.CreateConfigurationSnapshot();
 
         // Act
-        string server1 = ring.GetServer(1234567890L);
-        string server2 = ring.GetServer(1234567890L);
-        string server3 = ring.GetServer(1234567890L);
+        var server1 = ring.GetServer(1234567890L);
+        var server2 = ring.GetServer(1234567890L);
+        var server3 = ring.GetServer(1234567890L);
 
         // Assert
         Assert.Equal(server1, server2);
@@ -323,7 +323,7 @@ public class HashRingExtensionsContractTests
 
         // Assert
         Assert.Equal(servers1.Count, servers2.Count);
-        for (int i = 0; i < servers1.Count; i++)
+        for (var i = 0; i < servers1.Count; i++)
         {
             Assert.Equal(servers1[i], servers2[i]);
         }
@@ -361,9 +361,9 @@ public class HashRingExtensionsContractTests
         ring.CreateConfigurationSnapshot();
 
         // Act
-        string stringKeyServer = ring.GetServer("123");
-        string intKeyServer = ring.GetServer(123);
-        string guidKeyServer = ring.GetServer(Guid.Parse("12345678-1234-1234-1234-123456789012"));
+        var stringKeyServer = ring.GetServer("123");
+        var intKeyServer = ring.GetServer(123);
+        var guidKeyServer = ring.GetServer(Guid.Parse("12345678-1234-1234-1234-123456789012"));
 
         // Assert - Different key types may map to different servers (this is expected)
         Assert.NotNull(stringKeyServer);

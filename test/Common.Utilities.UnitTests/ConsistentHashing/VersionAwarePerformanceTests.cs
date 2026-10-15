@@ -20,7 +20,7 @@ public sealed class VersionAwarePerformanceTests
         var standardRing = new HashRing<string>(standardOptions);
         var versionAwareRing = new HashRing<string>(versionAwareOptions);
 
-        for (int i = 1; i <= 10; i++)
+        for (var i = 1; i <= 10; i++)
         {
             standardRing.Add($"server-{i}");
             versionAwareRing.Add($"server-{i}");
@@ -58,13 +58,13 @@ public sealed class VersionAwarePerformanceTests
         var options = new HashRingOptions { MaxHistorySize = 5 };
         var hashRing = new HashRing<string>(options);
 
-        for (int i = 1; i <= 50; i++)
+        for (var i = 1; i <= 50; i++)
         {
             hashRing.Add($"server-{i}");
         }
         hashRing.CreateConfigurationSnapshot();
 
-        for (int snapshot = 0; snapshot < 5; snapshot++)
+        for (var snapshot = 0; snapshot < 5; snapshot++)
         {
             hashRing.Add($"scale-server-{snapshot}");
             hashRing.CreateConfigurationSnapshot();
@@ -95,13 +95,13 @@ public sealed class VersionAwarePerformanceTests
         var options = new HashRingOptions { MaxHistorySize = historySize };
         var hashRing = new HashRing<string>(options);
 
-        for (int i = 1; i <= 20; i++)
+        for (var i = 1; i <= 20; i++)
         {
             hashRing.Add($"perf-server-{i}");
         }
         hashRing.CreateConfigurationSnapshot();
 
-        for (int i = 0; i < historySize; i++)
+        for (var i = 0; i < historySize; i++)
         {
             hashRing.Add($"history-server-{i}");
             hashRing.CreateConfigurationSnapshot();
@@ -129,7 +129,7 @@ public sealed class VersionAwarePerformanceTests
         var options = new HashRingOptions { MaxHistorySize = 10 };
         var hashRing = new HashRing<string>(options);
 
-        for (int i = 1; i <= 100; i++)
+        for (var i = 1; i <= 100; i++)
         {
             hashRing.Add($"snapshot-server-{i}");
         }
@@ -137,7 +137,7 @@ public sealed class VersionAwarePerformanceTests
 
         var snapshotTimes = new List<TimeSpan>();
 
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
             var snapshotTime = MeasureOperation(() =>
             {
@@ -166,7 +166,7 @@ public sealed class VersionAwarePerformanceTests
         var standardRing = new HashRing<string>(noHistoryOptions);
         var versionAwareRing = new HashRing<string>(withHistoryOptions);
 
-        for (int i = 1; i <= serverCount; i++)
+        for (var i = 1; i <= serverCount; i++)
         {
             standardRing.Add($"server-{i}");
             versionAwareRing.Add($"server-{i}");
@@ -174,7 +174,7 @@ public sealed class VersionAwarePerformanceTests
         standardRing.CreateConfigurationSnapshot();
         versionAwareRing.CreateConfigurationSnapshot();
 
-        for (int i = 0; i < 3; i++)
+        for (var i = 0; i < 3; i++)
         {
             versionAwareRing.Add($"history-server-{i}");
             versionAwareRing.CreateConfigurationSnapshot();
@@ -219,7 +219,7 @@ public sealed class VersionAwarePerformanceTests
         var options = new HashRingOptions { MaxHistorySize = 3 };
         var hashRing = new HashRing<string>(options);
 
-        for (int i = 1; i <= 20; i++)
+        for (var i = 1; i <= 20; i++)
         {
             hashRing.Add($"concurrent-server-{i}");
         }
@@ -262,7 +262,7 @@ public sealed class VersionAwarePerformanceTests
     private static List<byte[]> GenerateTestKeys(int count)
     {
         var keys = new List<byte[]>();
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             keys.Add(Encoding.UTF8.GetBytes($"test-key-{i:D6}"));
         }

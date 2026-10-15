@@ -14,8 +14,8 @@ public class HashAlgorithmContractTests
         var data = System.Text.Encoding.UTF8.GetBytes("test data");
 
         // Act
-        byte[] hash1 = algorithm.ComputeHash(data);
-        byte[] hash2 = algorithm.ComputeHash(data);
+        var hash1 = algorithm.ComputeHash(data);
+        var hash2 = algorithm.ComputeHash(data);
 
         // Assert
         Assert.Equal(hash1, hash2);
@@ -30,8 +30,8 @@ public class HashAlgorithmContractTests
         var data2 = System.Text.Encoding.UTF8.GetBytes("test data 2");
 
         // Act
-        byte[] hash1 = algorithm.ComputeHash(data1);
-        byte[] hash2 = algorithm.ComputeHash(data2);
+        var hash1 = algorithm.ComputeHash(data1);
+        var hash2 = algorithm.ComputeHash(data2);
 
         // Assert
         Assert.NotEqual(hash1, hash2);
@@ -45,7 +45,7 @@ public class HashAlgorithmContractTests
         var data = System.Text.Encoding.UTF8.GetBytes("test data");
 
         // Act
-        byte[] hash = algorithm.ComputeHash(data);
+        var hash = algorithm.ComputeHash(data);
 
         // Assert
         Assert.Equal(20, hash.Length); // SHA1 produces 160-bit (20-byte) hash
@@ -69,7 +69,7 @@ public class HashAlgorithmContractTests
         var data = Array.Empty<byte>();
 
         // Act
-        byte[] hash = algorithm.ComputeHash(data);
+        var hash = algorithm.ComputeHash(data);
 
         // Assert
         Assert.NotNull(hash);
@@ -88,8 +88,8 @@ public class HashAlgorithmContractTests
         var data = System.Text.Encoding.UTF8.GetBytes("test data");
 
         // Act
-        byte[] hash1 = algorithm.ComputeHash(data);
-        byte[] hash2 = algorithm.ComputeHash(data);
+        var hash1 = algorithm.ComputeHash(data);
+        var hash2 = algorithm.ComputeHash(data);
 
         // Assert
         Assert.Equal(hash1, hash2);
@@ -104,8 +104,8 @@ public class HashAlgorithmContractTests
         var data2 = System.Text.Encoding.UTF8.GetBytes("test data 2");
 
         // Act
-        byte[] hash1 = algorithm.ComputeHash(data1);
-        byte[] hash2 = algorithm.ComputeHash(data2);
+        var hash1 = algorithm.ComputeHash(data1);
+        var hash2 = algorithm.ComputeHash(data2);
 
         // Assert
         Assert.NotEqual(hash1, hash2);
@@ -119,7 +119,7 @@ public class HashAlgorithmContractTests
         var data = System.Text.Encoding.UTF8.GetBytes("test data");
 
         // Act
-        byte[] hash = algorithm.ComputeHash(data);
+        var hash = algorithm.ComputeHash(data);
 
         // Assert
         Assert.Equal(16, hash.Length); // MD5 produces 128-bit (16-byte) hash
@@ -143,7 +143,7 @@ public class HashAlgorithmContractTests
         var data = Array.Empty<byte>();
 
         // Act
-        byte[] hash = algorithm.ComputeHash(data);
+        var hash = algorithm.ComputeHash(data);
 
         // Assert
         Assert.NotNull(hash);
@@ -163,8 +163,8 @@ public class HashAlgorithmContractTests
         var data = System.Text.Encoding.UTF8.GetBytes("test data");
 
         // Act
-        byte[] sha1Hash = sha1.ComputeHash(data);
-        byte[] md5Hash = md5.ComputeHash(data);
+        var sha1Hash = sha1.ComputeHash(data);
+        var md5Hash = md5.ComputeHash(data);
 
         // Assert
         Assert.NotEqual(sha1Hash, md5Hash);
@@ -196,8 +196,8 @@ public class HashAlgorithmContractTests
         new Random(42).NextBytes(largeData);
 
         // Act
-        byte[] sha1Hash = sha1.ComputeHash(largeData);
-        byte[] md5Hash = md5.ComputeHash(largeData);
+        var sha1Hash = sha1.ComputeHash(largeData);
+        var md5Hash = md5.ComputeHash(largeData);
 
         // Assert
         Assert.NotNull(sha1Hash);
@@ -223,8 +223,8 @@ public class HashAlgorithmContractTests
         foreach (var input in inputs)
         {
             var data = System.Text.Encoding.UTF8.GetBytes(input);
-            byte[] hash = sha1.ComputeHash(data);
-            string hashString = Convert.ToHexString(hash);
+            var hash = sha1.ComputeHash(data);
+            var hashString = Convert.ToHexString(hash);
             Assert.True(hashes.Add(hashString), $"Hash collision detected for input: {input}");
         }
     }
