@@ -14,15 +14,11 @@ rm -rf ./coverage/*
 rm -rf ./test/TestResults
 
 dotnet test \
-  --nologo \
   --no-build \
-  --filter \"FullyQualifiedName!~AdaptArch.Common.Utilities.Samples\" \
-  -p:CollectCoverage=\"true\" \
-  -p:CoverletOutputFormat=\"json,lcov,opencover\"  \
-  -p:CoverletOutput=\"../../coverage/\" \
-  -p:MergeWith=\"../../coverage/coverage.json\"
-
-
-#  -p:Threshold=80 \
-#  -p:ThresholdStat=total \
-#  --logger "console;verbosity=normal" \
+  --coverlet \
+  --coverlet-include "[AdaptArch.*]*" \
+  --coverlet-exclude "[*Tests]*" \
+  --coverlet-output-format json \
+  --coverlet-output-format lcov \
+  --coverlet-output-format opencover \
+  --results-directory ./coverage

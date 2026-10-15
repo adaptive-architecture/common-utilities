@@ -28,7 +28,10 @@ public class RetryTestCaseRunnerContextSpecs
             displayName: "TestDisplayName",
             skipReason: null,
             explicitOption: ExplicitOption.Off,
-            constructorArguments: constructorArguments
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: constructorArguments,
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         Assert.Equal(5, context.MaxRetries);
@@ -54,7 +57,10 @@ public class RetryTestCaseRunnerContextSpecs
             displayName: "TestDisplayName",
             skipReason: "SkipReason",
             explicitOption: ExplicitOption.On,
-            constructorArguments: constructorArguments
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: constructorArguments,
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         Assert.Same(testCase, context.TestCase);
@@ -92,7 +98,10 @@ public class RetryTestCaseRunnerContextSpecs
             displayName: "Test",
             skipReason: null,
             explicitOption: ExplicitOption.Off,
-            constructorArguments: constructorArguments
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: constructorArguments,
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         Assert.Equal(maxRetries, context.MaxRetries);

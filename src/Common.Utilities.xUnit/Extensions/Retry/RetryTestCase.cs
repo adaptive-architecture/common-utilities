@@ -78,7 +78,10 @@ public class RetryTestCase : XunitTestCase, ISelfExecutingXunitTestCase
         IMessageBus messageBus,
         object?[] constructorArguments,
         ExceptionAggregator aggregator,
-        CancellationTokenSource cancellationTokenSource) =>
+        CancellationTokenSource cancellationTokenSource,
+        ParallelMode parallelMode,
+        ExecutionScheduler scheduler,
+        FixtureMappingManager methodFixtureMappings) =>
             RetryTestCaseRunner.Instance.Run(
                 MaxRetries,
                 this,
@@ -88,7 +91,10 @@ public class RetryTestCase : XunitTestCase, ISelfExecutingXunitTestCase
                 TestCaseDisplayName,
                 SkipReason,
                 explicitOption,
-                constructorArguments
+                parallelMode,
+                scheduler,
+                constructorArguments,
+                methodFixtureMappings
             );
 
     /// <inheritdoc/>

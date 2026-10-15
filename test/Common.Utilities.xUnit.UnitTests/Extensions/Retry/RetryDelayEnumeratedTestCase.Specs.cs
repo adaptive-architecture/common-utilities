@@ -82,6 +82,7 @@ public class RetryDelayEnumeratedTestCaseSpecs
     {
         var messageBus = Substitute.For<IMessageBus>();
         var aggregator = new ExceptionAggregator();
+        using var cancellationTokenSource = new CancellationTokenSource();
 
         var testMethod = HelperTests.GetXunitTestMethod();
         var testCase = new RetryDelayEnumeratedTestCase(
@@ -98,11 +99,14 @@ public class RetryDelayEnumeratedTestCaseSpecs
             testCase: testCase,
             messageBus: messageBus,
             aggregator: aggregator,
-            cancellationTokenSource: new CancellationTokenSource(),
+            cancellationTokenSource: cancellationTokenSource,
             displayName: "Test",
             skipReason: null,
             explicitOption: ExplicitOption.On,
-            constructorArguments: []
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            constructorArguments: [],
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         var actual = testCase.Run(
@@ -110,7 +114,10 @@ public class RetryDelayEnumeratedTestCaseSpecs
             messageBus: messageBus,
             constructorArguments: [],
             aggregator: aggregator,
-            cancellationTokenSource: new CancellationTokenSource()
+            cancellationTokenSource: cancellationTokenSource,
+            parallelMode: ParallelMode.None,
+            scheduler: ExecutionScheduler.CreateUnlimited(),
+            methodFixtureMappings: new FixtureMappingManager("Test", parentMappingManager: null)
         );
 
         Assert.Equal(expected.ToString(), actual.ToString());

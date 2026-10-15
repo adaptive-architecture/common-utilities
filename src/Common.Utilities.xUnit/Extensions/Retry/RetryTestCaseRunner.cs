@@ -32,7 +32,10 @@ public class RetryTestCaseRunner :
         string displayName,
         string? skipReason,
         ExplicitOption explicitOption,
-        object?[] constructorArguments)
+        ParallelMode parallelMode,
+        ExecutionScheduler scheduler,
+        object?[] constructorArguments,
+        FixtureMappingManager methodFixtureMappings)
     {
 #pragma warning restore S107, S2325
         // This code comes from XunitRunnerHelper.RunXunitTestCase, and it's centralized
@@ -64,7 +67,7 @@ public class RetryTestCaseRunner :
             }
         }
 
-        await using var ctx = new RetryTestCaseRunnerContext(maxRetries, testCase, tests, messageBus, aggregator, cancellationTokenSource, displayName, skipReason, explicitOption, constructorArguments);
+        await using var ctx = new RetryTestCaseRunnerContext(maxRetries, testCase, tests, messageBus, aggregator, cancellationTokenSource, displayName, skipReason, explicitOption, parallelMode, scheduler, constructorArguments, methodFixtureMappings);
         await ctx.InitializeAsync();
 
         return await Run(ctx);
@@ -94,7 +97,10 @@ public class RetryTestCaseRunner :
                 ctx.ExplicitOption,
                 aggregator,
                 ctx.CancellationTokenSource,
-                ctx.BeforeAfterTestAttributes
+                ctx.ParallelMode,
+                ctx.Scheduler,
+                ctx.BeforeAfterTestAttributes,
+                ctx.CaseFixtureMappings
             );
 
             if (!(aggregator.HasExceptions || result.Failed != 0) || ++runCount >= maxRetries)
@@ -121,7 +127,10 @@ public class RetryTestCaseRunner :
 /// <param name="displayName">The display name of the test case.</param>
 /// <param name="skipReason">The reason for skipping the test case.</param>
 /// <param name="explicitOption">The explicit option for the test case.</param>
+/// <param name="parallelMode">The parallel mode for the test case.</param>
+/// <param name="scheduler">The scheduler used for task/test scheduling.</param>
 /// <param name="constructorArguments">The constructor arguments for the test case.</param>
+/// <param name="methodFixtureMappings">The fixtures attached to the test method.</param>
 public class RetryTestCaseRunnerContext(
     int maxRetries,
     IXunitTestCase testCase,
@@ -132,8 +141,11 @@ public class RetryTestCaseRunnerContext(
     string displayName,
     string? skipReason,
     ExplicitOption explicitOption,
-    object?[] constructorArguments) :
-        XunitTestCaseRunnerBaseContext<IXunitTestCase, IXunitTest>(testCase, tests, messageBus, aggregator, cancellationTokenSource, displayName, skipReason, explicitOption, constructorArguments)
+    ParallelMode parallelMode,
+    ExecutionScheduler scheduler,
+    object?[] constructorArguments,
+    FixtureMappingManager methodFixtureMappings) :
+        XunitTestCaseRunnerBaseContext<IXunitTestCase, IXunitTest>(testCase, tests, explicitOption, messageBus, aggregator, displayName, skipReason, cancellationTokenSource, parallelMode, scheduler, constructorArguments, methodFixtureMappings)
 {
     /// <summary>
     /// Gets the maximum number of retries for the test case.
