@@ -30,3 +30,7 @@ A set of common utilities to be used across projects and reduce amount of time w
 ## Documentation
 
 Please read the documentation [here](https://adaptive-architecture.github.io/common-utilities/).
+
+## Architecture decisions
+
+Significant technical decisions are recorded as [Architecture Decision Records](docs/adr/).
