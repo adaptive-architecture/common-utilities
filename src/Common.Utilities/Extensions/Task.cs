@@ -25,18 +25,11 @@ public static class TaskExtensions
 
     // Allocate the async/await state machine only when needed for performance reasons.
     // More info about the state machine: https://blogs.msdn.microsoft.com/seteplia/2017/11/30/dissecting-the-async-methods-in-c/?WT.mc_id=DT-MVP-5003978
+    // SuppressThrowing marks the exception as observed without the cost of throwing and catching it.
+    // The parameter is typed as Task (not Task<T>), so the non-generic ConfigureAwait overload is used,
+    // which supports SuppressThrowing for Task<T> instances too.
     private static async Task ForgetAwaited(Task task)
-    {
-        try
-        {
-            // No need to resume on the original SynchronizationContext
-            await task.ConfigureAwait(ConfigureAwaitOptions.None);
-        }
-        catch
-        {
-            // Nothing to do here
-        }
-    }
+        => await task.ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
 
     /// <summary>
     /// Runs <paramref name="taskFactory"/> on the current thread.
