@@ -89,6 +89,14 @@
         <li><code>GET /api/set-version/{directory}/{version}</code> - Set version cookie</li>
         <li><code>GET /api/clear-version/{directory}</code> - Clear version cookie</li>
       </ul>
+      <p style="margin-bottom: 0;">
+        <a href="/static/app/index" style="font-weight: 600;">Open the versioned app without a file extension</a>
+        <span style="color: #666;">(resolved to <code>index.html</code> after versioning)</span>
+      </p>
+      <p style="margin-bottom: 0;">
+        <a href="/static/app/" style="font-weight: 600;">Open the versioned app directory</a>
+        <span style="color: #666;">(default file, resolved inside the version directory)</span>
+      </p>
     </div>
 
     <div
@@ -103,7 +111,16 @@ builder.Services.AddVersionedStaticFiles(options =>
     options.VersionCookieNamePrefix = ".aa_sfv";
 });
 
+builder.Services.AddExtensionlessStaticFiles(options =>
+{
+    options.Extensions = [".html"];
+    options.ShouldApply = context =>
+        context.Request.Path.StartsWithSegments("/static");
+});
+
 app.UseVersionedStaticFiles();
+app.UseExtensionlessStaticFiles();
+app.UseDefaultFiles();
 app.UseStaticFiles();</code></pre>
     </div>
   </div>

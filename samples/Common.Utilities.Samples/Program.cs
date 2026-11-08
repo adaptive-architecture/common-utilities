@@ -30,6 +30,14 @@ builder.Services.AddVersionedStaticFiles(options =>
         : TimeSpan.FromHours(1);
 });
 
+// Allow extensionless URLs for static HTML files, e.g. /static/app/index -> index.html.
+// The versioned middleware runs first and adds the version segment.
+builder.Services.AddExtensionlessStaticFiles(options =>
+{
+    options.Extensions = [".html"];
+    options.ShouldApply = context => context.Request.Path.StartsWithSegments("/static");
+});
+
 var app = builder.Build();
 
 // Run console examples on startup
@@ -43,6 +51,12 @@ Console.WriteLine("Background jobs started (RandomNumberGenerator + Reporter)\n"
 
 // Configure HTTP request pipeline
 app.UseVersionedStaticFiles();
+
+// Resolve extensionless paths after the version segment has been added.
+app.UseExtensionlessStaticFiles();
+
+// Resolve directory indexes such as /static/app/ to .../vX.Y.Z/index.html.
+app.UseDefaultFiles();
 
 // Serve static files from wwwroot
 app.UseStaticFiles();

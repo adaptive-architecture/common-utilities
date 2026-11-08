@@ -36,4 +36,5 @@
 - [Background Jobs](https://adaptive-architecture.github.io/common-utilities/docs/background-jobs.html): Periodic and delayed job execution
 - [Asp.Net Response Rewrite](https://adaptive-architecture.github.io/common-utilities/docs/asp-dotnet-response-rewrite.html): Middleware for transforming HTTP responses
 - [Asp.Net Versioned Static Files](https://adaptive-architecture.github.io/common-utilities/docs/asp-dotnet-versioned-static-files.html): Cache-busting versioned static file serving
+- [Asp.Net Extensionless Static Files](https://adaptive-architecture.github.io/common-utilities/docs/asp-dotnet-extensionless-static-files.html): Serve clean extensionless URLs from static files
 - [xUnit Testing Utilities](https://adaptive-architecture.github.io/common-utilities/docs/xunit-utilities.html): Testing utilities and extensions for xUnit

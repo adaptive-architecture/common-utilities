@@ -5,6 +5,7 @@ This directory records significant technical decisions for the Common Utilities 
 | ADR | Title | Status |
 |---|---|---|
 | [0001](0001-multiple-base-paths.md) | Multiple application base paths | Accepted |
+| [0002](0002-extensionless-static-files.md) | Extensionless static files middleware | Accepted |
 
 ## When to add an ADR
 

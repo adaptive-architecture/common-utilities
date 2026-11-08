@@ -457,8 +457,26 @@ app.UseStaticFiles();
 services.AddVersionedStaticFiles(options => { ... }, customProvider);
 ```
 
+## Combining with extensionless URLs
+
+To serve clean URLs such as `/static/app/index` instead of `/static/app/index.html`, add the
+[extensionless static files middleware](asp-dotnet-extensionless-static-files.md) **after** this
+middleware so it sees the versioned path:
+
+```csharp
+app.UseVersionedStaticFiles();      // /static/app/index       -> /static/app/v1.2.3/index
+app.UseExtensionlessStaticFiles();  // /static/app/v1.2.3/index -> /static/app/v1.2.3/index.html
+app.UseStaticFiles();               // serves the file
+```
+
+Use the internal rewrite (`ShouldRedirect = _ => false`, the default). Redirecting to the resolved
+`CandidatePath` would include the version segment and be versioned again on the next request. See
+[Asp.Net Extensionless Static Files](asp-dotnet-extensionless-static-files.md#using-with-versionedstaticfilesmiddleware)
+for the full explanation.
+
 ## See Also
 
 - [ASP.NET Response Rewrite](asp-dotnet-response-rewrite.md)
+- [ASP.NET Extensionless Static Files](asp-dotnet-extensionless-static-files.md)
 - [Extension Methods](extension-methods.md)
 - [API Documentation](/api/AdaptArch.Common.Utilities.AspNetCore.Middlewares.VersionedStaticFiles.html)

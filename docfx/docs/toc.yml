@@ -42,5 +42,7 @@
     href: asp-dotnet-response-rewrite.md
   - name: Asp.Net Versioned Static Files
     href: asp-dotnet-versioned-static-files.md
+  - name: Asp.Net Extensionless Static Files
+    href: asp-dotnet-extensionless-static-files.md
   - name: xUnit Testing Utilities
     href: xunit-utilities.md
