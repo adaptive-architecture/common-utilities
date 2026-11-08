@@ -9,6 +9,9 @@ namespace AdaptArch.Common.Utilities.AspNetCore.UnitTests.Middlewares.Extensionl
 
 public class ExtensionlessStaticFilesRegistrationExtensionsSpecs
 {
+    private static readonly string[] HtmlAndHtmExtensions = [".html", ".htm"];
+    private static readonly string[] DefaultExtensions = [".html"];
+
     [Fact]
     public void AddExtensionlessStaticFiles_Should_Register_Options_In_Service_Collection()
     {
@@ -25,7 +28,7 @@ public class ExtensionlessStaticFilesRegistrationExtensionsSpecs
 
         Assert.NotNull(registeredOptions);
         Assert.Equal("/static", registeredOptions.RequestPath.Value);
-        Assert.Equal(new[] { ".html", ".htm" }, registeredOptions.Extensions);
+        Assert.Equal(HtmlAndHtmExtensions, registeredOptions.Extensions);
     }
 
     [Fact]
@@ -89,7 +92,7 @@ public class ExtensionlessStaticFilesRegistrationExtensionsSpecs
         Assert.NotNull(registeredOptions);
         Assert.Equal(PathString.Empty, registeredOptions.RequestPath);
         Assert.Null(registeredOptions.FileProvider);
-        Assert.Equal(new[] { ".html" }, registeredOptions.Extensions);
+        Assert.Equal(DefaultExtensions, registeredOptions.Extensions);
         Assert.Equal(StatusCodes.Status301MovedPermanently, registeredOptions.RedirectStatusCode);
         Assert.NotNull(registeredOptions.ShouldApply);
         Assert.NotNull(registeredOptions.ShouldRedirect);

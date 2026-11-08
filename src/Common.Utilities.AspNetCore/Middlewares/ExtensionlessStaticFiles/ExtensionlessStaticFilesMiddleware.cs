@@ -105,7 +105,7 @@ public partial class ExtensionlessStaticFilesMiddleware
         // Probing stops at the first extension that resolves to a file, so the configured
         // extension order decides the winner.
         var candidateSubPath = _options.Extensions
-            .Select(extension => String.Concat(relativePath, extension))
+            .Select(extension => $"{relativePath}{extension}")
             .FirstOrDefault(IsExistingFile);
 
         if (candidateSubPath is null)
@@ -114,7 +114,7 @@ public partial class ExtensionlessStaticFilesMiddleware
             return;
         }
 
-        var candidatePath = new PathString(String.Concat(_requestPath.Value, "/", candidateSubPath));
+        var candidatePath = new PathString($"{_requestPath.Value}/{candidateSubPath}");
         var redirectContext = new ExtensionlessRedirectContext
         {
             HttpContext = context,
