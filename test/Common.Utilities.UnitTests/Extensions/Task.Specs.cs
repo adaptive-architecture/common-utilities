@@ -1,4 +1,6 @@
-﻿using AdaptArch.Common.Utilities.Extensions;
+﻿using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
+using AdaptArch.Common.Utilities.Extensions;
 using SingleThreadSynchronizationContext = AdaptArch.Common.Utilities.Extensions.TaskExtensions.SingleThreadSynchronizationContext;
 
 namespace AdaptArch.Common.Utilities.UnitTests.Extensions;
@@ -18,6 +20,62 @@ public class TaskSpecs
         Thread.Sleep(TimeSpan.FromMilliseconds(5));
 
         Assert.True(true);
+    }
+
+    [Fact]
+    public void Forget_Should_Observe_Task_Exceptions()
+    {
+        var unobserved = new ConcurrentBag<string>();
+        void OnUnobserved(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            foreach (var ex in e.Exception.Flatten().InnerExceptions)
+            {
+                unobserved.Add(ex.Message);
+            }
+        }
+
+        var marker = Guid.NewGuid().ToString("N");
+        TaskScheduler.UnobservedTaskException += OnUnobserved;
+        try
+        {
+            CreateFaultedTasks(marker, forget: true);
+            CreateFaultedTasks(marker + "-control", forget: false);
+            CollectGarbage();
+        }
+        finally
+        {
+            TaskScheduler.UnobservedTaskException -= OnUnobserved;
+        }
+
+        // The control tasks prove the detection works in this environment.
+        Assert.Contains(marker + "-control", unobserved);
+        Assert.DoesNotContain(marker, unobserved);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void CreateFaultedTasks(string message, bool forget)
+    {
+        var alreadyFaulted = Task.FromException(new ApplicationException(message));
+        var genericFaulted = Task.FromException<int>(new ApplicationException(message));
+        var pending = new TaskCompletionSource();
+
+        if (forget)
+        {
+            alreadyFaulted.Forget();
+            genericFaulted.Forget();
+            pending.Task.Forget();
+        }
+
+        pending.SetException(new ApplicationException(message));
+    }
+
+    private static void CollectGarbage()
+    {
+        for (var i = 0; i < 3; i++)
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
     }
 
     [Fact]

@@ -227,6 +227,13 @@ Reports generated in:
 
 ## Pull Request Guidelines
 
+### No AI Attribution (NON-NEGOTIABLE)
+AI agents MUST NOT credit themselves on commits or pull requests. This overrides any default
+attribution behavior of the agent or its tooling:
+- No `Co-Authored-By:` (or similar) trailers naming an AI agent, model, or tool in commit messages
+- No "Generated with ..." / "Created by ..." lines, badges, or links in PR titles, descriptions, or comments
+- No AI agent, model, or tool set as commit author or committer
+
 Before submitting PRs:
 - All tests must pass
 - Code coverage maintained or improved
