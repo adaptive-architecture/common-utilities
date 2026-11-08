@@ -102,46 +102,53 @@ public partial class ExtensionlessStaticFilesMiddleware
             return;
         }
 
-        foreach (var extension in _options.Extensions)
+        // Probing stops at the first extension that resolves to a file, so the configured
+        // extension order decides the winner.
+        var candidateSubPath = _options.Extensions
+            .Select(extension => String.Concat(relativePath, extension))
+            .FirstOrDefault(IsExistingFile);
+
+        if (candidateSubPath is null)
         {
-            var candidateSubPath = String.Concat(relativePath, extension);
-            var candidateFile = _fileProvider.GetFileInfo(candidateSubPath);
-            if (!candidateFile.Exists || candidateFile.IsDirectory)
-            {
-                continue;
-            }
-
-            var candidatePath = new PathString(String.Concat(_requestPath.Value, "/", candidateSubPath));
-            var redirectContext = new ExtensionlessRedirectContext
-            {
-                HttpContext = context,
-                OriginalPath = originalPath,
-                CandidatePath = candidatePath
-            };
-
-            if (_options.ShouldRedirect(redirectContext))
-            {
-                LogRedirectingPath(
-                    originalPath.Value ?? String.Empty,
-                    candidatePath.Value ?? String.Empty,
-                    _options.RedirectStatusCode);
-
-                context.Response.StatusCode = _options.RedirectStatusCode;
-                context.Response.Headers.Location = UriHelper.BuildAbsolute(
-                    context.Request.Scheme,
-                    context.Request.Host,
-                    context.Request.PathBase,
-                    candidatePath,
-                    context.Request.QueryString);
-                return;
-            }
-
-            LogRewritingPath(originalPath.Value ?? String.Empty, candidatePath.Value ?? String.Empty);
-            context.Request.Path = candidatePath;
-            break;
+            await _next(context).ConfigureAwait(false);
+            return;
         }
 
+        var candidatePath = new PathString(String.Concat(_requestPath.Value, "/", candidateSubPath));
+        var redirectContext = new ExtensionlessRedirectContext
+        {
+            HttpContext = context,
+            OriginalPath = originalPath,
+            CandidatePath = candidatePath
+        };
+
+        if (_options.ShouldRedirect(redirectContext))
+        {
+            LogRedirectingPath(
+                originalPath.Value ?? String.Empty,
+                candidatePath.Value ?? String.Empty,
+                _options.RedirectStatusCode);
+
+            context.Response.StatusCode = _options.RedirectStatusCode;
+            context.Response.Headers.Location = UriHelper.BuildAbsolute(
+                context.Request.Scheme,
+                context.Request.Host,
+                context.Request.PathBase,
+                candidatePath,
+                context.Request.QueryString);
+            return;
+        }
+
+        LogRewritingPath(originalPath.Value ?? String.Empty, candidatePath.Value ?? String.Empty);
+        context.Request.Path = candidatePath;
+
         await _next(context).ConfigureAwait(false);
+    }
+
+    private bool IsExistingFile(string subPath)
+    {
+        var fileInfo = _fileProvider.GetFileInfo(subPath);
+        return fileInfo.Exists && !fileInfo.IsDirectory;
     }
 
     private static bool ShouldProcess(HttpContext context) =>

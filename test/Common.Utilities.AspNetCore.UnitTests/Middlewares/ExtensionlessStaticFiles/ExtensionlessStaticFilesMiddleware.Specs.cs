@@ -21,7 +21,7 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
 
     public ExtensionlessStaticFilesMiddlewareSpecs()
     {
-        _webRoot = Path.Combine(Path.GetTempPath(), $"esf_test_{Guid.NewGuid():N}");
+        _webRoot = Path.Join(Path.GetTempPath(), $"esf_test_{Guid.NewGuid():N}");
         Directory.CreateDirectory(_webRoot);
     }
 
@@ -37,7 +37,7 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
     public async Task It_Should_Serve_An_Extensionless_Path_From_An_Html_File()
     {
         await File.WriteAllTextAsync(
-            Path.Combine(_webRoot, "about.html"),
+            Path.Join(_webRoot, "about.html"),
             "about",
             TestContext.Current.CancellationToken);
 
@@ -54,7 +54,7 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
     public async Task It_Should_Leave_Paths_That_Already_Have_An_Extension_Alone()
     {
         await File.WriteAllTextAsync(
-            Path.Combine(_webRoot, "about.css.html"),
+            Path.Join(_webRoot, "about.css.html"),
             "wrong",
             TestContext.Current.CancellationToken);
 
@@ -79,11 +79,11 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
     public async Task It_Should_Use_The_Configured_Extension_Order()
     {
         await File.WriteAllTextAsync(
-            Path.Combine(_webRoot, "about.htm"),
+            Path.Join(_webRoot, "about.htm"),
             "htm",
             TestContext.Current.CancellationToken);
         await File.WriteAllTextAsync(
-            Path.Combine(_webRoot, "about.html"),
+            Path.Join(_webRoot, "about.html"),
             "html",
             TestContext.Current.CancellationToken);
 
@@ -98,7 +98,7 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
     public async Task It_Should_Not_Process_Post_Requests()
     {
         await File.WriteAllTextAsync(
-            Path.Combine(_webRoot, "about.html"),
+            Path.Join(_webRoot, "about.html"),
             "about",
             TestContext.Current.CancellationToken);
 
@@ -125,11 +125,11 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
     public async Task It_Should_Not_Shadow_An_Existing_Extensionless_File()
     {
         await File.WriteAllTextAsync(
-            Path.Combine(_webRoot, "about"),
+            Path.Join(_webRoot, "about"),
             "exact",
             TestContext.Current.CancellationToken);
         await File.WriteAllTextAsync(
-            Path.Combine(_webRoot, "about.html"),
+            Path.Join(_webRoot, "about.html"),
             "html",
             TestContext.Current.CancellationToken);
 
@@ -144,10 +144,10 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
     [Fact]
     public async Task It_Should_Scope_Processing_With_ShouldApply()
     {
-        var apiDirectory = Path.Combine(_webRoot, "api");
+        var apiDirectory = Path.Join(_webRoot, "api");
         Directory.CreateDirectory(apiDirectory);
         await File.WriteAllTextAsync(
-            Path.Combine(apiDirectory, "status.html"),
+            Path.Join(apiDirectory, "status.html"),
             "status",
             TestContext.Current.CancellationToken);
 
@@ -165,10 +165,10 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
     [Fact]
     public async Task It_Should_Serve_From_A_Scoped_Path()
     {
-        var staticDirectory = Path.Combine(_webRoot, "static");
+        var staticDirectory = Path.Join(_webRoot, "static");
         Directory.CreateDirectory(staticDirectory);
         await File.WriteAllTextAsync(
-            Path.Combine(staticDirectory, "about.html"),
+            Path.Join(staticDirectory, "about.html"),
             "about",
             TestContext.Current.CancellationToken);
 
@@ -190,10 +190,10 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
     [Fact]
     public async Task It_Should_Respect_RequestPath_And_FileProvider()
     {
-        var staticDirectory = Path.Combine(_webRoot, "static");
+        var staticDirectory = Path.Join(_webRoot, "static");
         Directory.CreateDirectory(staticDirectory);
         await File.WriteAllTextAsync(
-            Path.Combine(staticDirectory, "about.html"),
+            Path.Join(staticDirectory, "about.html"),
             "about",
             TestContext.Current.CancellationToken);
 
@@ -223,10 +223,10 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
     [Fact]
     public async Task It_Should_Normalize_A_Trailing_Slash_In_RequestPath()
     {
-        var staticDirectory = Path.Combine(_webRoot, "static");
+        var staticDirectory = Path.Join(_webRoot, "static");
         Directory.CreateDirectory(staticDirectory);
         await File.WriteAllTextAsync(
-            Path.Combine(staticDirectory, "about.html"),
+            Path.Join(staticDirectory, "about.html"),
             "about",
             TestContext.Current.CancellationToken);
 
@@ -252,10 +252,10 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
     [Fact]
     public async Task It_Should_Not_Match_A_Prefix_That_Is_Not_A_Path_Segment()
     {
-        var static2Directory = Path.Combine(_webRoot, "static2");
+        var static2Directory = Path.Join(_webRoot, "static2");
         Directory.CreateDirectory(static2Directory);
         await File.WriteAllTextAsync(
-            Path.Combine(static2Directory, "about.html"),
+            Path.Join(static2Directory, "about.html"),
             "wrong",
             TestContext.Current.CancellationToken);
 
@@ -274,7 +274,7 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
     public async Task It_Should_Redirect_When_ShouldRedirect_Returns_True()
     {
         await File.WriteAllTextAsync(
-            Path.Combine(_webRoot, "about.html"),
+            Path.Join(_webRoot, "about.html"),
             "about",
             TestContext.Current.CancellationToken);
 
@@ -297,7 +297,7 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
     public async Task It_Should_Pass_The_Original_And_Candidate_Paths_To_ShouldRedirect()
     {
         await File.WriteAllTextAsync(
-            Path.Combine(_webRoot, "about.html"),
+            Path.Join(_webRoot, "about.html"),
             "about",
             TestContext.Current.CancellationToken);
 
@@ -329,7 +329,7 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
     public async Task It_Should_Use_The_Web_Root_When_File_Provider_Is_Null()
     {
         await File.WriteAllTextAsync(
-            Path.Combine(_webRoot, "about.html"),
+            Path.Join(_webRoot, "about.html"),
             "about",
             TestContext.Current.CancellationToken);
 
@@ -419,16 +419,16 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
     [Fact]
     public async Task It_Should_Work_After_Versioning_With_A_Dedicated_File_Provider()
     {
-        var staticRoot = Path.Combine(_webRoot, "static");
-        var appDirectory = Path.Combine(staticRoot, "app");
-        var versionDirectory = Path.Combine(appDirectory, "v1.0.0");
+        var staticRoot = Path.Join(_webRoot, "static");
+        var appDirectory = Path.Join(staticRoot, "app");
+        var versionDirectory = Path.Join(appDirectory, "v1.0.0");
         Directory.CreateDirectory(versionDirectory);
         await File.WriteAllTextAsync(
-            Path.Combine(versionDirectory, "index.html"),
+            Path.Join(versionDirectory, "index.html"),
             "versioned index",
             TestContext.Current.CancellationToken);
         await File.WriteAllTextAsync(
-            Path.Combine(appDirectory, "version.json"),
+            Path.Join(appDirectory, "version.json"),
             """{"Version":"v1.0.0","Timestamp":"2024-01-01T00:00:00Z"}""",
             TestContext.Current.CancellationToken);
 
@@ -519,7 +519,7 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
     public async Task It_Should_Serve_Head_Requests()
     {
         await File.WriteAllTextAsync(
-            Path.Combine(_webRoot, "about.html"),
+            Path.Join(_webRoot, "about.html"),
             "about",
             TestContext.Current.CancellationToken);
 
@@ -535,10 +535,10 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
     [Fact]
     public async Task It_Should_Probe_Paths_Whose_Last_Segment_Has_No_Extension_Even_If_A_Parent_Directory_Has_A_Dot()
     {
-        var versionedDirectory = Path.Combine(_webRoot, "v1.2");
+        var versionedDirectory = Path.Join(_webRoot, "v1.2");
         Directory.CreateDirectory(versionedDirectory);
         await File.WriteAllTextAsync(
-            Path.Combine(versionedDirectory, "about.html"),
+            Path.Join(versionedDirectory, "about.html"),
             "about",
             TestContext.Current.CancellationToken);
 
@@ -587,15 +587,15 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
 
     private async Task CreateVersionedAppAsync()
     {
-        var appDirectory = Path.Combine(_webRoot, "static", "app");
-        var versionDirectory = Path.Combine(appDirectory, "v1.0.0");
+        var appDirectory = Path.Join(_webRoot, "static", "app");
+        var versionDirectory = Path.Join(appDirectory, "v1.0.0");
         Directory.CreateDirectory(versionDirectory);
         await File.WriteAllTextAsync(
-            Path.Combine(versionDirectory, "index.html"),
+            Path.Join(versionDirectory, "index.html"),
             "versioned index",
             TestContext.Current.CancellationToken);
         await File.WriteAllTextAsync(
-            Path.Combine(appDirectory, "version.json"),
+            Path.Join(appDirectory, "version.json"),
             """{"Version":"v1.0.0","Timestamp":"2024-01-01T00:00:00Z"}""",
             TestContext.Current.CancellationToken);
     }
@@ -614,7 +614,7 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
                         _ = services.AddVersionedStaticFiles(options =>
                         {
                             options.StaticFilesPathPrefix = "/static/";
-                            options.StaticFilesDirectory = Path.Combine(_webRoot, "static");
+                            options.StaticFilesDirectory = Path.Join(_webRoot, "static");
                         });
                         _ = services.AddExtensionlessStaticFiles(options =>
                         {
@@ -672,14 +672,9 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
                         _ = app.UseExtensionlessStaticFiles();
                         configureApp?.Invoke(app);
 
-                        if (staticFileOptions is null)
-                        {
-                            _ = app.UseStaticFiles();
-                        }
-                        else
-                        {
-                            _ = app.UseStaticFiles(staticFileOptions);
-                        }
+                        _ = staticFileOptions is null
+                            ? app.UseStaticFiles()
+                            : app.UseStaticFiles(staticFileOptions);
                     });
             })
             .Start();
