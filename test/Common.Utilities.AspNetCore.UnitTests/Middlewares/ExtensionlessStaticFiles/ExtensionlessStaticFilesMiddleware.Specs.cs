@@ -564,7 +564,7 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
                 Substitute.For<IWebHostEnvironment>(),
                 Substitute.For<ILogger<ExtensionlessStaticFilesMiddleware>>()));
 
-        Assert.Equal("Extensions", exception.ParamName);
+        Assert.Equal("extensions", exception.ParamName);
     }
 
     [Fact]
@@ -582,7 +582,7 @@ public sealed class ExtensionlessStaticFilesMiddlewareSpecs : IDisposable
                 Substitute.For<IWebHostEnvironment>(),
                 Substitute.For<ILogger<ExtensionlessStaticFilesMiddleware>>()));
 
-        Assert.Equal("RedirectStatusCode", exception.ParamName);
+        Assert.Equal("redirectStatusCode", exception.ParamName);
     }
 
     private async Task CreateVersionedAppAsync()

@@ -160,15 +160,24 @@ public partial class ExtensionlessStaticFilesMiddleware
         ArgumentNullException.ThrowIfNull(options.ShouldApply);
         ArgumentNullException.ThrowIfNull(options.ShouldRedirect);
 
-        if (options.RedirectStatusCode is < StatusCodes.Status300MultipleChoices or >= StatusCodes.Status400BadRequest)
+        ValidateRedirectStatusCode(options.RedirectStatusCode);
+        ValidateExtensions(options.Extensions);
+    }
+
+    private static void ValidateRedirectStatusCode(int redirectStatusCode)
+    {
+        if (redirectStatusCode is < StatusCodes.Status300MultipleChoices or >= StatusCodes.Status400BadRequest)
         {
             throw new ArgumentOutOfRangeException(
-                nameof(options.RedirectStatusCode),
-                options.RedirectStatusCode,
+                nameof(redirectStatusCode),
+                redirectStatusCode,
                 "The redirect status code must be in the 3xx range.");
         }
+    }
 
-        foreach (var extension in options.Extensions)
+    private static void ValidateExtensions(IReadOnlyList<string> extensions)
+    {
+        foreach (var extension in extensions)
         {
             if (String.IsNullOrWhiteSpace(extension)
                 || extension[0] != '.'
@@ -177,7 +186,7 @@ public partial class ExtensionlessStaticFilesMiddleware
             {
                 throw new ArgumentException(
                     "Extensions must start with a '.' and must not contain path separators.",
-                    nameof(options.Extensions));
+                    nameof(extensions));
             }
         }
     }
