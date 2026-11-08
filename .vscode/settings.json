@@ -3,6 +3,7 @@
     "configfile",
     "coverallsapp",
     "docfx",
+    "extensionless",
     "finalizer",
     "Finalizers",
     "lcov",
