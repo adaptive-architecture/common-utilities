@@ -18,7 +18,9 @@ jobs:
       - uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
-          java-version: '21'
+          # Latest LTS. The SonarScanner for .NET requires Java 21+ when JRE
+          # auto-provisioning is disabled (sonar.scanner.skipJreProvisioning).
+          java-version: '25'
           java-package: 'jre'
 
       - uses: actions/checkout@v7
